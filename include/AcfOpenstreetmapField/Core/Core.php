@@ -2,6 +2,8 @@
 
 namespace AcfOpenstreetmapField\Core;
 
+use AcfOpenstreetmapField\Compat;
+
 class Core extends Plugin {
 
 	/**
@@ -31,9 +33,9 @@ class Core extends Plugin {
 	 *  @action plugins_loaded
 	 */
 	public function init_compat() {
-		// if ( class_exists( 'Polylang' ) ) {
-		// 	Compat\Polylang::instance();
-		// }
+		if ( class_exists( 'ACF' ) ) {
+			Compat\ACF::instance();
+		}
 	}
 
 

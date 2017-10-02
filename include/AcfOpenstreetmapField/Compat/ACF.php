@@ -2,19 +2,28 @@
 
 namespace AcfOpenstreetmapField\Compat;
 
+
 use AcfOpenstreetmapField\Core;
 
 
-class Sample extends Core\PluginComponent {
+class ACF extends Core\PluginComponent {
 
 	protected function __construct() {
+
+		add_action('init',array( $this, 'init' ) );
+
+	}
+	public function init(){
+
+		acf_register_field_type( 'AcfOpenstreetmapField\ACF\FieldOSM' );
+
 	}
 
 	/**
 	 *	@inheritdoc
 	 */
 	 public function activate(){
-		 
+
 	 }
 
 	 /**
