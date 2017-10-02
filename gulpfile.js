@@ -15,11 +15,11 @@ function do_scss( src ) {
 		.pipe( autoprefixer({
 			browsers:['last 2 versions']
 		}) )
-		.pipe( gulp.dest( './css/' + dir ) )
+		.pipe( gulp.dest( './assets/css/' + dir ) )
         .pipe( sass( { outputStyle: 'compressed' } ).on('error', sass.logError) )
 		.pipe( rename( { suffix: '.min' } ) )
         .pipe( sourcemaps.write() )
-        .pipe( gulp.dest( './css/' + dir ) );
+        .pipe( gulp.dest( './assets/css/' + dir ) );
 
 }
 
@@ -27,34 +27,36 @@ function do_js( src ) {
 	var dir = src.substring( 0, src.lastIndexOf('/') );
 	return gulp.src( './src/js/' + src + '.js' )
 		.pipe( sourcemaps.init() )
-		.pipe( gulp.dest( './js/' + dir ) )
+		.pipe( gulp.dest( './assets/js/' + dir ) )
 		.pipe( uglify().on('error', gulputil.log ) )
 		.pipe( rename( { suffix: '.min' } ) )
 		.pipe( sourcemaps.write() )
-		.pipe( gulp.dest( './js/' + dir ) );
+		.pipe( gulp.dest( './assets/js/' + dir ) );
 }
 
 function concat_js( src, dest ) {
 	return gulp.src( src )
 		.pipe( sourcemaps.init() )
 		.pipe( concat( dest ) )
-		.pipe( gulp.dest( './js/' ) )
+		.pipe( gulp.dest( './assets/js/' ) )
 		.pipe( uglify().on('error', gulputil.log ) )
 		.pipe( rename( { suffix: '.min' } ) )
 		.pipe( sourcemaps.write() )
-		.pipe( gulp.dest( './js/' ) );
+		.pipe( gulp.dest( './assets/js/' ) );
 
 }
 
 
 gulp.task('scss', function() {
 	return [
+		do_scss('acf-input-osm')
 	];
 });
 
 
 gulp.task('js-admin', function() {
     return [
+		do_js('acf-input-osm'),
     ];
 
 });

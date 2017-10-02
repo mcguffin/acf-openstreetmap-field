@@ -3,7 +3,7 @@ Contributors: #### Your wordpress.org Username ####
 Donate link: #### donate link ####
 Tags: #### donate link ####
 Requires at least: 3.8
-Tested up to: 4.0
+Tested up to: 4.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -49,11 +49,11 @@ Either post it on the [GitHub-repo](https://github.com/mcguffin/acf-openstreetma
 
 = Will you accept translations? =
 
-Yep sure! (And a warm thankyou in advance.) It might take some time until your localization 
-will appear in an official plugin release, and it is not unlikely that I will have added 
-or removed some strings in the meantime. 
+Yep sure! (And a warm thankyou in advance.) It might take some time until your localization
+will appear in an official plugin release, and it is not unlikely that I will have added
+or removed some strings in the meantime.
 
-As soon as there is a [public centralized repository for WordPress plugin translations](https://translate.wordpress.org/projects/wp-plugins) 
+As soon as there is a [public centralized repository for WordPress plugin translations](https://translate.wordpress.org/projects/wp-plugins)
 I will migrate all the translation stuff there.
 
 
@@ -63,4 +63,3 @@ I will migrate all the translation stuff there.
 
 = 1.0.0 =
 Initial Release
-
