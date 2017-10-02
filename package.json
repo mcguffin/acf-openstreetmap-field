@@ -1,0 +1,29 @@
+{
+  "name": "acf-openstreetmap-field",
+  "version": "0.0.1",
+  "description": "Plugin description",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcguffin/acf-openstreetmap-field.git"
+  },
+  "author": "Jörn Lund",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mcguffin/acf-openstreetmap-field/issues"
+  },
+  "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-autoprefixer": "*",
+    "gulp-concat": "*",
+    "gulp-rename": "*",
+    "gulp-sass": "*",
+    "gulp-sourcemaps": "*",
+    "gulp-uglify": "*",
+    "gulp-util": "*"
+  }
+}
