@@ -1,0 +1,6 @@
+[submodule "src/vendor/leaflet-providers"]
+	path = src/vendor/leaflet-providers
+	url = git@github.com:leaflet-extras/leaflet-providers.git
+[submodule "src/vendor/Leaflet"]
+	path = src/vendor/Leaflet
+	url = git@github.com:Leaflet/Leaflet.git

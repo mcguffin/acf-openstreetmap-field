@@ -6,6 +6,7 @@ var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
+var fs = require('fs');
 
 function do_scss( src ) {
 	var dir = src.substring( 0, src.lastIndexOf('/') );
@@ -46,6 +47,26 @@ function concat_js( src, dest ) {
 
 }
 
+// fake leaflet
+L = {
+	TileLayer: {
+		extend: function(o) {
+			for ( var s in o )
+				L.TileLayer[s] = o[s];
+			return L.TileLayer;
+		},
+//		Provider:{}
+	},
+	tileLayer:{}
+}
+
+//modules = {};
+gulp.task('providers', function(){
+	require('./src/vendor/leaflet-providers/leaflet-providers.js');
+	fs.writeFileSync( './etc/leaflet-providers.json', JSON.stringify(L.TileLayer.Provider.providers,null,'\t') );
+})
+
+
 
 gulp.task('scss', function() {
 	return [
@@ -64,7 +85,9 @@ gulp.task('js-admin', function() {
 
 gulp.task( 'js', function(){
 	return concat_js( [
-	], 'frontend.js');
+		'./src/vendor/Leaflet/dist/leaflet-src.js',
+		'./src/vendor/leaflet-providers/leaflet-providers.js',
+	], 'leaflet.js');
 } );
 
 

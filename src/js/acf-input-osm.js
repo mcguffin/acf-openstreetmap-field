@@ -1,22 +1,73 @@
 (function($){
 	var options = acf_osm.options;
+	console.log('sefsef')
 
 	function initialize_field( $el ) {
 		var $map	= $el.find('.acf-osm-map'),
 			$zoom	= $el.find('[data-prop="zoom"]'),
 			$lat	= $el.find('[data-prop="center_lat"]'),
 			$lng	= $el.find('[data-prop="center_lng"]'),
-			$tiles	= $el.find('[data-prop="tile_server"]'),
-			the_map	= L.map( $map.get(0) ).setView( [ $lat.val(), $lng.val() ], $zoom.val() ),
-			layer	= L.tileLayer( $tiles.val(), {
-				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-				maxZoom: 18
-			}).addTo(the_map);
+			$tiles	= $el.find('[data-prop="map_layers"]'),
+			the_map	= L.map( $map.get(0), {
+				scrollWheelZoom: false,
+				center: [ $lat.val(), $lng.val() ],
+				zoom: $zoom.val()
+			} ),
+			layers	= [];
 
-		$tiles.on('change',function(){
-			// render map
-			layer.setUrl( $tiles.val() );
-		});
+		function do_layers() {
+			var val = [],
+				provider, layer_config, i, len;
+
+			if ( null === val ) {
+				return;
+			}
+			$tiles.each(function(){
+				var v = $(this).val();
+				if ( Array.isArray(val) ) {
+					val = val.concat(v)
+				} else {
+					val.push(v)
+				}
+
+			});
+
+			// remove layers
+			while (layers.length) {
+				the_map.removeLayer( layers.pop() );
+			}
+
+//			val = val.reverse();
+			len = val.length;
+
+			for ( i=0;i<len;i++ ) {
+				provider = val[i];
+				layer_config = options.layer_config[ provider.split('.')[0] ] || {};
+				layers.push( L.tileLayer.provider( provider, layer_config ).addTo(the_map) );
+			}
+		}
+
+
+		if ( $tiles.is('select') ) {
+			acf.select2.init( $tiles, {
+				multiple: true,
+				ui: true,
+				allow_null: false,
+				ajax:false,
+			}, $el );
+		} else {
+
+		}
+		do_layers();
+
+
+			// layer	= L.tileLayer( $tiles.val(), {
+			// 	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+			// 	maxZoom: 18
+			// }).addTo(the_map);
+
+		$tiles.on('change', do_layers )
+			.prev('input').on('change', do_layers );
 
 		the_map.on('zoomend',function() {
 			$zoom.val(the_map.getZoom());

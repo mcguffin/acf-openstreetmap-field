@@ -24,6 +24,8 @@
     "gulp-sass": "*",
     "gulp-sourcemaps": "*",
     "gulp-uglify": "*",
-    "gulp-util": "*"
+    "gulp-util": "*",
+    "leaflet": "^1.2.0",
+    "leaflet-providers": "^1.1.17"
   }
 }
