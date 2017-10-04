@@ -4,3 +4,6 @@
 [submodule "src/vendor/Leaflet"]
 	path = src/vendor/Leaflet
 	url = git@github.com:Leaflet/Leaflet.git
+[submodule "src/vendor/leaflet-control-geocoder"]
+	path = src/vendor/leaflet-control-geocoder
+	url = git@github.com:perliedman/leaflet-control-geocoder.git
