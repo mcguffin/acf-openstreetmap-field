@@ -4,3 +4,6 @@
 [submodule "src/vendor/Leaflet"]
 	path = src/vendor/Leaflet
 	url = git@github.com:Leaflet/Leaflet.git
+[submodule "src/vendor/fuzzyset.js"]
+	path = src/vendor/fuzzyset.js
+	url = git@github.com:Glench/fuzzyset.js.git
