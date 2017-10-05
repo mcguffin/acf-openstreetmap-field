@@ -4,6 +4,71 @@
 @import 'mixins/mixins';
 .acf-field-open-street-map {
 	.acf-osm-map {
+		width:100%;
 		height:400px;
 	}
+	input[type="search"][data-prop="address"] {
+		font-size:20px;
+		font-weight:300;
+		letter-spacing:0.03em;
+		color:$wp-gray-darker;
+	}
+}
+.osm-results {
+	height:0;
+	border-top:1px solid $wp-gray;
+	position:relative;
+	z-index:1001;
+	width:33%;
+	float:right;
+}
+.osm-result {
+	background:rgba(255,255,255,0.8);
+	padding:0.5em;
+	border:1px solid $wp-gray;
+	border-top-width:0;
+	cursor:pointer;
+	font-weight:300;
+	&:hover,
+	&:focus {
+		background:rgba($wp-gray,0.8);
+		color:$wp-blue;
+	}
+}
+
+@keyframes bounce {
+	0% { transform:translateY(0); }
+	25% { transform:translateY(-30px); }
+	50% { transform:translateY(0); }
+	66% { transform:translateY(-15px); }
+	82% { transform:translateY(0); }
+	91% { transform:translateY(-7px); }
+	100% { transform:translateY(0); }
+}
+.osm-marker {
+	//border:1px solid $wp-red;
+	border-radius:50%;
+	position:relative;
+	&:before {
+		content:'';
+		border-style:solid;
+		border-color:$wp-blue transparent transparent transparent;
+		border-width:20px 8px;
+		position:absolute;
+		left:-8px;
+		top:-20px;
+	}
+	&:after {
+		content:attr(title);
+		clip:rect(0,0,100%,0);
+		background-color:$wp-blue;
+		color:#fff;
+		font-weight:bold;
+		padding:0.5em;
+		position:absolute;
+		bottom:20px;
+		width:150px;
+		left:-75px;
+	}
+	
 }

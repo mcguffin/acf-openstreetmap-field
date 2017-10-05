@@ -87,6 +87,7 @@ gulp.task( 'js', function(){
 	return concat_js( [
 		'./src/vendor/Leaflet/dist/leaflet-src.js',
 		'./src/vendor/leaflet-providers/leaflet-providers.js',
+		'./src/vendor/fuzzyset.js/lib/fuzzyset.js',
 	], 'leaflet.js');
 } );
 

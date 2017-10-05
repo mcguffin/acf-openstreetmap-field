@@ -48,6 +48,7 @@ class acf_field_open_street_map extends acf_field {
 			'center_lat'	=> '',
 			'center_lng'	=> '',
 			'zoom'			=> '',
+			'address'		=> '',
 			'map_layers'	=> [],
 		);
 
@@ -65,6 +66,7 @@ class acf_field_open_street_map extends acf_field {
 			'center_lat'	=> '-37.81411',
 			'center_lng'	=> '144.96328',
 			'zoom'			=> '14',
+			'address'		=> '',
 			'map_layers'	=> ['OpenStreetMap'],
 		);
 		$this->l10n = array(
@@ -238,7 +240,7 @@ class acf_field_open_street_map extends acf_field {
 
 
 		// value
-		$field['value'] = wp_parse_args($field['value'], $this->default_values);
+		$field['value'] = wp_parse_args( $field['value'], $this->default_values );
 
 		acf_hidden_input(array(
 			'name'		=> $field['name'] . '[center_lat]',
@@ -257,6 +259,9 @@ class acf_field_open_street_map extends acf_field {
 			'value'		=> $field['value']['zoom'],
 			'data-prop'	=> 'zoom',
 		));
+
+
+
 		if ( $field['allow_map_layers'] ) {
 			?>
 				<div class="acf-osf-layers">
@@ -297,11 +302,25 @@ class acf_field_open_street_map extends acf_field {
 		}
 
 
+	?>
+		<div class="acf-osf-geocode">
+		<?php
 
-		// osm goes here
+		acf_text_input( array(
+			'name'		=> $field['name'] . '[address]',
+			'type'		=> 'text',
+			'value'		=> $field['value']['address'],
+			'data-prop'	=> 'address',
+		));
+		?>
+		<div class="osm-results"></div>
+	</div>
+	<?php
 ?>
 	<div class="acf-osm-map"></div>
 <?php
+
+
 	}
 
 
