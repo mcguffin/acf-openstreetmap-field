@@ -45,7 +45,7 @@
 					title:this.$address.val()
 				}
 			).addTo(this.map);
-			console.log(this.marker)
+
 			this.layers	= [];
 			if ( this.$layers.is('select') ) {
 				acf.select2.init( this.$layers, {
@@ -85,17 +85,23 @@
 			this.$zoom.val( this.map.getZoom() );
 		},
 		map_clicked:function(e){
+			var coord = e.latlng;
 
 			this.fetch_results('https://photon.komoot.de/reverse', {
-				lon:e.latlng.lng,
-				lat:e.latlng.lat,
+				lon:coord.lng,
+				lat:coord.lat,
 			}, function(response){
 				var i=0,len=response.features.length,fmt;
 				for (i;i<len;i++){
 					fmt = this.format_result( response.features[i] );
+					this.marker.title = fmt;
+					/*
+					this.set_marker( L.latLng( response.features[i].geometry.coordinates[1], response.features[i].geometry.coordinates[0] )  );
+					/*/
+					this.set_marker( coord );
+					//*/
 					break;
 				}
-				this.marker.title = fmt;
 			} );
 			this.set_marker( e.latlng );
 		},
