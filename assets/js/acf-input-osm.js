@@ -1,6 +1,6 @@
 (function($){
 	var options = acf_osm.options;
-	console.log('sefsef')
+	console.log('input js')
 
 	var osm = {
 	};
@@ -29,7 +29,7 @@
 			this.$zoom		= this.$el.find('[data-prop="zoom"]');
 			this.$lat		= this.$el.find('[data-prop="center_lat"]');
 			this.$lng		= this.$el.find('[data-prop="center_lng"]');
-			this.$layers	= this.$el.find('[data-prop="map_layers"]');
+			this.$layers	= this.$el.find('[data-prop="leaflet_layers"]');
 			this.$address	= this.$el.find('[data-prop="address"]');
 			this.$results	= this.$address.next('.osm-results');
 			this.icon		= L.divIcon( { className: 'osm-marker', html:'', iconSize:0 } );
@@ -310,7 +310,6 @@
 			});
 
 		});
-
 
 	} else {
 

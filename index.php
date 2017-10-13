@@ -85,6 +85,20 @@ class acf_plugin_open_street_map {
 		}
 	}
 
+	function get_osm_layers( ) {
+		/*
+		mapnik
+		cyclemap C 	Cycle
+		transportmap T	Transport
+		hot H	Humantarian
+		*/
+		return array(
+			'mapnik'		=> __('Standard','osm-layer','acf-open-street-map'),
+			'cyclemap'		=> __('Cycle Map','osm-layer','acf-open-street-map'),
+			'transportmap'	=> __('Transport map','osm-layer','acf-open-street-map'),
+			'hot'			=> __('Humanitarian','osm-layer','acf-open-street-map'),
+		);
+	}
 	/**
 	 *	get providers and variants
 	 *	omits proviers with unconfigured api credentials
@@ -96,10 +110,10 @@ class acf_plugin_open_street_map {
 	 *		)
 	 *	)
 	 */
-	function get_providers( ) {
+	function get_layer_providers( ) {
 
 		$providers = array();
-		$leaflet_providers	= json_decode( file_get_contents(ACF_OPEN_STREET_MAP_DIR . '/etc/leaflet-providers.json'), true );
+		$leaflet_providers	= json_decode( file_get_contents( ACF_OPEN_STREET_MAP_DIR . '/etc/leaflet-providers.json'), true );
 		$keys		= array_keys( $providers );
 		foreach ( $leaflet_providers as $provider => $provider_data ) {
 

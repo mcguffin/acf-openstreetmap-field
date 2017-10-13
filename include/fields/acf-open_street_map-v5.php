@@ -63,11 +63,12 @@ class acf_field_open_street_map extends acf_field {
 
 
 		$this->default_values = array(
-			'center_lat'	=> '-37.81411',
-			'center_lng'	=> '144.96328',
-			'zoom'			=> '14',
-			'address'		=> '',
-			'map_layers'	=> ['OpenStreetMap'],
+			'center_lat'		=> '-37.81411',
+			'center_lng'		=> '144.96328',
+			'zoom'				=> '14',
+			'address'			=> '',
+			'osm_layer'			=> 'mapnik',
+			'leaflet_layers'	=> ['OpenStreetMap'],
 		);
 		$this->l10n = array(
 			'locating'			=> __("Locating",'acf'),
@@ -113,6 +114,21 @@ class acf_field_open_street_map extends acf_field {
 		*  Please note that you must also have a matching $defaults value for the field name (font_size)
 		*/
 
+		// return_format
+		acf_render_field_setting( $field, array(
+			'label'			=> __('Return Format','acf'),
+			'instructions'	=> '',
+			'type'			=> 'radio',
+			'name'			=> 'return_format',
+			'choices'		=> array(
+				'raw'			=> __("Raw Data",'acf-openstreetmap-field'),
+				'leaflet'		=> __("Leaflet JS",'acf-openstreetmap-field'),
+				'osm'			=> __("iFrame (OpenStreetMap.org)",'acf-openstreetmap-field'),
+			),
+			'layout'	=>	'horizontal',
+		));
+
+
 		// center_lat
 		acf_render_field_setting( $field, array(
 			'label'			=> __('Center','acf'),
@@ -155,19 +171,6 @@ class acf_field_open_street_map extends acf_field {
 			'append'		=> 'px',
 		));
 
-		// return_format
-		acf_render_field_setting( $field, array(
-			'label'			=> __('Return Format','acf'),
-			'instructions'	=> '',
-			'type'			=> 'radio',
-			'name'			=> 'return_format',
-			'choices'		=> array(
-				'html'			=> __("Markup",'acf-openstreetmap-field'),
-				'raw'			=> __("Data",'acf-openstreetmap-field'),
-			),
-			'layout'	=>	'horizontal',
-		));
-
 
 		// allow_null
 		acf_render_field_setting( $field, array(
@@ -178,20 +181,32 @@ class acf_field_open_street_map extends acf_field {
 			'ui'			=> 1,
 		));
 
-
-		// return_format
+		// layers
 		//*
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Map Layers','acf'),
+			'label'			=> __('Default Map Layers','acf'),
 			'instructions'	=> '',
 			'type'			=> 'select',
-			'name'			=> 'default_map_layers',
-			'choices'		=> acf_plugin_open_street_map::instance()->get_providers( ),
+			'name'			=> 'default_leaflet_layers',
+			'choices'		=> acf_plugin_open_street_map::instance()->get_layer_providers( ),
 			'multiple'		=> 1,
 			'ui'			=> 1,
-			'allow_null'	=> 1,
+			'allow_null'	=> 0,
 			'placeholder'	=> __("Map Layers",'acf'),
 		));
+
+		acf_render_field_setting( $field, array(
+			'label'			=> __('Default OSM Map Layer','acf'),
+			'instructions'	=> '',
+			'type'			=> 'select',
+			'name'			=> 'default_osm_layer',
+			'choices'		=> acf_plugin_open_street_map::instance()->get_osm_layers( ),
+			'multiple'		=> 0,
+			'ui'			=> 0,
+			'allow_null'	=> 0,
+			'placeholder'	=> __("Map Layers",'acf'),
+		));
+
 		/*/
 		acf_render_field_setting( $field, array(
 			'label'			=> __('Tile Server','acf'),
@@ -264,43 +279,70 @@ class acf_field_open_street_map extends acf_field {
 
 		if ( $field['allow_map_layers'] ) {
 			?>
-				<div class="acf-osf-layers">
-				<?php
-				acf_hidden_input(array(
-					'name'		=> $field['name'] . '[map_layers]',
-					'value'		=> '',
-				));
-				acf_select_input( array(
-					'name'				=> $field['name'] . '[map_layers][]',
-					'id'				=> $field['name'] . 'map_layers',
-					'choices'			=> acf_plugin_open_street_map::instance()->get_providers( ),
-					'value'				=> $field['value']['map_layers'],
-					'multiple'			=> 'multiple',
-					'size'				=> 5,
-					'data-prop'			=> 'map_layers',
-					'data-multiple'		=> true,
-					'data-ui'			=> true,
-					'data-ajax'			=> false,
-					'data-allow_null'	=> true,
-					'data-placeholder'	=> __('Select'),
+				<?php if ( 'leaflet' === $field['return_format'] ) { ?>
+					<div class="acf-leaflet-layers">
+						<?php
+						acf_hidden_input(array(
+							'name'		=> $field['name'] . '[map_layers]',
+							'value'		=> '',
+						));
+						acf_select_input( array(
+							'name'				=> $field['name'] . '[leaflet_layers][]',
+							'id'				=> $field['name'] . 'leaflet_layers',
+							'choices'			=> acf_plugin_open_street_map::instance()->get_layer_providers( ),
+							'value'				=> $field['value']['leaflet_layers'],
+							'multiple'			=> 'multiple',
+							'size'				=> 5,
+							'data-prop'			=> 'leaflet_layers',
+							'data-multiple'		=> true,
+							'data-ui'			=> true,
+							'data-ajax'			=> false,
+							'data-allow_null'	=> true,
+							'data-placeholder'	=> __('Select','acf-open-street-map'),
 
-				) );
-				?>
-			</div>
+						) );
+						?>
+					</div>
+				<?php } elseif ( 'osm' === $field['return_format'] ) { ?>
+					<div class="acf-osm-layers">
+						<?php
+						acf_select_input( array(
+							'name'				=> $field['name'] . '[osm_layer]',
+							'id'				=> $field['name'] . 'osm_layer',
+							'choices'			=> acf_plugin_open_street_map::instance()->get_osm_layers( ),
+							'value'				=> $field['value']['osm_layer'],
+							'size'				=> 5,
+							'data-prop'			=> 'osm_layer',
+							'data-multiple'		=> false,
+							'data-ui'			=> false,
+							'data-ajax'			=> false,
+							'data-allow_null'	=> false,
+							'data-placeholder'	=> __('Select','acf-open-street-map'),
+
+						) );
+						?>
+					</div>
+			<?php } ?>
 			<?php
+
 		} else {
 
-			foreach ( $field['default_map_layers'] as $layer ) {
+			foreach ( $field['default_leaflet_layers'] as $layer ) {
 				acf_hidden_input( array(
-					'name'		=> $field['name'] . '[map_layers][]',
+					'name'		=> $field['name'] . '[leaflet_layers][]',
 //					'choices'	=> acf_plugin_open_street_map::instance()->get_providers( ),
 					'value'		=> $layer,
-					'data-prop'	=> 'map_layers',
+					'data-prop'	=> 'leaflet_layers',
 				));
 
 			}
+			acf_hidden_input( array(
+				'name'		=> $field['name'] . '[osm_layer]',
+//					'choices'	=> acf_plugin_open_street_map::instance()->get_providers( ),
+				'value'		=> $layer,
+				'data-prop'	=> 'osm_layer',
+			));
 		}
-
 
 	?>
 		<div class="acf-osf-geocode">
@@ -350,7 +392,7 @@ class acf_field_open_street_map extends acf_field {
 
 		// register & include JS
 		wp_register_script( 'leaflet', "{$url}assets/js/leaflet.js", array() );
-		wp_register_script( 'acf-input-open-street-map', "{$url}assets/js/acf-input-osm.js", array('leaflet','acf-input'), $version );
+		wp_register_script( 'acf-input-open-street-map', "{$url}assets/js/acf-input-osm.js", array('leaflet','acf-input','backbone'), $version );
 		wp_localize_script('acf-input-open-street-map','acf_osm',array(
 			'options'	=> array(
 				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
@@ -366,6 +408,24 @@ class acf_field_open_street_map extends acf_field {
 
 	}
 
+	function field_group_admin_enqueue_scripts() {
+
+		$url = $this->settings['url'];
+		$version = $this->settings['version'];
+
+		wp_register_script( 'acf-field-group-open-street-map', "{$url}assets/js/acf-field-group-osm.js", array('acf-field-group'), $version );
+
+		wp_localize_script('acf-field-group-open-street-map','acf_osm_field_group',array(
+			'options'	=> array(
+				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
+			),
+		));
+		wp_enqueue_script('acf-field-group-open-street-map');
+
+		wp_register_style( 'acf-field-group-open-street-map', "{$url}assets/css/acf-field-group-osm.css", array( 'acf-input' ), $version );
+		wp_enqueue_style('acf-field-group-open-street-map');
+
+	}
 
 
 	/*
@@ -672,7 +732,8 @@ class acf_field_open_street_map extends acf_field {
 		return $field;
 
 		$defaults = wp_parse_args( array(
-			'map_layers'	=> $field['default_map_layers'],
+			'leaflet_layers'	=> $field['default_leaflet_layers'],
+			'osm_layer'			=> $field['default_osm_layer'],
 		), $this->default_values );
 
 		$field['value'] = wp_parse_args( $field['value'], $defaults );

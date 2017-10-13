@@ -70,7 +70,8 @@ gulp.task('providers', function(){
 
 gulp.task('scss', function() {
 	return [
-		do_scss('acf-input-osm')
+		do_scss('acf-input-osm'),
+		do_scss('acf-field-group-osm')
 	];
 });
 
@@ -78,6 +79,7 @@ gulp.task('scss', function() {
 gulp.task('js-admin', function() {
     return [
 		do_js('acf-input-osm'),
+		do_js('acf-field-group-osm'),
     ];
 
 });
