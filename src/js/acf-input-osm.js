@@ -10,7 +10,7 @@
 		$lat: null,
 		$lng: null,
 		$address: null,
-		$tiles: null,
+		$layers: null,
 		marker: null,
 		icon:null,
 		map: null,
@@ -65,7 +65,7 @@
 
 //			this.listenTo( this.$address, 'keyup focus', this.search );
 
-			this.listenTo( this.$tiles, 'change', this.update_layers );
+			this.listenTo( this.$layers, 'change', this.update_layers );
 
 			this.map.on('zoomend', function(e){ self.map_zoomed.apply(self,[e]); } );
 			this.map.on('moveend', function(e){ self.map_moved.apply(self,[e]); }  );
@@ -134,13 +134,14 @@
 			}
 
 			len = val.length;
-
 			for ( i=0;i<len;i++ ) {
 				provider = val[i];
 				layer_config = options.layer_config[ provider.split('.')[0] ] || {};
-				this.layers.push( L.tileLayer.provider( provider, layer_config ).addTo(this.map) );
+				console.log(layer_config);
+				this.layers.push( L.tileLayer.provider( provider, layer_config.options ).addTo(this.map) );
 			}
 		},
+
 		search:function(e){
 			var self = this,
 				data = {};

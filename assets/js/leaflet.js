@@ -13907,14 +13907,98 @@ exports.map = createMap;
 			}
 		},
 		MapBox: {
-			url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
+			url: "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}",
 			options: {
-				attribution:
-					'Imagery from <a href="http://mapbox.com/about/maps/">MapBox</a> &mdash; ' +
-					'Map data {attribution.OpenStreetMap}',
-				subdomains: 'abcd',
-				id: 'streets',
-				accessToken: '<insert your access token here>',
+				attribution: "Imagery from <a href=\"http://mapbox.com/about/maps/\">MapBox</a> &mdash; Map data {attribution.OpenStreetMap}",
+				subdomains: "abcd",
+				variant: "Streets",
+				accessToken: "<insert your access token here>"
+			},
+			variants:{
+				Streets:{
+					options: {
+						variant: 'Streets',
+						id: 'mapbox.streets'
+					}
+				},
+				Light:{
+					options: {
+						variant: 'Light',
+						id: 'mapbox.light'
+					}
+				},
+				Dark:{
+					options: {
+						variant: 'Dark',
+						id: 'mapbox.dark'
+					}
+				},
+				Satellite:{
+					options: {
+						variant: 'Satellite',
+						id: 'mapbox.satellite'
+					}
+				},
+				StreetsSatellite:{
+					options: {
+						variant: 'StreetsSatellite',
+						id: 'mapbox.streets-satellite'
+					}
+				},
+				Wheatpaste:{
+					options: {
+						variant: 'Wheatpaste',
+						id: 'mapbox.wheatpaste'
+					}
+				},
+				StreetsBasic:{
+					options: {
+						variant: 'StreetsBasic',
+						id: 'mapbox.streets-basic'
+					}
+				},
+				Comic:{
+					options: {
+						variant: 'Comic',
+						id: 'mapbox.comic'
+					}
+				},
+				Outdoors:{
+					options: {
+						variant: 'Outdoors',
+						id: 'mapbox.outdoors'
+					}
+				},
+				RunBikeHike:{
+					options: {
+						variant: 'RunBikeHike',
+						id: 'mapbox.run-bike-hike'
+					}
+				},
+				Pencil:{
+					options: {
+						variant: 'Pencil',
+						id: 'mapbox.pencil'
+					}
+				},
+				Pirates:{
+					options: {
+						variant: 'Pirates',
+						id: 'mapbox.pirates'
+					}
+				},
+				Emerald:{
+					options: {
+						variant: 'Emerald',
+						id: 'mapbox.emerald'
+					}
+				},
+				HighContrast:{
+					options: {
+						variant: 'HighContrast',
+						id: 'mapbox.high-contrast'
+					}
+				},
 			}
 		},
 		Stamen: {
@@ -14059,10 +14143,11 @@ exports.map = createMap;
 			}
 		},
 		OpenWeatherMap: {
-			url: 'http://{s}.tile.openweathermap.org/map/{variant}/{z}/{x}/{y}.png',
+			url: 'http://{s}.tile.openweathermap.org/map/{variant}/{z}/{x}/{y}.png?appid={apiKey}',
 			options: {
 				maxZoom: 19,
 				attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
+				apiKey:'<insert your api key here>',
 				opacity: 0.5
 			},
 			variants: {

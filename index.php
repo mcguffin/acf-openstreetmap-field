@@ -5,7 +5,7 @@ Plugin Name: ACF OpenStreetMap Field
 Plugin URI: http://wordpress.org/
 Description: Enter description here.
 Author: Jörn Lund
-Version: 0.0.1
+Version: 0.0.2
 Author URI:
 License: GPL3
 
@@ -99,25 +99,27 @@ class acf_plugin_open_street_map {
 			'hot'			=> __('Humanitarian','osm-layer','acf-open-street-map'),
 		);
 	}
+
 	/**
 	 *	get providers and variants
 	 *	omits proviers with unconfigured api credentials
 	 *	as well as local-only map data
 	 *
 	 *	@return array(
-	 *		'Provider' => array(
-	 *			'Provider.variant'	=> 'variant'
+	 *		'ProviderName' => array(
+	 *			'ProviderName.VariantName'	=> 'VariantName'
 	 *		)
 	 *	)
 	 */
-	function get_layer_providers( ) {
+	public function get_layer_providers( ) {
 
-		$providers = array();
-		$leaflet_providers	= json_decode( file_get_contents( ACF_OPEN_STREET_MAP_DIR . '/etc/leaflet-providers.json'), true );
-		$keys		= array_keys( $providers );
+		$providers 			= array();
+		$leaflet_providers	= $this->get_leaflet_providers( );//json_decode( file_get_contents( ACF_OPEN_STREET_MAP_DIR . '/etc/leaflet-providers.json'), true );
+		//$access_tokens		= get_option( 'acf_osm_provider_tokens', array() );
+
 		foreach ( $leaflet_providers as $provider => $provider_data ) {
 
-			// keep only boundless maps
+			// drop boundless maps
 			if ( isset($provider_data['options']['bounds'])) {
 				continue;
 			}
@@ -145,86 +147,56 @@ class acf_plugin_open_street_map {
 				$providers[$provider][$provider] = $provider;
 			}
 		}
-		// flatten
-		// $providers_alt = array();
-		// foreach ( $providers as $provider => $variants ) {
-		// 	$providers_alt += $variants;
-		// }
-		// return $providers_alt;
-		// end flatten
+
 		return $providers;
 	}
 
-	private function get_provider_token( $provider, $option ) {
-
-		$tokens		= get_option( 'acf_osm_provider_tokens', array() );
-
-		if ( isset( $tokens[$provider], $tokens[$provider][$option] ) ) {
-			return $tokens[$provider][$option];
-		}
-
-		return false;
+	/**
+	 *	returns leaflet providers with configured access tokens
+	 *	@return array
+	 */
+	public function get_leaflet_providers( ) {
+		$leaflet_providers	= json_decode( file_get_contents( ACF_OPEN_STREET_MAP_DIR . '/etc/leaflet-providers.json'), true );
+		$access_tokens		= get_option( 'acf_osm_provider_tokens', array() );
+		return array_replace_recursive( $leaflet_providers, $access_tokens );
 	}
 
-	public function get_provider_select_options() {
-		$tile_servers = array();
 
-		foreach ( $this->get_providers() as $provider => $data ) {
+	// private function deep_replace( $repl, $str ) {
+	// 	if ( is_array( $repl ) ) {
+	// 		foreach ( $repl as $key => $value ) {
+	// 			if ( is_string( $value ) ) {
+	// 				$str = str_replace('{'.$key.'}', $value, $str );
+	// 			} else {
+	// 				$str = $this->deep_replace( $value, $str );
+	//
+	// 			}
+	// 		}
+	// 	}
+	// 	return $str;
+	// }
 
-			if ( isset( $data['variants'] ) ) {
-				$tile_servers[$provider] = array();
-				foreach ( $data['variants'] as $variant_label => $variant_data ) {
+	/**
+	 *	Get places in provider config, where an access token should be entered.
+	 */
+	public function get_provider_token_options( ) {
 
-					$url = $this->deep_replace( $data['options'], $data['url'] );
+		$providers		= json_decode( file_get_contents( ACF_OPEN_STREET_MAP_DIR . '/etc/leaflet-providers.json'), true );
 
-					if ( is_string( $variant_data ) ) {
-						$url = str_replace( '{variant}', $variant_data, $url );
-					} else {
-						$url = $this->deep_replace( $variant_data, $data['url'] );
-					}
-					if ( false !== strpos( $url, '{variant}' ) ) {
-						$url = str_replace( '{variant}', $variant_label, $url );
-					}
-					$tile_servers[$provider][$url] = $variant_label;
-				}
-			} else {
-				$tile_servers[ $provider ] = $provider;
-			}
-		}
-		return $tile_servers;
-	}
-	private function deep_replace( $repl, $str ) {
-		if ( is_array( $repl ) ) {
-			foreach ( $repl as $key => $value ) {
-				if ( is_string( $value ) ) {
-					$str = str_replace('{'.$key.'}', $value, $str );
-				} else {
-					$str = $this->deep_replace( $value, $str );
-
-				}
-			}
-		}
-		return $str;
-	}
-
-	function get_provider_token_options( ) {
-
-		$providers	= json_decode( file_get_contents(ACF_OPEN_STREET_MAP_DIR . '/etc/leaflet-providers.json'), true );
-
-		$tokens		= array();
+		$token_options	= array();
 
 		foreach ( $providers as $provider => $data ) {
 			foreach( $data['options'] as $option => $value ) {
-				if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) ) {
-					if ( ! isset($tokens[ $provider ]) ) {
-						$tokens[ $provider ] = array();
+				if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) ) { // '<insert your [some token] here>'
+
+					if ( ! isset($token_options[ $provider ]['options'] ) ) {
+						$token_options[ $provider ] = array( 'options' => array() );
 					}
-					$tokens[ $provider ][ $option ] = $matches[1];
+					$token_options[ $provider ]['options'][ $option ] = '';
 				}
 			}
 		}
-
-		return $tokens;
+		return $token_options;
 	}
 
 

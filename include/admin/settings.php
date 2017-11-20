@@ -25,6 +25,9 @@ if( ! class_exists('acf_plugin_open_street_map_settings') ) :
 class acf_plugin_open_street_map_settings {
 
 	private $settings_page = 'open_street_map_api_keys';
+	private $optionset = 'open_street_map';
+
+	private $plugin = null;
 
 	private static $_instance = null;
 
@@ -49,13 +52,26 @@ class acf_plugin_open_street_map_settings {
 	*/
 
 	private function __construct() {
+
 		add_action( 'admin_init' , array( $this, 'register_settings' ) );
 
-		add_option( 'generic_setting_1' , array() , '' , False );
+		add_option( 'acf_osm_provider_tokens' , array() , '' , False );
 
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
+		$this->plugin = acf_plugin_open_street_map::instance();
+
 	}
+
+	/**
+	 *	Add Settings page
+	 *
+	 *	@action admin_menu
+	 */
+	public function admin_menu() {
+		add_options_page( __('OpenStreetMap', 'acf-open-street-map' ),__('OpenSrtreetMap', 'acf-open-street-map'),'manage_options', $this->optionset, array( $this, 'settings_page' ) );
+	}
+
 
 	/**
 	 *	Render Settings page
@@ -66,13 +82,13 @@ class acf_plugin_open_street_map_settings {
 		}
 		?>
 		<div class="wrap">
-			<h2><?php _e('Generic Settings', 'generic') ?></h2>
+			<h2><?php _e('Open Street Map', 'acf-open-street-map') ?></h2>
 
 			<form action="options.php" method="post">
 				<?php
 				settings_fields(  $this->optionset );
 				do_settings_sections( $this->optionset );
-				submit_button( __('Save Settings' , 'generic' ) );
+				submit_button( __('Save Settings' , 'acf-open-street-map' ) );
 				?>
 			</form>
 		</div><?php
@@ -90,35 +106,57 @@ class acf_plugin_open_street_map_settings {
 
 		$settings_section	= 'acf_osm_settings';
 
-		add_settings_section( $settings_section, __( 'Section #1',  'acf-open-street-map' ), array( $this, 'section_1_description' ), $this->optionset );
+		add_settings_section( $settings_section, __( 'Access Tokens', 'acf-open-street-map' ), array( $this, 'tokens_description' ), $this->optionset );
 
 
 
 		// more settings go here ...
-		$option_name		= 'generic_setting_1';
-		register_setting( $this->optionset , $option_name, array( $this , 'sanitize_setting_1' ) );
-		add_settings_field(
-			$option_name,
-			__( 'Setting #1',  'acf-open-street-map' ),
-			array( $this, 'setting_1_ui' ),
-			$this->optionset,
-			$settings_section,
-			array(
-				'option_name'			=> $option_name,
-				'option_label'			=> __( 'Setting #1',  'acf-open-street-map' ),
-				'option_description'	=> __( 'Setting #1 description',  'acf-open-street-map' ),
-			)
-		);
+		$option_name		= 'acf_osm_provider_tokens';
+
+		register_setting( $this->optionset, $option_name, array( $this , 'sanitize_provider_tokens' ) );
+
+		$option_value = get_option( $option_name, array() );
+		$token_options = $this->plugin->get_provider_token_options();
+		$token_values = array_replace_recursive( $this->plugin->get_provider_token_options(), $option_value );
+
+		foreach ( $token_options as $provider => $provider_data ) {
+			$field_name = $option_name . sprintf( '[%s]', $provider );
+			foreach ( $provider_data as $section => $config ) {
+				$field_name .= sprintf( '[%s]', $section );
+				foreach( $config as $key => $value ) {
+					if ( isset( $token_values[$provider][$section][$key] )) {
+						$value = $token_values[$provider][$section][$key];
+					}
+					add_settings_field(
+						$option_name.'-'.$provider.'-'.$key,
+						sprintf( '%s (%s)',
+							$provider,
+							ucwords(implode(' ', preg_split('/([_-]+)/',$key ) ))
+						),
+						array( $this, 'access_token_input' ),
+						$this->optionset,
+						$settings_section,
+						array(
+							'field_name'			=> sprintf( '%s[%s]', $field_name, $key ),
+							'value'					=> $value,
+						)
+					);
+
+
+				}
+			}
+		}
+
 	}
 
 	/**
 	 * Print some documentation for the optionset
 	 */
-	public function section_1_description( $args ) {
+	public function tokens_description( $args ) {
 
 		?>
 		<div class="inside">
-			<p><?php _e( 'Section 1 Description.' , 'generic' ); ?></p>
+			<p><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-open-street-map' ); ?></p>
 		</div>
 		<?php
 	}
@@ -126,33 +164,47 @@ class acf_plugin_open_street_map_settings {
 	/**
 	 * Output Theme selectbox
 	 */
-	public function setting_1_ui( $args ) {
+	public function access_token_input( $args ) {
 
-		@list( $option_name, $label, $description ) = array_values( $args );
+		@list( $field_name, $value ) = array_values( $args );
+		$field_id = sanitize_title( $field_name );
 
-		$option_value = get_option( $option_name );
+		if ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) {
+			$value = '';
+		}
 
-		?>
-			<label for="<?php echo $option_name ?>">
-				<input type="text" id="<?php echo $option_name ?>" name="<?php echo $option_name ?>" value="<?php esc_attr_e( $option_value ) ?>" />
-				<?php echo $label ?>
-			</label>
-			<?php
-			if ( ! empty( $description ) ) {
-				printf( '<p class="description">%s</p>', $description );
-			}
-			?>
-		<?php
+		printf('<input id="%1$s" name="%2$s" value="%3$s" class="code widefat" />',
+			esc_attr($field_id),
+			esc_attr($field_name),
+			esc_attr($value)
+		);
+
 	}
+
 
 	/**
 	 * Sanitize value of setting_1
 	 *
 	 * @return string sanitized value
 	 */
-	public function sanitize_setting_1( $value ) {
-		// do sanitation here!
-		return $value;
+	public function sanitize_provider_tokens( $token_values ) {
+		$token_options = $this->plugin->get_provider_token_options();
+		$values = array();
+
+		foreach ( $token_options as $provider => $provider_data ) {
+			$values[$provider] = array();
+			foreach ( $provider_data as $section => $config ) {
+				$values[$provider][$section] = array();
+				foreach( $config as $key => $value ) {
+					if ( isset( $token_values[$provider][$section][$key] )) {
+						$values[$provider][$section][$key] = $token_values[$provider][$section][$key];
+					} else {
+						$values[$provider][$section][$key] = '';
+					}
+				}
+			}
+		}
+		return $values;
 	}
 }
 
