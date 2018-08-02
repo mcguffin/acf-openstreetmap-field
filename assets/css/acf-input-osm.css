@@ -43,6 +43,10 @@
     background: rgba(241, 241, 241, 0.8);
     color: #0085ba; }
 
+.acf-field .acf-osm-geocode [type="text"] {
+  font-size: 1.5em;
+  font-weight: 300; }
+
 @keyframes bounce {
   0% {
     transform: translateY(0); }

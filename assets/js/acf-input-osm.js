@@ -1,6 +1,5 @@
 (function($){
 	var options = acf_osm.options;
-	console.log('input js')
 
 	var osm = {
 	};
@@ -16,8 +15,12 @@
 		map: null,
 		layers:[],
 		events:{
+			'change [data-prop]'	: 'update_field',
 			'keyup [data-prop="address"]' : 'search',
 			'focus [data-prop="address"]' : 'search',
+
+			'change [data-prop="leaflet_layers"]' : 'update_layers',
+			'change [data-prop="osm_layer"]' : 'update_osm_layer',
 
 			'click .osm-result'	: 'click_result',
 			'keyup .osm-result'	: 'keyup_result',
@@ -29,6 +32,8 @@
 			this.$zoom		= this.$el.find('[data-prop="zoom"]');
 			this.$lat		= this.$el.find('[data-prop="center_lat"]');
 			this.$lng		= this.$el.find('[data-prop="center_lng"]');
+			this.$mlat		= this.$el.find('[data-prop="marker_lat"]');
+			this.$mlng		= this.$el.find('[data-prop="marker_lng"]');
 			this.$layers	= this.$el.find('[data-prop="leaflet_layers"]');
 			this.$address	= this.$el.find('[data-prop="address"]');
 			this.$results	= this.$address.next('.osm-results');
@@ -39,7 +44,7 @@
 				zoom: this.$zoom.val()
 			} );
 			this.marker		= L.marker(
-				[ this.$lat.val(), this.$lng.val() ],
+				[ this.$mlat.val(), this.$mlng.val() ],
 				{
 					icon:this.icon,
 					title:this.$address.val()
@@ -60,12 +65,13 @@
 
 			this.update_layers();
 		},
+		update_field:function(){
+
+		},
 		bind_events: function() {
 			var self = this;
 
 //			this.listenTo( this.$address, 'keyup focus', this.search );
-
-			this.listenTo( this.$layers, 'change', this.update_layers );
 
 			this.map.on('zoomend', function(e){ self.map_zoomed.apply(self,[e]); } );
 			this.map.on('moveend', function(e){ self.map_moved.apply(self,[e]); }  );
@@ -95,6 +101,7 @@
 				for (i;i<len;i++){
 					fmt = this.format_result( response.features[i] );
 					this.marker.title = fmt;
+					this.$address.val( fmt );
 					/*
 					this.set_marker( L.latLng( response.features[i].geometry.coordinates[1], response.features[i].geometry.coordinates[0] )  );
 					/*/
@@ -106,11 +113,17 @@
 			this.set_marker( e.latlng );
 		},
 		set_marker:function(coord){
-
 			$(this.marker._icon).attr( 'title', this.marker.title );
 			this.marker.setLatLng(coord);
+			this.$mlat.val( coord.lat );
+			this.$mlng.val( coord.lng );
 		},
-
+/*
+https://a.tile.openstreetmap.org/
+https://a.tile.thunderforest.com/cycle/
+https://a.tile.thunderforest.com/transport/
+https://tile-a.openstreetmap.fr/hot/
+*/
 		update_layers: function(){
 			var val = [],
 				provider, layer_config, i, len;
@@ -137,11 +150,13 @@
 			for ( i=0;i<len;i++ ) {
 				provider = val[i];
 				layer_config = options.layer_config[ provider.split('.')[0] ] || {};
-				console.log(layer_config);
 				this.layers.push( L.tileLayer.provider( provider, layer_config.options ).addTo(this.map) );
 			}
 		},
-
+		update_osm_layer: function(e) {
+			this.$('[data-prop="leaflet_layers"]').val( options.osm_layers[$(e.target).val()].provider );
+			this.update_layers();
+		},
 		search:function(e){
 			var self = this,
 				data = {};
@@ -284,64 +299,31 @@
 
 	});
 
+	/*
+	 *  ready append (ACF5)
+	 *
+	 *  These are 2 events which are fired during the page load
+	 *  ready = on page load similar to $(document).ready()
+	 *  append = on new DOM elements appended via repeater field
+	 *
+	 *  @type	event
+	 *  @date	20/07/13
+	 *
+	 *  @param	$el (jQuery selection) the jQuery element which contains the ACF fields
+	 *  @return	n/a
+	 */
 
-	if( typeof acf.add_action !== 'undefined' ) {
+	acf.add_action('ready append', function( $el ){
 
-		/*
-		*  ready append (ACF5)
-		*
-		*  These are 2 events which are fired during the page load
-		*  ready = on page load similar to $(document).ready()
-		*  append = on new DOM elements appended via repeater field
-		*
-		*  @type	event
-		*  @date	20/07/13
-		*
-		*  @param	$el (jQuery selection) the jQuery element which contains the ACF fields
-		*  @return	n/a
-		*/
+		// search $el for fields of type 'FIELD_NAME'
+		acf.get_fields({ type : 'open_street_map'}, $el).each(function(){
 
-		acf.add_action('ready append', function( $el ){
-
-			// search $el for fields of type 'FIELD_NAME'
-			acf.get_fields({ type : 'open_street_map'}, $el).each(function(){
-
-				new osm.field( { el: this } );
-
-			});
+			new osm.field( { el: this } );
 
 		});
 
-	} else {
+	});
 
-
-		/*
-		*  acf/setup_fields (ACF4)
-		*
-		*  This event is triggered when ACF adds any new elements to the DOM.
-		*
-		*  @type	function
-		*  @since	1.0.0
-		*  @date	01/01/12
-		*
-		*  @param	event		e: an event object. This can be ignored
-		*  @param	Element		postbox: An element which contains the new HTML
-		*
-		*  @return	n/a
-		*/
-
-		$(document).on('acf/setup_fields', function(e, postbox){
-
-			$(postbox).find('.field[data-field_type="open_street_map"]').each(function(){
-
-				new osm.field( { el: this } );
-
-			});
-
-		});
-
-
-	}
 
 
 })(jQuery);

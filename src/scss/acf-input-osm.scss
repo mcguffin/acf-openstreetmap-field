@@ -35,7 +35,14 @@
 		color:$wp-blue;
 	}
 }
-
+.acf-osm-geocode {
+	[type="text"] {
+		.acf-field & {
+			font-size:1.5em;
+			font-weight:300;
+		}
+	}
+}
 @keyframes bounce {
 	0% { transform:translateY(0); }
 	25% { transform:translateY(-30px); }
@@ -70,5 +77,5 @@
 		width:150px;
 		left:-75px;
 	}
-	
+
 }

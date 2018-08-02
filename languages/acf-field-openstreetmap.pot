@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: ACF OpenStreetMap Field\n"
+"Project-Id-Version: acf-field-openstreetmap\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-03-20 23:33+0100\n"
 "PO-Revision-Date: 2016-03-20 23:36+0100\n"

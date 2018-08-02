@@ -1,65 +1,30 @@
 <?php
 
-/*  Copyright 2017  Jörn Lund
+namespace ACFFieldOpenstreetmap\Settings;
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License, version 2, as
-    published by the Free Software Foundation.
+if ( ! defined('ABSPATH') ) {
+	die('FU!');
+}
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+use ACFFieldOpenstreetmap\Core;
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
+class SettingsOpenStreetMap extends Settings {
 
-// exit if accessed directly
-if( ! defined( 'ABSPATH' ) ) exit;
+	private $optionset = 'acf_osm';
 
-// check if class already exists
-if( ! class_exists('acf_plugin_open_street_map_settings') ) :
 
-class acf_plugin_open_street_map_settings {
+	/**
+	 *	@inheritdoc
+	 */
+	protected function __construct() {
 
-	private $settings_page = 'open_street_map_api_keys';
-	private $optionset = 'open_street_map';
 
-	private $plugin = null;
-
-	private static $_instance = null;
-
-	public static function instance() {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
-
-	/*
-	*  __construct
-	*
-	*  This function will setup the class functionality
-	*
-	*  @type	function
-	*  @date	17/02/2016
-	*  @since	1.0.0
-	*
-	*  @param	n/a
-	*  @return	n/a
-	*/
-
-	private function __construct() {
-
-		add_action( 'admin_init' , array( $this, 'register_settings' ) );
-
+//		add_option( 'acf-field-openstreetmap_setting_1' , 'Default Value' , '' , False );
 		add_option( 'acf_osm_provider_tokens' , array() , '' , False );
 
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 
-		$this->plugin = acf_plugin_open_street_map::instance();
+		parent::__construct();
 
 	}
 
@@ -69,32 +34,42 @@ class acf_plugin_open_street_map_settings {
 	 *	@action admin_menu
 	 */
 	public function admin_menu() {
-		add_options_page( __('OpenStreetMap', 'acf-open-street-map' ),__('OpenSrtreetMap', 'acf-open-street-map'),'manage_options', $this->optionset, array( $this, 'settings_page' ) );
+		add_options_page( __('OpenStreetMap Settings' , 'acf-field-openstreetmap' ),__('OpenStreetMap' , 'acf-field-openstreetmap'),'manage_options',$this->optionset, array( $this, 'settings_page' ) );
 	}
-
 
 	/**
 	 *	Render Settings page
 	 */
 	public function settings_page() {
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 		}
+
 		?>
 		<div class="wrap">
-			<h2><?php _e('Open Street Map', 'acf-open-street-map') ?></h2>
+			<h2><?php _e('acf-field-openstreetmap Settings', 'acf-field-openstreetmap') ?></h2>
 
 			<form action="options.php" method="post">
 				<?php
 				settings_fields(  $this->optionset );
 				do_settings_sections( $this->optionset );
-				submit_button( __('Save Settings' , 'acf-open-street-map' ) );
+				submit_button( __('Save Settings' , 'acf-field-openstreetmap' ) );
 				?>
 			</form>
 		</div><?php
 	}
 
 
+	/**
+	 * Enqueue settings Assets
+	 *
+	 *	@action load-options-{$this->optionset}.php
+
+	 */
+	public function enqueue_assets() {
+
+	}
 
 
 	/**
@@ -104,11 +79,11 @@ class acf_plugin_open_street_map_settings {
 	 */
 	public function register_settings() {
 
+		$core = Core\Core::instance();
+
 		$settings_section	= 'acf_osm_settings';
 
 		add_settings_section( $settings_section, __( 'Access Tokens', 'acf-open-street-map' ), array( $this, 'tokens_description' ), $this->optionset );
-
-
 
 		// more settings go here ...
 		$option_name		= 'acf_osm_provider_tokens';
@@ -116,17 +91,22 @@ class acf_plugin_open_street_map_settings {
 		register_setting( $this->optionset, $option_name, array( $this , 'sanitize_provider_tokens' ) );
 
 		$option_value = get_option( $option_name, array() );
-		$token_options = $this->plugin->get_provider_token_options();
-		$token_values = array_replace_recursive( $this->plugin->get_provider_token_options(), $option_value );
+
+		$token_options = $core->get_provider_token_options();
+		$token_values = array_replace_recursive( $core->get_provider_token_options(), $option_value );
 
 		foreach ( $token_options as $provider => $provider_data ) {
+
 			$field_name = $option_name . sprintf( '[%s]', $provider );
+
 			foreach ( $provider_data as $section => $config ) {
 				$field_name .= sprintf( '[%s]', $section );
 				foreach( $config as $key => $value ) {
+
 					if ( isset( $token_values[$provider][$section][$key] )) {
 						$value = $token_values[$provider][$section][$key];
 					}
+
 					add_settings_field(
 						$option_name.'-'.$provider.'-'.$key,
 						sprintf( '%s (%s)',
@@ -146,8 +126,8 @@ class acf_plugin_open_street_map_settings {
 				}
 			}
 		}
-
 	}
+
 
 	/**
 	 * Print some documentation for the optionset
@@ -181,14 +161,14 @@ class acf_plugin_open_street_map_settings {
 
 	}
 
-
 	/**
 	 * Sanitize value of setting_1
 	 *
 	 * @return string sanitized value
 	 */
 	public function sanitize_provider_tokens( $token_values ) {
-		$token_options = $this->plugin->get_provider_token_options();
+		$core = Core\Core::instance();
+		$token_options = $core->get_provider_token_options();
 		$values = array();
 
 		foreach ( $token_options as $provider => $provider_data ) {
@@ -206,8 +186,6 @@ class acf_plugin_open_street_map_settings {
 		}
 		return $values;
 	}
+
+
 }
-
-acf_plugin_open_street_map_settings::instance();
-
-endif;

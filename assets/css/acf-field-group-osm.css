@@ -26,3 +26,12 @@
 [data-type="open_street_map"][data-return-format="osm"] .acf-field-setting-zoom,
 [data-type="open_street_map"][data-return-format="osm"] .acf-field-setting-default_leaflet_layers {
   display: none; }
+
+[data-type="sorted_multiple_select"] .cols {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row; }
+  [data-type="sorted_multiple_select"] .cols > * {
+    -ms-flex: 1;
+        flex: 1; }

@@ -25,3 +25,12 @@
 
 	}
 }
+[data-type="sorted_multiple_select"] {
+	.cols {
+		display:flex;
+		flex-direction:row;
+		& > * {
+			flex:1;
+		}
+	}
+}

@@ -1,62 +1,82 @@
 (function($){
 	var options = acf_osm_field_group.options;
 
-	function render_field_settings( $el ) {
-		$el.attr( 'data-return-format', $el.find('.acf-field-setting-return_format [type="radio"]:checked').val() )
-	}
+	var osmReturnFormat = acf.FieldSetting.extend({
+		type: 'open_street_map',
+		name: 'return_format',
 
-	if( typeof acf.add_action !== 'undefined' ) {
+		val: function( val ) {
+			if ( 'undefined' === typeof val ) {
+				return this.$el.find(':checked').val();
+			}
+			this.$el.find('[value="'+val+'"]').prop( 'checked', true );
+		},
+		render:function(e){
+			this.$el.closest('.acf-field-object').attr('data-return-format',this.val());
+		}
+	});
+	acf.registerFieldSetting(osmReturnFormat);
 
-		/*
-		*  ready append (ACF5)
-		*
-		*  These are 2 events which are fired during the page load
-		*  ready = on page load similar to $(document).ready()
-		*  append = on new DOM elements appended via repeater field
-		*
-		*  @type	event
-		*  @date	20/07/13
-		*
-		*  @param	$el (jQuery selection) the jQuery element which contains the ACF fields
-		*  @return	n/a
-		*/
+	/**
+	 *
+	 */
+	var osmDefaultLayers = acf.FieldSetting.extend({
+		type: 'open_street_map',
+		name: 'default_leaflet_layers',
+		events: {
+			'click .choices .acf-rel-item:not(.disabled)'	: 'add_item',
+			'click .values [data-name="remove_item"]'	: 'remove_item',
+			'stop .ui-sortable'	: 'render',
+			'change'	: 'onChange'
+		},
+		render:function() {
+			this.$valuesList().sortable();
+		},
+		$hidden:function(){
+			return this.$el.find('[type="hidden"]').first();
+		},
+		$choice:function( val ){
+			return this.$el.find('.choices-list [data-id="'+val+'"]').closest('li');
+		},
+		$valuesList:function(){
+			return this.$el.find('.values-list');
+		},
+		add_item: function(e) {
+			//this.$choice()
+			var $clone = $(e.target).closest('li').clone();
+			// add del
+			$clone
+				.appendTo( this.$valuesList() )
+				.prepend( '<input type="hidden" name="'+this.$hidden().attr('name')+'" value="'+$(e.target).attr('data-id')+'" />' )
+				.find('[data-id]')
+				.append( '<a href="#" class="acf-icon -minus small dark" data-name="remove_item"></a>' )
+				;
 
-		acf.add_action( 'render_field_settings', render_field_settings );
+			$(e.target).addClass('disabled');
+			this.trigger('change')
+		},
+		remove_item: function(e) {
+			var val = $(e.target).closest('[data-id]').attr('data-id')
+				$choice = this.$choice( val ),
+				$item = $(e.target).closest('li');
 
-		$(document).on('change','.acf-field-object-open-street-map .acf-field-setting-return_format [type="radio"]', function() {
-			var $el = $(this).closest('.acf-field-object');
-			render_field_settings( $el )
-		});
-	} else {
-
-
-		/*
-		*  acf/setup_fields (ACF4)
-		*
-		*  This event is triggered when ACF adds any new elements to the DOM.
-		*
-		*  @type	function
-		*  @since	1.0.0
-		*  @date	01/01/12
-		*
-		*  @param	event		e: an event object. This can be ignored
-		*  @param	Element		postbox: An element which contains the new HTML
-		*
-		*  @return	n/a
-		*/
-
-		$(document).on('acf/setup_fields', function(e, postbox){
-
-			$(postbox).find('.field[data-field_type="open_street_map"]').each(function(){
-
-				new osm.field( { el: this } );
-
+			$choice.find('[data-id]').removeClass('disabled');
+			$item.remove();
+			this.trigger('change')
+		},
+		get_val:function(){
+			var vals = [];
+			this.$valuesList().find('[type="hidden"]').each(function(){
+				vals.push($(this).val());
 			});
-
-		});
-
-
-	}
+			return vals;
+		},
+		onChange:function(){
+			this.fieldObject.setProp( this.name,this.get_val() );
+			this.fieldObject.save();
+		}
+	});
+	acf.registerFieldSetting(osmDefaultLayers);
 
 
 })(jQuery);

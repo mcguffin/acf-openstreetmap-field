@@ -1,0 +1,22 @@
+{
+  "modules": {
+    "autoupdate": {},
+    "compat": {},
+    "core": {
+      "css": true,
+      "js": true
+    },
+    "git": {},
+    "gulp": {},
+    "settings": {
+      "open_street_map": {}
+    }
+  },
+  "plugin_author": "J\u00f6rn Lund",
+  "plugin_author_uri": "https://github.com/mcguffin",
+  "plugin_name": "acf-field-openstreetmap",
+  "plugin_namespace": "ACFFieldOpenstreetmap",
+  "plugin_slug": "acf-field-openstreetmap",
+  "this_year": 2018,
+  "wp_plugin_slug": "acf-field-openstreetmap"
+}

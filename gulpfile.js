@@ -7,6 +7,8 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 var fs = require('fs');
+var cleanCSS = require('gulp-clean-css');
+
 
 function do_scss( src ) {
 	var dir = src.substring( 0, src.lastIndexOf('/') );
@@ -62,7 +64,7 @@ L = {
 
 //modules = {};
 gulp.task('providers', function(){
-	require('./src/vendor/leaflet-providers/leaflet-providers.js');
+	require('./node_modules/leaflet-providers/leaflet-providers.js');
 	fs.writeFileSync( './etc/leaflet-providers.json', JSON.stringify(L.TileLayer.Provider.providers,null,'\t') );
 })
 
@@ -76,9 +78,21 @@ gulp.task('scss', function() {
 });
 
 
+gulp.task('leaflet-css', function() {
+	return [
+		gulp.src('./node_modules/leaflet/dist/leaflet.css')
+			.pipe( cleanCSS() )
+			.pipe( gulp.dest( './assets/css/' ) ),
+		gulp.src('./node_modules/leaflet/dist/images/*.png')
+			.pipe( gulp.dest( './assets/css/images/' ) )
+	];
+});
+
+
 gulp.task('js-admin', function() {
     return [
 		do_js('acf-input-osm'),
+		do_js('acf-settings-osm'),
 		do_js('acf-field-group-osm'),
     ];
 
@@ -86,10 +100,29 @@ gulp.task('js-admin', function() {
 
 
 gulp.task( 'js', function(){
-	return concat_js( [
-		'./src/vendor/Leaflet/dist/leaflet-src.js',
-		'./src/vendor/leaflet-providers/leaflet-providers.js',
-	], 'leaflet.js');
+	return [
+		concat_js( [
+			/*
+			'./src/vendor/Leaflet/dist/leaflet-src.js',
+			'./src/vendor/leaflet-providers/leaflet-providers.js',
+			/*/
+			'./node_modules/leaflet/dist/leaflet-src.js',
+			'./node_modules/leaflet-providers/leaflet-providers.js',
+			//*/
+
+		], 'leaflet.js'),
+		concat_js( [
+			/*
+			'./src/vendor/Leaflet/dist/leaflet-src.js',
+			'./src/vendor/leaflet-providers/leaflet-providers.js',
+			/*/
+			'./node_modules/leaflet/dist/leaflet-src.js',
+			'./node_modules/leaflet-providers/leaflet-providers.js',
+			'./src/js/acf-osm-frontend.js',
+			//*/
+
+		], 'acf-osm-frontend.js'),
+	];
 } );
 
 
@@ -101,4 +134,4 @@ gulp.task('watch', function() {
 	gulp.watch('./src/scss/**/*.scss',[ 'scss' ]);
 	gulp.watch('./src/js/**/*.js',[ 'js', 'js-admin' ]);
 });
-gulp.task('default', ['build','watch']);
+gulp.task('default', [ 'leaflet-css', 'build', 'watch' ]);
