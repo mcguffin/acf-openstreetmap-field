@@ -43,51 +43,21 @@
     background: rgba(241, 241, 241, 0.8);
     color: #0085ba; }
 
-@-webkit-keyframes bounce {
-  0% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0); }
-  25% {
-    -webkit-transform: translateY(-30px);
-            transform: translateY(-30px); }
-  50% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0); }
-  66% {
-    -webkit-transform: translateY(-15px);
-            transform: translateY(-15px); }
-  82% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0); }
-  91% {
-    -webkit-transform: translateY(-7px);
-            transform: translateY(-7px); }
-  100% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0); } }
-
 @keyframes bounce {
   0% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0); }
+    transform: translateY(0); }
   25% {
-    -webkit-transform: translateY(-30px);
-            transform: translateY(-30px); }
+    transform: translateY(-30px); }
   50% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0); }
+    transform: translateY(0); }
   66% {
-    -webkit-transform: translateY(-15px);
-            transform: translateY(-15px); }
+    transform: translateY(-15px); }
   82% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0); }
+    transform: translateY(0); }
   91% {
-    -webkit-transform: translateY(-7px);
-            transform: translateY(-7px); }
+    transform: translateY(-7px); }
   100% {
-    -webkit-transform: translateY(0);
-            transform: translateY(0); } }
+    transform: translateY(0); } }
 
 .osm-marker {
   border-radius: 50%;
