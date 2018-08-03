@@ -138,6 +138,7 @@ class Core extends Plugin {
 		$providers 			= array();
 		$leaflet_providers	= $this->get_leaflet_providers( );//json_decode( file_get_contents( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/etc/leaflet-providers.json'), true );
 		//$access_tokens		= get_option( 'acf_osm_provider_tokens', array() );
+		$access_tokens		= get_option( 'acf_osm_provider_tokens', array() );
 
 		foreach ( $leaflet_providers as $provider => $provider_data ) {
 
@@ -145,16 +146,22 @@ class Core extends Plugin {
 			if ( isset($provider_data['options']['bounds'])) {
 				continue;
 			}
+			$new_provider_data = array();
 			// skip provider if api credentials required
 			//    the key is not consitent, can be `api_key`, `accessToken`, `app_id`, ...
 			//    value is always something like `<insert your ... token heren>`
 			foreach ( $provider_data['options'] as $option => $option_value ) {
+
 				if ( is_string($option_value) && preg_match( '/^<([^>]+)>$/', $option_value ) ) {
-					continue 2;
+					if ( isset( $access_tokens[$provider]['options'][$option] ) && ! empty( $access_tokens[$provider]['options'][$option] ) ) {
+						break;
+					} else {
+						continue 2;
+					}
 				}
 			}
 
-			$providers[$provider] = array();
+			$providers[$provider] = $new_provider_data;
 
 			if ( isset( $provider_data[ 'variants' ] ) ) {
 				foreach ( $provider_data[ 'variants' ] as $variant => $variant_data ) {
@@ -181,6 +188,7 @@ class Core extends Plugin {
 	 */
 	public function get_leaflet_providers( ) {
 		$leaflet_providers	= json_decode( file_get_contents( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/etc/leaflet-providers.json'), true );
+		return $leaflet_providers;
 		$access_tokens		= get_option( 'acf_osm_provider_tokens', array() );
 		return array_replace_recursive( $leaflet_providers, $access_tokens );
 	}

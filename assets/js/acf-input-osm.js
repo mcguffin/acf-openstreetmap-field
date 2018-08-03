@@ -149,6 +149,9 @@ https://tile-a.openstreetmap.fr/hot/
 			len = val.length;
 			for ( i=0;i<len;i++ ) {
 				provider = val[i];
+				if ( ! provider ) {
+					continue;
+				}
 				layer_config = options.layer_config[ provider.split('.')[0] ] || {};
 				this.layers.push( L.tileLayer.provider( provider, layer_config.options ).addTo(this.map) );
 			}

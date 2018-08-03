@@ -453,7 +453,7 @@ class OpenStreetMap extends \acf_field {
 
 		} else {
 
-			foreach ( $field['default_leaflet_layers'] as $layer ) {
+			foreach ( array_filter($field['default_leaflet_layers']) as $layer ) {
 				acf_hidden_input( array(
 					'name'		=> $field['name'] . '[leaflet_layers][]',
 //					'choices'	=> acf_plugin_open_street_map::instance()->get_providers( ),
