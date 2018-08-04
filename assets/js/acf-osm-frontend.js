@@ -14647,7 +14647,5 @@ window.L = exports;
 				}
 			).addTo( map );
 		}
-
-		console.log(data.mapLat,data.mapLng,data.zoom,data);
 	});
 })(jQuery);
