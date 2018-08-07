@@ -19,11 +19,47 @@ class Core extends Plugin {
 		add_action( 'plugins_loaded' , array( $this , 'load_textdomain' ) );
 		add_action( 'plugins_loaded' , array( $this , 'init_compat' ), 0 );
 		add_action( 'init' , array( $this , 'init' ) );
-		add_action( 'wp_enqueue_scripts' , array( $this , 'wp_enqueue_style' ) );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
+
+		if ( is_admin() ) {
+			add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
+		}
 
 		parent::__construct();
 	}
 
+	public function register_assets() {
+
+		/* frontend */
+
+		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), array( 'jquery' ), $this->version(), true );
+		wp_localize_script('acf-osm-frontend','acf_osm',array(
+			'options'	=> array(
+				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
+			),
+		));
+
+		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), array(), $this->version() );
+
+
+		/* backend */
+
+		// field js
+		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','backbone'), $this->version(), true );
+		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
+			'options'	=> array(
+				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
+				'osm_layers'	=> $this->get_osm_layers_config(),
+				'providers'		=> $this->get_layer_providers(),
+			),
+		));
+
+		// field css
+		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), array('acf-input'), $this->version() );
+
+
+	}
 
 	/**
 	 *	Load frontend styles and scripts
@@ -62,6 +98,7 @@ class Core extends Plugin {
 	 *  @action init
 	 */
 	public function init() {
+
 	}
 
 
@@ -105,19 +142,19 @@ class Core extends Plugin {
 
 		return array(
 			'mapnik'		=> array(
-				'lable' 		=>__('Standard','osm-layer','acf-open-street-map'),
+				'label' 		=>__('Standard','osm-layer','acf-open-street-map'),
 				'provider'		=> 'OpenStreetMap.Mapnik',
 			),
 			'cyclemap'		=> array(
-				'lable' 		=> __('Cycle Map','osm-layer','acf-open-street-map'),
+				'label' 		=> __('Cycle Map','osm-layer','acf-open-street-map'),
 				'provider'		=> 'Thunderforest.OpenCycleMap',
 			),
 			'transportmap'	=> array(
-				'lable' 		=> __('Transport map','osm-layer','acf-open-street-map'),
+				'label' 		=> __('Transport map','osm-layer','acf-open-street-map'),
 				'provider'		=> 'Thunderforest.Transport',
 			),
 			'hot'		=> array(
-				'lable' 		=> __('Humanitarian','osm-layer','acf-open-street-map'),
+				'label' 		=> __('Humanitarian','osm-layer','acf-open-street-map'),
 				'provider'		=> 'OpenStreetMap.HOT',
 			),
 		);

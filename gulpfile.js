@@ -62,7 +62,7 @@ L = {
 	tileLayer:{}
 }
 
-//modules = {};
+// write providers data to ./etc
 gulp.task('providers', function(){
 	require('./node_modules/leaflet-providers/leaflet-providers.js');
 	fs.writeFileSync( './etc/leaflet-providers.json', JSON.stringify(L.TileLayer.Provider.providers,null,'\t') );
@@ -79,11 +79,23 @@ gulp.task('scss', function() {
 
 
 gulp.task('leaflet-css', function() {
+
 	return [
-		gulp.src('./node_modules/leaflet/dist/leaflet.css')
+		// frontend
+		gulp.src([
+			'./node_modules/leaflet/dist/leaflet.css',
+		])
 			.pipe( cleanCSS() )
+			// .pipe( concat('./assets/css/') )
+			// .pipe( rename('leaflet.css') )
 			.pipe( gulp.dest( './assets/css/' ) ),
-		gulp.src('./node_modules/leaflet/dist/images/*.png')
+
+		// copy images to css
+		gulp.src([
+			'./node_modules/leaflet/dist/images/*.png',
+			// './node_modules/leaflet-minimap/dist/images/*.png',
+			// './node_modules/leaflet-minimap/dist/images/*.svg',
+		])
 			.pipe( gulp.dest( './assets/css/images/' ) )
 	];
 });
@@ -92,8 +104,6 @@ gulp.task('leaflet-css', function() {
 gulp.task('js-admin', function() {
     return [
 		do_js('acf-input-osm'),
-		do_js('acf-settings-osm'),
-		do_js('acf-field-group-osm'),
     ];
 
 });
@@ -101,25 +111,11 @@ gulp.task('js-admin', function() {
 
 gulp.task( 'js', function(){
 	return [
+		// frontend
 		concat_js( [
-			/*
-			'./src/vendor/Leaflet/dist/leaflet-src.js',
-			'./src/vendor/leaflet-providers/leaflet-providers.js',
-			/*/
-			'./node_modules/leaflet/dist/leaflet-src.js',
-			'./node_modules/leaflet-providers/leaflet-providers.js',
-			//*/
-
-		], 'leaflet.js'),
-		concat_js( [
-			/*
-			'./src/vendor/Leaflet/dist/leaflet-src.js',
-			'./src/vendor/leaflet-providers/leaflet-providers.js',
-			/*/
 			'./node_modules/leaflet/dist/leaflet-src.js',
 			'./node_modules/leaflet-providers/leaflet-providers.js',
 			'./src/js/acf-osm-frontend.js',
-			//*/
 
 		], 'acf-osm-frontend.js'),
 	];

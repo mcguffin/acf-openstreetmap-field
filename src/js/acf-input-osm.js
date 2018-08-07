@@ -1,166 +1,288 @@
-(function($){
-	var options = acf_osm.options;
+(function( $, arg ){
+	var options = arg.options,
+		result_tpl = '<div tabindex="<%= data.i %>" class="osm-result">'
+			+ '<%= data.result_text %>'
+			+ '<br /><small><%= data.properties.osm_value %></small>'
+			+ '</div>';
 
 	var osm = {
 	};
-	osm.field = Backbone.View.extend({
-		$map: null,
-		$zoom: null,
-		$lat: null,
-		$lng: null,
-		$address: null,
-		$layers: null,
-		marker: null,
-		icon:null,
-		map: null,
-		layers:[],
-		events:{
-			'change [data-prop]'	: 'update_field',
-			'keyup [data-prop="address"]' : 'search',
-			'focus [data-prop="address"]' : 'search',
-
-			'change [data-prop="leaflet_layers"]' : 'update_layers',
-			'change [data-prop="osm_layer"]' : 'update_osm_layer',
-
-			'click .osm-result'	: 'click_result',
-			'keyup .osm-result'	: 'keyup_result',
-			'focus .osm-result'	: 'focus_result',
+	osm.feature = wp.media.View.extend({
+		template: _.template( result_tpl ),
+		initialize:function( feature ) {
+			console.log(arguments);
+			console.log(this,this.$el);
+//			html = fmt.replace( new RegExp("("+q.split(/[^a-z0-9]/).join('|')+")",'gi'),"<strong>$1</strong>");
 		},
-		initialize:function() {
+		render:function() {
+			var ret = wp.media.View.prototpe.render.apply(this,arguments);
+			return ret;
+		}
+	});
+
+
+	osm.field = Backbone.View.extend({
+		/*
+		todo:
+		- Map Layer selector
+		- set / unset marker
+		*/
+		map: null,
+		visible: null,
+		events:{
+		},
+
+		$parent:function(){
+			return this.$el.closest('.acf-field-settings,.acf-field-open-street-map')
+		},
+		$zoom : function() {
+			return this.$parent().find('input[id$="-zoom"]');
+		},
+		$lat : function() {
+			return this.$parent().find('input[id$="-center_lat"]');
+		},
+		$lng : function() {
+			return this.$parent().find('input[id$="-center_lng"]');
+		},
+		$layerStore: function() {
+			return this.$parent().find('input[id$="-leaflet_layers"]');
+		},
+		$address: function() {
+			return this.$parent().find('input[id$="-address"]');
+		},
+		$mlat : function() {
+			return this.$parent().find('input[id$="-marker_lat"]');
+		},
+		$mlng : function() {
+			return this.$parent().find('input[id$="-marker_lng"]');
+		},
+		$results : function() {
+			return this.$parent().find('.osm-results');
+		},
+		initialize:function(conf) {
 		//	this.$el		= this.attributes.$el;
-			this.$map		= this.$el.find('.acf-osm-map');
-			this.$zoom		= this.$el.find('[data-prop="zoom"]');
-			this.$lat		= this.$el.find('[data-prop="center_lat"]');
-			this.$lng		= this.$el.find('[data-prop="center_lng"]');
-			this.$mlat		= this.$el.find('[data-prop="marker_lat"]');
-			this.$mlng		= this.$el.find('[data-prop="marker_lng"]');
-			this.$layers	= this.$el.find('[data-prop="leaflet_layers"]');
-			this.$address	= this.$el.find('[data-prop="address"]');
-			this.$results	= this.$address.next('.osm-results');
+
+			this.map		= conf.map;
+
+			// this.$mlat		= this.$parent.find('[data-prop="marker_lat"]');
+			// this.$mlng		= this.$parent.find('[data-prop="marker_lng"]');
+			// this.$address	= this.$parent.find('[data-prop="address"]');
+			// this.$results	= this.$address.next('.osm-results');
+
+			//this.$layers	= this.$parent.find('input[id$="-leaflet_layers"]');
+
+
+			this.update_map(); // set map to input values
+
+			this.init_layers();
+
+			this.init_marker();
+
+			this.init_acf();
+
+			this.update_visible();
+		},
+		init_marker:function() {
+			var self = this;
+			/*
+			Events:
+			click  map: reverse geocode an set result
+			change query: geocode query, add/set marker
+			*/
 			this.icon		= L.divIcon( { className: 'osm-marker', html:'', iconSize:0 } );
-			this.map		= L.map( this.$map.get(0), {
-				scrollWheelZoom: false,
-				center: [ this.$lat.val(), this.$lng.val() ],
-				zoom: this.$zoom.val()
-			} );
 			this.marker		= L.marker(
-				[ this.$mlat.val(), this.$mlng.val() ],
+				[ this.$mlat().val(), this.$mlng().val() ],
 				{
 					icon:this.icon,
-					title:this.$address.val()
+					draggable:true,
+					title: this.$address().val() || '',
 				}
-			).addTo(this.map);
+			).addTo( this.map );
 
-			this.layers	= [];
-			if ( this.$layers.is('select') ) {
-				acf.select2.init( this.$layers, {
-					multiple: true,
-					ui: true,
-					allow_null: false,
-					ajax:false,
-				}, this.$el );
+			this.map.on('click', function(e){ self.map_clicked.apply(self,[e]); } );
+
+		},
+		map_clicked:function(e) {
+			var coord = e.latlng;
+			this.set_marker( e.latlng );
+
+		},
+		set_marker:function(coord){
+			$(this.marker._icon).attr( 'title', this.marker.title );
+			this.marker.setLatLng(coord);
+			this.$mlat().val( coord.lat );
+			this.$mlng().val( coord.lng );
+//			this.marker.bindTooltip(this.$address().val());
+		},
+		init_layers:function() {
+			var self = this,
+				selectedLayers,
+				baseLayers = {},
+				overlays = {},
+				is_overlay = function( key, layer ) {
+
+					var patterns;
+
+					if ( layer.options.opacity && layer.options.opacity < 1 ) {
+						return true;
+					}
+					patterns = ['^(OpenWeatherMap|OpenSeaMap)',
+						'OpenMapSurfer.AdminBounds',
+						'Stamen.Toner(Hybrid|Lines|Labels)',
+						'Acetate.(foreground|labels|roads)',
+						'HillShading',
+						'Hydda.RoadsAndLabels',
+						'^JusticeMap',
+						'OpenInfraMap.(Power|Telecom|Petroleum|Water)',
+						'OpenPtMap',
+						'OpenRailwayMap',
+						'OpenFireMap',
+						'SafeCast',
+						'CartoDB.DarkMatterOnlyLabels',
+						'CartoDB.PositronOnlyLabels'
+					];
+					return key.match('(' + patterns.join('|') + ')') !== null;
+				},
+				is_omitted = function(key) {
+					return false;
+				},
+				setupMap = function( key, val ){
+					var layer, layer_config;
+					if ( _.isObject(val) ) {
+						return $.each( val, setupMap );
+					}
+					if ( is_omitted(key) ) {
+						return;
+					}
+					layer_config = options.layer_config[ key.split('.')[0] ] || {options:{}};
+					layer = L.tileLayer.provider( key, layer_config.options );
+					layer.providerKey = key;
+
+					if ( is_overlay( key, layer ) ) {
+						overlays[key] = layer;
+					} else {
+						baseLayers[key] = layer;
+					}
+					if ( selectedLayers.indexOf( key ) !== -1 ){
+						self.map.addLayer(layer);
+					}
+				};
+
+			selectedLayers = this.$el.data().mapLayers;
+
+			// kill all the old layers...
+			this.map.eachLayer(function(layer){
+				self.map.removeLayer(layer);
+			})
+			// ... and add new ones
+			$.each( options.providers, setupMap );
+
+			// ... no layer editing allowed
+			if ( ! this.$layerStore().length ) {
+				return;
 			}
 
-			this.bind_events();
+			this.layersControl = L.control.layers( baseLayers, overlays, {
+				collapsed: true,
+				hideSingleBase: true,
+			}).addTo(this.map);
 
-			this.update_layers();
 		},
-		update_field:function(){
+		update_visible: function() {
+			if ( this.visible === this.$el.is(':visible') ) {
+				return this;
+			}
+
+			this.visible = this.$el.is(':visible');
+
+			if ( this.visible ) {
+				this.map.invalidateSize();
+				this.bind_events();
+				return this;
+			}
+			this.unbind_events();
+			return this;
+		},
+		init_acf: function() {
+			var self = this,
+				toggle_cb = function() {
+					// no change
+					self.update_visible();
+				};
+
+			// expand/collapse acf setting
+			acf.addAction( 'show', toggle_cb );
+			acf.addAction( 'hide', toggle_cb );
+
+
+
+			// expand acf repeater
+			// ...
+
+			// expand acf layout
+			// ...
+
+			// expand wp metabox
+			$(document).on('postbox-toggled',toggle_cb)
+
+
+			this.map.on('zoomend', function(e){ self.map_zoomed.apply( self, [e] ); } );
+			this.map.on('moveend', function(e){ self.map_moved.apply( self, [e] ); } );
+
+			this.map.on( 'baselayerchange overlayadd overlayremove layeradd layerremove', function(e){
+				var layers = [];
+				self.map.eachLayer(function(layer) {
+					layers.push(layer.providerKey);
+				});
+				self.$layerStore().val( JSON.stringify( layers ) );
+			} );
+		},
+		unbind_events:function() {
+			var self = this;
+			self.$lat().off('blur');
+			self.$lng().off('blur');
+			self.$zoom().off('blur');
+			self.$zoom().off('keyup focus');
 
 		},
 		bind_events: function() {
 			var self = this;
 
-//			this.listenTo( this.$address, 'keyup focus', this.search );
+			self.$lat().on('blur',function(e){
+				self.update_map();
+			});
+			self.$lng().on('blur',function(e){
+				self.update_map();
+			});
+			self.$zoom().on('blur',function(e){
+				self.update_map();
+			});
+			self.$address().on('keyup focus', function(e){
+				self.search(e);
+			} );
 
-			this.map.on('zoomend', function(e){ self.map_zoomed.apply(self,[e]); } );
-			this.map.on('moveend', function(e){ self.map_moved.apply(self,[e]); }  );
-			this.map.on('click',   function(e){ self.map_clicked.apply(self,[e]); } );
+
+//			this.listenTo( this.$address, 'keyup focus', this.search );
 
 			// this.$tiles.on('change', do_layers )
 			// 	.prev('input').on('change', do_layers );
 
 		},
-
+		update_map:function() {
+			var latlng = L.latLng( this.$lat().val(), this.$lng().val() );
+			this.map.setView( latlng,  this.$zoom().val() );
+		},
 		map_moved:function(e){
 			var center = this.map.getCenter();
-			this.$lat.val(center.lat);
-			this.$lng.val(center.lng);
+			this.$lat().val(center.lat);
+			this.$lng().val(center.lng);
 		},
 		map_zoomed:function(e){
-			this.$zoom.val( this.map.getZoom() );
+			this.$zoom().val( this.map.getZoom() );
 		},
-		map_clicked:function(e){
-			var coord = e.latlng;
 
-			this.fetch_results('https://photon.komoot.de/reverse', {
-				lon:coord.lng,
-				lat:coord.lat,
-			}, function(response){
-				var i=0,len=response.features.length,fmt;
-				for (i;i<len;i++){
-					fmt = this.format_result( response.features[i] );
-					this.marker.title = fmt;
-					this.$address.val( fmt );
-					/*
-					this.set_marker( L.latLng( response.features[i].geometry.coordinates[1], response.features[i].geometry.coordinates[0] )  );
-					/*/
-					this.set_marker( coord );
-					//*/
-					break;
-				}
-			} );
-			this.set_marker( e.latlng );
-		},
-		set_marker:function(coord){
-			$(this.marker._icon).attr( 'title', this.marker.title );
-			this.marker.setLatLng(coord);
-			this.$mlat.val( coord.lat );
-			this.$mlng.val( coord.lng );
-		},
-/*
-https://a.tile.openstreetmap.org/
-https://a.tile.thunderforest.com/cycle/
-https://a.tile.thunderforest.com/transport/
-https://tile-a.openstreetmap.fr/hot/
-*/
-		update_layers: function(){
-			var val = [],
-				provider, layer_config, i, len;
-
-			if ( null === val ) {
-				return;
-			}
-			this.$layers.each(function(){
-				var v = $(this).val();
-				if ( Array.isArray(val) ) {
-					val = val.concat(v)
-				} else {
-					val.push(v)
-				}
-
-			});
-
-			// remove layers
-			while ( this.layers.length ) {
-				this.map.removeLayer( this.layers.pop() );
-			}
-
-			len = val.length;
-			for ( i=0;i<len;i++ ) {
-				provider = val[i];
-				if ( ! provider ) {
-					continue;
-				}
-				layer_config = options.layer_config[ provider.split('.')[0] ] || {};
-				this.layers.push( L.tileLayer.provider( provider, layer_config.options ).addTo(this.map) );
-			}
-		},
-		update_osm_layer: function(e) {
-			this.$('[data-prop="leaflet_layers"]').val( options.osm_layers[$(e.target).val()].provider );
-			this.update_layers();
-		},
 		search:function(e){
+			// geocode
 			var self = this,
 				data = {};
 			if ( 'undefined' !== typeof this._wait_address ) {
@@ -168,76 +290,43 @@ https://tile-a.openstreetmap.fr/hot/
 				delete this._wait_address;
 			}
 
-			if (!! data['g'] && data['g'] === this.$address.val() ) {
+			// if (!! data['g'] && data['g'] === this.$address().val() ) {
+			// 	return;
+			// }
+
+			this.clear_results();
+
+			if ( e.type=='keyup' && 27 == e.originalEvent.keyCode ) { // esc
+				e.preventDefault();
+				this.$results().html('');
+				this.$address().blur();
+				return false;
+			}
+			if ( '' === this.$address().val() ) {
+				this.marker.title = '';
 				return;
 			}
 
-			if ( 27 == e.originalEvent.keyCode ) { // esc
-				e.preventDefault();
-				this.$results.html('');
-				this.$address.blur();
-				return false;
-			}
 			this._wait_address = setTimeout( function(){
+
 				data = {
-					q:self.$address.val(),
+					q:self.$address().val(),
 //						lang:'de', -´// -> WP-Lang!
 					limit:5,
-					lon:self.$lng.val(),
-					lat:self.$lat.val(),
+					lon:self.$lng().val(),
+					lat:self.$lat().val(),
 				};
-				self.fetch_results('https://photon.komoot.de/api/',data, function(response){
+
+				self.ajax_get('https://photon.komoot.de/api/',data, function(response){
+					self.build_results(response);
 					delete this._wait_address;
 				});
 			}, 666 );
 
 		},
-		clear_results:function(){
-			this.$results.html('');
-		},
-		build_results:function(response){
-			var self = this,
-				i=0, len = response.features.length,
-				q = this.$address.val(),
-				feat = response.features;//sort_fuzzy( response.features, q );
 
-			this.clear_results();
-
-			if ( len ) {
-				$.each( feat, function(i,el){
-					var $res = $('<div tabindex="'+i+'" class="osm-result"></div>'),
-						// coord = el.geometry.coordinates,
-						// ext = el.properties.extent,
-						fmt = self.format_result( el ),
-						html = fmt.replace( new RegExp("("+q.split(/[^a-z0-9]/).join('|')+")",'gi'),"<strong>$1</strong>");
-					html += '<br /><small>(' + self.nice_words( el.properties.osm_value ) + ')</small>';
-
-					$res.data({
-						text:fmt,
-						bounds:el.properties.extent,
-						coord:el.geometry.coordinates,
-					}).html( html ).appendTo(self.$results);
-				});
-			}
-
-		},
-		fetch_results: function(url,data, callback) {
-			var self = this;
-			$.ajax({
-				url:url,
-				method:'get',
-				data:data,
-				success:function(response) {
-					self.build_results(response);
-					'function' === typeof callback && callback.apply(self,[response]);
-				}
-			});
-
-		},
-
-		click_result:function(e){
-			var data = $(e.target).data(),
-				latlng = L.latLng( data.coord[1], data.coord[0] );
+		select_result:function(data){
+			var latlng = L.latLng( data.coord[1], data.coord[0] );
 
 			if ( data.ext ) {
 
@@ -248,35 +337,40 @@ https://tile-a.openstreetmap.fr/hot/
 			} else {
 				this.map.setView( latlng, this.map.getZoom() );
 			}
-			this.$address.val( data.text );
+			this.$address().val( data.text );
 			this.clear_results();
 
 			this.marker.title = data.text;
 			this.set_marker( latlng );
 		},
+		build_results:function(response){
+			var self = this,
+				i=0, len = response.features.length,
+				q = this.$address().val(),
+				feat = response.features;//sort_fuzzy( response.features, q );
 
-		keyup_result:function(e){
-			if (e.originalEvent.keyCode == 40) { // down
-				$( e.target ).next('.osm-result').focus();
-				e.preventDefault()
-			} else if (e.originalEvent.keyCode == 38) {
-				$( e.target ).prev('.osm-result').focus();
-				e.preventDefault()
+			this.clear_results();
+
+			if ( len ) {
+				$.each( feat, function(i,el){
+					var fmt = self.format_result( el ),
+						html = fmt.replace( new RegExp("("+q.split(/[^a-z0-9]/).join('|')+")",'gi'),"<strong>$1</strong>");
+					html += '<br /><small>(' + self.nice_words( el.properties.osm_value ) + ')</small>';
+
+					$('<div tabindex="'+i+'" class="osm-result"></div>')
+						.html( html ).appendTo( self.$results() ).on('click',function(e){
+						self.select_result({
+							text:fmt,
+							bounds:el.properties.extent,
+							coord:el.geometry.coordinates,
+						});
+					});
+				});
 			}
 
 		},
-		focus_result:function(e){
-			var data = $(e.target).data();
-
-			if ( data.ext ) {
-				this.map.fitBounds( L.latLngBounds(
-					L.latLng( data.ext[1], data.ext[0] ),
-					L.latLng( data.ext[3], data.ext[2] )
-				) );
-			} else {
-				this.map.setView( L.latLng( data.coord[1], data.coord[0] ), this.map.getZoom() );
-			}
-
+		clear_results:function(){
+			this.$results().html('');
 		},
 
 		format_result: function( hit ) {
@@ -298,7 +392,47 @@ https://tile-a.openstreetmap.fr/hot/
 		},
 		nice_words: function(str) {
 			return str.split(/[\s_]/).map(function(s){ return s[0].toUpperCase() + s.substring(1); }).join(' ');
-		}
+		},
+		// map_clicked:function(e){
+		// 	// reverse geocode
+		// 	var coord = e.latlng;
+		//
+		// 	this.ajax_get('https://photon.komoot.de/reverse', {
+		// 		lon:coord.lng,
+		// 		lat:coord.lat,
+		// 	}, function(response){
+		// 		var i=0,
+		// 			len = response.features.length;
+		// 		console.log(response)
+		// 		for (i;i<len;i++){
+		// 			var result = new osm.feature( response.features[i] );
+		// 			this.marker.title = result.format();
+		// 			this.$address().val( result.format() );
+		// 			this.set_marker( coord );
+		// 			break;
+		// 		}
+		// 	} );
+		//
+		// 	this.set_marker( e.latlng );
+		// },
+		// set_marker:function(coord){
+		// 	$(this.marker._icon).attr( 'title', this.marker.title );
+		// 	this.marker.setLatLng(coord);
+		// 	this.$mlat().val( coord.lat );
+		// 	this.$mlng().val( coord.lng );
+		// },
+		ajax_get: function( url, data, callback) {
+			var self = this;
+			$.ajax({
+				url:url,
+				method:'get',
+				data:data,
+				success:function(response) {
+					'function' === typeof callback && callback.apply(self,[response]);
+				}
+			});
+
+		},
 
 	});
 
@@ -315,18 +449,21 @@ https://tile-a.openstreetmap.fr/hot/
 	 *  @param	$el (jQuery selection) the jQuery element which contains the ACF fields
 	 *  @return	n/a
 	 */
-
-	acf.add_action('ready append', function( $el ){
-
-		// search $el for fields of type 'FIELD_NAME'
-		acf.get_fields({ type : 'open_street_map'}, $el).each(function(){
-
-			new osm.field( { el: this } );
-
-		});
-
+	$(document).on('render-map',function( e, map ){
+		new osm.field( { el: e.target, map: map } );
 	});
 
 
+	// acf.add_action('ready append', function( $el ){
+	//
+	// 	// search $el for fields of type 'FIELD_NAME'
+	// 	acf.get_fields({ type : 'open_street_map'}, $el).each(function(){
+	//
+	// 		new osm.field( { el: this } );
+	//
+	// 	});
+	//
+	// });
 
-})(jQuery);
+
+})( jQuery, acf_osm_admin );

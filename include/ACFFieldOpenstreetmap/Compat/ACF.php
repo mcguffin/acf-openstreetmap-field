@@ -2,14 +2,13 @@
 
 namespace ACFFieldOpenstreetmap\Compat;
 
-use ACFFieldOpenstreetmap\Field;
-
 if ( ! defined('ABSPATH') ) {
 	die('FU!');
 }
 
 
 use ACFFieldOpenstreetmap\Core;
+use ACFFieldOpenstreetmap\Field;
 
 
 class ACF extends Core\PluginComponent {
@@ -18,7 +17,19 @@ class ACF extends Core\PluginComponent {
 		// include field
 		add_action('acf/include_field_types', 	array($this, 'include_field_types')); // v5
 //		add_action('acf/register_fields', 		array($this, 'include_field_types')); // v4
+		add_action( 'acf/render_field/type=leaflet_map', array( $this, 'render_map_input' ) );
 
+	}
+	function render_map_input( $field ) {
+
+		$inp_field = array(
+			'return_format'	=> 'leaflet',
+			'height'		=> 400,
+		);
+
+		$map_field = new Field\OpenStreetMap();
+
+		echo $map_field->format_value( $field['value'], null, $inp_field );
 	}
 
 	/**

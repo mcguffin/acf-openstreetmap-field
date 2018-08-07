@@ -26,8 +26,11 @@
     "gulp-sourcemaps": "^1.9.1",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.8",
+    "install": "^0.12.1",
     "leaflet": "^1.2.0",
     "leaflet-providers": "^1.1.17",
-    "node-sass": "^4.5.3"
-  }
+    "node-sass": "^4.5.3",
+    "npm": "^6.3.0"
+  },
+  "dependencies": {}
 }

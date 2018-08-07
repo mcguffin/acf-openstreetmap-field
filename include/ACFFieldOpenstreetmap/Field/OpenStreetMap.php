@@ -27,7 +27,7 @@ class OpenStreetMap extends \acf_field {
 
 	function __construct() {
 
-
+		$core = Core\Core::instance();
 		/*
 		*  name (string) Single word, no spaces. Underscores allowed
 		*/
@@ -42,17 +42,25 @@ class OpenStreetMap extends \acf_field {
 		*/
 		$this->category = 'jquery';
 
+		$this->default_values = array(
+			'center_lat'		=> '-37.81411',
+			'center_lng'		=> '144.96328',
+			'marker_lat'	=> '',
+			'marker_lng'	=> '',
+			'zoom'				=> '14',
+			'address'			=> '',
+			'osm_layer'			=> 'mapnik',
+			'leaflet_layers'	=> array( 'OpenStreetMap' ),
+		);
 		/*
 		*  defaults (array) Array of default settings which are merged into the field object. These are used later in settings
 		*/
 		$this->defaults = array(
-			'center_lat'	=> '',
-			'center_lng'	=> '',
-			'marker_lat'	=> '',
-			'marker_lng'	=> '',
-			'zoom'			=> '',
-			'address'		=> '',
-			'map_layers'	=> [],
+			'leaflet_map'		=> $this->default_values,
+			'height'			=> 400,
+			'return_format'		=> 'leaflet',
+			'allow_map_layers'	=> 1,
+			'leaflet_layers'	=> $this->default_values['leaflet_layers'],
 		);
 
 		/*
@@ -65,25 +73,11 @@ class OpenStreetMap extends \acf_field {
 		);
 
 
-		$this->default_values = array(
-			'center_lat'		=> '-37.81411',
-			'center_lng'		=> '144.96328',
-			'marker_lat'	=> '',
-			'marker_lng'	=> '',
-			'zoom'				=> '14',
-			'address'			=> '',
-			'osm_layer'			=> 'mapnik',
-			'leaflet_layers'	=> ['OpenStreetMap'],
-		);
 		$this->l10n = array(
 			'locating'			=> __("Locating",'acf'),
 			'browser_support'	=> __("Sorry, this browser does not support geolocation",'acf'),
 		);
 
-		add_action( 'acf/render_field/type=sorted_multiple_select', array( $this, 'sorted_multiple_select' ) );
-
-		add_action( 'wp_head', array( $this, 'frontend_register_scripts' ) );
-		add_action( 'admin_head', array( $this, 'frontend_register_scripts' ) );
 
 		// do not delete!
     	parent::__construct();
@@ -133,22 +127,22 @@ class OpenStreetMap extends \acf_field {
 
 		// center_lat
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Center','acf'),
-			'instructions'	=> __('Center the initial map','acf'),
-			'type'			=> 'text',
+			'label'			=> __('Map Position','acf-openstreetmap-field'),
+			'instructions'	=> __('Center the initial map','acf-openstreetmap-field'),
+			'type'			=> 'number',
 			'name'			=> 'center_lat',
-			'prepend'		=> 'lat',
+			'prepend'		=> __('lat','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['center_lat']
 		));
 
 
 		// center_lng
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Center','acf'),
-			'instructions'	=> __('Center the initial map','acf'),
-			'type'			=> 'text',
+			'label'			=> __('Center','acf-openstreetmap-field'),
+			'instructions'	=> __('Center the initial map','acf-openstreetmap-field'),
+			'type'			=> 'number',
 			'name'			=> 'center_lng',
-			'prepend'		=> 'lng',
+			'prepend'		=> __('lng','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['center_lng'],
 			'_append' 		=> 'center_lat'
 		));
@@ -156,27 +150,54 @@ class OpenStreetMap extends \acf_field {
 
 		// zoom
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Zoom','acf'),
-			'instructions'	=> __('Set the initial zoom level','acf'),
-			'type'			=> 'text',
+			'label'			=> __('Zoom','acf-openstreetmap-field'),
+			'instructions'	=> __('Set the initial zoom level','acf-openstreetmap-field'),
+			'type'			=> 'number',
 			'name'			=> 'zoom',
-			'placeholder'	=> $this->default_values['zoom']
+			'min'			=> 1,
+			'max'			=> 20,
+			'prepend'		=> __('zoom','acf-openstreetmap-field'),
+			'placeholder'	=> $this->default_values['zoom'],
+			'_append' 		=> 'center_lat',
+			'attributes'		=> array(
+				'data-prop'		=> 'zoom',
+			),
+			'data-prop'		=> 'zoom',
 		));
 
 
-		// allow_null
+
+		acf_render_field_setting( $field, array(
+			'label'			=> __('layers','acf-openstreetmap-field'),
+			'instructions'	=> __('Choose Layers from the map','acf-openstreetmap-field'),
+			'type'			=> 'text',
+			'name'			=> 'leaflet_layers',
+//			'prepend'		=> __('zoom','acf-openstreetmap-field'),
+			'placeholder'	=> $this->default_values['leaflet_layers'],
+		));
+
+
+		acf_render_field_setting( $field, array(
+			'label'			=> __('Map Appearance','acf-openstreetmap-field'),
+			'instructions'	=> __('Set zoom, center and select layers to be displayed.','acf-openstreetmap-field'),
+			'type'			=> 'leaflet_map',
+			'name'			=> 'leaflet_map',
+			'placeholder'	=> $this->default_values,
+		) );
+
+
+		// map height
 		acf_render_field_setting( $field, array(
 			'label'			=> __('Height','acf'),
-			'instructions'	=> __('Customise the map height','acf'),
+			'instructions'	=> __('Customise the map height','acf-openstreetmap-field'),
 			'type'			=> 'text',
 			'name'			=> 'height',
 			'append'		=> 'px',
 		));
 
-
-		// allow_null
+		// allow_layer selection
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Allow layer selection','acf'),
+			'label'			=> __('Allow layer selection','acf-openstreetmap-field'),
 			'instructions'	=> '',
 			'name'			=> 'allow_map_layers',
 			'type'			=> 'true_false',
@@ -184,23 +205,10 @@ class OpenStreetMap extends \acf_field {
 		));
 
 		// layers
-		//*
-		acf_render_field_setting( $field, array(
-			'label'			=> __('Default Map Layers','acf'),
-			'instructions'	=> '',
-			'type'			=> 'sorted_multiple_select',
-			'name'			=> 'default_leaflet_layers',
-			'choices'		=> $core->get_layer_providers( ),
-		//	'default'		=> array( 'OpenStreetMap' ),
-			'value'			=> $field['default_leaflet_layers'],
-			'multiple'		=> 0,
-			'ui'			=> 0,
-			'allow_null'	=> 0,
-//			'placeholder'	=> __("Map Layers",'acf'),
-		));
+
 
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Default OSM Map Layer','acf'),
+			'label'			=> __('Default OSM Map Layer','acf-openstreetmap-field'),
 			'instructions'	=> '',
 			'type'			=> 'select',
 			'name'			=> 'default_osm_layer',
@@ -208,133 +216,35 @@ class OpenStreetMap extends \acf_field {
 			'multiple'		=> 0,
 			'ui'			=> 0,
 			'allow_null'	=> 0,
-			'placeholder'	=> __("Map Layers",'acf'),
+			'placeholder'	=> __("Map Layers",'acf-openstreetmap-field'),
 		));
 
-		/*/
-		acf_render_field_setting( $field, array(
-			'label'			=> __('Tile Server','acf'),
-			'type'			=> 'select',
-			// 'name'				=> $field['name'] . '[map_layers][]',
-			// 'id'				=> $field['name'] . 'map_layers',
-			'choices'			=> acf_plugin_open_street_map::instance()->get_providers( ),
-			'value'				=> $field['value']['map_layers'],
-			'multiple'			=> 1,
-			'size'				=> 15,
-			'data-prop'			=> 'map_layers',
-			'data-multiple'		=> true,
-			'data-ui'			=> true,
-			'data-ajax'			=> false,
-			'data-allow_null'	=> false,
-			'data-placeholder'	=> __('Select'),
-
-		) );
-		//*/
 
 	}
 
-	function sorted_multiple_select( $field ) {
-		$field = wp_parse_args($field,array(
-			'default'	=> array(),
-		));
-
-		if ( ! $field['value'] ) {
-			$field['value'] = $field['default'];
-		}
-		$field['name'] .= '[]';
-
-		acf_hidden_input( array(
-			'name'		=> $field['name'],
-		));
-//var_dump($field['value']);
-		?>
-
-			<div class="acf-relationship">
-				<div class="selection">
-					<div class="choices">
-						<ul class="acf-bl list choices-list">
-						<?php
-
-							foreach ( $field['choices'] as $key => $choice ) {
-								if ( is_array( $choice ) ) {
-									?>
-										<li>
-											<span class="acf-rel-label"><?php echo $key; ?></span>
-											<ul class="acf-bl">
-												<?php
-												foreach ( $choice as $val => $label ) {
-													$selected = in_array( $val, $field['value'] );
-													?>
-													<li>
-														<span class="acf-rel-item<?php echo $selected ? ' disabled' : ''; ?>" data-id="<?php echo $val; ?>"><?php echo $label; ?></span>
-													</li>
-													<?php
-												}
-												?>
-											</ul>
-										</li>
-
-									<?php
-								}
-							}
-	//						echo $select;
-						?>
-						</ul>
-					</div>
-					<div class="values">
-						<ul class="acf-bl list values-list ui-sortable">
-						<?php
-
-							foreach ( $field['value'] as $value ) {
-								if ( empty( $value ) ) {
-									continue;
-								}
-								$label = $this->array_search_recursive_key( $value, $field['choices'] );
-								?>
-								<li>
-									<?php acf_hidden_input( array('name' => $field['name'], 'value' => $value ) ); ?>
-									<span data-id="<?php echo $value; ?>" class="acf-rel-item">
-										<?php echo $label; ?>
-										<a href="#" class="acf-icon -minus small dark" data-name="remove_item"></a>
-									</span>
-								</li>
-								<?php
-							}
-						?>
-						</ul>
-
-					</div>
-				</div>
-			</div>
-		<?php
-	}
-
-	private function render_option( $label, $atts ) {
-		return sprintf( '<option %s>%s</option>', acf_esc_attr($atts), $label );
-	}
 
 	/**
 	 *	@param string $key
 	 *	@param array $array
 	 *	@return scalar
 	 */
-	private function array_search_recursive_key( $key, $array ) {
-
-		if ( isset( $array[ $key ] ) && ! is_array( $array[ $key ] ) ) {
-			return $array[ $key ];
-		}
-
-		foreach ( $array as $k => $v ) {
-			if ( ! is_array($v) ) {
-				continue;
-			}
-			$result = $this->array_search_recursive_key( $key, $v );
-			if ( $result !== false ) {
-				return $result;
-			}
-		}
-		return false;
-	}
+	// private function array_search_recursive_key( $key, $array ) {
+	//
+	// 	if ( isset( $array[ $key ] ) && ! is_array( $array[ $key ] ) ) {
+	// 		return $array[ $key ];
+	// 	}
+	//
+	// 	foreach ( $array as $k => $v ) {
+	// 		if ( ! is_array($v) ) {
+	// 			continue;
+	// 		}
+	// 		$result = $this->array_search_recursive_key( $key, $v );
+	// 		if ( $result !== false ) {
+	// 			return $result;
+	// 		}
+	// 	}
+	// 	return false;
+	// }
 
 	/*
 	*  render_field()
@@ -364,138 +274,74 @@ class OpenStreetMap extends \acf_field {
 		// value
 		$field['value'] = wp_parse_args( $field['value'], $this->default_values );
 
+		// center
 		acf_hidden_input(array(
+			'id'		=> $field['id'] . '-center_lat',
 			'name'		=> $field['name'] . '[center_lat]',
 			'value'		=> $field['value']['center_lat'],
-			'data-prop'	=> 'center_lat',
 		));
 
 		acf_hidden_input(array(
+			'id'		=> $field['id'] . '-center_lng',
 			'name'		=> $field['name'] . '[center_lng]',
 			'value'		=> $field['value']['center_lng'],
-			'data-prop'	=> 'center_lng',
 		));
 
 		acf_hidden_input(array(
+			'id'		=> $field['id'] . '-zoom',
 			'name'		=> $field['name'] . '[zoom]',
 			'value'		=> $field['value']['zoom'],
-			'data-prop'	=> 'zoom',
 		));
 
+
+		// marker
 		acf_hidden_input(array(
+			'id'		=> $field['id'] . '-marker_lat',
 			'name'		=> $field['name'] . '[marker_lat]',
 			'value'		=> $field['value']['marker_lat'],
-			'data-prop'	=> 'marker_lat',
 		));
 
 		acf_hidden_input(array(
+			'id'		=> $field['id'] . '-marker_lng',
 			'name'		=> $field['name'] . '[marker_lng]',
 			'value'		=> $field['value']['marker_lng'],
-			'data-prop'	=> 'marker_lng',
 		));
 
-
-
+		// layers
 		if ( $field['allow_map_layers'] ) {
-			?>
-				<?php if ( 'leaflet' === $field['return_format'] ) { ?>
-					<div class="acf-leaflet-layers">
-						<?php
-						acf_hidden_input(array(
-							'name'		=> $field['name'] . '[map_layers]',
-							'value'		=> '',
-						));
-						acf_select_input( array(
-							'name'				=> $field['name'] . '[leaflet_layers][]',
-							'id'				=> $field['name'] . 'leaflet_layers',
-							'choices'			=> $core->get_layer_providers( ),
-							'value'				=> $field['value']['leaflet_layers'],
-							'multiple'			=> 'multiple',
-							'size'				=> 5,
-							'data-prop'			=> 'leaflet_layers',
-							'data-multiple'		=> true,
-							'data-ui'			=> true,
-							'data-ajax'			=> false,
-							'data-allow_null'	=> true,
-							'data-placeholder'	=> __('Select Layer','acf-open-street-map'),
-						) );
-						?>
-					</div>
-				<?php } elseif ( 'osm' === $field['return_format'] ) { ?>
-					<div class="acf-osm-layers">
-						<?php
-						acf_select_input( array(
-							'name'				=> $field['name'] . '[osm_layer]',
-							'id'				=> $field['name'] . 'osm_layer',
-							'choices'			=> $core->get_osm_layers( ),
-							'value'				=> $field['value']['osm_layer'],
-//							'size'				=> 5,
-							'data-prop'			=> 'osm_layer',
-							'data-multiple'		=> false,
-							'data-ui'			=> false,
-							'data-ajax'			=> false,
-							'data-allow_null'	=> false,
-							'data-placeholder'	=> __('Select','acf-open-street-map'),
-
-						) );
-
-						$osm_layers = $core->get_osm_layers_config( );
-						acf_hidden_input( array(
-							'name'		=> $field['name'] . '[leaflet_layers][]',
-		//					'choices'	=> acf_plugin_open_street_map::instance()->get_providers( ),
-							'value'		=> $osm_layers[ $field['value']['osm_layer'] ]['provider'],
-							'data-prop'	=> 'leaflet_layers',
-		 				));
-						?>
-					</div>
-			<?php } ?>
-			<?php
-
-		} else {
-
-			foreach ( array_filter($field['default_leaflet_layers']) as $layer ) {
-				acf_hidden_input( array(
-					'name'		=> $field['name'] . '[leaflet_layers][]',
-//					'choices'	=> acf_plugin_open_street_map::instance()->get_providers( ),
-					'value'		=> $layer,
-					'data-prop'	=> 'leaflet_layers',
-				));
-			}
-			acf_hidden_input( array(
-				'name'		=> $field['name'] . '[osm_layer]',
-//					'choices'	=> acf_plugin_open_street_map::instance()->get_providers( ),
-				'value'		=> $layer,
-				'data-prop'	=> 'osm_layer',
+			acf_hidden_input(array(
+				'id'		=> $field['id'] . '-leaflet_layers',
+				'name'		=> $field['name'] . '[leaflet_layers]',
+				'value'		=> $field['value']['leaflet_layers'],
 			));
 		}
 
-	?>
-		<div class="acf-osm-geocode">
+
+		?>
+			<div class="acf-osm-geocode">
+			<?php
+
+			acf_text_input( array(
+				'id'		=> $field['id'] . '-address',
+				'name'		=> $field['name'] . '[address]',
+				'type'		=> 'text',
+				'value'		=> $field['value']['address'],
+				'data-prop'	=> 'address',
+			));
+			?>
+			<div class="osm-results"></div>
+		</div>
 		<?php
 
-		acf_text_input( array(
-			'name'		=> $field['name'] . '[address]',
-			'type'		=> 'text',
-			'value'		=> $field['value']['address'],
-			'data-prop'	=> 'address',
-		));
-		?>
-		<div class="osm-results"></div>
-	</div>
-	<?php
-?>
-	<div class="acf-osm-map"></div>
-<?php
+		acf_render_field( array(
+			'type'				=> 'leaflet_map',
+			'name'				=> $field['name'],
+			'value'				=> $field['value'],
+			'allow_map_layers'	=> $field['allow_map_layers'],
+		) );
 
 
 	}
-	function frontend_register_scripts() {
-		$core = Core\Core::instance();
-
-		wp_register_script( 'acf-osm-frontend', $core->get_asset_url( 'assets/js/acf-osm-frontend.js' ), array( 'jquery' ), $core->version(), true );
-		wp_register_style( 'leaflet', $core->get_asset_url( 'assets/css/leaflet.css' ), array(), $core->version() );
-	}
-
 
 	/*
 	*  input_admin_enqueue_scripts()
@@ -516,45 +362,17 @@ class OpenStreetMap extends \acf_field {
 
 	function input_admin_enqueue_scripts() {
 
-		$core = Core\Core::instance();
-
-		// register & include JS
-		wp_register_script( 'leaflet', $core->get_asset_url( 'assets/js/leaflet.js' ), array() );
-		wp_register_script( 'acf-input-osm', $core->get_asset_url('assets/js/acf-input-osm.js'), array('leaflet','acf-input','backbone'), $core->version() );
-		wp_localize_script('acf-input-osm','acf_osm',array(
-			'options'	=> array(
-				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
-				'osm_layers'	=> $core->get_osm_layers_config(),
-			),
-		));
 		wp_enqueue_script('acf-input-osm');
 
-
-		// register & include CSS
-		wp_register_style( 'acf-input-osm', $core->get_asset_url( 'assets/css/acf-input-osm.css' ), array('leaflet','acf-input'), $core->version() );
-
 		wp_enqueue_style('acf-input-osm');
-		wp_enqueue_style('leaflet');
 
 	}
 
 	function field_group_admin_enqueue_scripts() {
 
-		$core = Core\Core::instance();
+		wp_enqueue_script('acf-input-osm');
 
-		wp_register_script( 'acf-field-group-osm', $core->get_asset_url('assets/js/acf-field-group-osm.js'), array('acf-field-group'), $core->version() );
-//		wp_register_script( 'acf-settings-osm', $core->get_asset_url('assets/js/acf-settings-osm.js'), array('acf-field-group'), $core->version() );
-
-		wp_localize_script('acf-field-group-osm','acf_osm_field_group',array(
-			'options'	=> array(
-				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
-			),
-		));
-		wp_enqueue_script('acf-field-group-osm');
-
-		wp_register_style( 'acf-field-group-osm', $core->get_asset_url('assets/css/acf-field-group-osm.css'), array( 'acf-input' ), $core->version() );
-
-		wp_enqueue_style('acf-field-group-osm');
+		wp_enqueue_style('acf-input-osm');
 
 	}
 
@@ -815,7 +633,7 @@ class OpenStreetMap extends \acf_field {
 				'data-map-lng'		=> $value['center_lng'],
 				'data-map-lat'		=> $value['center_lat'],
 				'data-map-zoom'		=> $value['zoom'],
-				'data-map-layers'	=> implode( ',', $value['leaflet_layers'] ),
+				'data-map-layers'	=> $value['leaflet_layers'],
 			);
 
 			if ( ! empty( $value['address'] ) ) {
