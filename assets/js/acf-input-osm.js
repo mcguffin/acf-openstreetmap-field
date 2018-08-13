@@ -7,19 +7,6 @@
 
 	var osm = {
 	};
-	osm.feature = wp.media.View.extend({
-		template: _.template( result_tpl ),
-		initialize:function( feature ) {
-			console.log(arguments);
-			console.log(this,this.$el);
-//			html = fmt.replace( new RegExp("("+q.split(/[^a-z0-9]/).join('|')+")",'gi'),"<strong>$1</strong>");
-		},
-		render:function() {
-			var ret = wp.media.View.prototpe.render.apply(this,arguments);
-			return ret;
-		}
-	});
-
 
 	osm.field = Backbone.View.extend({
 		/*
@@ -28,6 +15,7 @@
 		- set / unset marker
 		*/
 		map: null,
+		geocoder: null,
 		visible: null,
 		events:{
 		},
@@ -76,14 +64,20 @@
 
 			this.init_layers();
 
-			this.init_marker();
+			if ( this.$mlat().length && this.$mlng().length ) {
+				this.init_marker();
+			}
+
+			this.init_geocode();
 
 			this.init_acf();
 
 			this.update_visible();
 		},
 		init_marker:function() {
-			var self = this;
+			var self = this,
+				mlat = this.$mlat().val() || this.$lat().val(),
+				mlng = this.$mlng().val() || this.$lng().val();
 			/*
 			Events:
 			click  map: reverse geocode an set result
@@ -91,7 +85,7 @@
 			*/
 			this.icon		= L.divIcon( { className: 'osm-marker', html:'', iconSize:0 } );
 			this.marker		= L.marker(
-				[ this.$mlat().val(), this.$mlng().val() ],
+				[ mlat, mlng ],
 				{
 					icon:this.icon,
 					draggable:true,
@@ -144,16 +138,19 @@
 					return key.match('(' + patterns.join('|') + ')') !== null;
 				},
 				is_omitted = function(key) {
-					return false;
+
+					return key === null;
 				},
 				setupMap = function( key, val ){
 					var layer, layer_config;
 					if ( _.isObject(val) ) {
 						return $.each( val, setupMap );
 					}
+
 					if ( is_omitted(key) ) {
 						return;
 					}
+
 					layer_config = options.layer_config[ key.split('.')[0] ] || {options:{}};
 					layer = L.tileLayer.provider( key, layer_config.options );
 					layer.providerKey = key;
@@ -188,7 +185,20 @@
 			}).addTo(this.map);
 
 		},
+		init_geocode:function() {
+			this.geocoder = L.Control.geocoder({
+				collapsed: false,
+				position:'topleft',
+				placeholder:'Search...',
+				errorMessage:'Nothing found...',
+				showResultIcons:true,
+				suggestMinLength:3,
+				suggestTimeout:250,
+				queryMinLength:3,
+			}).addTo(this.map);
+		},
 		update_visible: function() {
+
 			if ( this.visible === this.$el.is(':visible') ) {
 				return this;
 			}
@@ -257,9 +267,9 @@
 			self.$zoom().on('blur',function(e){
 				self.update_map();
 			});
-			self.$address().on('keyup focus', function(e){
-				self.search(e);
-			} );
+			// self.$address().on('keyup focus', function(e){
+			// 	self.search(e);
+			// } );
 
 
 //			this.listenTo( this.$address, 'keyup focus', this.search );
@@ -269,6 +279,9 @@
 
 		},
 		update_map:function() {
+			if ( ! this.$lat().val() || ! this.$lng().val() ) {
+				return;
+			}
 			var latlng = L.latLng( this.$lat().val(), this.$lng().val() );
 			this.map.setView( latlng,  this.$zoom().val() );
 		},
@@ -449,7 +462,7 @@
 	 *  @param	$el (jQuery selection) the jQuery element which contains the ACF fields
 	 *  @return	n/a
 	 */
-	$(document).on('render-map',function( e, map ){
+	$(document).on('render-map',function( e, map ) {
 		new osm.field( { el: e.target, map: map } );
 	});
 

@@ -20,4 +20,6 @@ ToDO:
  - [ ] Frontend: Map height fallback value
  - [ ] Frontend: Allow Theme override of OSM and Leaflet HTML. (Template Tags? Actions?)
  - [ ] Frontend: Allow custom marker HTML.
+ - [ ] Use https://github.com/perliedman/leaflet-control-geocoder
+ - [ ] Use https://github.com/Esri/esri-leaflet-geocoder
  - [ ] Go Beta

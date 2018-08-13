@@ -83,17 +83,19 @@ gulp.task('leaflet-css', function() {
 		// frontend
 		gulp.src([
 			'./node_modules/leaflet/dist/leaflet.css',
+			'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css',
 		])
-			.pipe( cleanCSS() )
-			// .pipe( concat('./assets/css/') )
-			// .pipe( rename('leaflet.css') )
+			//.pipe( cleanCSS() )
+			.pipe( concat('./assets/css/') )
+			.pipe( rename('leaflet.css') )
 			.pipe( gulp.dest( './assets/css/' ) ),
 
 		// copy images to css
 		gulp.src([
 			'./node_modules/leaflet/dist/images/*.png',
 			// './node_modules/leaflet-minimap/dist/images/*.png',
-			// './node_modules/leaflet-minimap/dist/images/*.svg',
+			'./node_modules/leaflet-control-geocoder/dist/images/*.gif',
+			'./node_modules/leaflet-control-geocoder/dist/images/*.png',
 		])
 			.pipe( gulp.dest( './assets/css/images/' ) )
 	];
@@ -102,9 +104,11 @@ gulp.task('leaflet-css', function() {
 
 gulp.task('js-admin', function() {
     return [
-		do_js('acf-input-osm'),
+		concat_js( [
+			'./src/js/acf-input-osm.js',
+		], 'acf-input-osm.js'),
+		//do_js('acf-input-osm'),
     ];
-
 });
 
 
@@ -113,6 +117,7 @@ gulp.task( 'js', function(){
 		// frontend
 		concat_js( [
 			'./node_modules/leaflet/dist/leaflet-src.js',
+			'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.js',
 			'./node_modules/leaflet-providers/leaflet-providers.js',
 			'./src/js/acf-osm-frontend.js',
 

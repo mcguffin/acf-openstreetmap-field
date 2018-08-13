@@ -11,6 +11,14 @@ if( ! defined( 'ABSPATH' ) ) exit;
 
 class OpenStreetMap extends \acf_field {
 
+	private static $_instance = null;
+
+	public static function get_instance() {
+		if ( is_null( self::$_instance ) ) {
+			new self();
+		}
+		return self::$_instance;
+	}
 
 	/*
 	*  __construct
@@ -26,6 +34,11 @@ class OpenStreetMap extends \acf_field {
 	*/
 
 	function __construct() {
+		if ( ! is_null( self::$_instance ) ) {
+			throw new Exception('not more thn one Field\OpenStreetMap!');
+		}
+
+		self::$_instance = $this;
 
 		$core = Core\Core::instance();
 		/*
@@ -159,10 +172,6 @@ class OpenStreetMap extends \acf_field {
 			'prepend'		=> __('zoom','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['zoom'],
 			'_append' 		=> 'center_lat',
-			'attributes'		=> array(
-				'data-prop'		=> 'zoom',
-			),
-			'data-prop'		=> 'zoom',
 		));
 
 
@@ -175,7 +184,6 @@ class OpenStreetMap extends \acf_field {
 //			'prepend'		=> __('zoom','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['leaflet_layers'],
 		));
-
 
 		acf_render_field_setting( $field, array(
 			'label'			=> __('Map Appearance','acf-openstreetmap-field'),

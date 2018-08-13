@@ -26,9 +26,7 @@ class ACF extends Core\PluginComponent {
 			'return_format'	=> 'leaflet',
 			'height'		=> 400,
 		);
-
-		$map_field = new Field\OpenStreetMap();
-
+		$map_field = Field\OpenStreetMap::get_instance();
 		echo $map_field->format_value( $field['value'], null, $inp_field );
 	}
 
@@ -44,7 +42,6 @@ class ACF extends Core\PluginComponent {
 	 *  @param	$version (int) major ACF version. Defaults to false
 	 *  @return	n/a
 	 */
-
 	function include_field_types( $version = false ) {
 
 		array(

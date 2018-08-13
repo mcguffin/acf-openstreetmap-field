@@ -16,8 +16,10 @@
 					center: [ data.mapLat, data.mapLng ],
 					zoom: data.mapZoom
 				} );
-				
 				$.each(data.mapLayers,function(i,provider){
+					if ( 'String' !== typeof provider ) {
+						return;
+					}
 					var layer_config = options.layer_config[ provider.split('.')[0] ] || { options: {} };
 					L.tileLayer.provider( provider, layer_config.options ).addTo( map );
 				});
@@ -35,7 +37,11 @@
 			});
 		}
 	});
-
-	$('[data-map="leaflet"]').acf_leaflet();
+	$.extend({
+		acf_leaflet:function() {
+			$('[data-map="leaflet"]').acf_leaflet();
+		}
+	});
+	$.acf_leaflet();
 
 })(jQuery,acf_osm);
