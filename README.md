@@ -20,8 +20,6 @@ ToDO:
  - [ ] Frontend
 	 - [ ] Allow custom marker HTML (filter)
 	 - [ ] Map height fallback value
-	 - [x] Leaflet rendering: set provider maxzoom / minzoom
-	 - [x] Leaflet: baselayer / overlay order buggy
  - [ ] Code docs
  - [ ] Dev docs
  - [ ] Go Beta
