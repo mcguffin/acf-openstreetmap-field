@@ -178,35 +178,34 @@
 				.bindTooltip( label )
 				.addTo( this.map );
 		},
+		layer_is_overlay: function(  key, layer ) {
+			var patterns;
+
+			if ( layer.options.opacity && layer.options.opacity < 1 ) {
+				return true;
+			}
+			patterns = ['^(OpenWeatherMap|OpenSeaMap)',
+				'OpenMapSurfer.AdminBounds',
+				'Stamen.Toner(Hybrid|Lines|Labels)',
+				'Acetate.(foreground|labels|roads)',
+				'HillShading',
+				'Hydda.RoadsAndLabels',
+				'^JusticeMap',
+				'OpenInfraMap.(Power|Telecom|Petroleum|Water)',
+				'OpenPtMap',
+				'OpenRailwayMap',
+				'OpenFireMap',
+				'SafeCast',
+				'CartoDB.DarkMatterOnlyLabels',
+				'CartoDB.PositronOnlyLabels'
+			];
+			return key.match('(' + patterns.join('|') + ')') !== null;
+		},
 		init_layers:function() {
 			var self = this,
-				selectedLayers,
+				selectedLayers = [],
 				baseLayers = {},
 				overlays = {},
-				is_overlay = function( key, layer ) {
-
-					var patterns;
-
-					if ( layer.options.opacity && layer.options.opacity < 1 ) {
-						return true;
-					}
-					patterns = ['^(OpenWeatherMap|OpenSeaMap)',
-						'OpenMapSurfer.AdminBounds',
-						'Stamen.Toner(Hybrid|Lines|Labels)',
-						'Acetate.(foreground|labels|roads)',
-						'HillShading',
-						'Hydda.RoadsAndLabels',
-						'^JusticeMap',
-						'OpenInfraMap.(Power|Telecom|Petroleum|Water)',
-						'OpenPtMap',
-						'OpenRailwayMap',
-						'OpenFireMap',
-						'SafeCast',
-						'CartoDB.DarkMatterOnlyLabels',
-						'CartoDB.PositronOnlyLabels'
-					];
-					return key.match('(' + patterns.join('|') + ')') !== null;
-				},
 				is_omitted = function(key) {
 
 					return key === null;
@@ -224,26 +223,20 @@
 					layer_config = options.layer_config[ key.split('.')[0] ] || {options:{}};
 					layer = L.tileLayer.provider( key, layer_config.options );
 					layer.providerKey = key;
-
-					if ( is_overlay( key, layer ) ) {
+console.log(selectedLayers)
+					if ( self.layer_is_overlay( key, layer ) ) {
 						overlays[key] = layer;
 					} else {
 						baseLayers[key] = layer;
 					}
 					if ( selectedLayers.indexOf( key ) !== -1 ){
+
 						self.map.addLayer(layer);
 					}
 				};
 
 			selectedLayers = this.$el.data().mapLayers;
 
-			// kill all the old layers...
-			this.map.eachLayer(function(layer){
-				if ( layer.constructor !== L.Marker ) {
-					self.map.removeLayer(layer);
-				}
-			})
-			// ... and add new ones
 			$.each( options.providers, setupMap );
 
 			// ... no layer editing allowed
@@ -340,7 +333,15 @@
 			this.map.on( 'baselayerchange overlayadd overlayremove layeradd layerremove', function(e){
 				var layers = [];
 				self.map.eachLayer(function(layer) {
-					layers.push(layer.providerKey);
+					console.log(layer);
+					if ( ! layer.providerKey ) {
+						return;
+					}
+					if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
+						layers.push(layer.providerKey);
+					} else {
+						layers.unshift(layer.providerKey);
+					}
 				});
 				self.$layerStore().val( JSON.stringify( layers ) );
 			} );

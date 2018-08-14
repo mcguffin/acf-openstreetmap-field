@@ -15,18 +15,26 @@
 					scrollWheelZoom: false,
 					center: [ data.mapLat, data.mapLng ],
 					zoom: data.mapZoom
-				} );
+				} ),
+				maxzoom = 100;
 
 				$(this).trigger('pre-render-map', map );
 
-				$.each(data.mapLayers,function(i,provider){
-					if ( 'String' !== typeof provider ) {
+				$.each(data.mapLayers,function(i,provider_key){
+
+					if ( 'string' !== typeof provider_key ) {
 						return;
 					}
-					var layer_config = options.layer_config[ provider.split('.')[0] ] || { options: {} };
-					L.tileLayer.provider( provider, layer_config.options ).addTo( map );
-				});
+					var layer_config = options.layer_config[ provider_key.split('.')[0] ] || { options: {} },
+						layer = L.tileLayer.provider( provider_key, layer_config.options ).addTo( map );
 
+					layer.providerKey = provider_key;
+
+					if ( !! layer.options.maxZoom ) {
+						maxzoom = Math.min( layer.options.maxZoom, maxzoom )
+					}
+				});
+				map.setMaxZoom( maxzoom );
 				$.each(data.mapMarkers,function(i,markerData){
 					// add markers
 					var marker = L.marker( L.latLng( markerData.lat * 1, markerData.lng * 1 ), {

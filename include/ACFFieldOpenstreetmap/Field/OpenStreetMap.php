@@ -562,6 +562,13 @@ class OpenStreetMap extends \acf_field {
 			unset( $value['markers']['__osm_marker_template__'] );
 		}
 		$value['markers'] = array_values( $value['markers'] );
+
+
+		$value['leaflet_layers'] = json_decode( stripslashes($value['leaflet_layers']) );
+		$value['leaflet_layers'] = array_filter( $value['leaflet_layers'] );
+		$value['leaflet_layers'] = array_unique( $value['leaflet_layers'] );
+		$value['leaflet_layers'] = array_values( $value['leaflet_layers'] );
+
 		return $value;
 	}
 

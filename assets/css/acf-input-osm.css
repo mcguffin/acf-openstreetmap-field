@@ -140,3 +140,5 @@
       background: #fff; }
     .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-error {
       padding: 0.5em 1em; }
+    .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-alternatives {
+      margin-top: 1em; }
