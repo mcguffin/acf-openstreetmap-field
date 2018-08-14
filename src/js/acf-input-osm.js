@@ -8,12 +8,52 @@
 	var osm = {
 	};
 
+	osm.MarkerList = Backbone.View.extend({
+	})
+	osm.MarkerEntry = Backbone.View.extend({
+		tagName: 'div',
+		className:'osm-marker',
+		events: {
+			'click [data-name="locate-marker"]' : 'locate_marker',
+			'click [data-name="remove-marker"]' : 'remove_marker',
+		},
+		initialize:function(opt){
+			var self = this;
+			this.template = opt.template;
+			this.marker = opt.marker;
+
+			return this;
+		},
+		render:function(){
+			this.$el.html( this.template( this ) );
+			this.update_marker();
+			return this;
+		},
+		update_marker:function() {
+			this.$el.find('[id$="-marker-lat"]').val( this.marker.getLatLng().lat );
+			this.$el.find('[id$="-marker-lng"]').val( this.marker.getLatLng().lng );
+			this.$el.find('[id$="-marker-label"]').val( this.marker.options.title );
+			return this;
+		},
+		locate_marker:function(){
+			this.marker._map.flyTo( this.marker.getLatLng() );
+			$(this.marker._icon).focus()
+			return this;
+		},
+		remove_marker:function(e) {
+			e.preventDefault()
+			this.marker.remove();
+			return this;
+		}
+	});
+
 	osm.field = Backbone.View.extend({
 		/*
 		todo:
 		- Map Layer selector
 		- set / unset marker
 		*/
+
 		map: null,
 		geocoder: null,
 		visible: null,
@@ -35,78 +75,108 @@
 		$layerStore: function() {
 			return this.$parent().find('input[id$="-leaflet_layers"]');
 		},
-		$address: function() {
-			return this.$parent().find('input[id$="-address"]');
-		},
-		$mlat : function() {
-			return this.$parent().find('input[id$="-marker_lat"]');
-		},
-		$mlng : function() {
-			return this.$parent().find('input[id$="-marker_lng"]');
-		},
 		$results : function() {
 			return this.$parent().find('.osm-results');
 		},
+		$markers:function(){
+			return this.$parent().find('.osm-markers');
+		},
 		initialize:function(conf) {
-		//	this.$el		= this.attributes.$el;
 
 			this.map		= conf.map;
-
-			// this.$mlat		= this.$parent.find('[data-prop="marker_lat"]');
-			// this.$mlng		= this.$parent.find('[data-prop="marker_lng"]');
-			// this.$address	= this.$parent.find('[data-prop="address"]');
-			// this.$results	= this.$address.next('.osm-results');
-
-			//this.$layers	= this.$parent.find('input[id$="-leaflet_layers"]');
-
 
 			this.update_map(); // set map to input values
 
 			this.init_layers();
 
-			if ( this.$mlat().length && this.$mlng().length ) {
-				this.init_marker();
-			}
-
-			this.init_geocode();
+			this.init_markers();
 
 			this.init_acf();
 
 			this.update_visible();
+
+			return this;
 		},
-		init_marker:function() {
-			var self = this,
-				mlat = this.$mlat().val() || this.$lat().val(),
-				mlng = this.$mlng().val() || this.$lng().val();
-			/*
-			Events:
-			click  map: reverse geocode an set result
-			change query: geocode query, add/set marker
-			*/
-			this.icon		= L.divIcon( { className: 'osm-marker', html:'', iconSize:0 } );
-			this.marker		= L.marker(
-				[ mlat, mlng ],
-				{
-					icon:this.icon,
-					draggable:true,
-					title: this.$address().val() || '',
+		_get_geocoder_result_label:function( e, latlng ) {
+			var label = false;
+
+			if ( ! e.length ) {
+				label = latlng.lat.toString() + ', ' + latlng.lng.toString();
+			} else {
+				$.each( e, function( i, result ) {
+					if ( !! result.html ) {
+						label = result.html;
+					} else {
+						label = result.name;
+					}
+					return false;
+				});
+			}
+			return $(label).text().replace(/^(\s+)/g,'').replace(/(\s+)$/g,'');
+		},
+		init_markers:function(){
+
+			var self = this;
+
+			this.icon = new L.DivIcon({
+				html: '',
+				className:'osm-marker-icon'
+			});
+
+			this.init_geocode();
+
+			this.map.on('click', function(e){
+				var latlng = e.latlng;
+				self.geocoder.options.geocoder.reverse(e.latlng,self.map.getZoom(),function(e){
+					var label = self._get_geocoder_result_label( e, latlng );
+					self.add_marker( latlng, label );
+				},self);
+			});
+
+			this.map.on( 'layeradd', function(e){
+				if ( e.layer.constructor !== L.Marker ) {
+					return;
 				}
-			).addTo( this.map );
+				var template = self.$markers().find('[data-id="__osm_marker_template__"]').html().split('__osm_marker_template__').join( '<%= id %>' ),
+					entry = new osm.MarkerEntry({
+						controller: this,
+						marker: e.layer,
+						id: acf.uniqid(), //self.$markers().children().length,
+						template: _.template( template ),
+					});
 
-			this.map.on('click', function(e){ self.map_clicked.apply(self,[e]); } );
+				entry.render().$el.prependTo( self.$markers() );
 
+				e.layer
+					.setIcon( self.icon )
+					.on('click',function(e){
+						this.remove();
+					})
+					.on('remove',function(e){
+						entry.$el.remove();
+					})
+					.on('dragend',function(e){
+						self.geocoder.options.geocoder.reverse(this.getLatLng(),self.map.getZoom(),function(e){
+
+							var label = self._get_geocoder_result_label( e, this.getLatLng() );
+							this.unbindTooltip()
+							this.bindTooltip(label);
+							this.options.title = label;
+							$(this._icon).attr( 'title', label );
+							entry.update_marker();
+
+						}, this );
+					})
+					.dragging.enable();
+			} );
 		},
-		map_clicked:function(e) {
-			var coord = e.latlng;
-			this.set_marker( e.latlng );
-
-		},
-		set_marker:function(coord){
-			$(this.marker._icon).attr( 'title', this.marker.title );
-			this.marker.setLatLng(coord);
-			this.$mlat().val( coord.lat );
-			this.$mlng().val( coord.lng );
-//			this.marker.bindTooltip(this.$address().val());
+		add_marker:function( lnglat, label ){
+			L.marker(lnglat,{
+				title: label,
+				icon: this.icon,
+			})
+				.bindTooltip( label )
+				.addTo( this.map );
 		},
 		init_layers:function() {
 			var self = this,
@@ -169,7 +239,9 @@
 
 			// kill all the old layers...
 			this.map.eachLayer(function(layer){
-				self.map.removeLayer(layer);
+				if ( layer.constructor !== L.Marker ) {
+					self.map.removeLayer(layer);
+				}
 			})
 			// ... and add new ones
 			$.each( options.providers, setupMap );
@@ -186,16 +258,42 @@
 
 		},
 		init_geocode:function() {
+
+			var self = this;
+
+			this.map._controlCorners['above'] = $('<div class="acf-osm-above"></div>').insertBefore( this.$el ).get(0);
+
 			this.geocoder = L.Control.geocoder({
 				collapsed: false,
-				position:'topleft',
+				position:'above',
 				placeholder:'Search...',
 				errorMessage:'Nothing found...',
 				showResultIcons:true,
 				suggestMinLength:3,
 				suggestTimeout:250,
 				queryMinLength:3,
-			}).addTo(this.map);
+				defaultMarkGeocode:false,
+			})
+			.on('markgeocode',function(e){
+				//console.log(e.geocode.cneter);return;
+				var label = self._get_geocoder_result_label( [e.geocode], e.geocode.center );
+				self.add_marker( e.geocode.center, label );
+				/*
+				self.map.flyToBounds(e.geocode.bbox);
+				/*/
+				self.map.fitBounds(e.geocode.bbox);
+				//*/
+
+//				e.preventDefault();
+			})
+			.addTo( this.map );
+
+			// prevent wp post form from being submitted
+			L.DomEvent.addListener(this.geocoder._input, 'keydown', function(e){
+				if ( e.keyCode === 13 ) {
+					e.preventDefault();
+				}
+			}, this.geocoder );
 		},
 		update_visible: function() {
 
@@ -294,159 +392,6 @@
 			this.$zoom().val( this.map.getZoom() );
 		},
 
-		search:function(e){
-			// geocode
-			var self = this,
-				data = {};
-			if ( 'undefined' !== typeof this._wait_address ) {
-				clearTimeout(this._wait_address);
-				delete this._wait_address;
-			}
-
-			// if (!! data['g'] && data['g'] === this.$address().val() ) {
-			// 	return;
-			// }
-
-			this.clear_results();
-
-			if ( e.type=='keyup' && 27 == e.originalEvent.keyCode ) { // esc
-				e.preventDefault();
-				this.$results().html('');
-				this.$address().blur();
-				return false;
-			}
-			if ( '' === this.$address().val() ) {
-				this.marker.title = '';
-				return;
-			}
-
-			this._wait_address = setTimeout( function(){
-
-				data = {
-					q:self.$address().val(),
-//						lang:'de', -´// -> WP-Lang!
-					limit:5,
-					lon:self.$lng().val(),
-					lat:self.$lat().val(),
-				};
-
-				self.ajax_get('https://photon.komoot.de/api/',data, function(response){
-					self.build_results(response);
-					delete this._wait_address;
-				});
-			}, 666 );
-
-		},
-
-		select_result:function(data){
-			var latlng = L.latLng( data.coord[1], data.coord[0] );
-
-			if ( data.ext ) {
-
-				this.map.fitBounds( L.latLngBounds(
-					L.latLng( data.ext[1], data.ext[0] ),
-					L.latLng( data.ext[3], data.ext[2] )
-				) );
-			} else {
-				this.map.setView( latlng, this.map.getZoom() );
-			}
-			this.$address().val( data.text );
-			this.clear_results();
-
-			this.marker.title = data.text;
-			this.set_marker( latlng );
-		},
-		build_results:function(response){
-			var self = this,
-				i=0, len = response.features.length,
-				q = this.$address().val(),
-				feat = response.features;//sort_fuzzy( response.features, q );
-
-			this.clear_results();
-
-			if ( len ) {
-				$.each( feat, function(i,el){
-					var fmt = self.format_result( el ),
-						html = fmt.replace( new RegExp("("+q.split(/[^a-z0-9]/).join('|')+")",'gi'),"<strong>$1</strong>");
-					html += '<br /><small>(' + self.nice_words( el.properties.osm_value ) + ')</small>';
-
-					$('<div tabindex="'+i+'" class="osm-result"></div>')
-						.html( html ).appendTo( self.$results() ).on('click',function(e){
-						self.select_result({
-							text:fmt,
-							bounds:el.properties.extent,
-							coord:el.geometry.coordinates,
-						});
-					});
-				});
-			}
-
-		},
-		clear_results:function(){
-			this.$results().html('');
-		},
-
-		format_result: function( hit ) {
-			return this.get_result_words( hit ).join(', ');
-		},
-
-		get_result_words: function( hit ) {
-
-			var h = [],
-				props = [ 'name','street','housenumber','city','postcode','state','country' ];
-			$.each(props, function(i,prop) {
-				try {
-					if ( !! hit.properties[prop] ) {
-						h.push(hit.properties[prop]);
-					}
-				} catch(err){}
-			});
-			return Array.from(new Set(h));
-		},
-		nice_words: function(str) {
-			return str.split(/[\s_]/).map(function(s){ return s[0].toUpperCase() + s.substring(1); }).join(' ');
-		},
-		// map_clicked:function(e){
-		// 	// reverse geocode
-		// 	var coord = e.latlng;
-		//
-		// 	this.ajax_get('https://photon.komoot.de/reverse', {
-		// 		lon:coord.lng,
-		// 		lat:coord.lat,
-		// 	}, function(response){
-		// 		var i=0,
-		// 			len = response.features.length;
-		// 		console.log(response)
-		// 		for (i;i<len;i++){
-		// 			var result = new osm.feature( response.features[i] );
-		// 			this.marker.title = result.format();
-		// 			this.$address().val( result.format() );
-		// 			this.set_marker( coord );
-		// 			break;
-		// 		}
-		// 	} );
-		//
-		// 	this.set_marker( e.latlng );
-		// },
-		// set_marker:function(coord){
-		// 	$(this.marker._icon).attr( 'title', this.marker.title );
-		// 	this.marker.setLatLng(coord);
-		// 	this.$mlat().val( coord.lat );
-		// 	this.$mlng().val( coord.lng );
-		// },
-		ajax_get: function( url, data, callback) {
-			var self = this;
-			$.ajax({
-				url:url,
-				method:'get',
-				data:data,
-				success:function(response) {
-					'function' === typeof callback && callback.apply(self,[response]);
-				}
-			});
-
-		},
-
 	});
 
 	/*
@@ -462,21 +407,9 @@
 	 *  @param	$el (jQuery selection) the jQuery element which contains the ACF fields
 	 *  @return	n/a
 	 */
-	$(document).on('render-map',function( e, map ) {
+	$(document).on('pre-render-map',function( e, map ) {
 		new osm.field( { el: e.target, map: map } );
 	});
-
-
-	// acf.add_action('ready append', function( $el ){
-	//
-	// 	// search $el for fields of type 'FIELD_NAME'
-	// 	acf.get_fields({ type : 'open_street_map'}, $el).each(function(){
-	//
-	// 		new osm.field( { el: this } );
-	//
-	// 	});
-	//
-	// });
 
 
 })( jQuery, acf_osm_admin );

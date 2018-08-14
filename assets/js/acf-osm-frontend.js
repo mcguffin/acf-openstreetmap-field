@@ -15991,6 +15991,9 @@ return Geocoder;
 					center: [ data.mapLat, data.mapLng ],
 					zoom: data.mapZoom
 				} );
+
+				$(this).trigger('pre-render-map', map );
+
 				$.each(data.mapLayers,function(i,provider){
 					if ( 'String' !== typeof provider ) {
 						return;
@@ -15999,14 +16002,16 @@ return Geocoder;
 					L.tileLayer.provider( provider, layer_config.options ).addTo( map );
 				});
 
-				if ( !! data.markerLabel ) {
-					L.marker(
-						[ data.markerLat, data.markerLng ],
-						{
-							title:data.markerLabel
-						}
-					).addTo( map );
-				}
+				$.each(data.mapMarkers,function(i,markerData){
+					// add markers
+					var marker = L.marker( L.latLng( markerData.lat * 1, markerData.lng * 1 ), {
+							title: markerData.label
+						})
+						.bindTooltip( markerData.label )
+						.addTo( map );
+
+				});
+
 				$(this).data( 'acf-osm-map', map );
 				$(this).trigger('render-map', map);
 			});
@@ -16017,6 +16022,7 @@ return Geocoder;
 			$('[data-map="leaflet"]').acf_leaflet();
 		}
 	});
+
 	$.acf_leaflet();
 
 })(jQuery,acf_osm);
