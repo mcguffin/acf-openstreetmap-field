@@ -29,6 +29,9 @@ class Core extends Plugin {
 		parent::__construct();
 	}
 
+	/**
+	 *	@action wp_enqueue_scripts
+	 */
 	public function register_assets() {
 
 		/* frontend */
@@ -37,6 +40,43 @@ class Core extends Plugin {
 		wp_localize_script('acf-osm-frontend','acf_osm',array(
 			'options'	=> array(
 				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
+				'marker'		=> array(
+
+					/**
+					 *	Marker Icon HTML. Return false to use image icon (either leaflet default or return value of filter `acf_osm_marker_icon`)
+					 *
+					 *	@param $marker_icon_html string Additional Icon HTML.
+					 */
+					'html'		=> apply_filters('acf_osm_marker_html', false ),
+
+					/**
+					 *	HTML Marker Icon css class
+					 *
+					 *	@param $classname string Class name for HTML icon. Default 'acf-osm-marker-icon'
+					 */
+					'className'	=> apply_filters('acf_osm_marker_classname', 'acf-osm-marker-icon' ),
+
+					/**
+					 *	Return leaflet icon options.
+					 *
+					 *	@see https://leafletjs.com/reference-1.3.2.html#icon
+					 *
+					 *	@param $icon_options false (leaflet default icon or HTML icon) or array(
+					 *		'iconUrl'			=> image URL
+					 *		'iconRetinaUrl'		=> image URL
+					 *		'iconSize'			=> array( int, int )
+					 *		'iconAnchor'		=> array( int, int )
+					 *		'popupAnchor'		=> array( int, int )
+					 *		'tooltipAnchor'		=> array( int, int )
+					 *		'shadowUrl'			=> image URL
+					 *		'shadowRetinaUrl'	=> image URL
+					 *		'shadowSize'		=> array( int, int )
+					 *		'shadowAnchor'		=> array( int, int )
+					 *		'className'			=> string
+				 	 *	)
+					 */
+					'icon'		=> apply_filters('acf_osm_marker_icon', false ),
+				),
 			),
 		));
 
