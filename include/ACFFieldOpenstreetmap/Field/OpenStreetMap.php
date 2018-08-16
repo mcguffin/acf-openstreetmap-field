@@ -547,19 +547,19 @@ class OpenStreetMap extends \acf_field {
 
 
 	/*
-	*  update_value()
-	*
-	*  This filter is applied to the $value before it is saved in the db
-	*
-	*  @type	filter
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$value (mixed) the value found in the database
-	*  @param	$post_id (mixed) the $post_id from which the value was loaded
-	*  @param	$field (array) the field array holding all the field options
-	*  @return	$value
-	*/
+	 *  update_value()
+	 *
+	 *  This filter is applied to the $value before it is saved in the db
+	 *
+	 *  @type	filter
+	 *  @since	3.6
+	 *  @date	23/01/13
+	 *
+	 *  @param	$value (mixed) the value found in the database
+	 *  @param	$post_id (mixed) the $post_id from which the value was loaded
+	 *  @param	$field (array) the field array holding all the field options
+	 *  @return	$value
+	 */
 
 	function update_value( $value, $post_id, $field ) {
 		if ( isset( $value['markers']['__osm_marker_template__'] ) ) {
@@ -614,7 +614,7 @@ class OpenStreetMap extends \acf_field {
 
 			$iframe_src_args = array(
 				'bbox'	=> implode( ',', $bbox ),
-				'layer'	=> $value['osm_layer'],
+				'layer'	=> $value['layers'],
 			);
 			$map_link_args = array();
 

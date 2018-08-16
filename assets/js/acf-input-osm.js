@@ -106,11 +106,11 @@
 
 			this.update_map(); // set map to input values
 
+			this.init_acf();
+
 			this.init_layers();
 
 			this.init_markers();
-
-			this.init_acf();
 
 			this.update_visible();
 
@@ -358,7 +358,7 @@
 				return;
 			}
 
-			this.map.on( 'layeradd layerremove', function(e){
+			this.map.on( 'baselayerchange layeradd layerremove', function(e){
 				if ( ! e.layer.providerKey) {
 					return;
 				}

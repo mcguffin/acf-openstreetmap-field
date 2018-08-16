@@ -27,6 +27,7 @@ class ACF extends Core\PluginComponent {
 			'height'		=> 400,
 		);
 		$map_field = Field\OpenStreetMap::get_instance();
+
 		echo $map_field->format_value( $field['value'], null, $inp_field );
 	}
 
@@ -44,13 +45,13 @@ class ACF extends Core\PluginComponent {
 	 */
 	function include_field_types( $version = false ) {
 
-		array(
-			'version'	=> '0.0.1',
-			'url'		=> plugin_dir_url( __FILE__ ),
-			'path'		=> plugin_dir_path( __FILE__ )
-		);
+		// array(
+		// 	'version'	=> '0.0.1',
+		// 	'url'		=> plugin_dir_url( __FILE__ ),
+		// 	'path'		=> plugin_dir_path( __FILE__ )
+		// );
 
-		new Field\OpenStreetMap();
+		Field\OpenStreetMap::get_instance();
 	}
 
 	/**
