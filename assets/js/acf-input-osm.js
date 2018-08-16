@@ -13,9 +13,15 @@
 	osm.MarkerEntry = Backbone.View.extend({
 		tagName: 'div',
 		className:'osm-marker',
+		default_state: true,
 		events: {
 			'click [data-name="locate-marker"]' : 'locate_marker',
 			'click [data-name="remove-marker"]' : 'remove_marker',
+			'change [type="text"]' 				: 'set_default_state',
+		},
+		is_default_label: function(){
+			var default_val = this.$el.find('[id$="-marker-default-label"]').val();
+			return ( ! default_val ) || ( this.$el.find('[id$="-marker-label"]').val() === default_val );
 		},
 		initialize:function(opt){
 			var self = this;
@@ -26,13 +32,26 @@
 		},
 		render:function(){
 			this.$el.html( this.template( this ) );
-			this.update_marker();
 			return this;
 		},
-		update_marker:function() {
-			this.$el.find('[id$="-marker-lat"]').val( this.marker.getLatLng().lat );
-			this.$el.find('[id$="-marker-lng"]').val( this.marker.getLatLng().lng );
-			this.$el.find('[id$="-marker-label"]').val( this.marker.options.title );
+		update_marker:function( latlng, label ) {
+
+			if ( this.is_default_label() ) {
+				// update marker labels
+				this.marker.unbindTooltip();
+				this.marker.bindTooltip(label);
+
+				this.marker.options.title = label;
+				$( this.marker._icon ).attr( 'title', label );
+
+				// update marker label input
+				this.$el.find('[id$="-marker-label"]').val( this.marker.options.title );
+			}
+
+			this.$el.find('[id$="-marker-lat"]').val( latlng.lat );
+			this.$el.find('[id$="-marker-lng"]').val( latlng.lng );
+			this.$el.find('[id$="-marker-default-label"]').val( label );
+
 			return this;
 		},
 		locate_marker:function(){
@@ -156,14 +175,15 @@
 						entry.$el.remove();
 					})
 					.on('dragend',function(e){
+						if ( ! parseInt( entry.default_state ) ) {
+							return;
+						}
 						self.geocoder.options.geocoder.reverse(this.getLatLng(),self.map.getZoom(),function(e){
 
-							var label = self._get_geocoder_result_label( e, this.getLatLng() );
-							this.unbindTooltip()
-							this.bindTooltip(label);
-							this.options.title = label;
-							$(this._icon).attr( 'title', label );
-							entry.update_marker();
+							var latlng = this.getLatLng(),
+								label = self._get_geocoder_result_label( e, latlng );
+console.log(label)
+							entry.update_marker( latlng, label );
 
 						}, this );
 					})
@@ -223,7 +243,7 @@
 					layer_config = options.layer_config[ key.split('.')[0] ] || {options:{}};
 					layer = L.tileLayer.provider( key, layer_config.options );
 					layer.providerKey = key;
-console.log(selectedLayers)
+
 					if ( self.layer_is_overlay( key, layer ) ) {
 						overlays[key] = layer;
 					} else {
@@ -333,7 +353,6 @@ console.log(selectedLayers)
 			this.map.on( 'baselayerchange overlayadd overlayremove layeradd layerremove', function(e){
 				var layers = [];
 				self.map.eachLayer(function(layer) {
-					console.log(layer);
 					if ( ! layer.providerKey ) {
 						return;
 					}
@@ -392,7 +411,6 @@ console.log(selectedLayers)
 		map_zoomed:function(e){
 			this.$zoom().val( this.map.getZoom() );
 		},
-
 	});
 
 	/*
@@ -408,7 +426,7 @@ console.log(selectedLayers)
 	 *  @param	$el (jQuery selection) the jQuery element which contains the ACF fields
 	 *  @return	n/a
 	 */
-	$(document).on('pre-render-map',function( e, map ) {
+	$(document).on('acf-osm-map-init',function( e, map ) {
 		new osm.field( { el: e.target, map: map } );
 	});
 

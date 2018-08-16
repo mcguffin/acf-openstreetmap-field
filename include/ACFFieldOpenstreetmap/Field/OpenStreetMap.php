@@ -319,9 +319,10 @@ class OpenStreetMap extends \acf_field {
 		) );
 		$markers = array(); // $field['value']['markers'];
 		$markers['__osm_marker_template__'] = array(
-			'lng'		=> '',
-			'lat'		=> '',
-			'label'		=> '',
+			'lng'			=> '',
+			'lat'			=> '',
+			'label'			=> '',
+			'default_label'	=> '',
 		);
 		?>
 		<div class="osm-markers">
@@ -332,6 +333,11 @@ class OpenStreetMap extends \acf_field {
 					</div>
 					<div class="input">
 					<?php
+					acf_hidden_input(array(
+						'id'		=> $field['id'] . '-markers-' . $key . '-marker-default-label',
+						'name'		=> $field['name'] . '[markers][' . $key . '][default_label]',
+						'value'		=> $marker['default_label'],
+					));
 					acf_hidden_input(array(
 						'id'		=> $field['id'] . '-markers-' . $key . '-marker-lat',
 						'name'		=> $field['name'] . '[markers][' . $key . '][lat]',

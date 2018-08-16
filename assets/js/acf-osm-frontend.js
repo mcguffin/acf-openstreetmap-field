@@ -15978,11 +15978,20 @@ return Geocoder;
 	$.fn.extend({
 		acf_leaflet:function() {
 
-			return this.each(function(i,el){
+			return this.each( function( i, el ){
 				if ( $(this).data( 'acf-osm-map' ) ) {
 					return;
 				}
-				var data = $(this).data();
+				var data = $(this).data(),
+					e = $.Event({
+						type: 'acf-osm-map-create'
+					});
+
+				$(this).trigger( e );
+
+				if ( e.isDefaultPrevented() ) {
+					return;
+				}
 
 				$(this).height(data.height);
 
@@ -15993,7 +16002,7 @@ return Geocoder;
 				} ),
 				maxzoom = 100;
 
-				$(this).trigger('pre-render-map', map );
+				$(this).trigger('acf-osm-map-init', map );
 
 				$.each(data.mapLayers,function(i,provider_key){
 
@@ -16021,7 +16030,9 @@ return Geocoder;
 				});
 
 				$(this).data( 'acf-osm-map', map );
-				$(this).trigger('render-map', map);
+
+				$(this).trigger('acf-osm-map-created', map );
+
 			});
 		}
 	});
