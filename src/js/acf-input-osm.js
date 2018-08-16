@@ -13,15 +13,16 @@
 	osm.MarkerEntry = Backbone.View.extend({
 		tagName: 'div',
 		className:'osm-marker',
-		default_state: true,
 		events: {
 			'click [data-name="locate-marker"]' : 'locate_marker',
 			'click [data-name="remove-marker"]' : 'remove_marker',
-			'change [type="text"]' 				: 'set_default_state',
+			'change [id$="-marker-label"]'		: 'update_marker_label',
 		},
 		is_default_label: function(){
-			var default_val = this.$el.find('[id$="-marker-default-label"]').val();
-			return ( ! default_val ) || ( this.$el.find('[id$="-marker-label"]').val() === default_val );
+			var default_val = this.$el.find('[id$="-marker-default-label"]').val(),
+				current_val = this.$el.find('[id$="-marker-label"]').val();
+
+			return current_val === default_val;
 		},
 		initialize:function(opt){
 			var self = this;
@@ -32,28 +33,43 @@
 		},
 		render:function(){
 			this.$el.html( this.template( this ) );
+			this._update_values_from_marker();
+			return this;
+		},
+		update_marker_label:function(e) {
+			return this.set_marker_label( $(e.target).val() );
+		},
+		set_marker_label:function(label) {
+			this.marker.unbindTooltip();
+			this.marker.bindTooltip(label);
+
+			this.marker.options.title = label;
+			$( this.marker._icon ).attr( 'title', label );
 			return this;
 		},
 		update_marker:function( latlng, label ) {
 
 			if ( this.is_default_label() ) {
 				// update marker labels
-				this.marker.unbindTooltip();
-				this.marker.bindTooltip(label);
-
-				this.marker.options.title = label;
-				$( this.marker._icon ).attr( 'title', label );
-
+				this.set_marker_label( label );
 				// update marker label input
-				this.$el.find('[id$="-marker-label"]').val( this.marker.options.title );
 			}
 
-			this.$el.find('[id$="-marker-lat"]').val( latlng.lat );
-			this.$el.find('[id$="-marker-lng"]').val( latlng.lng );
+
 			this.$el.find('[id$="-marker-default-label"]').val( label );
+
+			this._update_values_from_marker();
 
 			return this;
 		},
+		_update_values_from_marker: function( ) {
+			var latlng = this.marker.getLatLng();
+			this.$el.find('[id$="-marker-lat"]').val( latlng.lat );
+			this.$el.find('[id$="-marker-lng"]').val( latlng.lng );
+			this.$el.find('[id$="-marker-label"]').val( this.marker.options.title );
+			return this;
+		},
+
 		locate_marker:function(){
 			this.marker._map.flyTo( this.marker.getLatLng() );
 			$(this.marker._icon).focus()
@@ -148,6 +164,7 @@
 				var latlng = e.latlng;
 				self.geocoder.options.geocoder.reverse(e.latlng,self.map.getZoom(),function(e){
 					var label = self._get_geocoder_result_label( e, latlng );
+
 					self.add_marker( latlng, label );
 				},self);
 			});
@@ -156,6 +173,7 @@
 				if ( e.layer.constructor !== L.Marker ) {
 					return;
 				}
+				// marker added
 				var template = self.$markers().find('[data-id="__osm_marker_template__"]').html().split('__osm_marker_template__').join( '<%= id %>' ),
 					entry = new osm.MarkerEntry({
 						controller: this,
@@ -175,9 +193,7 @@
 						entry.$el.remove();
 					})
 					.on('dragend',function(e){
-						if ( ! parseInt( entry.default_state ) ) {
-							return;
-						}
+
 						self.geocoder.options.geocoder.reverse(this.getLatLng(),self.map.getZoom(),function(e){
 
 							var latlng = this.getLatLng(),
@@ -188,6 +204,17 @@
 					})
 					.dragging.enable();
 			} );
+
+			$.each( this.$el.data().mapMarkers,function( i, markerData ) {
+				// add markers
+				var marker = L.marker( L.latLng( markerData.lat * 1, markerData.lng * 1 ), {
+						title: markerData.label
+					})
+					.bindTooltip( markerData.label )
+					.addTo( self.map );
+
+			});
+
 		},
 		add_marker:function( lnglat, label ){
 			L.marker(lnglat,{
@@ -262,17 +289,44 @@
 			selectedLayers = this.$el.data().mapLayers;
 
 
+			if ( this.$layerStore().length ) {
+				this.map.on( 'baselayerchange layeradd layerremove', function(e){
+					if ( ! e.layer.providerKey) {
+						return;
+					}
+					var $layerStore = self.$layerStore(),
+						$template = self.$parent().find('[data-id="__osm_layer_template__"]');
+
+					$layerStore.html('');
+
+					self.map.eachLayer(function(layer) {
+						if ( ! layer.providerKey ) {
+							return;
+						}
+						var $layerInput = $template.clone().removeAttr('data-id');
+						$layerInput.val( layer.providerKey );
+
+						if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
+							$layerStore.append( $layerInput );
+						} else {
+							$layerStore.prepend( $layerInput );
+						}
+					});
+
+				} );
+			}
+
+
 			$.each( options.providers, setupMap );
 
 			// ... no layer editing allowed
-			if ( ! this.$layerStore().length ) {
-				return;
+			if ( this.$layerStore().length ) {
+				this.layersControl = L.control.layers( baseLayers, overlays, {
+					collapsed: true,
+					hideSingleBase: true,
+				}).addTo(this.map);
 			}
 
-			this.layersControl = L.control.layers( baseLayers, overlays, {
-				collapsed: true,
-				hideSingleBase: true,
-			}).addTo(this.map);
 
 		},
 		init_geocode:function() {
@@ -295,6 +349,7 @@
 			.on('markgeocode',function(e){
 				//console.log(e.geocode.cneter);return;
 				var label = self._get_geocoder_result_label( [e.geocode], e.geocode.center );
+
 				self.add_marker( e.geocode.center, label );
 				/*
 				self.map.flyToBounds(e.geocode.bbox);
@@ -354,34 +409,7 @@
 
 			this.map.on('zoomend', function(e){ self.map_zoomed.apply( self, [e] ); } );
 			this.map.on('moveend', function(e){ self.map_moved.apply( self, [e] ); } );
-			if ( ! self.$layerStore().length ) {
-				return;
-			}
 
-			this.map.on( 'baselayerchange layeradd layerremove', function(e){
-				if ( ! e.layer.providerKey) {
-					return;
-				}
-				var $layerStore = self.$layerStore(),
-					$template = self.$parent().find('[data-id="__osm_layer_template__"]');
-
-				$layerStore.html('');
-
-				self.map.eachLayer(function(layer) {
-					if ( ! layer.providerKey ) {
-						return;
-					}
-					var $layerInput = $template.clone().removeAttr('data-id');
-					$layerInput.val( layer.providerKey );
-
-					if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
-						$layerStore.append( $layerInput );
-					} else {
-						$layerStore.prepend( $layerInput );
-					}
-				});
-
-			} );
 		},
 		unbind_events:function() {
 			var self = this;
