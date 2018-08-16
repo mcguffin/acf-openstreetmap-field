@@ -92,7 +92,7 @@
 			return this.$parent().find('input[id$="-center_lng"]');
 		},
 		$layerStore: function() {
-			return this.$parent().find('input[id$="-leaflet_layers"]');
+			return this.$parent().find('.acf-osm-layers');
 		},
 		$results : function() {
 			return this.$parent().find('.osm-results');
@@ -182,7 +182,6 @@
 
 							var latlng = this.getLatLng(),
 								label = self._get_geocoder_result_label( e, latlng );
-console.log(label)
 							entry.update_marker( latlng, label );
 
 						}, this );
@@ -226,6 +225,7 @@ console.log(label)
 				selectedLayers = [],
 				baseLayers = {},
 				overlays = {},
+				mapLayers = {},
 				is_omitted = function(key) {
 
 					return key === null;
@@ -239,23 +239,28 @@ console.log(label)
 					if ( is_omitted(key) ) {
 						return;
 					}
-
-					layer_config = options.layer_config[ key.split('.')[0] ] || {options:{}};
-					layer = L.tileLayer.provider( key, layer_config.options );
-					layer.providerKey = key;
+					if ( !! mapLayers[ key ] ) {
+						layer = mapLayers[ key ];
+						self.map.addLayer(layer)
+					} else {
+						layer_config = options.layer_config[ key.split('.')[0] ] || {options:{}};
+						layer = L.tileLayer.provider( key, layer_config.options );
+						layer.providerKey = key;
+					}
 
 					if ( self.layer_is_overlay( key, layer ) ) {
 						overlays[key] = layer;
 					} else {
 						baseLayers[key] = layer;
 					}
-					if ( selectedLayers.indexOf( key ) !== -1 ){
 
+					if ( selectedLayers.indexOf( key ) !== -1 ) {
 						self.map.addLayer(layer);
 					}
 				};
 
 			selectedLayers = this.$el.data().mapLayers;
+
 
 			$.each( options.providers, setupMap );
 
@@ -349,20 +354,33 @@ console.log(label)
 
 			this.map.on('zoomend', function(e){ self.map_zoomed.apply( self, [e] ); } );
 			this.map.on('moveend', function(e){ self.map_moved.apply( self, [e] ); } );
+			if ( ! self.$layerStore().length ) {
+				return;
+			}
 
-			this.map.on( 'baselayerchange overlayadd overlayremove layeradd layerremove', function(e){
-				var layers = [];
+			this.map.on( 'layeradd layerremove', function(e){
+				if ( ! e.layer.providerKey) {
+					return;
+				}
+				var $layerStore = self.$layerStore(),
+					$template = self.$parent().find('[data-id="__osm_layer_template__"]');
+
+				$layerStore.html('');
+
 				self.map.eachLayer(function(layer) {
 					if ( ! layer.providerKey ) {
 						return;
 					}
+					var $layerInput = $template.clone().removeAttr('data-id');
+					$layerInput.val( layer.providerKey );
+
 					if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
-						layers.push(layer.providerKey);
+						$layerStore.append( $layerInput );
 					} else {
-						layers.unshift(layer.providerKey);
+						$layerStore.prepend( $layerInput );
 					}
 				});
-				self.$layerStore().val( JSON.stringify( layers ) );
+
 			} );
 		},
 		unbind_events:function() {
@@ -371,7 +389,6 @@ console.log(label)
 			self.$lng().off('blur');
 			self.$zoom().off('blur');
 			self.$zoom().off('keyup focus');
-
 		},
 		bind_events: function() {
 			var self = this;
@@ -427,6 +444,7 @@ console.log(label)
 	 *  @return	n/a
 	 */
 	$(document).on('acf-osm-map-init',function( e, map ) {
+		e.preventDefault();
 		new osm.field( { el: e.target, map: map } );
 	});
 

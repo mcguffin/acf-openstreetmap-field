@@ -56,12 +56,11 @@ class OpenStreetMap extends \acf_field {
 		$this->category = 'jquery';
 
 		$this->default_values = array(
-			'center_lat'		=> '-37.81411',
-			'center_lng'		=> '144.96328',
-			'zoom'				=> '14',
-			'osm_layer'			=> 'mapnik',
-			'leaflet_layers'	=> array( 'OpenStreetMap' ),
-			'markers'			=> array(),
+			'center_lat'	=> '-37.81411',
+			'center_lng'	=> '144.96328',
+			'zoom'			=> '14',
+			'layers'		=> array( 'OpenStreetMap' ),
+			'markers'		=> array(),
 		);
 		/*
 		*  defaults (array) Array of default settings which are merged into the field object. These are used later in settings
@@ -71,7 +70,7 @@ class OpenStreetMap extends \acf_field {
 			'height'			=> 400,
 			'return_format'		=> 'leaflet',
 			'allow_map_layers'	=> 1,
-			'leaflet_layers'	=> $this->default_values['leaflet_layers'],
+			'layers'			=> $this->default_values['layers'],
 		);
 
 		/*
@@ -178,9 +177,9 @@ class OpenStreetMap extends \acf_field {
 			'label'			=> __('layers','acf-openstreetmap-field'),
 			'instructions'	=> __('Choose Layers from the map','acf-openstreetmap-field'),
 			'type'			=> 'text',
-			'name'			=> 'leaflet_layers',
+			'name'			=> 'layers',
 //			'prepend'		=> __('zoom','acf-openstreetmap-field'),
-			'placeholder'	=> $this->default_values['leaflet_layers'],
+			'placeholder'	=> $this->default_values['layers'],
 		));
 
 		acf_render_field_setting( $field, array(
@@ -302,64 +301,63 @@ class OpenStreetMap extends \acf_field {
 
 		// layers
 		if ( $field['allow_map_layers'] ) {
+			?>
+			<div class="acf-osm-layers"></div>
+			<?php
+
 			acf_hidden_input(array(
-				'id'		=> $field['id'] . '-leaflet_layers',
-				'name'		=> $field['name'] . '[leaflet_layers]',
-				'value'		=> $field['value']['leaflet_layers'],
+				'data-id'		=> '__osm_layer_template__',
+				'name'		=> $field['name'] . '[layers][]',
 			));
 		}
 
-
-
+		// the map
 		acf_render_field( array(
 			'type'				=> 'leaflet_map',
 			'name'				=> $field['name'],
 			'value'				=> $field['value'],
 			'allow_map_layers'	=> $field['allow_map_layers'],
 		) );
+
+
+
+		// markers
 		$markers = array(); // $field['value']['markers'];
-		$markers['__osm_marker_template__'] = array(
-			'lng'			=> '',
-			'lat'			=> '',
-			'label'			=> '',
-			'default_label'	=> '',
-		);
+
 		?>
 		<div class="osm-markers">
-			<?php  foreach ( $markers as $key => $marker ) { ?>
-				<div class="osm-marker" data-id="<?php echo $key; ?>">
-					<div class="locate">
-						<a class="dashicons dashicons-location" data-name="locate-marker"><span class="screen-reader-text"><?php _e('Lcate Marker','acf-field-openstreetmap'); ?></span></a>
-					</div>
-					<div class="input">
-					<?php
-					acf_hidden_input(array(
-						'id'		=> $field['id'] . '-markers-' . $key . '-marker-default-label',
-						'name'		=> $field['name'] . '[markers][' . $key . '][default_label]',
-						'value'		=> $marker['default_label'],
-					));
-					acf_hidden_input(array(
-						'id'		=> $field['id'] . '-markers-' . $key . '-marker-lat',
-						'name'		=> $field['name'] . '[markers][' . $key . '][lat]',
-						'value'		=> $marker['lat'],
-					));
-					acf_hidden_input(array(
-						'id'		=> $field['id'] . '-markers-' . $key . '-marker-lng',
-						'name'		=> $field['name'] . '[markers][' . $key . '][lng]',
-						'value'		=> $marker['lng'],
-					));
-					acf_text_input(array(
-						'id'		=> $field['id'] . '-markers-' . $key . '-marker-label',
-						'name'		=> $field['name'] . '[markers][' . $key . '][label]',
-						'value'		=> $marker['label'],
-					));
-					?>
-					</div>
-					<div class="tools">
-						<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php _e('Remove Marker', 'acf-field-openstreetmap'); ?>"></a>
-					</div>
+			<div class="osm-marker" data-id="__osm_marker_template__">
+				<div class="locate">
+					<a class="dashicons dashicons-location" data-name="locate-marker"><span class="screen-reader-text"><?php _e('Locate Marker','acf-field-openstreetmap'); ?></span></a>
 				</div>
-			<?php } ?>
+				<div class="input">
+				<?php
+				acf_hidden_input(array(
+					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-default-label',
+					'name'		=> $field['name'] . '[markers][__osm_marker_template__][default_label]',
+					'value'		=> '',
+				));
+				acf_hidden_input(array(
+					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-lat',
+					'name'		=> $field['name'] . '[markers][__osm_marker_template__][lat]',
+					'value'		=> '',
+				));
+				acf_hidden_input(array(
+					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-lng',
+					'name'		=> $field['name'] . '[markers][__osm_marker_template__][lng]',
+					'value'		=> '',
+				));
+				acf_text_input(array(
+					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-label',
+					'name'		=> $field['name'] . '[markers][__osm_marker_template__][label]',
+					'value'		=> '',
+				));
+				?>
+				</div>
+				<div class="tools">
+					<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php _e('Remove Marker', 'acf-field-openstreetmap'); ?>"></a>
+				</div>
+			</div>
 		</div>
 		<?php
 
@@ -569,11 +567,13 @@ class OpenStreetMap extends \acf_field {
 		}
 		$value['markers'] = array_values( $value['markers'] );
 
+		if ( ! isset( $value['layers'] ) || ! is_array( $value['layers'] )  ) {
+			$value['layers'] = $this->default_values['layers'];
+		}
 
-		$value['leaflet_layers'] = json_decode( stripslashes($value['leaflet_layers']) );
-		$value['leaflet_layers'] = array_filter( $value['leaflet_layers'] );
-		$value['leaflet_layers'] = array_unique( $value['leaflet_layers'] );
-		$value['leaflet_layers'] = array_values( $value['leaflet_layers'] );
+		$value['layers'] = array_filter( $value['layers'] );
+		$value['layers'] = array_unique( $value['layers'] );
+		$value['layers'] = array_values( $value['layers'] );
 
 		return $value;
 	}
@@ -661,7 +661,7 @@ class OpenStreetMap extends \acf_field {
 				'data-map-lng'		=> $value['center_lng'],
 				'data-map-lat'		=> $value['center_lat'],
 				'data-map-zoom'		=> $value['zoom'],
-				'data-map-layers'	=> $value['leaflet_layers'],
+				'data-map-layers'	=> $value['layers'],
 				'data-map-markers'	=> json_encode($value['markers']),
 			);
 
@@ -773,8 +773,7 @@ class OpenStreetMap extends \acf_field {
 		return $field;
 
 		$defaults = wp_parse_args( array(
-			'leaflet_layers'	=> $field['default_leaflet_layers'],
-			'osm_layer'			=> $field['default_osm_layer'],
+			'layers'	=> $field['default_layers'],
 		), $this->default_values );
 
 		$field['value'] = wp_parse_args( $field['value'], $defaults );

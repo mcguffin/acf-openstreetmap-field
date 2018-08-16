@@ -15983,28 +15983,39 @@ return Geocoder;
 					return;
 				}
 				var data = $(this).data(),
-					e = $.Event({
+					map, maxzoom,
+					createEvt = $.Event({
 						type: 'acf-osm-map-create'
+					}),
+					initEvt = $.Event({
+						type: 'acf-osm-map-init'
 					});
 
-				$(this).trigger( e );
+				$(this).trigger( createEvt );
 
-				if ( e.isDefaultPrevented() ) {
+				if ( createEvt.isDefaultPrevented() ) {
 					return;
 				}
 
 				$(this).height(data.height);
 
-				var map = L.map( this, {
+				map = L.map( this, {
 					scrollWheelZoom: false,
 					center: [ data.mapLat, data.mapLng ],
 					zoom: data.mapZoom
-				} ),
+				} );
+
+				$(this).data( 'acf-osm-map', map );
+
+				$(this).trigger( initEvt, map );
+
+				if ( initEvt.isDefaultPrevented() ) {
+					return;
+				}
+
 				maxzoom = 100;
 
-				$(this).trigger('acf-osm-map-init', map );
-
-				$.each(data.mapLayers,function(i,provider_key){
+				$.each( data.mapLayers, function(i,provider_key){
 
 					if ( 'string' !== typeof provider_key ) {
 						return;
@@ -16018,7 +16029,9 @@ return Geocoder;
 						maxzoom = Math.min( layer.options.maxZoom, maxzoom )
 					}
 				});
+
 				map.setMaxZoom( maxzoom );
+
 				$.each(data.mapMarkers,function(i,markerData){
 					// add markers
 					var marker = L.marker( L.latLng( markerData.lat * 1, markerData.lng * 1 ), {
@@ -16029,7 +16042,6 @@ return Geocoder;
 
 				});
 
-				$(this).data( 'acf-osm-map', map );
 
 				$(this).trigger('acf-osm-map-created', map );
 
