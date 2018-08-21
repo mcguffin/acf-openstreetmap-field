@@ -151,20 +151,37 @@
 		},
 		init_markers:function(){
 
-			var self = this;
+			var self = this,
+				is_osm = this.$el.data().returnFormat === 'osm';
 
 			this.icon = new L.DivIcon({
 				html: '',
 				className:'osm-marker-icon'
 			});
 
+
 			this.init_geocode();
 
 			this.map.on('click', function(e){
 				var latlng = e.latlng;
+				// THERE IS A BETTER WAY!
 				self.geocoder.options.geocoder.reverse(e.latlng,self.map.getZoom(),function(e){
 					var label = self._get_geocoder_result_label( e, latlng );
-
+					if ( is_osm ) {
+						// move marker
+						var marker;
+						self.map.eachLayer(function(layer){
+							if ( layer.constructor === L.Marker ) {
+								marker = layer;
+								return false;
+							}
+						});
+						if ( !! marker ) {
+							marker.setLatLng( latlng );
+							console.log('marker',marker)
+							return;
+						}
+					}
 					self.add_marker( latlng, label );
 				},self);
 			});
@@ -253,9 +270,10 @@
 				baseLayers = {},
 				overlays = {},
 				mapLayers = {},
+				editor_config = this.$el.data().editorConfig,
 				is_omitted = function(key) {
 
-					return key === null;
+					return key === null || ( !! editor_config['restrict-providers'] && editor_config['restrict-providers'].indexOf( key ) === -1 );
 				},
 				setupMap = function( key, val ){
 					var layer, layer_config;
