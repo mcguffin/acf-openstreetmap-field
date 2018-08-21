@@ -245,7 +245,7 @@ class Core extends Plugin {
 					if ( ! is_string( $variant_data ) && isset( $variant_data['options']['bounds'] ) ) {
 						// no variants with bounds!
 						continue;
-					} else if ( is_string( $variant_data ) || isset( $variant_data['options']['variant'] ) ) {
+					} else if ( is_string( $variant_data ) || isset( $variant_data['options']/*['variant']*/ ) ) {
 						$providers[$provider][$provider . '.' . $variant] = $variant;
 					} else {
 						$providers[$provider][$provider] = $provider;
