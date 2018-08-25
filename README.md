@@ -20,6 +20,7 @@ ToDO:
 	 - [x] iFrame mode:
 		 - [x] configurable max markers
 		 - [x] Available Layers
+	 - [ ] Bug: maps don't init when acf field is added.
  - [ ] Field Settings
 	 - [ ] provider select @ osm
 	 - [ ] hide layer select

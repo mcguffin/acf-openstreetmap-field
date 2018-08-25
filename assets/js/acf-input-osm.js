@@ -278,6 +278,20 @@
 			];
 			return key.match('(' + patterns.join('|') + ')') !== null;
 		},
+		reset_layers:function() {
+			// set this.$el.data().mapLayers so it fits
+			// remove all map layers
+			this.map.eachLayer(function(layer){
+				if ( layer.constructor === L.TileLayer.Provider ) {
+					layer.remove();
+				}
+			})
+			// remove layer store
+			this.$layerStore().remove();
+
+			// remove layer control
+			!! this.layersControl && this.layersControl.remove()
+		},
 		init_layers:function() {
 			var self = this,
 				selectedLayers = [],
@@ -318,11 +332,29 @@
 					}
 				};
 
-			selectedLayers = this.$el.data().mapLayers;
+			selectedLayers = this.$el.data().mapLayers; // should be layer store value
+
+			// filter avaialble layers in field value
+			if ( editor_config.restrict_providers !== false && _.isArray( editor_config.restrict_providers ) ) {
+				selectedLayers = selectedLayers.filter( function(el) {
+					return editor_config.restrict_providers.indexOf( el ) !== -1;
+				});
+			}
+
+			// set default layer
+			if ( ! selectedLayers.length ) {
+
+				selectedLayers = Object.keys( options.providers ).slice( 0, 1 );
+
+			}
 
 			// editable layers!
-			if ( this.$layerStore().length ) {
+			if ( editor_config.allow_providers ) {
+
+				$('<div class="acf-osm-layers"></div>').insertAfter( this.$el );
+
 				this.map.on( 'baselayerchange layeradd layerremove', function(e){
+
 					if ( ! e.layer.providerKey) {
 						return;
 					}
@@ -332,10 +364,15 @@
 					$layerStore.html('');
 
 					self.map.eachLayer(function(layer) {
+						var $layerInput;
 						if ( ! layer.providerKey ) {
 							return;
 						}
-						var $layerInput = $template.clone().removeAttr('data-id');
+						/*
+						$layerInput = $template.clone().removeAttr('data-id');
+						/*/
+						$layerInput = $('<input type="hidden" name="' + editor_config.name_prefix + '[layers][]" />');
+						//*/
 						$layerInput.val( layer.providerKey );
 
 						if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
@@ -449,9 +486,12 @@
 			// expand/collapse acf setting
 			acf.addAction( 'show', toggle_cb );
 			acf.addAction( 'hide', toggle_cb );
+			acf.addAction( 'disable_field', function(){
+				self.unbind_events();
+			} );
 
 			// expand wp metabox
-			$(document).on('postbox-toggled',toggle_cb)
+			$(document).on('postbox-toggled',toggle_cb);
 
 
 			this.map.on('zoomend', function(e){ self.map_zoomed.apply( self, [e] ); } );
@@ -477,7 +517,6 @@
 			self.$zoom().on('blur',function(e){
 				self.update_map();
 			});
-
 		},
 		update_map:function() {
 			if ( ! this.$lat().val() || ! this.$lng().val() ) {
@@ -496,11 +535,37 @@
 		},
 	});
 
-	
-	$(document).on('acf-osm-map-init',function( e, map ) {
-		e.preventDefault();
-		new osm.field( { el: e.target, map: map } );
-	});
 
+	$(document)
+		.on('acf-osm-map-init',function( e, map ) {
+			e.preventDefault();
+			$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );
+			;
+		})
+		// field settings
+		.on('change','[data-name="return_format"] input',function(e){
+			// find map field
+			$('[data-name="return_format"] input:checked').val()
+			var $map = $(this).closest('.acf-field-object').find('[data-editor-config]'),
+				editor = $map.data( '_map_editor' ),
+				conf = $map.data('editor-config');
+			// map
+			editor.reset_layers();
+			if ( $(this).val() === 'osm' ) {
+				// set provider restriction to osm providers
+				conf.restrict_providers = Object.values( arg.options.osm_layers );
+			} else {
+				// set provider restriction to osm providers
+				conf.restrict_providers = false;
+			}
+			$map.data( 'editor-config', conf );
+			editor.init_layers();
+			//console.log(field.el)
+		});
+
+	// when fields get loaded ...
+	acf.addAction( 'append', function(){
+		$.acf_leaflet();
+	});
 
 })( jQuery, acf_osm_admin );

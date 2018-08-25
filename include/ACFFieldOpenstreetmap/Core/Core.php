@@ -90,7 +90,7 @@ class Core extends Plugin {
 		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
 			'options'	=> array(
 				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
-				'osm_layers'	=> $this->get_osm_layers_config(),
+				'osm_layers'	=> $this->get_osm_layers(),
 				'providers'		=> $this->get_layer_providers(),
 			),
 		));
@@ -157,48 +157,13 @@ class Core extends Plugin {
 		hot H	Humantarian
 		*/
 		return array(
-			'mapnik'		=> __('Standard','osm-layer','acf-open-street-map'),
-			'cyclemap'		=> __('Cycle Map','osm-layer','acf-open-street-map'),
-			'transportmap'	=> __('Transport map','osm-layer','acf-open-street-map'),
-			'hot'			=> __('Humanitarian','osm-layer','acf-open-street-map'),
+			'mapnik'		=> 'OpenStreetMap',
+			'cyclemap'		=> 'Thunderforest.OpenCycleMap',
+			'transportmap'	=> 'Thunderforest.Transport',
+			'hot'			=> 'OpenStreetMap.HOT',
 		);
 	}
 
-	/**
-	 *	get default OPenStreetMap Layers
-	 *
-	 *	@return array(
-	 *		'layer_id' => array('label' => 'Layer Label', 'provider' => 'leaflet-provider ID' )
-	 *	)
-	 */
-	function get_osm_layers_config( ) {
-		/*
-		mapnik
-		cyclemap C 	Cycle
-		transportmap T	Transport
-		hot H	Humantarian
-		*/
-
-
-		return array(
-			'mapnik'		=> array(
-				'label' 		=>__('Standard','osm-layer','acf-open-street-map'),
-				'provider'		=> 'OpenStreetMap.Mapnik',
-			),
-			'cyclemap'		=> array(
-				'label' 		=> __('Cycle Map','osm-layer','acf-open-street-map'),
-				'provider'		=> 'Thunderforest.OpenCycleMap',
-			),
-			'transportmap'	=> array(
-				'label' 		=> __('Transport map','osm-layer','acf-open-street-map'),
-				'provider'		=> 'Thunderforest.Transport',
-			),
-			'hot'		=> array(
-				'label' 		=> __('Humanitarian','osm-layer','acf-open-street-map'),
-				'provider'		=> 'OpenStreetMap.HOT',
-			),
-		);
-	}
 	/**
 	 *	get providers and variants
 	 *	omits proviers with unconfigured api credentials
