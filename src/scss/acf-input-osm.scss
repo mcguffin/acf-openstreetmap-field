@@ -92,16 +92,18 @@
 	//border:1px solid $wp-red;
 	border-radius:50%;
 	position:relative;
+	// triangle
 	&:before {
 		content:'';
 		border-style:solid;
 		border-color:$wp-blue transparent transparent transparent;
 		border-width:20px 12px 0 12px;
 		position:absolute;
-		left:-12px;
-		top:-20px;
+		left:-6px; // -12
+		top:-14px; // -20
 	}
 	$size:26px;
+	// circle
 	&:after {
 		content:'';
 		clip:rect(0,0,100%,100%);
@@ -112,8 +114,8 @@
 		border:8px solid $wp-blue;
 		box-sizing:border-box;
 		position:absolute;
-		bottom:24px;
-		left:-$size / 2;
+		bottom:18px; // 24
+		left:-$size / 2 + 6px;
 	}
 	&:focus {
 		&:before {

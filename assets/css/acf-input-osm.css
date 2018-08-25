@@ -62,8 +62,8 @@
     border-color: #0085ba transparent transparent transparent;
     border-width: 20px 12px 0 12px;
     position: absolute;
-    left: -12px;
-    top: -20px; }
+    left: -6px;
+    top: -14px; }
   .osm-marker-icon:after {
     content: '';
     clip: rect(0, 0, 100%, 100%);
@@ -74,8 +74,8 @@
     border: 8px solid #0085ba;
     box-sizing: border-box;
     position: absolute;
-    bottom: 24px;
-    left: -13px; }
+    bottom: 18px;
+    left: -7px; }
   .osm-marker-icon:focus:before {
     border-top-color: #00a0d2; }
   .osm-marker-icon:focus:after {
