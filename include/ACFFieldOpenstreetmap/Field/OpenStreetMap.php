@@ -63,29 +63,22 @@ class OpenStreetMap extends \acf_field {
 			'markers'		=> array(),
 		);
 		/*
-		*  defaults (array) Array of default settings which are merged into the field object. These are used later in settings
-		*/
+		 *  defaults (array) Array of default settings which are merged into the field object. These are used later in settings
+		 */
 		$this->defaults = array(
 			'leaflet_map'		=> $this->default_values,
 			'height'			=> 400,
 			'return_format'		=> 'leaflet',
 			'allow_map_layers'	=> 1,
+			'max_markers'		=> '',
 			'layers'			=> $this->default_values['layers'],
 		);
 
 		/*
-		*  l10n (array) Array of strings that are used in JavaScript. This allows JS strings to be translated in PHP and loaded via:
-		*  var message = acf._e('FIELD_NAME', 'error');
-		*/
-
+		 *  l10n (array) Array of strings that are used in JavaScript. This allows JS strings to be translated in PHP and loaded via:
+		 *  var message = acf._e('FIELD_NAME', 'error');
+		 */
 		$this->l10n = array(
-			'foo'	=> 'Bar!',
-		);
-
-
-		$this->l10n = array(
-			'locating'			=> __("Locating",'acf'),
-			'browser_support'	=> __("Sorry, this browser does not support geolocation",'acf'),
 		);
 
 
@@ -109,7 +102,9 @@ class OpenStreetMap extends \acf_field {
 	*/
 
 	function render_field_settings( $field ) {
+
 		$core = Core\Core::instance();
+
 		/*
 		*  acf_render_field_setting
 		*
@@ -182,12 +177,31 @@ class OpenStreetMap extends \acf_field {
 			'placeholder'	=> $this->default_values['layers'],
 		));
 
+		// allow_layer selection
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Map Appearance','acf-openstreetmap-field'),
-			'instructions'	=> __('Set zoom, center and select layers to be displayed.','acf-openstreetmap-field'),
-			'type'			=> 'leaflet_map',
-			'name'			=> 'leaflet_map',
-			'placeholder'	=> $this->default_values,
+			'label'			=> __('Allow layer selection','acf-openstreetmap-field'),
+			'instructions'	=> '',
+			'name'			=> 'allow_map_layers',
+			'type'			=> 'true_false',
+			'ui'			=> 1,
+		));
+
+		acf_render_field_setting( $field, array(
+			'label'				=> __( 'Map Appearance', 'acf-openstreetmap-field' ),
+			'instructions'		=> __( 'Set zoom, center and select layers being displayed.', 'acf-openstreetmap-field' ),
+			'type'				=> 'leaflet_map',
+			'name'				=> 'leaflet_map',
+
+			'return_format'		=> 'leaflet',
+			'attr'				=> array(
+				'data-editor-config'	=> array(
+//					'return-format'			=> $field['return_format'],
+					'restrict_providers'	=> false, // don't restrict providers
+					'max_markers'			=> 0, // no markers
+				),
+			),
+
+//			'placeholder'		=> $this->default_values,
 		) );
 
 
@@ -200,29 +214,32 @@ class OpenStreetMap extends \acf_field {
 			'append'		=> 'px',
 		));
 
+
 		// allow_layer selection
 		acf_render_field_setting( $field, array(
-			'label'			=> __('Allow layer selection','acf-openstreetmap-field'),
-			'instructions'	=> '',
-			'name'			=> 'allow_map_layers',
-			'type'			=> 'true_false',
+			'label'			=> __( 'Max. number of Markers', 'acf-openstreetmap-field' ),
+			'instructions'	=> __( 'Leave empty for no restriction', 'acf-openstreetmap-field' ),
+			'name'			=> 'max_markers',
+			'type'			=> 'number',
 			'ui'			=> 1,
+			'min'			=> 0,
+			'step'			=> 1,
 		));
 
 		// layers
 
 
-		acf_render_field_setting( $field, array(
-			'label'			=> __('Default OSM Map Layer','acf-openstreetmap-field'),
-			'instructions'	=> '',
-			'type'			=> 'select',
-			'name'			=> 'default_osm_layer',
-			'choices'		=> $core->get_osm_layers( ),
-			'multiple'		=> 0,
-			'ui'			=> 0,
-			'allow_null'	=> 0,
-			'placeholder'	=> __("Map Layers",'acf-openstreetmap-field'),
-		));
+		// acf_render_field_setting( $field, array(
+		// 	'label'			=> __('Default OSM Map Layer','acf-openstreetmap-field'),
+		// 	'instructions'	=> '',
+		// 	'type'			=> 'select',
+		// 	'name'			=> 'default_osm_layer',
+		// 	'choices'		=> $core->get_osm_layers( ),
+		// 	'multiple'		=> 0,
+		// 	'ui'			=> 0,
+		// 	'allow_null'	=> 0,
+		// 	'placeholder'	=> __("Map Layers",'acf-openstreetmap-field'),
+		// ));
 
 
 	}
@@ -299,6 +316,7 @@ class OpenStreetMap extends \acf_field {
 		));
 
 
+
 		// layers
 		if ( $field['allow_map_layers'] ) {
 			?>
@@ -311,15 +329,42 @@ class OpenStreetMap extends \acf_field {
 			));
 		}
 
+		$providers = false;
+
+		if ( isset($field['return_format']) && $field['return_format'] === 'osm' ) {
+			$providers = array(
+				'OpenStreetMap',
+				'Thunderforest.OpenCycleMap',
+				'Thunderforest.Transport',
+				'OpenStreetMap.HOT',
+			);
+		}
+
+		$max_markers = $field['max_markers'] === '' ? false : intval( $field['max_markers'] );
+		if ( 'osm' === $field['return_format'] ) {
+			if ( $max_markers === false ) { // no restrictin > max one marker
+				$max_markers = 1;
+			}
+			// oly one marker max
+			$max_markers = min( $max_markers, 1 );
+		}
+
 		// the map
 		acf_render_field( array(
 			'type'				=> 'leaflet_map',
 			'name'				=> $field['name'],
 			'value'				=> $field['value'],
-			'allow_map_layers'	=> $field['allow_map_layers'],
+			'return_format'		=> 'leaflet',
+			'attr'				=> array(
+				'data-editor-config'	=> array(
+//					'return-format'			=> $field['return_format'],
+					'restrict_providers'	=> $providers,
+					'max_markers'			=> $max_markers,
+				),
+			),
 		) );
 
-
+//var_dump($field);
 
 		// markers
 		$markers = array(); // $field['value']['markers'];
@@ -333,7 +378,7 @@ class OpenStreetMap extends \acf_field {
 				<div class="input">
 				<?php
 				acf_hidden_input(array(
-					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-default-label',
+					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-geocode',
 					'name'		=> $field['name'] . '[markers][__osm_marker_template__][default_label]',
 					'value'		=> '',
 				));
@@ -600,12 +645,13 @@ class OpenStreetMap extends \acf_field {
 	function format_value( $value, $post_id, $field ) {
 
 		// bail early if no value
-		if( empty($value) ) {
+		if( empty( $value ) ) {
 
 			return $value;
 
 		}
 
+		$value = wp_parse_args( $value, $this->default_values );
 
 		// apply setting
 		if( $field['return_format'] === 'osm' ) {
@@ -662,8 +708,12 @@ class OpenStreetMap extends \acf_field {
 				'data-map-lat'		=> $value['center_lat'],
 				'data-map-zoom'		=> $value['zoom'],
 				'data-map-layers'	=> $value['layers'],
-				'data-map-markers'	=> json_encode($value['markers']),
+				'data-map-markers'	=> $value['markers'],
 			);
+
+			if ( isset( $field['attr'] ) ) {
+				$map_attr = $field['attr'] + $map_attr;
+			}
 
 			// if ( ! empty( $value['address'] ) ) {
 			//

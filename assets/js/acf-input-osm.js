@@ -18,16 +18,20 @@
 			'click [data-name="remove-marker"]' : 'remove_marker',
 			'change [id$="-marker-label"]'		: 'update_marker_label',
 		},
-		is_default_label: function(){
-			var default_val = this.$el.find('[id$="-marker-default-label"]').val(),
-				current_val = this.$el.find('[id$="-marker-label"]').val();
-
-			return current_val === default_val;
+		get_label: function() {
+			return this.$el.find('[id$="-marker-label"]').val();
+		},
+		get_default_label: function() {
+			return this.$el.find('[id$="-marker-geocode"]').val();
+		},
+		is_default_label: function() {
+			return this.get_default_label() === this.get_label();
 		},
 		initialize:function(opt){
 			var self = this;
 			this.template = opt.template;
 			this.marker = opt.marker;
+			this.marker.osm_controller = this;
 
 			return this;
 		},
@@ -37,7 +41,15 @@
 			return this;
 		},
 		update_marker_label:function(e) {
-			return this.set_marker_label( $(e.target).val() );
+			var label = this.get_label();
+
+			if ( label === '' ) {
+				label = this.get_default_label();
+			}
+			// restore geocode default
+			$(e.target).val(label);
+
+			return this.set_marker_label( label );
 		},
 		set_marker_label:function(label) {
 			this.marker.unbindTooltip();
@@ -47,7 +59,7 @@
 			$( this.marker._icon ).attr( 'title', label );
 			return this;
 		},
-		update_marker:function( latlng, label ) {
+		update_marker_geocode:function( label ) {
 
 			if ( this.is_default_label() ) {
 				// update marker labels
@@ -56,7 +68,7 @@
 			}
 
 
-			this.$el.find('[id$="-marker-default-label"]').val( label );
+			this.$el.find('[id$="-marker-geocode"]').val( label );
 
 			this._update_values_from_marker();
 
@@ -147,42 +159,41 @@
 					return false;
 				});
 			}
-			return $(label).text().replace(/^(\s+)/g,'').replace(/(\s+)$/g,'');
+			return $(label).text().replace(/^(\s+)/g,'').replace(/(\s+)$/g,'').replace(/(\s+)/g,' ');
 		},
 		init_markers:function(){
 
 			var self = this,
-				is_osm = this.$el.data().returnFormat === 'osm';
+				editor_config = this.$el.data().editorConfig;
+
+			this.init_geocode();
+
+			// no markers allowed!
+			if ( editor_config.max_markers === 0 ) {
+				return;
+			}
 
 			this.icon = new L.DivIcon({
 				html: '',
 				className:'osm-marker-icon'
 			});
 
-
-			this.init_geocode();
-
 			this.map.on('click', function(e){
-				var latlng = e.latlng;
+				var latlng = e.latlng,
+					count_markers = self.$markers().children().not('[data-id]').length;
+
+				// no more markers
+				if ( editor_config.max_markers !== false && count_markers >= editor_config.max_markers ) {
+					return;
+				}
+
 				// THERE IS A BETTER WAY!
 				self.geocoder.options.geocoder.reverse(e.latlng,self.map.getZoom(),function(e){
+
 					var label = self._get_geocoder_result_label( e, latlng );
-					if ( is_osm ) {
-						// move marker
-						var marker;
-						self.map.eachLayer(function(layer){
-							if ( layer.constructor === L.Marker ) {
-								marker = layer;
-								return false;
-							}
-						});
-						if ( !! marker ) {
-							marker.setLatLng( latlng );
-							console.log('marker',marker)
-							return;
-						}
-					}
+
 					self.add_marker( latlng, label );
+
 				},self);
 			});
 
@@ -201,6 +212,8 @@
 
 				entry.render().$el.prependTo( self.$markers() );
 
+				self.geocode_marker( entry );
+
 				e.layer
 					.setIcon( self.icon )
 					.on('click',function(e){
@@ -210,18 +223,11 @@
 						entry.$el.remove();
 					})
 					.on('dragend',function(e){
-
-						self.geocoder.options.geocoder.reverse(this.getLatLng(),self.map.getZoom(),function(e){
-
-							var latlng = this.getLatLng(),
-								label = self._get_geocoder_result_label( e, latlng );
-							entry.update_marker( latlng, label );
-
-						}, this );
+						self.geocode_marker( entry );
 					})
 					.dragging.enable();
 			} );
-
+			// add markers
 			$.each( this.$el.data().mapMarkers,function( i, markerData ) {
 				// add markers
 				var marker = L.marker( L.latLng( markerData.lat * 1, markerData.lng * 1 ), {
@@ -231,6 +237,20 @@
 					.addTo( self.map );
 
 			});
+
+		},
+		geocode_marker:function( marker_entry ) {
+			var self = this,
+				entry = marker_entry,
+				latlng = entry.marker.getLatLng();
+
+			self.geocoder.options.geocoder.reverse( latlng, self.map.getZoom(), function(e){
+
+				var label = self._get_geocoder_result_label( e, latlng );
+
+				entry.update_marker_geocode( label );
+
+			}, this );
 
 		},
 		add_marker:function( lnglat, label ){
@@ -273,7 +293,7 @@
 				editor_config = this.$el.data().editorConfig,
 				is_omitted = function(key) {
 
-					return key === null || ( !! editor_config['restrict-providers'] && editor_config['restrict-providers'].indexOf( key ) === -1 );
+					return key === null || ( !! editor_config.restrict_providers && editor_config.restrict_providers.indexOf( key ) === -1 );
 				},
 				setupMap = function( key, val ){
 					var layer, layer_config;
@@ -306,7 +326,7 @@
 
 			selectedLayers = this.$el.data().mapLayers;
 
-
+			// editable layers!
 			if ( this.$layerStore().length ) {
 				this.map.on( 'baselayerchange layeradd layerremove', function(e){
 					if ( ! e.layer.providerKey) {
@@ -344,12 +364,11 @@
 					hideSingleBase: true,
 				}).addTo(this.map);
 			}
-
-
 		},
 		init_geocode:function() {
 
-			var self = this;
+			var self = this,
+				editor_config = this.$el.data().editorConfig;
 
 			this.map._controlCorners['above'] = $('<div class="acf-osm-above"></div>').insertBefore( this.$el ).get(0);
 
@@ -365,15 +384,42 @@
 				defaultMarkGeocode:false,
 			})
 			.on('markgeocode',function(e){
-				//console.log(e.geocode.cneter);return;
-				var label = self._get_geocoder_result_label( [e.geocode], e.geocode.center );
+				var latlng =  e.geocode.center,
+					editor_config = self.$el.data().editorConfig,
+					count_markers = self.$markers().children().not('[data-id]').length,
+					label = self._get_geocoder_result_label( [ e.geocode ], latlng );
 
-				self.add_marker( e.geocode.center, label );
+				if ( count_markers === false || count_markers < editor_config.max_markers ) {
+					// add marker if no restriction or max markers not exceeded
+					self.add_marker( latlng, label );
+				}
+				if ( editor_config.max_markers === 1 && count_markers === 1 ) {
+					// update single marker
+					marker = self.get_first_marker();
+					if ( !! marker ) {
+						entry = marker.osm_controller;
+						marker.setLatLng( latlng );
+						entry.update_marker_geocode( label );
+					}
+
+//					self.add_marker( latlng, label );
+				}
+				console.log(e.geocode)
+				// 1. add amrker: if
+				// 2. update single marker
+				// 3.
 				/*
 				self.map.flyToBounds(e.geocode.bbox);
 				/*/
-				self.map.fitBounds(e.geocode.bbox);
+				if ( editor_config.max_markers === 0 ) {
+					self.map.fitBounds( e.geocode.bbox );
+				} else {
+					self.map.setView( latlng, self.map.getZoom() ); // keep zoom, might be confusing else
+				}
 				//*/
+
+
+
 
 //				e.preventDefault();
 			})
@@ -385,6 +431,16 @@
 					e.preventDefault();
 				}
 			}, this.geocoder );
+		},
+		get_first_marker:function() {
+			var marker = false;
+			this.map.eachLayer(function(layer){
+				if ( layer.constructor === L.Marker ) {
+					marker = layer;
+					return false;
+				}
+			});
+			return marker;
 		},
 		update_visible: function() {
 

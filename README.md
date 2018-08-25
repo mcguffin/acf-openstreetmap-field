@@ -16,10 +16,10 @@ ToDO:
 	 - [ ] JS: Trigger change on map pan and zoom, so the save button is enabled.
  - [ ] Editor
 	 - [ ] New Option: keep bounds / keep zoom
-	 - [ ] Keep Changes in Marker Name
+	 - [x] Keep Changes in Marker Name
 	 - [ ] iFrame mode:
-		 - [ ] allow only one marker
-		 - [ ] Available Layers
+		 - [ ] configurable max markers
+		 - [x] Available Layers
  - [ ] Frontend
 	 - [ ] Allow custom marker HTML (filter)
 	 - [ ] Map height fallback value

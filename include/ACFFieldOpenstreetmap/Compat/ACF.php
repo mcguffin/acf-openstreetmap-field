@@ -21,28 +21,16 @@ class ACF extends Core\PluginComponent {
 
 	}
 	function render_map_input( $field ) {
-		$providers = false;
-
-		if ( $field['return_format'] === 'osm' ) {
-			$providers = array(
-				'OpenStreetMap',
-				'Thunderforest.OpenCycleMap',
-				'Thunderforest.Transport',
-				'OpenStreetMap.HOT',
-			);
-		}
 
 		$inp_field = array(
 			'return_format'	=> 'leaflet',
 			'height'		=> 400,
-			'attr'			=> array(
-				'data-editor-config'	=> array(
-					'return-format'			=> $field['return_format'],
-					'restrict-providers'	=> $providers,
-					'max-markers'			=> $field['return_format'] === 'osm' ? 1 : false,
-				),
-			),
 		);
+
+		if ( isset( $field['attr'] ) ) {
+			$inp_field['attr'] = $field['attr'];
+		}
+
 		$map_field = Field\OpenStreetMap::get_instance();
 
 		echo $map_field->format_value( $field['value'], null, $inp_field );
