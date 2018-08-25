@@ -95,11 +95,6 @@
 	});
 
 	osm.field = Backbone.View.extend({
-		/*
-		todo:
-		- Map Layer selector
-		- set / unset marker
-		*/
 
 		map: null,
 		geocoder: null,
@@ -187,7 +182,6 @@
 					return;
 				}
 
-				// THERE IS A BETTER WAY!
 				self.geocoder.options.geocoder.reverse(e.latlng,self.map.getZoom(),function(e){
 
 					var label = self._get_geocoder_result_label( e, latlng );
@@ -401,27 +395,14 @@
 						marker.setLatLng( latlng );
 						entry.update_marker_geocode( label );
 					}
-
-//					self.add_marker( latlng, label );
 				}
-				console.log(e.geocode)
-				// 1. add amrker: if
-				// 2. update single marker
-				// 3.
-				/*
-				self.map.flyToBounds(e.geocode.bbox);
-				/*/
+
 				if ( editor_config.max_markers === 0 ) {
 					self.map.fitBounds( e.geocode.bbox );
 				} else {
 					self.map.setView( latlng, self.map.getZoom() ); // keep zoom, might be confusing else
 				}
-				//*/
 
-
-
-
-//				e.preventDefault();
 			})
 			.addTo( this.map );
 
@@ -469,14 +450,6 @@
 			acf.addAction( 'show', toggle_cb );
 			acf.addAction( 'hide', toggle_cb );
 
-
-
-			// expand acf repeater
-			// ...
-
-			// expand acf layout
-			// ...
-
 			// expand wp metabox
 			$(document).on('postbox-toggled',toggle_cb)
 
@@ -504,15 +477,6 @@
 			self.$zoom().on('blur',function(e){
 				self.update_map();
 			});
-			// self.$address().on('keyup focus', function(e){
-			// 	self.search(e);
-			// } );
-
-
-//			this.listenTo( this.$address, 'keyup focus', this.search );
-
-			// this.$tiles.on('change', do_layers )
-			// 	.prev('input').on('change', do_layers );
 
 		},
 		update_map:function() {
@@ -532,19 +496,7 @@
 		},
 	});
 
-	/*
-	 *  ready append (ACF5)
-	 *
-	 *  These are 2 events which are fired during the page load
-	 *  ready = on page load similar to $(document).ready()
-	 *  append = on new DOM elements appended via repeater field
-	 *
-	 *  @type	event
-	 *  @date	20/07/13
-	 *
-	 *  @param	$el (jQuery selection) the jQuery element which contains the ACF fields
-	 *  @return	n/a
-	 */
+	
 	$(document).on('acf-osm-map-init',function( e, map ) {
 		e.preventDefault();
 		new osm.field( { el: e.target, map: map } );

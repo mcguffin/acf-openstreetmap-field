@@ -17,12 +17,18 @@ ToDO:
  - [ ] Editor
 	 - [ ] New Option: keep bounds / keep zoom
 	 - [x] Keep Changes in Marker Name
-	 - [ ] iFrame mode:
-		 - [ ] configurable max markers
+	 - [x] iFrame mode:
+		 - [x] configurable max markers
 		 - [x] Available Layers
+ - [ ] Field Settings
+	 - [ ] provider select @ osm
+	 - [ ] hide layer select
  - [ ] Frontend
 	 - [ ] Allow custom marker HTML (filter)
 	 - [ ] Map height fallback value
  - [ ] Code docs
  - [ ] Dev docs
+	 - [x] WP filters
+	 - [x] JS events
+	 - [ ] ...?
  - [ ] Go Beta
