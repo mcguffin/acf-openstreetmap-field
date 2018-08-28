@@ -17,6 +17,7 @@
 			'click [data-name="locate-marker"]' : 'locate_marker',
 			'click [data-name="remove-marker"]' : 'remove_marker',
 			'change [id$="-marker-label"]'		: 'update_marker_label',
+//			'focus [type="text"]'				: 'hilite_marker'
 		},
 		get_label: function() {
 			return this.$el.find('[id$="-marker-label"]').val();
@@ -36,8 +37,20 @@
 			return this;
 		},
 		render:function(){
+			var self = this;
+
 			this.$el.html( this.template( this ) );
 			this._update_values_from_marker();
+
+			this.$el.find('[id$="-marker-label"]')
+				.on('focus',function(e) {
+					console.log(this);
+					self.hilite_marker();
+				})
+				.on('blur',function(e) {
+					self.lolite_marker();
+				});
+
 			return this;
 		},
 		update_marker_label:function(e) {
@@ -67,7 +80,6 @@
 				// update marker label input
 			}
 
-
 			this.$el.find('[id$="-marker-geocode"]').val( label );
 
 			this._update_values_from_marker();
@@ -81,10 +93,16 @@
 			this.$el.find('[id$="-marker-label"]').val( this.marker.options.title );
 			return this;
 		},
-
+		hilite_marker:function(e) {
+			this.$el.addClass('focus');
+			$( this.marker._icon ).addClass('focus')
+		},
+		lolite_marker:function(e) {
+			this.$el.removeClass('focus');
+			$( this.marker._icon ).removeClass('focus')
+		},
 		locate_marker:function(){
 			this.marker._map.flyTo( this.marker.getLatLng() );
-			$(this.marker._icon).focus()
 			return this;
 		},
 		remove_marker:function(e) {
@@ -154,7 +172,7 @@
 					return false;
 				});
 			}
-			return $(label).text().replace(/^(\s+)/g,'').replace(/(\s+)$/g,'').replace(/(\s+)/g,' ');
+			return $('<p>'+label+'</p>').text().replace(/^(\s+)/g,'').replace(/(\s+)$/g,'').replace(/(\s+)/g,' ');
 		},
 		init_markers:function(){
 

@@ -76,7 +76,6 @@
 	});
 	$.extend({
 		acf_leaflet:function() {
-			console.log($('[data-map="leaflet"]').length)
 			$('[data-map="leaflet"]').acf_leaflet();
 		}
 	});

@@ -26,8 +26,17 @@
 		position: relative;
 		display:flex;
 		align-items: center;
+		padding:0.25em 0;
+		border-bottom:1px solid $wp-gray;
+		&:nth-of-type(2n) {
+			background-color:$wp-gray-lightest;
+		}
+		&.focus {
+			background-color:rgba($wp-yellow,0.5);
+		}
 		& > .locate {
 			font-size:32px;
+			cursor:pointer;
 		}
 		& > .tools,
 		& > .locate {
@@ -42,6 +51,9 @@
 			width:100%;
 			font-size:20px;
 			font-weight:300;
+		}
+		a.acf-icon.light {
+			border:1px solid $wp-gray-dark;
 		}
 	}
 	[data-id="__osm_marker_template__"] {
@@ -101,6 +113,7 @@
 		position:absolute;
 		left:-6px; // -12
 		top:-14px; // -20
+		z-index:1;
 	}
 	$size:26px;
 	// circle
@@ -117,13 +130,15 @@
 		bottom:18px; // 24
 		left:-$size / 2 + 6px;
 	}
+	&.focus,
 	&:focus {
 		&:before {
-			border-top-color:$wp-blue-light;
+			// border-top-color:$wp-blue-light;
 		}
 		&:after {
-			border-color:$wp-blue-light;
-			background-color:$wp-blue-lighter;
+			// border-color:$wp-blue-light;
+			// background-color:$wp-blue-lighter;
+			box-shadow: 0 0 6px 12px rgba( $wp-yellow, 0.75 );
 		}
 	}
 	&:hover {
@@ -139,6 +154,7 @@
 			border-color:$wp-red;
 			background-color:$wp-red;
 			border-width:0;
+			z-index:2;
 		}
 	}
 

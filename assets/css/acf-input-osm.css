@@ -33,9 +33,16 @@
   display: -ms-flexbox;
   display: flex;
   -ms-flex-align: center;
-      align-items: center; }
+      align-items: center;
+  padding: 0.25em 0;
+  border-bottom: 1px solid #f1f1f1; }
+  .osm-markers .osm-marker:nth-of-type(2n) {
+    background-color: #fafafa; }
+  .osm-markers .osm-marker.focus {
+    background-color: rgba(255, 185, 0, 0.5); }
   .osm-markers .osm-marker > .locate {
-    font-size: 32px; }
+    font-size: 32px;
+    cursor: pointer; }
   .osm-markers .osm-marker > .tools,
   .osm-markers .osm-marker > .locate {
     -ms-flex: 0;
@@ -49,6 +56,8 @@
     width: 100%;
     font-size: 20px;
     font-weight: 300; }
+  .osm-markers .osm-marker a.acf-icon.light {
+    border: 1px solid #cccccc; }
 
 .osm-markers [data-id="__osm_marker_template__"] {
   display: none; }
@@ -63,7 +72,8 @@
     border-width: 20px 12px 0 12px;
     position: absolute;
     left: -6px;
-    top: -14px; }
+    top: -14px;
+    z-index: 1; }
   .osm-marker-icon:after {
     content: '';
     clip: rect(0, 0, 100%, 100%);
@@ -76,11 +86,8 @@
     position: absolute;
     bottom: 18px;
     left: -7px; }
-  .osm-marker-icon:focus:before {
-    border-top-color: #00a0d2; }
-  .osm-marker-icon:focus:after {
-    border-color: #00a0d2;
-    background-color: #e5f5fa; }
+  .osm-marker-icon.focus:after, .osm-marker-icon:focus:after {
+    box-shadow: 0 0 6px 12px rgba(255, 185, 0, 0.75); }
   .osm-marker-icon:hover:before {
     border-top-color: #dc3232; }
   .osm-marker-icon:hover:after {
@@ -91,7 +98,8 @@
     line-height: 27px;
     border-color: #dc3232;
     background-color: #dc3232;
-    border-width: 0; }
+    border-width: 0;
+    z-index: 2; }
 
 .acf-osm-above {
   position: relative;
