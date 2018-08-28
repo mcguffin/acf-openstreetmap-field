@@ -218,6 +218,7 @@
 					})
 					.on('dragend',function(e){
 						self.geocode_marker( entry );
+						self.$el.trigger('change');
 					})
 					.dragging.enable();
 			} );
@@ -254,6 +255,7 @@
 			})
 				.bindTooltip( label )
 				.addTo( this.map );
+			this.$el.trigger('change');
 		},
 		layer_is_overlay: function(  key, layer ) {
 			var patterns;
@@ -381,7 +383,7 @@
 							$layerStore.prepend( $layerInput );
 						}
 					});
-
+					self.$el.trigger('change');
 				} );
 			}
 
@@ -495,8 +497,6 @@
 			$(document).on('click','.widget-top *', toggle_cb );
 
 
-			this.map.on('zoomend', function(e){ self.map_zoomed.apply( self, [e] ); } );
-			this.map.on('moveend', function(e){ self.map_moved.apply( self, [e] ); } );
 
 		},
 		unbind_events:function() {
@@ -505,6 +505,9 @@
 			self.$lng().off('blur');
 			self.$zoom().off('blur');
 			self.$zoom().off('keyup focus');
+
+			this.map.off('zoomend', this.map_zoomed, this );
+			this.map.off('moveend', this.map_moved, this );
 		},
 		bind_events: function() {
 			var self = this;
@@ -518,6 +521,9 @@
 			self.$zoom().on('blur',function(e){
 				self.update_map();
 			});
+
+			this.map.on('zoomend', this.map_zoomed, this );
+			this.map.on('moveend', this.map_moved, this );
 		},
 		update_map:function() {
 			if ( ! this.$lat().val() || ! this.$lng().val() ) {
@@ -530,10 +536,12 @@
 			var center = this.map.getCenter();
 			this.$lat().val(center.lat);
 			this.$lng().val(center.lng);
+			this.$el.trigger('change');
 		},
 		map_zoomed:function(e){
 			this.$zoom().val( this.map.getZoom() );
-		},
+			this.$el.trigger('change');
+		}
 	});
 
 
@@ -561,7 +569,6 @@
 			}
 			$map.data( 'editor-config', conf );
 			editor.init_layers();
-			//console.log(field.el)
 		});
 
 	// when fields get loaded ...

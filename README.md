@@ -11,19 +11,12 @@ This plugin is still under heavy development. Better do not use it in a producti
 ToDO:
 -----
  - [ ] Code: load minified scripts
- - [ ] Widgets
-	 - [ ] Bug: Map doesn't load tiles, when widget is closed.
-	 - [ ] JS: Trigger change on map pan and zoom, so the save button is enabled.
+ - [x] Widgets
+	 - [x] Bug: Map doesn't load tiles, when widget is closed.
+	 - [x] JS: Trigger change on map pan and zoom, so the save button is enabled.
  - [ ] Editor
+	 - [ ] Hilight input/marker on hover
 	 - [ ] New Option: keep bounds / keep zoom
-	 - [x] Keep Changes in Marker Name
-	 - [x] iFrame mode:
-		 - [x] configurable max markers
-		 - [x] Available Layers
-	 - [ ] Bug: maps don't init when acf field is added.
- - [ ] Field Settings
-	 - [ ] provider select @ osm
-	 - [ ] hide layer select
  - [ ] Frontend
 	 - [ ] Allow custom marker HTML (filter)
 	 - [ ] Map height fallback value
@@ -31,5 +24,6 @@ ToDO:
  - [ ] Dev docs
 	 - [x] WP filters
 	 - [x] JS events
-	 - [ ] ...?
+	 - [ ] field output
+ - [ ] User Docs
  - [ ] Go Beta
