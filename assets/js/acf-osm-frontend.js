@@ -15979,7 +15979,7 @@ return Geocoder;
 		acf_leaflet:function() {
 
 			return this.each( function( i, el ){
-console.log(this)
+
 				if ( $(this).data( 'acf-osm-map' ) ) {
 					return;
 				}

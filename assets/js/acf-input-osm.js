@@ -491,7 +491,8 @@
 			} );
 
 			// expand wp metabox
-			$(document).on('postbox-toggled',toggle_cb);
+			$(document).on('postbox-toggled', toggle_cb );
+			$(document).on('click','.widget-top *', toggle_cb );
 
 
 			this.map.on('zoomend', function(e){ self.map_zoomed.apply( self, [e] ); } );
