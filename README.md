@@ -36,6 +36,6 @@ Thanks
 
 This plugin wouldn't have been possible without these awesome people and Projects:
 
- - Jan Pieter Waagmeester ((Leaflet Providers)[https://github.com/leaflet-extras/leaflet-providers])
- - Per Liedman ((Leaflet Control Geocode)[https://github.com/perliedman/leaflet-control-geocoder])
- - The entire (Leaflet)[https://leafletjs.com/] Project
+ - Jan Pieter Waagmeester ([Leaflet Providers](https://github.com/leaflet-extras/leaflet-providers))
+ - Per Liedman ([Leaflet Control Geocode](https://github.com/perliedman/leaflet-control-geocoder))
+ - The entire [Leaflet](https://leafletjs.com/) Project
