@@ -15974,6 +15974,12 @@ return Geocoder;
 }));
 
 (function( $, arg ){
+
+	$(document).on( 'acf-osm-map-marker-create', function(e){
+		e.markerOptions.opacity = 0.8;
+	});
+
+
 	var options = arg.options;
 	$.fn.extend({
 		acf_leaflet:function() {
@@ -15984,16 +15990,19 @@ return Geocoder;
 					return;
 				}
 				var data = $(this).data(),
+					self = this,
 					map, maxzoom,
 					createEvt = $.Event({
 						type: 'acf-osm-map-create'
 					}),
 					initEvt = $.Event({
 						type: 'acf-osm-map-init'
-					});
+					}),
+					default_marker_config = {};
 
 				$(this).trigger( createEvt );
 
+				// allow to skip map creation
 				if ( createEvt.isDefaultPrevented() ) {
 					return;
 				}
@@ -16010,17 +16019,29 @@ return Geocoder;
 
 				$(this).trigger( initEvt, map );
 
+				// allow to skip initialization
 				if ( initEvt.isDefaultPrevented() ) {
 					return;
 				}
 
 				maxzoom = 100;
 
-				$.each( data.mapLayers, function(i,provider_key){
+
+				if ( arg.options.marker.html !== false ) {
+					default_marker_config.icon = L.divIcon({
+						html: arg.options.marker.html,
+						className: arg.options.marker.className
+					});
+				} else if ( arg.options.marker.icon !== false ) {
+					default_marker_config.icon = new L.icon( arg.options.marker.icon );
+				}
+
+				$.each( data.mapLayers, function( i, provider_key ) {
 
 					if ( 'string' !== typeof provider_key ) {
 						return;
 					}
+
 					var layer_config = options.layer_config[ provider_key.split('.')[0] ] || { options: {} },
 						layer = L.tileLayer.provider( provider_key, layer_config.options ).addTo( map );
 
@@ -16033,17 +16054,33 @@ return Geocoder;
 
 				map.setMaxZoom( maxzoom );
 
-				$.each(data.mapMarkers,function(i,markerData){
+				// add markers
+				$.each( data.mapMarkers, function( i, markerData ) {
 					// add markers
-					var marker = L.marker( L.latLng( markerData.lat * 1, markerData.lng * 1 ), {
-							title: markerData.label
-						})
+					var marker_latlng = L.latLng( parseFloat(markerData.lat), parseFloat(markerData.lng) ),
+						marker, createEvt;
+
+					// allow for skipping markers
+					createEvt = $.Event( 'acf-osm-map-marker-create' );
+
+					createEvt.markerOptions = $.extend( default_marker_config, {
+						title: markerData.label
+					} );
+
+					$(self).trigger(createEvt)
+
+					if ( createEvt.isDefaultPrevented() ) {
+						return;
+					}
+
+					marker = L.marker( marker_latlng, createEvt.markerOptions )
 						.bindTooltip( markerData.label )
 						.addTo( map );
 
+					$(self).trigger('acf-osm-map-marker-created', marker );
 				});
 
-
+				// finished!
 				$(this).trigger('acf-osm-map-created', map );
 
 			});
@@ -16057,4 +16094,5 @@ return Geocoder;
 
 	$.acf_leaflet();
 
-})(jQuery,acf_osm);
+
+})( jQuery, acf_osm );

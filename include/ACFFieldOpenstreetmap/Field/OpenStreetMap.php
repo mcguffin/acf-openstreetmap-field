@@ -371,8 +371,6 @@ class OpenStreetMap extends \acf_field {
 			),
 		) );
 
-//var_dump($field);
-
 		// markers
 		$markers = array(); // $field['value']['markers'];
 
@@ -622,20 +620,30 @@ class OpenStreetMap extends \acf_field {
 	 */
 
 	function update_value( $value, $post_id, $field ) {
-		if ( isset( $value['markers']['__osm_marker_template__'] ) ) {
-			unset( $value['markers']['__osm_marker_template__'] );
-		}
-		$value['markers'] = array_values( $value['markers'] );
 
+		// normalize markers
+		$markers = array();
+		foreach ( $value['markers'] as $key => $marker ) {
+			// remove marker template values
+			if ( '__osm_marker_template__' === $key ) {
+				continue;
+			}
+			$marker['lat'] = floatval( $marker['lat'] );
+			$marker['lng'] = floatval( $marker['lng'] );
+			$markers[] = $marker;
+		}
+		$value['markers'] = $markers;
+
+
+		// set default layers
 		if ( ! isset( $value['layers'] ) || ! is_array( $value['layers'] )  ) {
 			$value['layers'] = $this->default_values['layers'];
 		}
-
+		// normalize layers
 		$value['layers'] = array_filter( $value['layers'] );
 		$value['layers'] = array_unique( $value['layers'] );
 		$value['layers'] = array_values( $value['layers'] );
 
-		// markers?
 
 		return $value;
 	}

@@ -44,13 +44,18 @@
 
 			this.$el.find('[id$="-marker-label"]')
 				.on('focus',function(e) {
-					console.log(this);
 					self.hilite_marker();
 				})
 				.on('blur',function(e) {
 					self.lolite_marker();
 				});
-
+			$(this.marker._icon)
+				.on('focus',function(e){
+					self.hilite_marker();
+				})
+				.on('blur',function(e){
+					self.lolite_marker();
+				})
 			return this;
 		},
 		update_marker_label:function(e) {
@@ -222,7 +227,7 @@
 						template: _.template( template ),
 					});
 
-				entry.render().$el.prependTo( self.$markers() );
+				entry.render().$el.appendTo( self.$markers() );
 
 				self.geocode_marker( entry );
 
@@ -239,6 +244,12 @@
 						self.$el.trigger('change');
 					})
 					.dragging.enable();
+			} );
+			this.map.on( 'layerremove', function(e){
+				if ( e.layer.constructor !== L.Marker ) {
+					return;
+				}
+				self.$el.trigger('change');
 			} );
 			// add markers
 			$.each( this.$el.data().mapMarkers,function( i, markerData ) {

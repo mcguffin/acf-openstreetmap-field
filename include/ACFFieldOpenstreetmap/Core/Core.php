@@ -47,14 +47,14 @@ class Core extends Plugin {
 					 *
 					 *	@param $marker_icon_html string Additional Icon HTML.
 					 */
-					'html'		=> apply_filters('acf_osm_marker_html', false ),
+					'html'		=> wp_kses_post( apply_filters('acf_osm_marker_html', false ) ),
 
 					/**
 					 *	HTML Marker Icon css class
 					 *
 					 *	@param $classname string Class name for HTML icon. Default 'acf-osm-marker-icon'
 					 */
-					'className'	=> apply_filters('acf_osm_marker_classname', 'acf-osm-marker-icon' ),
+					'className'	=> sanitize_html_class( apply_filters('acf_osm_marker_classname', 'acf-osm-marker-icon' ) ),
 
 					/**
 					 *	Return leaflet icon options.
