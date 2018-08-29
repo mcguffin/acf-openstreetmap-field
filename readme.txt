@@ -3,6 +3,7 @@ Contributors: #### Your wordpress.org Username ####
 Donate link: #### donate link ####
 Tags: #### donate link ####
 Requires at least: 3.8
+Requires PHP: 5.6
 Tested up to: 4.8
 Stable tag: trunk
 License: GPLv2 or later
