@@ -16,7 +16,7 @@ Features
 Installation
 ------------
  - Head over to [releases](../../releases)
- - Download 'acf-customizer.zip'
+ - Download 'acf-field-openstreetmap.zip'
  - Install and activate it like any other WordPress plugin
  - As long as the plugin is active, it will check for updates
 
