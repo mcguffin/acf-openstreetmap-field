@@ -67,17 +67,6 @@ L = {
 gulp.task('providers', function(){
 	require('./node_modules/leaflet-providers/leaflet-providers.js');
 	var providers = L.TileLayer.Provider.providers;
-	var variants = ['streets','light','dark','satellite','streets-satellite','wheatpaste','streets-basic','comic','outdoors','run-bike-hike','pencil','pirates','emerald','high-contrast',]
-	providers.MapBox.variants = {};
-	variants.forEach(function(el){
-		var k = changeCase.ucFirst( changeCase.camelCase( el ) )
-		providers.MapBox.variants[ k ] = {
-			options : {
-				variant: k,
-				id: 'mapbox.' + el,
-			}
-		}
-	});
 	fs.writeFileSync( './etc/leaflet-providers.json', JSON.stringify(providers,null,'\t') );
 });
 

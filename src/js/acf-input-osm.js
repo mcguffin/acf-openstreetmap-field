@@ -1,4 +1,4 @@
-(function( $, arg ){
+(function( $, arg, edit_arg ){
 	var options = arg.options,
 		result_tpl = '<div tabindex="<%= data.i %>" class="osm-result">'
 			+ '<%= data.result_text %>'
@@ -334,7 +334,7 @@
 
 					return key === null || ( !! editor_config.restrict_providers && editor_config.restrict_providers.indexOf( key ) === -1 );
 				},
-				setupMap = function( key, val ){
+				setupMap = function( val, key ){
 					var layer, layer_config;
 					if ( _.isObject(val) ) {
 						return $.each( val, setupMap );
@@ -347,8 +347,11 @@
 						layer = mapLayers[ key ];
 						self.map.addLayer(layer)
 					} else {
-						layer_config = options.layer_config[ key.split('.')[0] ] || {options:{}};
-						layer = L.tileLayer.provider( key, layer_config.options );
+						try {
+							layer = L.tileLayer.provider( key /*, layer_config.options*/ );
+						} catch(ex) {
+							return;
+						}
 						layer.providerKey = key;
 					}
 
@@ -375,7 +378,7 @@
 			// set default layer
 			if ( ! selectedLayers.length ) {
 
-				selectedLayers = Object.keys( options.providers ).slice( 0, 1 );
+				selectedLayers = Object.keys( editor_config.restrict_providers ).slice( 0, 1 );
 
 			}
 
@@ -417,8 +420,8 @@
 			}
 
 
-			$.each( options.providers, setupMap );
-
+			$.each( editor_config.restrict_providers, setupMap );
+console.log(editor_config.restrict_providers);
 			// ... no layer editing allowed
 			if ( this.$layerStore().length ) {
 				this.layersControl = L.control.layers( baseLayers, overlays, {
@@ -591,10 +594,10 @@
 			editor.reset_layers();
 			if ( $(this).val() === 'osm' ) {
 				// set provider restriction to osm providers
-				conf.restrict_providers = Object.values( arg.options.osm_layers );
+				conf.restrict_providers = Object.values( edit_arg.options.osm_layers );
 			} else {
 				// set provider restriction to osm providers
-				conf.restrict_providers = false;
+				conf.restrict_providers = Object.values( edit_arg.options.leaflet_layers );
 			}
 			$map.data( 'editor-config', conf );
 			editor.init_layers();

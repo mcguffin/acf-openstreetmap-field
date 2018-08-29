@@ -152,7 +152,7 @@ class OpenStreetMap extends \acf_field {
 			'attr'				=> array(
 				'data-editor-config'	=> array(
 					'allow_providers'		=> true,
-					'restrict_providers'	=> false, // don't restrict providers
+					'restrict_providers'	=> array_values( $core->get_leaflet_layers() ), // leaflet by default
 					'max_markers'			=> 0, // no markers
 					'name_prefix'			=> $field['prefix'],
 				),
@@ -336,16 +336,16 @@ class OpenStreetMap extends \acf_field {
 
 		$providers = false;
 
-		if ( isset($field['return_format']) && $field['return_format'] === 'osm' ) {
-			$providers = array(
-				'OpenStreetMap',
-				'Thunderforest.OpenCycleMap',
-				'Thunderforest.Transport',
-				'OpenStreetMap.HOT',
-			);
+		if ( isset($field['return_format']) ) {
+			if ( $field['return_format'] === 'osm' ) {
+				$providers = $core->get_osm_layers();
+			} else {
+				$providers = $core->get_leaflet_layers();
+			}
 		}
 
 		$max_markers = $field['max_markers'] === '' ? false : intval( $field['max_markers'] );
+
 		if ( 'osm' === $field['return_format'] ) {
 			if ( $max_markers === false ) { // no restrictin > max one marker
 				$max_markers = 1;
@@ -364,7 +364,7 @@ class OpenStreetMap extends \acf_field {
 				'data-editor-config'	=> array(
 //					'return-format'			=> $field['return_format'],
 					'allow_providers'		=> $field['allow_map_layers'],
-					'restrict_providers'	=> $providers,
+					'restrict_providers'	=> array_values( $providers ),
 					'max_markers'			=> $max_markers,
 					'name_prefix'			=> $field['name'],
 				),
@@ -644,6 +644,9 @@ class OpenStreetMap extends \acf_field {
 		$value['layers'] = array_unique( $value['layers'] );
 		$value['layers'] = array_values( $value['layers'] );
 
+		if ( ! $field['allow_map_layers'] ) {
+			$value['layers'] = $field['layers'];
+		}
 
 		return $value;
 	}

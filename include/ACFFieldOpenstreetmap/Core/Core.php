@@ -9,6 +9,8 @@ use ACFFieldOpenstreetmap\Compat;
 
 class Core extends Plugin {
 
+	private $leaflet_providers = null;
+
 	/**
 	 *	@inheritdoc
 	 */
@@ -77,11 +79,12 @@ class Core extends Plugin {
 					 */
 					'icon'		=> apply_filters('acf_osm_marker_icon', false ),
 				),
+
 			),
+			'providers'		=> $this->get_layer_providers(),
 		));
 
 		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), array(), $this->version() );
-
 
 		/* backend */
 
@@ -89,9 +92,8 @@ class Core extends Plugin {
 		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','backbone'), $this->version(), true );
 		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
 			'options'	=> array(
-				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
-				'osm_layers'	=> $this->get_osm_layers(),
-				'providers'		=> $this->get_layer_providers(),
+				'osm_layers'		=> $this->get_osm_layers(),
+				'leafleft_layers'	=> $this->get_leaflet_layers(),
 			),
 		));
 
@@ -149,7 +151,7 @@ class Core extends Plugin {
 	 *		'layer_id' => 'Layer Label'
 	 *	)
 	 */
-	function get_osm_layers( ) {
+	public function get_osm_layers( ) {
 		/*
 		mapnik
 		cyclemap C 	Cycle
@@ -164,75 +166,125 @@ class Core extends Plugin {
 		);
 	}
 
-	/**
-	 *	get providers and variants
-	 *	omits proviers with unconfigured api credentials
-	 *	as well as local-only map data
-	 *
-	 *	@return array(
-	 *		'ProviderName' => array(
-	 *			'ProviderName.VariantName'	=> 'VariantName'
-	 *		)
-	 *	)
-	 */
-	public function get_layer_providers( ) {
+	public function get_leaflet_layers() {
+		$providers = array();
 
-		$providers 			= array();
-		$leaflet_providers	= $this->get_leaflet_providers( );//json_decode( file_get_contents( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/etc/leaflet-providers.json'), true );
-		//$access_tokens		= get_option( 'acf_osm_provider_tokens', array() );
-		$access_tokens		= get_option( 'acf_osm_provider_tokens', array() );
-
-		foreach ( $leaflet_providers as $provider => $provider_data ) {
-
-			// drop boundless maps
-			if ( isset($provider_data['options']['bounds'])) {
-				continue;
-			}
-			$new_provider_data = array();
-			// skip provider if api credentials required
-			//    the key is not consitent, can be `api_key`, `accessToken`, `app_id`, ...
-			//    value is always something like `<insert your ... token heren>`
-			foreach ( $provider_data['options'] as $option => $option_value ) {
-
-				if ( is_string($option_value) && preg_match( '/^<([^>]+)>$/', $option_value ) ) {
-					if ( isset( $access_tokens[$provider]['options'][$option] ) && ! empty( $access_tokens[$provider]['options'][$option] ) ) {
-						break;
-					} else {
-						continue 2;
-					}
-				}
-			}
-
-			$providers[$provider] = $new_provider_data;
+		foreach ( $this->get_layer_providers() as $provider_key => $provider_data ) {
+			//
 
 			if ( isset( $provider_data[ 'variants' ] ) ) {
 				foreach ( $provider_data[ 'variants' ] as $variant => $variant_data ) {
 					if ( ! is_string( $variant_data ) && isset( $variant_data['options']['bounds'] ) ) {
 						// no variants with bounds!
 						continue;
-					} else if ( is_string( $variant_data ) || isset( $variant_data['options']/*['variant']*/ ) ) {
-						$providers[$provider][$provider . '.' . $variant] = $variant;
+					}
+					if ( is_string( $variant_data ) || isset( $variant_data['options'] ) ) {
+
+
+						$providers[ $provider_key . '.' . $variant ] = $provider_key . '.' . $variant;
 					} else {
-						$providers[$provider][$provider] = $provider;
+						$providers[ $provider_key ] = $provider_key;
 					}
 				}
 			} else {
-				$providers[$provider][$provider] = $provider;
+				$providers[ $provider_key ] = $provider_key;
 			}
 		}
-
 		return $providers;
 	}
+
+	/**
+	 *	get providers and variants
+	 *	omits proviers with unconfigured api credentials as well as map data having a bounding box
+	 *
+	 *	@return array
+	 */
+	public function get_layer_providers( ) {
+
+		if ( is_null( $this->leaflet_providers ) ) {
+			$leaflet_providers	= $this->get_leaflet_providers( );//json_decode( file_get_contents( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/etc/leaflet-providers.json'), true );
+
+			// add mapbox ids as variant. See https://www.mapbox.com/api-documentation/#maps
+			$mapbox_variants = array(
+				'streets',
+				'light',
+				'dark',
+				'satellite',
+				'streets-satellite',
+				'wheatpaste',
+				'streets-basic',
+				'comic',
+				'outdoors',
+				'run-bike-hike',
+				'pencil',
+				'pirates',
+				'emerald',
+				'high-contrast',
+			);
+			$leaflet_providers['MapBox']['variants'] = array();
+			foreach ( $mapbox_variants as $variant ) {
+				$key = ucwords( $variant, " \t\r\n\f\v-_." );
+				$key = preg_replace( '@\s\r\n\v\.-_@imsU', '', $key );
+				$leaflet_providers['MapBox']['variants'][ $key ] = 'mapbox.'.$variant;
+			}
+			$leaflet_providers['MapBox']['url'] = str_replace('{id}','{variant}',$leaflet_providers['MapBox']['url']);
+			$leaflet_providers['MapBox']['options']['variant'] = 'mapbox.streets';
+
+			// remove falsy configuration
+			unset( $leaflet_providers['MapBox']['options']['id'] );
+
+
+
+			// merge access tokens
+			$access_tokens = get_option( 'acf_osm_provider_tokens', array() );
+
+			$new_providers = array();
+
+			foreach ( $leaflet_providers as $provider_key => $provider_data ) {
+
+				// drop boundless maps
+				if ( isset($provider_data['options']['bounds'])) {
+					continue;
+				}
+
+				// skip provider if api credentials required
+				//    the key is not consitent, can be `api_key`, `accessToken`, `app_id`, ...
+				//    value is always something like `<insert your ... heren>`
+				foreach ( $provider_data['options'] as $option => $option_value ) {
+
+					if ( is_string( $option_value) && preg_match( '/^<([^>]+)>$/', $option_value ) ) {
+						// option is an access key
+						if ( isset( $access_tokens[$provider_key]['options'][$option] ) && ! empty( $access_tokens[$provider_key]['options'][$option] ) ) {
+							// we know the access key
+							$provider_data['options'][ $option ] = $access_tokens[$provider_key]['options'][$option];
+							break;
+						} else {
+							// remove provider
+							continue 2;
+						}
+					}
+				}
+				$new_providers[ $provider_key ] = $provider_data;
+			}
+
+			$this->leaflet_providers = apply_filters( 'acf_osm_leaflet_providers', $new_providers );
+		}
+
+		// configure mapbox styles as variants
+		return $this->leaflet_providers;
+	}
+
 
 	/**
 	 *	returns leaflet providers with configured access tokens
 	 *	@return array
 	 */
 	public function get_leaflet_providers( ) {
+
 		$leaflet_providers	= json_decode( file_get_contents( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/etc/leaflet-providers.json'), true );
+
 		return $leaflet_providers;
-		$access_tokens		= get_option( 'acf_osm_provider_tokens', array() );
-		return array_replace_recursive( $leaflet_providers, $access_tokens );
+
 	}
 
 
