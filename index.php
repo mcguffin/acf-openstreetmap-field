@@ -9,6 +9,7 @@ Version: 0.0.2
 Author URI: https://github.com/mcguffin
 License: GPL3
 Github Repository: mcguffin/acf-field-openstreetmap
+Requires PHP: 5.6
 Text Domain: acf-field-openstreetmap
 Domain Path: /languages/
 */
