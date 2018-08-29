@@ -1,6 +1,7 @@
 var autoprefixer = require('gulp-autoprefixer');
 var concat = require('gulp-concat');
 var gulp = require('gulp');
+var changeCase = require('change-case');
 var gulputil = require('gulp-util');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
@@ -65,9 +66,20 @@ L = {
 // write providers data to ./etc
 gulp.task('providers', function(){
 	require('./node_modules/leaflet-providers/leaflet-providers.js');
-	fs.writeFileSync( './etc/leaflet-providers.json', JSON.stringify(L.TileLayer.Provider.providers,null,'\t') );
-})
-
+	var providers = L.TileLayer.Provider.providers;
+	var variants = ['streets','light','dark','satellite','streets-satellite','wheatpaste','streets-basic','comic','outdoors','run-bike-hike','pencil','pirates','emerald','high-contrast',]
+	providers.MapBox.variants = {};
+	variants.forEach(function(el){
+		var k = changeCase.ucFirst( changeCase.camelCase( el ) )
+		providers.MapBox.variants[ k ] = {
+			options : {
+				variant: k,
+				id: 'mapbox.' + el,
+			}
+		}
+	});
+	fs.writeFileSync( './etc/leaflet-providers.json', JSON.stringify(providers,null,'\t') );
+});
 
 
 gulp.task('scss', function() {
