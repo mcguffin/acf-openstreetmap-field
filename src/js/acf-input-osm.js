@@ -421,7 +421,7 @@
 
 
 			$.each( editor_config.restrict_providers, setupMap );
-console.log(editor_config.restrict_providers);
+
 			// ... no layer editing allowed
 			if ( this.$layerStore().length ) {
 				this.layersControl = L.control.layers( baseLayers, overlays, {
@@ -579,9 +579,10 @@ console.log(editor_config.restrict_providers);
 
 	$(document)
 		.on('acf-osm-map-init',function( e, map ) {
-			e.preventDefault();
-			$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );
-			;
+			if ( $(e.target).is('[data-editor-config]') ) {
+				e.preventDefault();
+				$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );				
+			}
 		})
 		// field settings
 		.on('change','[data-name="return_format"] input',function(e){
