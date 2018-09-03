@@ -82,14 +82,13 @@
 				// add markers
 				$.each( data.mapMarkers, function( i, markerData ) {
 					// add markers
-					var marker_latlng = L.latLng( parseFloat(markerData.lat), parseFloat(markerData.lng) ),
-						marker, createEvt;
+					var marker, createEvt;
 
 					// allow for skipping markers
 					createEvt = $.Event( 'acf-osm-map-marker-create' );
-
+					createEvt.markerLatLng = L.latLng( parseFloat(markerData.lat), parseFloat(markerData.lng) );
 					createEvt.markerOptions = $.extend( default_marker_config, {
-						title: markerData.label
+						label: markerData.label
 					} );
 
 					$(self).trigger(createEvt)
@@ -98,8 +97,8 @@
 						return;
 					}
 
-					marker = L.marker( marker_latlng, createEvt.markerOptions )
-						.bindTooltip( markerData.label )
+					marker = L.marker( createEvt.markerLatLng, createEvt.markerOptions )
+						.bindPopup( createEvt.markerOptions.label )
 						.addTo( map );
 
 					$(self).trigger('acf-osm-map-marker-created', marker );
