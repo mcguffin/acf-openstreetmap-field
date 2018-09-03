@@ -89,7 +89,7 @@
 					createEvt.map = map;
 					createEvt.markerData = markerData;
 					createEvt.markerOptions = $.extend( default_marker_config, {
-						label: markerData.label
+						title: markerData.label
 					} );
 
 					$(self).trigger(createEvt)
