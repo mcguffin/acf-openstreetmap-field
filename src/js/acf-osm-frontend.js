@@ -86,7 +86,8 @@
 
 					// allow for skipping markers
 					createEvt = $.Event( 'acf-osm-map-marker-create' );
-					createEvt.markerLatLng = L.latLng( parseFloat(markerData.lat), parseFloat(markerData.lng) );
+					createEvt.map = map;
+					createEvt.markerData = markerData;
 					createEvt.markerOptions = $.extend( default_marker_config, {
 						label: markerData.label
 					} );
@@ -97,7 +98,10 @@
 						return;
 					}
 
-					marker = L.marker( createEvt.markerLatLng, createEvt.markerOptions )
+					marker = L.marker(
+							L.latLng( parseFloat( createEvt.markerData.lat ), parseFloat( createEvt.markerData.lng ) ),
+							createEvt.markerOptions
+						)
 						.bindPopup( createEvt.markerOptions.label )
 						.addTo( map );
 
