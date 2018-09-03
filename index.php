@@ -9,6 +9,8 @@ Version: 0.1.1
 Author URI: https://github.com/mcguffin
 License: GPL3
 Github Repository: mcguffin/acf-field-openstreetmap
+GitHub Plugin URI: mcguffin/acf-field-openstreetmap
+Release Asset: true
 Text Domain: acf-field-openstreetmap
 Domain Path: /languages/
 */
@@ -62,7 +64,18 @@ if ( is_admin() || defined( 'DOING_AJAX' ) ) {
 
 	// don't WP-Update actual repos!
 	if ( ! file_exists( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/.git/' ) ) {
-		AutoUpdate\AutoUpdateGithub::instance()->init( __FILE__ );
+
+		// Check if https://github.com/afragen/github-updater is active
+		$active_plugins = get_option('active_plugins');
+
+		if ( $sitewide_plugins = get_site_option('active_sitewide_plugins') ) {
+			$active_plugins = array_merge( $active_plugins, array_keys( $sitewide_plugins ) );
+		}
+
+		if ( ! in_array( 'github-updater/github-updater.php', $active_plugins ) ) {
+
+			AutoUpdate\AutoUpdateGithub::instance()->init( __FILE__ );
+		}
 	}
 
 
