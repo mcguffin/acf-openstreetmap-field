@@ -38,18 +38,24 @@ class Core extends Plugin {
 
 		/* frontend */
 
+		/**
+		 *	Marker Icon HTML. Return false to use image icon (either leaflet default or return value of filter `acf_osm_marker_icon`)
+		 *
+		 *	@param $marker_icon_html string Additional Icon HTML.
+		 */
+		$marker_html = apply_filters('acf_osm_marker_html', false );
+
+		if ( $marker_html !== false ) {
+			$marker_html = wp_kses_post( $marker_html );
+		}
+
 		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), array( 'jquery' ), $this->version(), true );
 		wp_localize_script('acf-osm-frontend','acf_osm',array(
 			'options'	=> array(
 				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
 				'marker'		=> array(
 
-					/**
-					 *	Marker Icon HTML. Return false to use image icon (either leaflet default or return value of filter `acf_osm_marker_icon`)
-					 *
-					 *	@param $marker_icon_html string Additional Icon HTML.
-					 */
-					'html'		=> wp_kses_post( apply_filters('acf_osm_marker_html', false ) ),
+					'html'		=> $marker_html,
 
 					/**
 					 *	HTML Marker Icon css class
