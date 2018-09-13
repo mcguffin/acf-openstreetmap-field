@@ -10,7 +10,7 @@ Author URI: https://github.com/mcguffin
 License: GPL3
 Github Repository: mcguffin/acf-field-openstreetmap
 GitHub Plugin URI: mcguffin/acf-field-openstreetmap
-Release Asset: true
+Release Asset: false
 Text Domain: acf-field-openstreetmap
 Domain Path: /languages/
 */
