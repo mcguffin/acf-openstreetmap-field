@@ -581,11 +581,11 @@
 		.on('acf-osm-map-init',function( e, map ) {
 			if ( $(e.target).is('[data-editor-config]') ) {
 				e.preventDefault();
-				$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );				
+				$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );
 			}
 		})
 		// field settings
-		.on('change','[data-name="return_format"] input',function(e){
+		.on('change','[data-type="open_street_map"] [data-name="return_format"] input',function(e){
 			// find map field
 			$('[data-name="return_format"] input:checked').val()
 			var $map = $(this).closest('.acf-field-object').find('[data-editor-config]'),
