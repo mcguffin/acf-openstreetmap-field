@@ -4261,7 +4261,7 @@ var Map = Evented.extend({
 			'mouseover mouseout mousemove contextmenu keypress', this._handleDOMEvent, this);
 
 		if (this.options.trackResize) {
-			onOff(window, 'resize', this._onResize, this);
+			onOff(window, 'resize load', this._onResize, this);
 		}
 
 		if (any3d && this.options.transform3DLimit) {
