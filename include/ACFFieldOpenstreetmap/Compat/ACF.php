@@ -19,7 +19,19 @@ class ACF extends Core\PluginComponent {
 //		add_action('acf/register_fields', 		array($this, 'include_field_types')); // v4
 		add_action( 'acf/render_field/type=leaflet_map', array( $this, 'render_map_input' ) );
 
+		// Compat with https://github.com/mcguffin/polylang-sync
+		add_filter('polylang_acf_sync_supported_fields', array( $this, 'add_pll_sync_field_type') );
+
 	}
+
+	/**
+	 *	@filter polylang_acf_sync_supported_fields
+	 */
+	public function add_pll_sync_field_type($fields) {
+		$fields[] = 'open_street_map';
+		return $fields;
+	}
+
 	function render_map_input( $field ) {
 
 		$inp_field = array(
