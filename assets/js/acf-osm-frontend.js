@@ -16064,7 +16064,7 @@ return Geocoder;
 					createEvt.map = map;
 					createEvt.markerData = markerData;
 					createEvt.markerOptions = $.extend( default_marker_config, {
-						title: markerData.label
+						label: markerData.label
 					} );
 
 					$(self).trigger(createEvt)
