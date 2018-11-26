@@ -64,75 +64,72 @@ L = {
 }
 
 // write providers data to ./etc
-gulp.task('providers', function(){
+gulp.task('providers', function(cb){
 	require('./node_modules/leaflet-providers/leaflet-providers.js');
 	var providers = L.TileLayer.Provider.providers;
-	fs.writeFileSync( './etc/leaflet-providers.json', JSON.stringify(providers,null,'\t') );
+	return fs.writeFile( './etc/leaflet-providers.json', JSON.stringify( providers, null, '\t' ), cb );
 });
 
 
+
 gulp.task('scss', function() {
-	return [
-		do_scss('acf-input-osm')
-	];
+	return do_scss('acf-input-osm');
 });
 
 
 gulp.task('leaflet-css', function() {
 
-	return [
-		// frontend
-		gulp.src([
-			'./node_modules/leaflet/dist/leaflet.css',
-			'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css',
-		])
-			//.pipe( cleanCSS() )
-			.pipe( concat('./assets/css/') )
-			.pipe( rename('leaflet.css') )
-			.pipe( gulp.dest( './assets/css/' ) ),
+	return gulp.parallel(
+		function() {
+			// frontend
+			return gulp.src([
+				'./node_modules/leaflet/dist/leaflet.css',
+				'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css',
+			])
+				//.pipe( cleanCSS() )
+				.pipe( concat('./assets/css/') )
+				.pipe( rename('leaflet.css') )
+				.pipe( gulp.dest( './assets/css/' ) );
+		},
+		function() {
+			// copy images to css
+			return gulp.src([
+				'./node_modules/leaflet/dist/images/*.png',
+				// './node_modules/leaflet-minimap/dist/images/*.png',
+				'./node_modules/leaflet-control-geocoder/dist/images/*.gif',
+				'./node_modules/leaflet-control-geocoder/dist/images/*.png',
+			])
+				.pipe( gulp.dest( './assets/css/images/' ) );
+		},
 
-		// copy images to css
-		gulp.src([
-			'./node_modules/leaflet/dist/images/*.png',
-			// './node_modules/leaflet-minimap/dist/images/*.png',
-			'./node_modules/leaflet-control-geocoder/dist/images/*.gif',
-			'./node_modules/leaflet-control-geocoder/dist/images/*.png',
-		])
-			.pipe( gulp.dest( './assets/css/images/' ) )
-	];
+	);
 });
 
 
 gulp.task('js-admin', function() {
-    return [
-		concat_js( [
+    return concat_js( [
 			'./src/js/acf-input-osm.js',
-		], 'acf-input-osm.js'),
-		//do_js('acf-input-osm'),
-    ];
+		], 'acf-input-osm.js');
 });
 
 
 gulp.task( 'js', function(){
-	return [
-		// frontend
-		concat_js( [
+	return concat_js( [
 			'./node_modules/leaflet/dist/leaflet-src.js',
 			'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.js',
 			'./node_modules/leaflet-providers/leaflet-providers.js',
 			'./src/js/acf-osm-frontend.js',
 
-		], 'acf-osm-frontend.js'),
-	];
+		], 'acf-osm-frontend.js');
 } );
 
 
-gulp.task('build', ['scss','js','js-admin'] );
+gulp.task('build', gulp.parallel('scss','js','js-admin') );
 
 
 gulp.task('watch', function() {
 	// place code for your default task here
-	gulp.watch('./src/scss/**/*.scss',[ 'scss' ]);
-	gulp.watch('./src/js/**/*.js',[ 'js', 'js-admin' ]);
+	gulp.watch('./src/scss/**/*.scss',	gulp.parallel( 'scss' ) );
+	gulp.watch('./src/js/**/*.js',		gulp.parallel( 'js', 'js-admin' ) );
 });
-gulp.task('default', [ 'leaflet-css', 'build', 'watch' ]);
+gulp.task('default',  gulp.parallel( 'leaflet-css', 'build', 'watch' ));
