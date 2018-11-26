@@ -99,7 +99,7 @@ class Core extends Plugin {
 		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
 			'options'	=> array(
 				'osm_layers'		=> $this->get_osm_layers(),
-				'leafleft_layers'	=> $this->get_leaflet_layers(),
+				'leaflet_layers'	=> $this->get_leaflet_layers(),
 			),
 		));
 

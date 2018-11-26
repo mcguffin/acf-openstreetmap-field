@@ -1,4 +1,4 @@
-(function( $, arg, edit_arg ){
+(function( $, arg ){
 	var options = arg.options,
 		result_tpl = '<div tabindex="<%= data.i %>" class="osm-result">'
 			+ '<%= data.result_text %>'
@@ -595,10 +595,10 @@
 			editor.reset_layers();
 			if ( $(this).val() === 'osm' ) {
 				// set provider restriction to osm providers
-				conf.restrict_providers = Object.values( edit_arg.options.osm_layers );
+				conf.restrict_providers = Object.values( arg.options.osm_layers );
 			} else {
 				// set provider restriction to osm providers
-				conf.restrict_providers = Object.values( edit_arg.options.leaflet_layers );
+				conf.restrict_providers = Object.values( arg.options.leaflet_layers );
 			}
 			$map.data( 'editor-config', conf );
 			editor.init_layers();

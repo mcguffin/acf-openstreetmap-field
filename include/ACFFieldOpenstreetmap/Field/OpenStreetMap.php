@@ -623,6 +623,7 @@ class OpenStreetMap extends \acf_field {
 
 		// normalize markers
 		$markers = array();
+
 		foreach ( $value['markers'] as $key => $marker ) {
 			// remove marker template values
 			if ( '__osm_marker_template__' === $key ) {
@@ -673,7 +674,7 @@ class OpenStreetMap extends \acf_field {
 	function format_value( $value, $post_id, $field ) {
 
 		// bail early if no value
-		if( empty( $value ) ) {
+		if ( empty( $value ) ) {
 
 			return $value;
 
