@@ -19,8 +19,8 @@ class Core extends Plugin {
 
 
 		add_action( 'plugins_loaded' , array( $this , 'load_textdomain' ) );
-		add_action( 'plugins_loaded' , array( $this , 'init_compat' ), 0 );
-		add_action( 'init' , array( $this , 'init' ) );
+
+		add_action( 'acf/include_field_types' , array( $this , 'init' ), 0 );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
 
@@ -119,18 +119,6 @@ class Core extends Plugin {
 
 
 	/**
-	 *	Load Compatibility classes
-	 *
-	 *  @action plugins_loaded
-	 */
-	public function init_compat() {
-		if ( function_exists( 'acf' ) ) {
-			Compat\ACF::instance();
-		}
-	}
-
-
-	/**
 	 *	Load text domain
 	 *
 	 *  @action plugins_loaded
@@ -146,6 +134,7 @@ class Core extends Plugin {
 	 *  @action init
 	 */
 	public function init() {
+		Compat\ACF::instance();
 
 	}
 
@@ -293,20 +282,6 @@ class Core extends Plugin {
 
 	}
 
-
-	// private function deep_replace( $repl, $str ) {
-	// 	if ( is_array( $repl ) ) {
-	// 		foreach ( $repl as $key => $value ) {
-	// 			if ( is_string( $value ) ) {
-	// 				$str = str_replace('{'.$key.'}', $value, $str );
-	// 			} else {
-	// 				$str = $this->deep_replace( $value, $str );
-	//
-	// 			}
-	// 		}
-	// 	}
-	// 	return $str;
-	// }
 
 	/**
 	 *	Get places in provider config, where an access token should be entered.

@@ -13,10 +13,16 @@ use ACFFieldOpenstreetmap\Field;
 
 class ACF extends Core\PluginComponent {
 
+	/**
+	 *	@inheritdoc
+	 */
 	protected function __construct() {
 		// include field
-		add_action('acf/include_field_types', 	array($this, 'include_field_types')); // v5
-//		add_action('acf/register_fields', 		array($this, 'include_field_types')); // v4
+		if ( 'acf/include_field_types' === current_action() ) {
+			$this->include_field_types();
+		} else {
+			add_action('acf/include_field_types', 	array( $this, 'include_field_types')); // v5
+		}
 		add_action( 'acf/render_field/type=leaflet_map', array( $this, 'render_map_input' ) );
 
 		// Compat with https://github.com/mcguffin/polylang-sync
@@ -32,7 +38,10 @@ class ACF extends Core\PluginComponent {
 		return $fields;
 	}
 
-	function render_map_input( $field ) {
+	/**
+	 *	@action acf/render_field/type=leaflet_map
+	 */
+	public function render_map_input( $field ) {
 
 		$inp_field = array(
 			'return_format'	=> 'leaflet',
