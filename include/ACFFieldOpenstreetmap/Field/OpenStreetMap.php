@@ -271,20 +271,19 @@ class OpenStreetMap extends \acf_field {
 	// }
 
 	/*
-	*  render_field()
-	*
-	*  Create the HTML interface for your field
-	*
-	*  @param	$field (array) the $field being rendered
-	*
-	*  @type	action
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$field (array) the $field being edited
-	*  @return	n/a
-	*/
-
+	 *  render_field()
+	 *
+	 *  Create the HTML interface for your field
+	 *
+	 *  @param	$field (array) the $field being rendered
+	 *
+	 *  @type	action
+	 *  @since	3.6
+	 *  @date	23/01/13
+	 *
+	 *  @param	$field (array) the $field being edited
+	 *  @return	n/a
+	 */
 	function render_field( $field ) {
 
 		$core = Core\Core::instance();
@@ -414,18 +413,18 @@ class OpenStreetMap extends \acf_field {
 	}
 
 	/*
-	*  input_admin_enqueue_scripts()
-	*
-	*  This action is called in the admin_enqueue_scripts action on the edit screen where your field is created.
-	*  Use this action to add CSS + JavaScript to assist your render_field() action.
-	*
-	*  @type	action (admin_enqueue_scripts)
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	n/a
-	*  @return	n/a
-	*/
+	 *  input_admin_enqueue_scripts()
+	 *
+	 *  This action is called in the admin_enqueue_scripts action on the edit screen where your field is created.
+	 *  Use this action to add CSS + JavaScript to assist your render_field() action.
+	 *
+	 *  @type	action (admin_enqueue_scripts)
+	 *  @since	3.6
+	 *  @date	23/01/13
+	 *
+	 *  @param	n/a
+	 *  @return	n/a
+	 */
 
 	/*
 	*/
@@ -618,7 +617,6 @@ class OpenStreetMap extends \acf_field {
 	 *  @param	$field (array) the field array holding all the field options
 	 *  @return	$value
 	 */
-
 	function update_value( $value, $post_id, $field ) {
 
 		// normalize markers
@@ -654,23 +652,20 @@ class OpenStreetMap extends \acf_field {
 
 
 	/*
-	*  format_value()
-	*
-	*  This filter is appied to the $value after it is loaded from the db and before it is returned to the template
-	*
-	*  @type	filter
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$value (mixed) the value which was loaded from the database
-	*  @param	$post_id (mixed) the $post_id from which the value was loaded
-	*  @param	$field (array) the field array holding all the field options
-	*
-	*  @return	$value (mixed) the modified value
-	*/
-
-	//*
-
+	 *  format_value()
+	 *
+	 *  This filter is appied to the $value after it is loaded from the db and before it is returned to the template
+	 *
+	 *  @type	filter
+	 *  @since	3.6
+	 *  @date	23/01/13
+	 *
+	 *  @param	$value (mixed) the value which was loaded from the database
+	 *  @param	$post_id (mixed) the $post_id from which the value was loaded
+	 *  @param	$field (array) the field array holding all the field options
+	 *
+	 *  @return	$value (mixed) the modified value
+	 */
 	function format_value( $value, $post_id, $field ) {
 
 		// bail early if no value
@@ -681,6 +676,11 @@ class OpenStreetMap extends \acf_field {
 		}
 
 		$value = wp_parse_args( $value, $this->default_values );
+
+		// Block-Editor: this should have already been deleted in update_value()
+		if ( isset( $value['markers']['__osm_marker_template__'] ) ) {
+			unset( $value['markers']['__osm_marker_template__'] );
+		}
 
 		// apply setting
 		if( $field['return_format'] === 'osm' ) {
