@@ -10,7 +10,7 @@ Features
  - Selectable Map Overlays
  - Multiple Markers
  - Ready-to-use HTML-Output
- - Custom map markers [through WordPress filters](wiki/HTML-Marker-Icon) and JS Events.
+ - Custom map markers [through WordPress filters](./wiki/HTML-Marker-Icon) and JS Events.
 
 
  Installation
@@ -43,7 +43,7 @@ run `npm install` then `gulp`
 
 Usage
 -----
-There is some developer centric documentation in the [wiki](wiki).
+There is some developer centric documentation in the [wiki](./wiki).
 
 Thanks
 ------
