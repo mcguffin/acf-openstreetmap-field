@@ -240,6 +240,7 @@
 					})
 					.on('remove',function(e){
 						entry.$el.remove();
+						self.$el.trigger('change');
 					})
 					.on('dragend',function(e){
 						self.geocode_marker( entry );
@@ -284,8 +285,9 @@
 				title: label,
 				icon: this.icon,
 			})
-				.bindTooltip( label )
-				.addTo( this.map );
+			.bindTooltip( label )
+			.addTo( this.map );
+
 			this.$el.trigger('change');
 		},
 		layer_is_overlay: function(  key, layer ) {

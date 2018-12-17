@@ -151,8 +151,8 @@
     .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-alternatives {
       margin-top: 1em; }
 
-.leaflet-pane .wp-block {
+.wp-block .leaflet-pane {
   z-index: auto; }
 
-.leaflet-control-layers {
+.wp-block .leaflet-control-layers {
   text-align: left; }
