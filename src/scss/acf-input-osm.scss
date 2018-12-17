@@ -61,45 +61,6 @@
 	}
 }
 
-
-// .osm-results {
-// 	height:0;
-// 	border-top:1px solid $wp-gray;
-// 	position:relative;
-// 	z-index:1001;
-// 	width:33%;
-// 	float:right;
-// }
-// .osm-result {
-// 	background:rgba(255,255,255,0.95);
-// 	padding:0.5em;
-// 	border:1px solid $wp-gray;
-// 	border-top-width:0;
-// 	cursor:pointer;
-// 	font-weight:300;
-// 	&:hover,
-// 	&:focus {
-// 		background:rgba($wp-gray,0.8);
-// 		color:$wp-blue;
-// 	}
-// }
-// .acf-osm-geocode {
-// 	[type="text"] {
-// 		.acf-field & {
-// 			font-size:1.5em;
-// 			font-weight:300;
-// 		}
-// 	}
-// }
-// @keyframes bounce {
-// 	0% { transform:translateY(0); }
-// 	25% { transform:translateY(-30px); }
-// 	50% { transform:translateY(0); }
-// 	66% { transform:translateY(-15px); }
-// 	82% { transform:translateY(0); }
-// 	91% { transform:translateY(-7px); }
-// 	100% { transform:translateY(0); }
-// }
 .osm-marker-icon {
 	//border:1px solid $wp-red;
 	border-radius:50%;
@@ -161,10 +122,6 @@
 }
 
 
-
-
-
-
 .acf-osm-above {
 	position:relative;
 	z-index:2;
@@ -220,4 +177,15 @@
 			margin-top: 1em;
 		}
 	}
+}
+
+
+// block editor fixes
+.leaflet-pane {
+	.wp-block {
+		z-index:auto;
+	}
+}
+.leaflet-control-layers {
+	text-align:left;
 }

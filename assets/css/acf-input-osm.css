@@ -150,3 +150,9 @@
       padding: 0.5em 1em; }
     .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-alternatives {
       margin-top: 1em; }
+
+.leaflet-pane .wp-block {
+  z-index: auto; }
+
+.leaflet-control-layers {
+  text-align: left; }
