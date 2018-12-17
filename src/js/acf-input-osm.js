@@ -42,6 +42,8 @@
 			this.$el.html( this.template( this ) );
 			this._update_values_from_marker();
 
+			this.$el.height( this.$el.data('height') );
+
 			this.$el.find('[id$="-marker-label"]')
 				.on('focus',function(e) {
 					self.hilite_marker();
