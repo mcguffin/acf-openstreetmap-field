@@ -35,7 +35,7 @@ class OpenStreetMap extends \acf_field {
 
 	function __construct() {
 		if ( ! is_null( self::$_instance ) ) {
-			throw new Exception('not more thn one Field\OpenStreetMap!');
+			throw new Exception('Not more than one Field\OpenStreetMap!');
 		}
 
 		self::$_instance = $this;
