@@ -713,8 +713,8 @@ class OpenStreetMap extends \acf_field {
 
 			$map_link = add_query_arg( $map_link_args, 'https://www.openstreetmap.org/' );
 			$map_link .= '#map=' . implode( '/', array( $value['zoom'], $value['center_lat'], $value['center_lng'] ) );
-			if ( $value['osm_layer'] !== 'mapnik' ) {
-				$map_link .= '&layers=' . strtoupper($value['osm_layer'][0]);
+			if ( isset($value['osm_layer']) && $value['osm_layer'] !== 'mapnik' ) {
+				$map_link .= '&layers=' . strtoupper($value['osm_layer'][0]); // query var for layer is only the first letter
 			}
 			$html = '<iframe %1$s></iframe><br/><small><a href="%2$s">%3$s</a></small>';
 
