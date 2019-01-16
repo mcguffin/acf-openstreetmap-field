@@ -622,14 +622,20 @@ class OpenStreetMap extends \acf_field {
 		// normalize markers
 		$markers = array();
 
-		foreach ( $value['markers'] as $key => $marker ) {
-			// remove marker template values
-			if ( '__osm_marker_template__' === $key ) {
-				continue;
+		if ( ! is_array( $value ) ) {
+			$value = $this->defaults;
+		}
+
+		if ( isset( $value['markers'] ) ) {
+			foreach ( $value['markers'] as $key => $marker ) {
+				// remove marker template values
+				if ( '__osm_marker_template__' === $key ) {
+					continue;
+				}
+				$marker['lat'] = floatval( $marker['lat'] );
+				$marker['lng'] = floatval( $marker['lng'] );
+				$markers[] = $marker;
 			}
-			$marker['lat'] = floatval( $marker['lat'] );
-			$marker['lng'] = floatval( $marker['lng'] );
-			$markers[] = $marker;
 		}
 		$value['markers'] = $markers;
 
