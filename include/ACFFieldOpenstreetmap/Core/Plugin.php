@@ -1,4 +1,9 @@
 <?php
+/**
+ *	@package ACFFieldOpenstreetmap\Core
+ *	@version 1.0.0
+ *	2018-09-22
+ */
 
 namespace ACFFieldOpenstreetmap\Core;
 
@@ -10,36 +15,95 @@ if ( ! defined('ABSPATH') ) {
 use ACFFieldOpenstreetmap\PostType;
 use ACFFieldOpenstreetmap\Compat;
 
-class Plugin extends Singleton {
+class Plugin extends PluginComponent {
 
+	/** @var string plugin main file */
+	private $plugin_file;
+
+	/** @var array metadata from plugin file */
 	private $plugin_meta;
 
-
+	/** @var string plugin components which might need upgrade */
 	private static $components = array(
 	);
 
 	/**
 	 *	@inheritdoc
 	 */
-	protected function __construct() {
+	protected function __construct( $file ) {
 
-		register_activation_hook( ACF_FIELD_OPENSTREETMAP_FILE, array( __CLASS__ , 'activate' ) );
-		register_deactivation_hook( ACF_FIELD_OPENSTREETMAP_FILE, array( __CLASS__ , 'deactivate' ) );
-		register_uninstall_hook( ACF_FIELD_OPENSTREETMAP_FILE, array( __CLASS__ , 'uninstall' ) );
+		$this->plugin_file = $file;
+
+		register_activation_hook( $this->get_plugin_file(), array( $this , 'activate' ) );
+		register_deactivation_hook( $this->get_plugin_file(), array( $this , 'deactivate' ) );
+		register_uninstall_hook( $this->get_plugin_file(), array( __CLASS__, 'uninstall' ) );
 
 		add_action( 'admin_init', array( $this, 'maybe_upgrade' ) );
+		add_filter( 'extra_plugin_headers', array( $this, 'add_plugin_header' ) );
+
+		add_action( 'plugins_loaded' , array( $this , 'load_textdomain' ) );
 
 		parent::__construct();
 	}
 
 	/**
-	 *	@return plugin version
+	 *	@filter extra_plugin_headers
 	 */
-	public function version() {
-		if ( is_null( $this->plugin_meta ) ) {
-			$this->plugin_meta = get_plugin_data( ACF_FIELD_OPENSTREETMAP_FILE );
+	public function add_plugin_header( $headers ) {
+		$headers['GithubRepo'] = 'Github Repository';
+		return $headers;
+	}
+
+	/**
+	 *	@return string full plugin file path
+	 */
+	public function get_plugin_file() {
+		return $this->plugin_file;
+	}
+
+	/**
+	 *	@return string full plugin file path
+	 */
+	public function get_plugin_dir() {
+		return plugin_dir_path( $this->get_plugin_file() );
+	}
+
+	/**
+	 *	@return string plugin slug
+	 */
+	public function get_slug() {
+		return basename( $this->get_plugin_dir() );
+	}
+
+	/**
+	 *	@return string Path to the main plugin file from plugins directory
+	 */
+	public function get_wp_plugin() {
+		return plugin_basename( $this->get_plugin_file() );
+	}
+
+	/**
+	 *	@return string current plugin version
+	 */
+	public function get_version() {
+		return $this->get_plugin_meta( 'Version' );
+	}
+
+	/**
+	 *	@param string $which Which plugin meta to get. NUll
+	 *	@return string|array plugin meta
+	 */
+	public function get_plugin_meta( $which = null ) {
+		if ( ! isset( $this->plugin_meta ) ) {
+			if ( ! function_exists('get_plugin_data') ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+			$this->plugin_meta = get_plugin_data( $this->get_plugin_file() );
 		}
-		return $this->plugin_meta['Version'];
+		if ( isset( $this->plugin_meta[ $which ] ) ) {
+			return $this->plugin_meta[ $which ];
+		}
+		return $this->plugin_meta;
 	}
 
 	/**
@@ -47,37 +111,43 @@ class Plugin extends Singleton {
 	 */
 	public function maybe_upgrade() {
 		// trigger upgrade
-		$meta = get_plugin_data( ACF_FIELD_OPENSTREETMAP_FILE );
-		$new_version = $meta['Version'];
-		$old_version = get_option( 'acf-field-openstreetmap_version' );
+		$new_version = $this->get_version();
+		$old_version = get_site_option( 'acf-field-openstreetmap_version' );
 
 		// call upgrade
 		if ( version_compare($new_version, $old_version, '>' ) ) {
 
 			$this->upgrade( $new_version, $old_version );
 
-			update_option( 'acf-field-openstreetmap_version', $new_version );
+			update_site_option( 'acf-field-openstreetmap_version', $new_version );
 
 		}
 
 	}
 
 	/**
+	 *	Load text domain
+	 *
+	 *  @action plugins_loaded
+	 */
+	public function load_textdomain() {
+		$path = pathinfo( $this->get_wp_plugin(), PATHINFO_DIRNAME );
+		load_plugin_textdomain( 'acf-field-openstreetmap', false, $path . '/languages' );
+	}
+
+
+
+	/**
 	 *	Fired on plugin activation
 	 */
-	public static function activate() {
+	public function activate() {
 
-		$meta = get_plugin_data( ACF_FIELD_OPENSTREETMAP_FILE );
-		$new_version = $meta['Version'];
-
-		update_site_option( '_version', $new_version );
+		$this->maybe_upgrade();
 
 		foreach ( self::$components as $component ) {
 			$comp = $component::instance();
 			$comp->activate();
 		}
-
-
 	}
 
 
@@ -111,7 +181,7 @@ class Plugin extends Singleton {
 	/**
 	 *	Fired on plugin deactivation
 	 */
-	public static function deactivate() {
+	public function deactivate() {
 		foreach ( self::$components as $component ) {
 			$comp = $component::instance();
 			$comp->deactivate();

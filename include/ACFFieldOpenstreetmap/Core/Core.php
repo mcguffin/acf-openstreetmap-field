@@ -14,7 +14,7 @@ class Core extends Plugin {
 	/**
 	 *	@inheritdoc
 	 */
-	protected function __construct() {
+	protected function __construct($file) {
 
 
 
@@ -27,8 +27,8 @@ class Core extends Plugin {
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 		}
-
-		parent::__construct();
+		$args = func_get_args();
+		parent::__construct( ...$args );
 	}
 
 	/**
@@ -49,7 +49,7 @@ class Core extends Plugin {
 			$marker_html = wp_kses_post( $marker_html );
 		}
 
-		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), array( 'jquery' ), $this->version(), true );
+		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), array( 'jquery' ), $this->get_version(), true );
 		wp_localize_script('acf-osm-frontend','acf_osm',array(
 			'options'	=> array(
 				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
@@ -90,12 +90,12 @@ class Core extends Plugin {
 			'providers'		=> $this->get_layer_providers(),
 		));
 
-		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), array(), $this->version() );
+		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), array(), $this->get_version() );
 
 		/* backend */
 
 		// field js
-		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','backbone'), $this->version(), true );
+		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','backbone'), $this->get_version(), true );
 		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
 			'options'	=> array(
 				'osm_layers'		=> $this->get_osm_layers(),
@@ -104,7 +104,7 @@ class Core extends Plugin {
 		));
 
 		// field css
-		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), array('acf-input'), $this->version() );
+		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), array('acf-input'), $this->get_version() );
 
 
 	}

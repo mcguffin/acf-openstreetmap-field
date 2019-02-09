@@ -51,7 +51,7 @@ define( 'ACF_FIELD_OPENSTREETMAP_PLUGIN', pathinfo( ACF_FIELD_OPENSTREETMAP_DIRE
 
 require_once ACF_FIELD_OPENSTREETMAP_DIRECTORY . 'include/autoload.php';
 
-Core\Core::instance();
+Core\Core::instance( __FILE__ );
 
 
 

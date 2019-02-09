@@ -1,4 +1,9 @@
 <?php
+/**
+ *	@package ACFFieldOpenstreetmap\Core
+ *	@version 1.0.0
+ *	2018-09-22
+ */
 
 namespace ACFFieldOpenstreetmap\Core;
 
@@ -20,9 +25,14 @@ abstract class Singleton {
 	 * @return object single instance of Core
 	 */
 	public static function instance() {
+
 		$class = get_called_class();
-		if ( ! isset( self::$instances[ $class ] ) )
-			self::$instances[ $class ] = new $class();
+
+		if ( ! isset( self::$instances[ $class ] ) ) {
+			$args = func_get_args();
+			self::$instances[ $class ] = new $class( ...$args );
+		}
+
 		return self::$instances[ $class ];
 	}
 
