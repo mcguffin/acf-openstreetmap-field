@@ -612,5 +612,8 @@
 	acf.addAction( 'append', function(){
 		$.acf_leaflet();
 	});
-
+	acf.addAction( 'show_field/type=open_street_map', function( field ){
+	    var editor = field.$el.find('[data-editor-config]').data( '_map_editor' );
+	    editor.update_visible();
+	});
 })( jQuery, acf_osm_admin );

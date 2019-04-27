@@ -800,8 +800,7 @@ class OpenStreetMap extends \acf_field {
 
 		}
 
-
-		if( empty($value) || empty($value['lat']) || empty($value['lng']) ) {
+		if( empty($value) || empty($value['center_lat']) || empty($value['center_lng']) ) {
 
 			return false;
 
