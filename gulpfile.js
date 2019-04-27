@@ -1,14 +1,12 @@
 var autoprefixer = require('gulp-autoprefixer');
 var concat = require('gulp-concat');
 var gulp = require('gulp');
-var changeCase = require('change-case');
 var gulputil = require('gulp-util');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 var fs = require('fs');
-var cleanCSS = require('gulp-clean-css');
 
 
 function do_scss( src ) {
@@ -94,7 +92,6 @@ gulp.task('leaflet-css', function() {
 				'./node_modules/leaflet/dist/leaflet.css',
 				'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css',
 			])
-				//.pipe( cleanCSS() )
 				.pipe( concat('./assets/css/') )
 				.pipe( rename('leaflet.css') )
 				.pipe( gulp.dest( './assets/css/' ) );

@@ -30,10 +30,12 @@
 
 .osm-markers .osm-marker {
   position: relative;
+  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-align: center;
-      align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   padding: 0.25em 0;
   border-bottom: 1px solid #f1f1f1; }
   .osm-markers .osm-marker:nth-of-type(2n) {
@@ -45,13 +47,15 @@
     cursor: pointer; }
   .osm-markers .osm-marker > .tools,
   .osm-markers .osm-marker > .locate {
-    -ms-flex: 0;
-        flex: 0;
+    -webkit-box-flex: 0;
+        -ms-flex: 0;
+            flex: 0;
     min-width: 32px;
     text-align: center; }
   .osm-markers .osm-marker > .input {
-    -ms-flex: 1;
-        flex: 1; }
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1; }
   .osm-markers .osm-marker input[type="text"] {
     width: 100%;
     font-size: 20px;
@@ -82,12 +86,14 @@
     border-radius: 13px;
     background-color: #fff;
     border: 8px solid #0085ba;
-    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
     position: absolute;
     bottom: 18px;
     left: -7px; }
   .osm-marker-icon.focus:after, .osm-marker-icon:focus:after {
-    box-shadow: 0 0 6px 12px rgba(255, 185, 0, 0.75); }
+    -webkit-box-shadow: 0 0 6px 12px rgba(255, 185, 0, 0.75);
+            box-shadow: 0 0 6px 12px rgba(255, 185, 0, 0.75); }
   .osm-marker-icon:hover:before {
     border-top-color: #dc3232; }
   .osm-marker-icon:hover:after {
@@ -108,20 +114,24 @@
     z-index: 1; }
   .acf-osm-above .leaflet-control-geocoder {
     height: 38px;
+    display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     width: 100%;
-    box-shadow: none; }
+    -webkit-box-shadow: none;
+            box-shadow: none; }
     .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-icon,
     .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-form {
       border-radius: none; }
     .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-icon {
-      -ms-flex: 0;
-          flex: 0;
+      -webkit-box-flex: 0;
+          -ms-flex: 0;
+              flex: 0;
       min-width: 42px;
       height: 38px;
-      -ms-flex-order: 2;
-          order: 2;
+      -webkit-box-ordinal-group: 3;
+          -ms-flex-order: 2;
+              order: 2;
       background-color: #0085ba;
       background-image: none;
       border-radius: 0 4px 4px 0; }
@@ -131,10 +141,12 @@
         color: #fff;
         font-size: 20px; }
     .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-form {
-      -ms-flex: 1;
-          flex: 1;
-      -ms-flex-order: 1;
-          order: 1; }
+      -webkit-box-flex: 1;
+          -ms-flex: 1;
+              flex: 1;
+      -webkit-box-ordinal-group: 2;
+          -ms-flex-order: 1;
+              order: 1; }
       .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-form input {
         padding: 0.25em 1em;
         font-size: 20px;
