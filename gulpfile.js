@@ -66,13 +66,6 @@ gulp.task('providers', function(cb){
 	require('./node_modules/leaflet-providers/leaflet-providers.js');
 	var providers = L.TileLayer.Provider.providers;
 
-	// patch insecure map tile URLs
-	if ( providers.OpenStreetMap.variants.BlackAndWhite.url.indexOf('http:') === 0 ) {
-		providers.OpenStreetMap.variants.BlackAndWhite.url = "https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png";
-	}
-	if ( providers.HikeBike.url.indexOf('http:') === 0 ) {
-		providers.HikeBike.url = "https://tiles.wmflabs.org/{variant}/{z}/{x}/{y}.png"
-	}
 	return fs.writeFile( './etc/leaflet-providers.json', JSON.stringify( providers, null, '\t' ), cb );
 });
 
