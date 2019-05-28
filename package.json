@@ -29,5 +29,7 @@
     "leaflet-control-geocoder": "^1.7.0",
     "leaflet-providers": "^1.6.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "tar": ">=2.2.2"
+  }
 }
