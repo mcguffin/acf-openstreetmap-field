@@ -691,7 +691,7 @@ class OpenStreetMap extends \acf_field {
 		// apply setting
 		if( $field['return_format'] === 'osm' ) {
 			// features: one marker. 4 maps to choose from
-			$bbox = Helper\Maphelper::getBbox( $value['center_lat'], $value['center_lng'], $value['zoom'] );
+			$bbox = Helper\MapHelper::getBbox( $value['center_lat'], $value['center_lng'], $value['zoom'] );
 
 			$iframe_src_args = array(
 				'bbox'	=> implode( ',', $bbox ),
