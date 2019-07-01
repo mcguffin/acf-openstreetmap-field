@@ -5,3 +5,4 @@
 gulpfile.js export-ignore
 package*.json export-ignore
 /src export-ignore
+/tests export-ignore
