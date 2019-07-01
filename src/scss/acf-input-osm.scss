@@ -35,8 +35,13 @@
 			background-color:rgba($wp-yellow,0.5);
 		}
 		& > .locate {
-			font-size:32px;
-			cursor:pointer;
+			&.dashicons {
+				&,
+				&::before {
+					font-size:32px;
+					cursor:pointer;					
+				}
+			}
 		}
 		& > .tools,
 		& > .locate {

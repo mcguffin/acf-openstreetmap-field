@@ -42,7 +42,7 @@
     background-color: #fafafa; }
   .osm-markers .osm-marker.focus {
     background-color: rgba(255, 185, 0, 0.5); }
-  .osm-markers .osm-marker > .locate {
+  .osm-markers .osm-marker > .locate.dashicons, .osm-markers .osm-marker > .locate.dashicons::before {
     font-size: 32px;
     cursor: pointer; }
   .osm-markers .osm-marker > .tools,

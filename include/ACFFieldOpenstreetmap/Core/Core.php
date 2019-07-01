@@ -104,7 +104,7 @@ class Core extends Plugin {
 		));
 
 		// field css
-		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), array('acf-input'), $this->get_version() );
+		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), array('acf-input','dashicons'), $this->get_version() );
 
 
 	}
