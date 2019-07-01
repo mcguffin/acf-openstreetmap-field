@@ -335,7 +335,6 @@
 				mapLayers = {},
 				editor_config = this.$el.data().editorConfig,
 				is_omitted = function(key) {
-
 					return key === null || ( !! editor_config.restrict_providers && editor_config.restrict_providers.indexOf( key ) === -1 );
 				},
 				setupMap = function( val, key ){
@@ -583,6 +582,10 @@
 
 	$(document)
 		.on('acf-osm-map-init',function( e, map ) {
+			if ( $(e.target).closest('[data-id="acfcloneindex"]').length ) {
+				e.preventDefault();
+				return;
+			}
 			if ( $(e.target).is('[data-editor-config]') ) {
 				e.preventDefault();
 				$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );
