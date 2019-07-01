@@ -480,12 +480,6 @@
 			})
 			.addTo( this.map );
 
-			// prevent wp post form from being submitted
-			L.DomEvent.addListener(this.geocoder._input, 'keydown', function(e){
-				if ( e.keyCode === 13 ) {
-					e.preventDefault();
-				}
-			}, this.geocoder );
 		},
 		get_first_marker:function() {
 			var marker = false;
@@ -582,10 +576,12 @@
 
 	$(document)
 		.on('acf-osm-map-init',function( e, map ) {
+			// don't init in repeater templates
 			if ( $(e.target).closest('[data-id="acfcloneindex"]').length ) {
 				e.preventDefault();
 				return;
 			}
+			// wrap osm.field backbone view around editors
 			if ( $(e.target).is('[data-editor-config]') ) {
 				e.preventDefault();
 				$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );

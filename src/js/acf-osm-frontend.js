@@ -114,12 +114,13 @@
 			});
 		}
 	});
+	// static mathod
 	$.extend({
 		acf_leaflet:function() {
 			$('[data-map="leaflet"]').acf_leaflet();
 		}
 	});
-
+	// init all maps
 	$.acf_leaflet();
 
 
