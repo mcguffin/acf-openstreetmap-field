@@ -15,7 +15,7 @@ function do_scss( src ) {
 		.pipe( sourcemaps.init() )
 		.pipe( sass( { outputStyle: 'nested' } ).on('error', sass.logError) )
 		.pipe( autoprefixer({
-			browsers:['last 2 versions']
+			
 		}) )
 		.pipe( gulp.dest( './assets/css/' + dir ) )
         .pipe( sass( { outputStyle: 'compressed' } ).on('error', sass.logError) )

@@ -1,5 +1,5 @@
 /* @preserve
- * Leaflet 1.4.0, a JS library for interactive maps. http://leafletjs.com
+ * Leaflet 1.5.1+build.2e3e0ff, a JS library for interactive maps. http://leafletjs.com
  * (c) 2010-2018 Vladimir Agafonkin, (c) 2010-2011 CloudMade
  */
 
@@ -9,7 +9,7 @@
 	(factory((global.L = {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "1.4.0";
+var version = "1.5.1+build.2e3e0ffb";
 
 /*
  * @namespace Util
@@ -127,8 +127,8 @@ function falseFn() { return false; }
 // @function formatNum(num: Number, digits?: Number): Number
 // Returns the number `num` rounded to `digits` decimals, or to 6 decimals by default.
 function formatNum(num, digits) {
-	var pow = Math.pow(10, (digits === undefined ? 6 : digits));
-	return Math.round(num * pow) / pow;
+	digits = (digits === undefined ? 6 : digits);
+	return +(Math.round(num + ('e+' + digits)) + ('e-' + digits));
 }
 
 // @function trim(str: String): String
@@ -468,7 +468,7 @@ var Events = {
 	 *
 	 * @alternative
 	 * @method off: this
-	 * Removes all listeners to all events on the object.
+	 * Removes all listeners to all events on the object. This includes implicitly attached events.
 	 */
 	off: function (types, fn, context) {
 
@@ -1648,9 +1648,11 @@ var Earth = extend({}, CRS, {
  * a sphere. Used by the `EPSG:3857` CRS.
  */
 
+var earthRadius = 6378137;
+
 var SphericalMercator = {
 
-	R: 6378137,
+	R: earthRadius,
 	MAX_LATITUDE: 85.0511287798,
 
 	project: function (latlng) {
@@ -1673,7 +1675,7 @@ var SphericalMercator = {
 	},
 
 	bounds: (function () {
-		var d = 6378137 * Math.PI;
+		var d = earthRadius * Math.PI;
 		return new Bounds([-d, -d], [d, d]);
 	})()
 };
@@ -2171,6 +2173,7 @@ function addDoubleTapListener(obj, handler, id) {
 				touch$$1 = newTouch;
 			}
 			touch$$1.type = 'dblclick';
+			touch$$1.button = 0;
 			handler(touch$$1);
 			last = null;
 		}
@@ -4308,9 +4311,15 @@ var Map = Evented.extend({
 		// this event. Also fired on mobile when the user holds a single touch
 		// for a second (also called long press).
 		// @event keypress: KeyboardEvent
-		// Fired when the user presses a key from the keyboard while the map is focused.
+		// Fired when the user presses a key from the keyboard that produces a character value while the map is focused.
+		// @event keydown: KeyboardEvent
+		// Fired when the user presses a key from the keyboard while the map is focused. Unlike the `keypress` event,
+		// the `keydown` event is fired for keys that produce a character value and for keys
+		// that do not produce a character value.
+		// @event keyup: KeyboardEvent
+		// Fired when the user releases a key from the keyboard while the map is focused.
 		onOff(this._container, 'click dblclick mousedown mouseup ' +
-			'mouseover mouseout mousemove contextmenu keypress', this._handleDOMEvent, this);
+			'mouseover mouseout mousemove contextmenu keypress keydown keyup', this._handleDOMEvent, this);
 
 		if (this.options.trackResize) {
 			onOff(window, 'resize', this._onResize, this);
@@ -4374,7 +4383,7 @@ var Map = Evented.extend({
 
 		var type = e.type;
 
-		if (type === 'mousedown' || type === 'keypress') {
+		if (type === 'mousedown' || type === 'keypress' || type === 'keyup' || type === 'keydown') {
 			// prevents outline when clicking on keyboard-focusable element
 			preventOutline(e.target || e.srcElement);
 		}
@@ -4413,7 +4422,7 @@ var Map = Evented.extend({
 			originalEvent: e
 		};
 
-		if (e.type !== 'keypress') {
+		if (e.type !== 'keypress' && e.type !== 'keydown' && e.type !== 'keyup') {
 			var isMarker = target.getLatLng && (!target._radius || target._radius <= 10);
 			data.containerPoint = isMarker ?
 				this.latLngToContainerPoint(target.getLatLng()) : this.mouseEventToContainerPoint(e);
@@ -4666,7 +4675,7 @@ var Map = Evented.extend({
 		}
 
 		// @event zoomanim: ZoomAnimEvent
-		// Fired at least once per zoom animation. For continous zoom, like pinch zooming, fired once per frame during zoom.
+		// Fired at least once per zoom animation. For continuous zoom, like pinch zooming, fired once per frame during zoom.
 		this.fire('zoomanim', {
 			center: center,
 			zoom: zoom,
@@ -4784,6 +4793,8 @@ var Control = Class.extend({
 			corner.appendChild(container);
 		}
 
+		this._map.on('unload', this.remove, this);
+
 		return this;
 	},
 
@@ -4800,6 +4811,7 @@ var Control = Class.extend({
 			this.onRemove(this._map);
 		}
 
+		this._map.off('unload', this.remove, this);
 		this._map = null;
 
 		return this;
@@ -5197,7 +5209,7 @@ var Layers = Control.extend({
 			input.className = 'leaflet-control-layers-selector';
 			input.defaultChecked = checked;
 		} else {
-			input = this._createRadioElement('leaflet-base-layers', checked);
+			input = this._createRadioElement('leaflet-base-layers_' + stamp(this), checked);
 		}
 
 		this._layerControlInputs.push(input);
@@ -5582,7 +5594,7 @@ var Attribution = Control.extend({
 
 		// @option prefix: String = 'Leaflet'
 		// The HTML text shown before the attributions. Pass `false` to disable.
-		prefix: '<a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>'
+		prefix: '<a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>'
 	},
 
 	initialize: function (options) {
@@ -6327,7 +6339,7 @@ var LonLat = {
  * @namespace Projection
  * @projection L.Projection.Mercator
  *
- * Elliptical Mercator projection — more complex than Spherical Mercator. Takes into account that Earth is a geoid, not a perfect sphere. Used by the EPSG:3395 CRS.
+ * Elliptical Mercator projection — more complex than Spherical Mercator. Assumes that Earth is an ellipsoid. Used by the EPSG:3395 CRS.
  */
 
 var Mercator = {
@@ -6487,7 +6499,7 @@ CRS.Simple = Simple;
  * @example
  *
  * ```js
- * var layer = L.Marker(latlng).addTo(map);
+ * var layer = L.marker(latlng).addTo(map);
  * layer.addTo(map);
  * layer.remove();
  * ```
@@ -7418,6 +7430,10 @@ var Marker = Layer.extend({
 		// `Map pane` where the markers icon will be added.
 		pane: 'markerPane',
 
+		// @option pane: String = 'shadowPane'
+		// `Map pane` where the markers shadow will be added.
+		shadowPane: 'shadowPane',
+
 		// @option bubblingMouseEvents: Boolean = false
 		// When `true`, a mouse event on this marker will trigger the same event on the map
 		// (unless [`L.DomEvent.stopPropagation`](#domevent-stoppropagation) is used).
@@ -7508,6 +7524,12 @@ var Marker = Layer.extend({
 	setZIndexOffset: function (offset) {
 		this.options.zIndexOffset = offset;
 		return this.update();
+	},
+
+	// @method getIcon: Icon
+	// Returns the current icon used by the marker
+	getIcon: function () {
+		return this.options.icon;
 	},
 
 	// @method setIcon(icon: Icon): this
@@ -7605,7 +7627,7 @@ var Marker = Layer.extend({
 		}
 		this._initInteraction();
 		if (newShadow && addShadow) {
-			this.getPane('shadowPane').appendChild(this._shadow);
+			this.getPane(options.shadowPane).appendChild(this._shadow);
 		}
 	},
 
@@ -7689,7 +7711,9 @@ var Marker = Layer.extend({
 	_updateOpacity: function () {
 		var opacity = this.options.opacity;
 
-		setOpacity(this._icon, opacity);
+		if (this._icon) {
+			setOpacity(this._icon, opacity);
+		}
 
 		if (this._shadow) {
 			setOpacity(this._shadow, opacity);
@@ -7826,6 +7850,9 @@ var Path = Layer.extend({
 		setOptions(this, style);
 		if (this._renderer) {
 			this._renderer._updateStyle(this);
+			if (this.options.stroke && style.hasOwnProperty('weight')) {
+				this._updateBounds();
+			}
 		}
 		return this;
 	},
@@ -8267,14 +8294,19 @@ var Polyline = Path.extend({
 		this._rings = [];
 		this._projectLatlngs(this._latlngs, this._rings, pxBounds);
 
+		if (this._bounds.isValid() && pxBounds.isValid()) {
+			this._rawPxBounds = pxBounds;
+			this._updateBounds();
+		}
+	},
+
+	_updateBounds: function () {
 		var w = this._clickTolerance(),
 		    p = new Point(w, w);
-
-		if (this._bounds.isValid() && pxBounds.isValid()) {
-			pxBounds.min._subtract(p);
-			pxBounds.max._add(p);
-			this._pxBounds = pxBounds;
-		}
+		this._pxBounds = new Bounds([
+			this._rawPxBounds.min.subtract(p),
+			this._rawPxBounds.max.add(p)
+		]);
 	},
 
 	// recursively turns latlngs into a set of rings with projected coordinates
@@ -8704,10 +8736,10 @@ var GeoJSON = FeatureGroup.extend({
 	},
 
 	_setLayerStyle: function (layer, style) {
-		if (typeof style === 'function') {
-			style = style(layer.feature);
-		}
 		if (layer.setStyle) {
+			if (typeof style === 'function') {
+				style = style(layer.feature);
+			}
 			layer.setStyle(style);
 		}
 	}
@@ -8857,19 +8889,25 @@ var PointToGeoJSON = {
 };
 
 // @namespace Marker
-// @method toGeoJSON(): Object
+// @method toGeoJSON(precision?: Number): Object
+// `precision` is the number of decimal places for coordinates.
+// The default value is 6 places.
 // Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the marker (as a GeoJSON `Point` Feature).
 Marker.include(PointToGeoJSON);
 
 // @namespace CircleMarker
-// @method toGeoJSON(): Object
+// @method toGeoJSON(precision?: Number): Object
+// `precision` is the number of decimal places for coordinates.
+// The default value is 6 places.
 // Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the circle marker (as a GeoJSON `Point` Feature).
 Circle.include(PointToGeoJSON);
 CircleMarker.include(PointToGeoJSON);
 
 
 // @namespace Polyline
-// @method toGeoJSON(): Object
+// @method toGeoJSON(precision?: Number): Object
+// `precision` is the number of decimal places for coordinates.
+// The default value is 6 places.
 // Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the polyline (as a GeoJSON `LineString` or `MultiLineString` Feature).
 Polyline.include({
 	toGeoJSON: function (precision) {
@@ -8885,7 +8923,9 @@ Polyline.include({
 });
 
 // @namespace Polygon
-// @method toGeoJSON(): Object
+// @method toGeoJSON(precision?: Number): Object
+// `precision` is the number of decimal places for coordinates.
+// The default value is 6 places.
 // Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the polygon (as a GeoJSON `Polygon` or `MultiPolygon` Feature).
 Polygon.include({
 	toGeoJSON: function (precision) {
@@ -8921,7 +8961,9 @@ LayerGroup.include({
 		});
 	},
 
-	// @method toGeoJSON(): Object
+	// @method toGeoJSON(precision?: Number): Object
+	// `precision` is the number of decimal places for coordinates.
+	// The default value is 6 places.
 	// Returns a [`GeoJSON`](http://en.wikipedia.org/wiki/GeoJSON) representation of the layer group (as a GeoJSON `FeatureCollection`, `GeometryCollection`, or `MultiPoint`).
 	toGeoJSON: function (precision) {
 
@@ -9266,7 +9308,12 @@ var VideoOverlay = ImageOverlay.extend({
 
 		// @option loop: Boolean = true
 		// Whether the video will loop back to the beginning when played.
-		loop: true
+		loop: true,
+
+		// @option keepAspectRatio: Boolean = true
+		// Whether the video will save aspect ratio after the projection.
+		// Relevant for supported browsers. Browser compatibility- https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit
+		keepAspectRatio: true
 	},
 
 	_initImage: function () {
@@ -9296,6 +9343,7 @@ var VideoOverlay = ImageOverlay.extend({
 
 		if (!isArray(this._url)) { this._url = [this._url]; }
 
+		if (!this.options.keepAspectRatio && vid.style.hasOwnProperty('objectFit')) { vid.style['objectFit'] = 'fill'; }
 		vid.autoplay = !!this.options.autoplay;
 		vid.loop = !!this.options.loop;
 		for (var i = 0; i < this._url.length; i++) {
@@ -9317,6 +9365,49 @@ var VideoOverlay = ImageOverlay.extend({
 
 function videoOverlay(video, bounds, options) {
 	return new VideoOverlay(video, bounds, options);
+}
+
+/*
+ * @class SVGOverlay
+ * @aka L.SVGOverlay
+ * @inherits ImageOverlay
+ *
+ * Used to load, display and provide DOM access to an SVG file over specific bounds of the map. Extends `ImageOverlay`.
+ *
+ * An SVG overlay uses the [`<svg>`](https://developer.mozilla.org/docs/Web/SVG/Element/svg) element.
+ *
+ * @example
+ *
+ * ```js
+ * var element = '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image xlink:href="https://mdn.mozillademos.org/files/6457/mdn_logo_only_color.png" height="200" width="200"/></svg>',
+ * 		 elementBounds = [ [ 32, -130 ], [ 13, -100 ] ];
+ * L.svgOverlay(element, elementBounds).addTo(map);
+ * ```
+ */
+
+var SVGOverlay = ImageOverlay.extend({
+	_initImage: function () {
+		var el = this._image = this._url;
+
+		addClass(el, 'leaflet-image-layer');
+		if (this._zoomAnimated) { addClass(el, 'leaflet-zoom-animated'); }
+
+		el.onselectstart = falseFn;
+		el.onmousemove = falseFn;
+	}
+
+	// @method getElement(): SVGElement
+	// Returns the instance of [`SVGElement`](https://developer.mozilla.org/docs/Web/API/SVGElement)
+	// used by this overlay.
+});
+
+
+// @factory L.svgOverlay(svg: String|SVGElement, bounds: LatLngBounds, options?: SVGOverlay options)
+// Instantiates an image overlay object given an SVG element and the geographical bounds it is tied to.
+// A viewBox attribute is required on the SVG element to zoom in and out properly.
+
+function svgOverlay(el, bounds, options) {
+	return new SVGOverlay(el, bounds, options);
 }
 
 /*
@@ -9471,6 +9562,38 @@ var DivOverlay = Layer.extend({
 			toBack(this._container);
 		}
 		return this;
+	},
+
+	_prepareOpen: function (parent, layer, latlng) {
+		if (!(layer instanceof Layer)) {
+			latlng = layer;
+			layer = parent;
+		}
+
+		if (layer instanceof FeatureGroup) {
+			for (var id in parent._layers) {
+				layer = parent._layers[id];
+				break;
+			}
+		}
+
+		if (!latlng) {
+			if (layer.getCenter) {
+				latlng = layer.getCenter();
+			} else if (layer.getLatLng) {
+				latlng = layer.getLatLng();
+			} else {
+				throw new Error('Unable to get source layer LatLng.');
+			}
+		}
+
+		// set overlay source to this layer
+		this._source = layer;
+
+		// update the overlay (content, layout, ect...)
+		this.update();
+
+		return latlng;
 	},
 
 	_updateContent: function () {
@@ -9927,28 +10050,8 @@ Layer.include({
 	// @method openPopup(latlng?: LatLng): this
 	// Opens the bound popup at the specified `latlng` or at the default popup anchor if no `latlng` is passed.
 	openPopup: function (layer, latlng) {
-		if (!(layer instanceof Layer)) {
-			latlng = layer;
-			layer = this;
-		}
-
-		if (layer instanceof FeatureGroup) {
-			for (var id in this._layers) {
-				layer = this._layers[id];
-				break;
-			}
-		}
-
-		if (!latlng) {
-			latlng = layer.getCenter ? layer.getCenter() : layer.getLatLng();
-		}
-
 		if (this._popup && this._map) {
-			// set popup source to this layer
-			this._popup._source = layer;
-
-			// update the popup (content, layout, ect...)
-			this._popup.update();
+			latlng = this._popup._prepareOpen(this, layer, latlng);
 
 			// open the popup on the map
 			this._map.openPopup(this._popup, latlng);
@@ -10345,29 +10448,8 @@ Layer.include({
 	// @method openTooltip(latlng?: LatLng): this
 	// Opens the bound tooltip at the specified `latlng` or at the default tooltip anchor if no `latlng` is passed.
 	openTooltip: function (layer, latlng) {
-		if (!(layer instanceof Layer)) {
-			latlng = layer;
-			layer = this;
-		}
-
-		if (layer instanceof FeatureGroup) {
-			for (var id in this._layers) {
-				layer = this._layers[id];
-				break;
-			}
-		}
-
-		if (!latlng) {
-			latlng = layer.getCenter ? layer.getCenter() : layer.getLatLng();
-		}
-
 		if (this._tooltip && this._map) {
-
-			// set tooltip source to this layer
-			this._tooltip._source = layer;
-
-			// update the tooltip (content, layout, ect...)
-			this._tooltip.update();
+			latlng = this._tooltip._prepareOpen(this, layer, latlng);
 
 			// open the tooltip on the map
 			this._map.openTooltip(this._tooltip, latlng);
@@ -10478,8 +10560,9 @@ var DivIcon = Icon.extend({
 		// iconAnchor: (Point),
 		// popupAnchor: (Point),
 
-		// @option html: String = ''
-		// Custom HTML code to put inside the div element, empty by default.
+		// @option html: String|HTMLElement = ''
+		// Custom HTML code to put inside the div element, empty by default. Alternatively,
+		// an instance of `HTMLElement`.
 		html: false,
 
 		// @option bgPos: Point = [0, 0]
@@ -10493,7 +10576,12 @@ var DivIcon = Icon.extend({
 		var div = (oldIcon && oldIcon.tagName === 'DIV') ? oldIcon : document.createElement('div'),
 		    options = this.options;
 
-		div.innerHTML = options.html !== false ? options.html : '';
+		if (options.html instanceof Element) {
+			empty(div);
+			div.appendChild(options.html);
+		} else {
+			div.innerHTML = options.html !== false ? options.html : '';
+		}
 
 		if (options.bgPos) {
 			var bgPos = toPoint(options.bgPos);
@@ -13883,6 +13971,8 @@ exports.ImageOverlay = ImageOverlay;
 exports.imageOverlay = imageOverlay;
 exports.VideoOverlay = VideoOverlay;
 exports.videoOverlay = videoOverlay;
+exports.SVGOverlay = SVGOverlay;
+exports.svgOverlay = svgOverlay;
 exports.DivOverlay = DivOverlay;
 exports.Popup = Popup;
 exports.popup = popup;
@@ -13930,7 +14020,7 @@ window.L = exports;
 //# sourceMappingURL=leaflet-src.js.map
 
 /* @preserve
- * Leaflet Control Geocoder 1.7.0
+ * Leaflet Control Geocoder 1.8.2
  * https://github.com/perliedman/leaflet-control-geocoder
  *
  * Copyright (c) 2012 sa3m (https://github.com/sa3m)
@@ -14003,9 +14093,10 @@ this.L.Control.Geocoder = (function (L) {
         callback('');
         return;
       }
-      callback(JSON.parse(xmlHttp.response));
+      callback(xmlHttp.response);
     };
     xmlHttp.open('GET', url + getParamString(params), true);
+    xmlHttp.responseType = 'json';
     xmlHttp.setRequestHeader('Accept', 'application/json');
     xmlHttp.send(null);
   }
@@ -14038,1133 +14129,33 @@ this.L.Control.Geocoder = (function (L) {
     return (!existingUrl || existingUrl.indexOf('?') === -1 ? '?' : '&') + params.join('&');
   }
 
-  var Nominatim = {
-    class: L.Class.extend({
-      options: {
-        serviceUrl: 'https://nominatim.openstreetmap.org/',
-        geocodingQueryParams: {},
-        reverseQueryParams: {},
-        htmlTemplate: function(r) {
-          var a = r.address,
-            parts = [];
-          if (a.road || a.building) {
-            parts.push('{building} {road} {house_number}');
-          }
+  var ArcGis = L.Class.extend({
+    options: {
+      service_url: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer'
+    },
 
-          if (a.city || a.town || a.village || a.hamlet) {
-            parts.push(
-              '<span class="' +
-                (parts.length > 0 ? 'leaflet-control-geocoder-address-detail' : '') +
-                '">{postcode} {city} {town} {village} {hamlet}</span>'
-            );
-          }
+    initialize: function(accessToken, options) {
+      L.setOptions(this, options);
+      this._accessToken = accessToken;
+    },
 
-          if (a.state || a.country) {
-            parts.push(
-              '<span class="' +
-                (parts.length > 0 ? 'leaflet-control-geocoder-address-context' : '') +
-                '">{state} {country}</span>'
-            );
-          }
+    geocode: function(query, cb, context) {
+      var params = {
+        SingleLine: query,
+        outFields: 'Addr_Type',
+        forStorage: false,
+        maxLocations: 10,
+        f: 'json'
+      };
 
-          return template(parts.join('<br/>'), a, true);
-        }
-      },
-
-      initialize: function(options) {
-        L.Util.setOptions(this, options);
-      },
-
-      geocode: function(query, cb, context) {
-        getJSON(
-          this.options.serviceUrl + 'search',
-          L.extend(
-            {
-              q: query,
-              limit: 5,
-              format: 'json',
-              addressdetails: 1
-            },
-            this.options.geocodingQueryParams
-          ),
-          L.bind(function(data) {
-            var results = [];
-            for (var i = data.length - 1; i >= 0; i--) {
-              var bbox = data[i].boundingbox;
-              for (var j = 0; j < 4; j++) bbox[j] = parseFloat(bbox[j]);
-              results[i] = {
-                icon: data[i].icon,
-                name: data[i].display_name,
-                html: this.options.htmlTemplate ? this.options.htmlTemplate(data[i]) : undefined,
-                bbox: L.latLngBounds([bbox[0], bbox[2]], [bbox[1], bbox[3]]),
-                center: L.latLng(data[i].lat, data[i].lon),
-                properties: data[i]
-              };
-            }
-            cb.call(context, results);
-          }, this)
-        );
-      },
-
-      reverse: function(location, scale, cb, context) {
-        getJSON(
-          this.options.serviceUrl + 'reverse',
-          L.extend(
-            {
-              lat: location.lat,
-              lon: location.lng,
-              zoom: Math.round(Math.log(scale / 256) / Math.log(2)),
-              addressdetails: 1,
-              format: 'json'
-            },
-            this.options.reverseQueryParams
-          ),
-          L.bind(function(data) {
-            var result = [],
-              loc;
-
-            if (data && data.lat && data.lon) {
-              loc = L.latLng(data.lat, data.lon);
-              result.push({
-                name: data.display_name,
-                html: this.options.htmlTemplate ? this.options.htmlTemplate(data) : undefined,
-                center: loc,
-                bounds: L.latLngBounds(loc, loc),
-                properties: data
-              });
-            }
-
-            cb.call(context, result);
-          }, this)
-        );
+      if (this._key && this._key.length) {
+        params.token = this._key;
       }
-    }),
 
-    factory: function(options) {
-      return new L.Control.Geocoder.Nominatim(options);
-    }
-  };
-
-  var Control = {
-    class: L.Control.extend({
-      options: {
-        showResultIcons: false,
-        collapsed: true,
-        expand: 'touch', // options: touch, click, anythingelse
-        position: 'topright',
-        placeholder: 'Search...',
-        errorMessage: 'Nothing found.',
-        queryMinLength: 1,
-        suggestMinLength: 3,
-        suggestTimeout: 250,
-        defaultMarkGeocode: true
-      },
-
-      includes: L.Evented.prototype || L.Mixin.Events,
-
-      initialize: function(options) {
-        L.Util.setOptions(this, options);
-        if (!this.options.geocoder) {
-          this.options.geocoder = new Nominatim.class();
-        }
-
-        this._requestCount = 0;
-      },
-
-      onAdd: function(map) {
-        var className = 'leaflet-control-geocoder',
-          container = L.DomUtil.create('div', className + ' leaflet-bar'),
-          icon = L.DomUtil.create('button', className + '-icon', container),
-          form = (this._form = L.DomUtil.create('div', className + '-form', container)),
-          input;
-
-        this._map = map;
-        this._container = container;
-
-        icon.innerHTML = '&nbsp;';
-        icon.type = 'button';
-
-        input = this._input = L.DomUtil.create('input', '', form);
-        input.type = 'text';
-        input.placeholder = this.options.placeholder;
-        L.DomEvent.disableClickPropagation(input);
-
-        this._errorElement = L.DomUtil.create('div', className + '-form-no-error', container);
-        this._errorElement.innerHTML = this.options.errorMessage;
-
-        this._alts = L.DomUtil.create(
-          'ul',
-          className + '-alternatives leaflet-control-geocoder-alternatives-minimized',
-          container
-        );
-        L.DomEvent.disableClickPropagation(this._alts);
-
-        L.DomEvent.addListener(input, 'keydown', this._keydown, this);
-        if (this.options.geocoder.suggest) {
-          L.DomEvent.addListener(input, 'input', this._change, this);
-        }
-        L.DomEvent.addListener(
-          input,
-          'blur',
-          function() {
-            if (this.options.collapsed && !this._preventBlurCollapse) {
-              this._collapse();
-            }
-            this._preventBlurCollapse = false;
-          },
-          this
-        );
-
-        if (this.options.collapsed) {
-          if (this.options.expand === 'click') {
-            L.DomEvent.addListener(
-              container,
-              'click',
-              function(e) {
-                if (e.button === 0 && e.detail !== 2) {
-                  this._toggle();
-                }
-              },
-              this
-            );
-          } else if (L.Browser.touch && this.options.expand === 'touch') {
-            L.DomEvent.addListener(
-              container,
-              'touchstart mousedown',
-              function(e) {
-                this._toggle();
-                e.preventDefault(); // mobile: clicking focuses the icon, so UI expands and immediately collapses
-                e.stopPropagation();
-              },
-              this
-            );
-          } else {
-            L.DomEvent.addListener(container, 'mouseover', this._expand, this);
-            L.DomEvent.addListener(container, 'mouseout', this._collapse, this);
-            this._map.on('movestart', this._collapse, this);
-          }
-        } else {
-          this._expand();
-          if (L.Browser.touch) {
-            L.DomEvent.addListener(
-              container,
-              'touchstart',
-              function() {
-                this._geocode();
-              },
-              this
-            );
-          } else {
-            L.DomEvent.addListener(
-              container,
-              'click',
-              function() {
-                this._geocode();
-              },
-              this
-            );
-          }
-        }
-
-        if (this.options.defaultMarkGeocode) {
-          this.on('markgeocode', this.markGeocode, this);
-        }
-
-        this.on(
-          'startgeocode',
-          function() {
-            L.DomUtil.addClass(this._container, 'leaflet-control-geocoder-throbber');
-          },
-          this
-        );
-        this.on(
-          'finishgeocode',
-          function() {
-            L.DomUtil.removeClass(this._container, 'leaflet-control-geocoder-throbber');
-          },
-          this
-        );
-
-        L.DomEvent.disableClickPropagation(container);
-
-        return container;
-      },
-
-      _geocodeResult: function(results, suggest) {
-        if (!suggest && results.length === 1) {
-          this._geocodeResultSelected(results[0]);
-        } else if (results.length > 0) {
-          this._alts.innerHTML = '';
-          this._results = results;
-          L.DomUtil.removeClass(this._alts, 'leaflet-control-geocoder-alternatives-minimized');
-          for (var i = 0; i < results.length; i++) {
-            this._alts.appendChild(this._createAlt(results[i], i));
-          }
-        } else {
-          L.DomUtil.addClass(this._errorElement, 'leaflet-control-geocoder-error');
-        }
-      },
-
-      markGeocode: function(result) {
-        result = result.geocode || result;
-
-        this._map.fitBounds(result.bbox);
-
-        if (this._geocodeMarker) {
-          this._map.removeLayer(this._geocodeMarker);
-        }
-
-        this._geocodeMarker = new L.Marker(result.center)
-          .bindPopup(result.html || result.name)
-          .addTo(this._map)
-          .openPopup();
-
-        return this;
-      },
-
-      _geocode: function(suggest) {
-        var value = this._input.value;
-        if (!suggest && value.length < this.options.queryMinLength) {
-          return;
-        }
-
-        var requestCount = ++this._requestCount,
-          mode = suggest ? 'suggest' : 'geocode',
-          eventData = { input: value };
-
-        this._lastGeocode = value;
-        if (!suggest) {
-          this._clearResults();
-        }
-
-        this.fire('start' + mode, eventData);
-        this.options.geocoder[mode](
-          value,
-          function(results) {
-            if (requestCount === this._requestCount) {
-              eventData.results = results;
-              this.fire('finish' + mode, eventData);
-              this._geocodeResult(results, suggest);
-            }
-          },
-          this
-        );
-      },
-
-      _geocodeResultSelected: function(result) {
-        this.fire('markgeocode', { geocode: result });
-      },
-
-      _toggle: function() {
-        if (L.DomUtil.hasClass(this._container, 'leaflet-control-geocoder-expanded')) {
-          this._collapse();
-        } else {
-          this._expand();
-        }
-      },
-
-      _expand: function() {
-        L.DomUtil.addClass(this._container, 'leaflet-control-geocoder-expanded');
-        this._input.select();
-        this.fire('expand');
-      },
-
-      _collapse: function() {
-        L.DomUtil.removeClass(this._container, 'leaflet-control-geocoder-expanded');
-        L.DomUtil.addClass(this._alts, 'leaflet-control-geocoder-alternatives-minimized');
-        L.DomUtil.removeClass(this._errorElement, 'leaflet-control-geocoder-error');
-        this._input.blur(); // mobile: keyboard shouldn't stay expanded
-        this.fire('collapse');
-      },
-
-      _clearResults: function() {
-        L.DomUtil.addClass(this._alts, 'leaflet-control-geocoder-alternatives-minimized');
-        this._selection = null;
-        L.DomUtil.removeClass(this._errorElement, 'leaflet-control-geocoder-error');
-      },
-
-      _createAlt: function(result, index) {
-        var li = L.DomUtil.create('li', ''),
-          a = L.DomUtil.create('a', '', li),
-          icon = this.options.showResultIcons && result.icon ? L.DomUtil.create('img', '', a) : null,
-          text = result.html ? undefined : document.createTextNode(result.name),
-          mouseDownHandler = function mouseDownHandler(e) {
-            // In some browsers, a click will fire on the map if the control is
-            // collapsed directly after mousedown. To work around this, we
-            // wait until the click is completed, and _then_ collapse the
-            // control. Messy, but this is the workaround I could come up with
-            // for #142.
-            this._preventBlurCollapse = true;
-            L.DomEvent.stop(e);
-            this._geocodeResultSelected(result);
-            L.DomEvent.on(
-              li,
-              'click',
-              function() {
-                if (this.options.collapsed) {
-                  this._collapse();
-                } else {
-                  this._clearResults();
-                }
-              },
-              this
-            );
-          };
-
-        if (icon) {
-          icon.src = result.icon;
-        }
-
-        li.setAttribute('data-result-index', index);
-
-        if (result.html) {
-          a.innerHTML = a.innerHTML + result.html;
-        } else {
-          a.appendChild(text);
-        }
-
-        // Use mousedown and not click, since click will fire _after_ blur,
-        // causing the control to have collapsed and removed the items
-        // before the click can fire.
-        L.DomEvent.addListener(li, 'mousedown touchstart', mouseDownHandler, this);
-
-        return li;
-      },
-
-      _keydown: function(e) {
-        var _this = this,
-          select = function select(dir) {
-            if (_this._selection) {
-              L.DomUtil.removeClass(_this._selection, 'leaflet-control-geocoder-selected');
-              _this._selection = _this._selection[dir > 0 ? 'nextSibling' : 'previousSibling'];
-            }
-            if (!_this._selection) {
-              _this._selection = _this._alts[dir > 0 ? 'firstChild' : 'lastChild'];
-            }
-
-            if (_this._selection) {
-              L.DomUtil.addClass(_this._selection, 'leaflet-control-geocoder-selected');
-            }
-          };
-
-        switch (e.keyCode) {
-          // Escape
-          case 27:
-            if (this.options.collapsed) {
-              this._collapse();
-            }
-            break;
-          // Up
-          case 38:
-            select(-1);
-            break;
-          // Up
-          case 40:
-            select(1);
-            break;
-          // Enter
-          case 13:
-            if (this._selection) {
-              var index = parseInt(this._selection.getAttribute('data-result-index'), 10);
-              this._geocodeResultSelected(this._results[index]);
-              this._clearResults();
-            } else {
-              this._geocode();
-            }
-            break;
-          default:
-            return;
-        }
-
-        L.DomEvent.preventDefault(e);
-      },
-      _change: function() {
-        var v = this._input.value;
-        if (v !== this._lastGeocode) {
-          clearTimeout(this._suggestTimeout);
-          if (v.length >= this.options.suggestMinLength) {
-            this._suggestTimeout = setTimeout(
-              L.bind(function() {
-                this._geocode(true);
-              }, this),
-              this.options.suggestTimeout
-            );
-          } else {
-            this._clearResults();
-          }
-        }
-      }
-    }),
-    factory: function(options) {
-      return new L.Control.Geocoder(options);
-    }
-  };
-
-  var Bing = {
-    class: L.Class.extend({
-      initialize: function(key) {
-        this.key = key;
-      },
-
-      geocode: function(query, cb, context) {
-        jsonp(
-          'https://dev.virtualearth.net/REST/v1/Locations',
-          {
-            query: query,
-            key: this.key
-          },
-          function(data) {
-            var results = [];
-            if (data.resourceSets.length > 0) {
-              for (var i = data.resourceSets[0].resources.length - 1; i >= 0; i--) {
-                var resource = data.resourceSets[0].resources[i],
-                  bbox = resource.bbox;
-                results[i] = {
-                  name: resource.name,
-                  bbox: L.latLngBounds([bbox[0], bbox[1]], [bbox[2], bbox[3]]),
-                  center: L.latLng(resource.point.coordinates)
-                };
-              }
-            }
-            cb.call(context, results);
-          },
-          this,
-          'jsonp'
-        );
-      },
-
-      reverse: function(location, scale, cb, context) {
-        jsonp(
-          '//dev.virtualearth.net/REST/v1/Locations/' + location.lat + ',' + location.lng,
-          {
-            key: this.key
-          },
-          function(data) {
-            var results = [];
-            for (var i = data.resourceSets[0].resources.length - 1; i >= 0; i--) {
-              var resource = data.resourceSets[0].resources[i],
-                bbox = resource.bbox;
-              results[i] = {
-                name: resource.name,
-                bbox: L.latLngBounds([bbox[0], bbox[1]], [bbox[2], bbox[3]]),
-                center: L.latLng(resource.point.coordinates)
-              };
-            }
-            cb.call(context, results);
-          },
-          this,
-          'jsonp'
-        );
-      }
-    }),
-
-    factory: function(key) {
-      return new L.Control.Geocoder.Bing(key);
-    }
-  };
-
-  var MapQuest = {
-    class: L.Class.extend({
-      options: {
-        serviceUrl: 'https://www.mapquestapi.com/geocoding/v1'
-      },
-
-      initialize: function(key, options) {
-        // MapQuest seems to provide URI encoded API keys,
-        // so to avoid encoding them twice, we decode them here
-        this._key = decodeURIComponent(key);
-
-        L.Util.setOptions(this, options);
-      },
-
-      _formatName: function() {
-        var r = [],
-          i;
-        for (i = 0; i < arguments.length; i++) {
-          if (arguments[i]) {
-            r.push(arguments[i]);
-          }
-        }
-
-        return r.join(', ');
-      },
-
-      geocode: function(query, cb, context) {
-        getJSON(
-          this.options.serviceUrl + '/address',
-          {
-            key: this._key,
-            location: query,
-            limit: 5,
-            outFormat: 'json'
-          },
-          L.bind(function(data) {
-            var results = [],
-              loc,
-              latLng;
-            if (data.results && data.results[0].locations) {
-              for (var i = data.results[0].locations.length - 1; i >= 0; i--) {
-                loc = data.results[0].locations[i];
-                latLng = L.latLng(loc.latLng);
-                results[i] = {
-                  name: this._formatName(loc.street, loc.adminArea4, loc.adminArea3, loc.adminArea1),
-                  bbox: L.latLngBounds(latLng, latLng),
-                  center: latLng
-                };
-              }
-            }
-
-            cb.call(context, results);
-          }, this)
-        );
-      },
-
-      reverse: function(location, scale, cb, context) {
-        getJSON(
-          this.options.serviceUrl + '/reverse',
-          {
-            key: this._key,
-            location: location.lat + ',' + location.lng,
-            outputFormat: 'json'
-          },
-          L.bind(function(data) {
-            var results = [],
-              loc,
-              latLng;
-            if (data.results && data.results[0].locations) {
-              for (var i = data.results[0].locations.length - 1; i >= 0; i--) {
-                loc = data.results[0].locations[i];
-                latLng = L.latLng(loc.latLng);
-                results[i] = {
-                  name: this._formatName(loc.street, loc.adminArea4, loc.adminArea3, loc.adminArea1),
-                  bbox: L.latLngBounds(latLng, latLng),
-                  center: latLng
-                };
-              }
-            }
-
-            cb.call(context, results);
-          }, this)
-        );
-      }
-    }),
-
-    factory: function(key, options) {
-      return new L.Control.Geocoder.MapQuest(key, options);
-    }
-  };
-
-  var Mapbox = {
-    class: L.Class.extend({
-      options: {
-        serviceUrl: 'https://api.mapbox.com/geocoding/v5/mapbox.places/',
-        geocodingQueryParams: {},
-        reverseQueryParams: {}
-      },
-
-      initialize: function(accessToken, options) {
-        L.setOptions(this, options);
-        this.options.geocodingQueryParams.access_token = accessToken;
-        this.options.reverseQueryParams.access_token = accessToken;
-      },
-
-      geocode: function(query, cb, context) {
-        var params = this.options.geocodingQueryParams;
-        if (
-          typeof params.proximity !== 'undefined' &&
-          params.proximity.hasOwnProperty('lat') &&
-          params.proximity.hasOwnProperty('lng')
-        ) {
-          params.proximity = params.proximity.lng + ',' + params.proximity.lat;
-        }
-        getJSON(this.options.serviceUrl + encodeURIComponent(query) + '.json', params, function(
-          data
-        ) {
-          var results = [],
-            loc,
-            latLng,
-            latLngBounds;
-          if (data.features && data.features.length) {
-            for (var i = 0; i <= data.features.length - 1; i++) {
-              loc = data.features[i];
-              latLng = L.latLng(loc.center.reverse());
-              if (loc.hasOwnProperty('bbox')) {
-                latLngBounds = L.latLngBounds(
-                  L.latLng(loc.bbox.slice(0, 2).reverse()),
-                  L.latLng(loc.bbox.slice(2, 4).reverse())
-                );
-              } else {
-                latLngBounds = L.latLngBounds(latLng, latLng);
-              }
-
-              var properties = {
-                text: loc.text,
-                address: loc.address
-              };
-
-              for (var j = 0; j < loc.context.length; j++) {
-                var id = loc.context[j].id.split('.')[0];
-                properties[id] = loc.context[j].text;
-              }
-
-              results[i] = {
-                name: loc.place_name,
-                bbox: latLngBounds,
-                center: latLng,
-                properties: properties
-              };
-            }
-          }
-
-          cb.call(context, results);
-        });
-      },
-
-      suggest: function(query, cb, context) {
-        return this.geocode(query, cb, context);
-      },
-
-      reverse: function(location, scale, cb, context) {
-        getJSON(
-          this.options.serviceUrl +
-            encodeURIComponent(location.lng) +
-            ',' +
-            encodeURIComponent(location.lat) +
-            '.json',
-          this.options.reverseQueryParams,
-          function(data) {
-            var results = [],
-              loc,
-              latLng,
-              latLngBounds;
-            if (data.features && data.features.length) {
-              for (var i = 0; i <= data.features.length - 1; i++) {
-                loc = data.features[i];
-                latLng = L.latLng(loc.center.reverse());
-                if (loc.hasOwnProperty('bbox')) {
-                  latLngBounds = L.latLngBounds(
-                    L.latLng(loc.bbox.slice(0, 2).reverse()),
-                    L.latLng(loc.bbox.slice(2, 4).reverse())
-                  );
-                } else {
-                  latLngBounds = L.latLngBounds(latLng, latLng);
-                }
-                results[i] = {
-                  name: loc.place_name,
-                  bbox: latLngBounds,
-                  center: latLng
-                };
-              }
-            }
-
-            cb.call(context, results);
-          }
-        );
-      }
-    }),
-
-    factory: function(accessToken, options) {
-      return new L.Control.Geocoder.Mapbox(accessToken, options);
-    }
-  };
-
-  var What3Words = {
-    class: L.Class.extend({
-      options: {
-        serviceUrl: 'https://api.what3words.com/v2/'
-      },
-
-      initialize: function(accessToken) {
-        this._accessToken = accessToken;
-      },
-
-      geocode: function(query, cb, context) {
-        //get three words and make a dot based string
-        getJSON(
-          this.options.serviceUrl + 'forward',
-          {
-            key: this._accessToken,
-            addr: query.split(/\s+/).join('.')
-          },
-          function(data) {
-            var results = [],
-              latLng,
-              latLngBounds;
-            if (data.hasOwnProperty('geometry')) {
-              latLng = L.latLng(data.geometry['lat'], data.geometry['lng']);
-              latLngBounds = L.latLngBounds(latLng, latLng);
-              results[0] = {
-                name: data.words,
-                bbox: latLngBounds,
-                center: latLng
-              };
-            }
-
-            cb.call(context, results);
-          }
-        );
-      },
-
-      suggest: function(query, cb, context) {
-        return this.geocode(query, cb, context);
-      },
-
-      reverse: function(location, scale, cb, context) {
-        getJSON(
-          this.options.serviceUrl + 'reverse',
-          {
-            key: this._accessToken,
-            coords: [location.lat, location.lng].join(',')
-          },
-          function(data) {
-            var results = [],
-              latLng,
-              latLngBounds;
-            if (data.status.status == 200) {
-              latLng = L.latLng(data.geometry['lat'], data.geometry['lng']);
-              latLngBounds = L.latLngBounds(latLng, latLng);
-              results[0] = {
-                name: data.words,
-                bbox: latLngBounds,
-                center: latLng
-              };
-            }
-            cb.call(context, results);
-          }
-        );
-      }
-    }),
-
-    factory: function(accessToken) {
-      return new L.Control.Geocoder.What3Words(accessToken);
-    }
-  };
-
-  var Google = {
-    class: L.Class.extend({
-      options: {
-        serviceUrl: 'https://maps.googleapis.com/maps/api/geocode/json',
-        geocodingQueryParams: {},
-        reverseQueryParams: {}
-      },
-
-      initialize: function(key, options) {
-        this._key = key;
-        L.setOptions(this, options);
-        // Backwards compatibility
-        this.options.serviceUrl = this.options.service_url || this.options.serviceUrl;
-      },
-
-      geocode: function(query, cb, context) {
-        var params = {
-          address: query
-        };
-
-        if (this._key && this._key.length) {
-          params.key = this._key;
-        }
-
-        params = L.Util.extend(params, this.options.geocodingQueryParams);
-
-        getJSON(this.options.serviceUrl, params, function(data) {
-          var results = [],
-            loc,
-            latLng,
-            latLngBounds;
-          if (data.results && data.results.length) {
-            for (var i = 0; i <= data.results.length - 1; i++) {
-              loc = data.results[i];
-              latLng = L.latLng(loc.geometry.location);
-              latLngBounds = L.latLngBounds(
-                L.latLng(loc.geometry.viewport.northeast),
-                L.latLng(loc.geometry.viewport.southwest)
-              );
-              results[i] = {
-                name: loc.formatted_address,
-                bbox: latLngBounds,
-                center: latLng,
-                properties: loc.address_components
-              };
-            }
-          }
-
-          cb.call(context, results);
-        });
-      },
-
-      reverse: function(location, scale, cb, context) {
-        var params = {
-          latlng: encodeURIComponent(location.lat) + ',' + encodeURIComponent(location.lng)
-        };
-        params = L.Util.extend(params, this.options.reverseQueryParams);
-        if (this._key && this._key.length) {
-          params.key = this._key;
-        }
-
-        getJSON(this.options.serviceUrl, params, function(data) {
-          var results = [],
-            loc,
-            latLng,
-            latLngBounds;
-          if (data.results && data.results.length) {
-            for (var i = 0; i <= data.results.length - 1; i++) {
-              loc = data.results[i];
-              latLng = L.latLng(loc.geometry.location);
-              latLngBounds = L.latLngBounds(
-                L.latLng(loc.geometry.viewport.northeast),
-                L.latLng(loc.geometry.viewport.southwest)
-              );
-              results[i] = {
-                name: loc.formatted_address,
-                bbox: latLngBounds,
-                center: latLng,
-                properties: loc.address_components
-              };
-            }
-          }
-
-          cb.call(context, results);
-        });
-      }
-    }),
-
-    factory: function(key, options) {
-      return new L.Control.Geocoder.Google(key, options);
-    }
-  };
-
-  var Photon = {
-    class: L.Class.extend({
-      options: {
-        serviceUrl: 'https://photon.komoot.de/api/',
-        reverseUrl: 'https://photon.komoot.de/reverse/',
-        nameProperties: ['name', 'street', 'suburb', 'hamlet', 'town', 'city', 'state', 'country']
-      },
-
-      initialize: function(options) {
-        L.setOptions(this, options);
-      },
-
-      geocode: function(query, cb, context) {
-        var params = L.extend(
-          {
-            q: query
-          },
-          this.options.geocodingQueryParams
-        );
-
-        getJSON(
-          this.options.serviceUrl,
-          params,
-          L.bind(function(data) {
-            cb.call(context, this._decodeFeatures(data));
-          }, this)
-        );
-      },
-
-      suggest: function(query, cb, context) {
-        return this.geocode(query, cb, context);
-      },
-
-      reverse: function(latLng, scale, cb, context) {
-        var params = L.extend(
-          {
-            lat: latLng.lat,
-            lon: latLng.lng
-          },
-          this.options.reverseQueryParams
-        );
-
-        getJSON(
-          this.options.reverseUrl,
-          params,
-          L.bind(function(data) {
-            cb.call(context, this._decodeFeatures(data));
-          }, this)
-        );
-      },
-
-      _decodeFeatures: function(data) {
-        var results = [],
-          i,
-          f,
-          c,
-          latLng,
-          extent,
-          bbox;
-
-        if (data && data.features) {
-          for (i = 0; i < data.features.length; i++) {
-            f = data.features[i];
-            c = f.geometry.coordinates;
-            latLng = L.latLng(c[1], c[0]);
-            extent = f.properties.extent;
-
-            if (extent) {
-              bbox = L.latLngBounds([extent[1], extent[0]], [extent[3], extent[2]]);
-            } else {
-              bbox = L.latLngBounds(latLng, latLng);
-            }
-
-            results.push({
-              name: this._decodeFeatureName(f),
-              html: this.options.htmlTemplate ? this.options.htmlTemplate(f) : undefined,
-              center: latLng,
-              bbox: bbox,
-              properties: f.properties
-            });
-          }
-        }
-
-        return results;
-      },
-
-      _decodeFeatureName: function(f) {
-        return (this.options.nameProperties || [])
-          .map(function(p) {
-            return f.properties[p];
-          })
-          .filter(function(v) {
-            return !!v;
-          })
-          .join(', ');
-      }
-    }),
-
-    factory: function(options) {
-      return new L.Control.Geocoder.Photon(options);
-    }
-  };
-
-  var Mapzen = {
-    class: L.Class.extend({
-      options: {
-        serviceUrl: 'https://api.geocode.earth/v1',
-        geocodingQueryParams: {},
-        reverseQueryParams: {}
-      },
-
-      initialize: function(apiKey, options) {
-        L.Util.setOptions(this, options);
-        this._apiKey = apiKey;
-        this._lastSuggest = 0;
-      },
-
-      geocode: function(query, cb, context) {
-        var _this = this;
-        getJSON(
-          this.options.serviceUrl + '/search',
-          L.extend(
-            {
-              api_key: this._apiKey,
-              text: query
-            },
-            this.options.geocodingQueryParams
-          ),
-          function(data) {
-            cb.call(context, _this._parseResults(data, 'bbox'));
-          }
-        );
-      },
-
-      suggest: function(query, cb, context) {
-        var _this = this;
-        getJSON(
-          this.options.serviceUrl + '/autocomplete',
-          L.extend(
-            {
-              api_key: this._apiKey,
-              text: query
-            },
-            this.options.geocodingQueryParams
-          ),
-          L.bind(function(data) {
-            if (data.geocoding.timestamp > this._lastSuggest) {
-              this._lastSuggest = data.geocoding.timestamp;
-              cb.call(context, _this._parseResults(data, 'bbox'));
-            }
-          }, this)
-        );
-      },
-
-      reverse: function(location, scale, cb, context) {
-        var _this = this;
-        getJSON(
-          this.options.serviceUrl + '/reverse',
-          L.extend(
-            {
-              api_key: this._apiKey,
-              'point.lat': location.lat,
-              'point.lon': location.lng
-            },
-            this.options.reverseQueryParams
-          ),
-          function(data) {
-            cb.call(context, _this._parseResults(data, 'bounds'));
-          }
-        );
-      },
-
-      _parseResults: function(data, bboxname) {
-        var results = [];
-        L.geoJson(data, {
-          pointToLayer: function(feature, latlng) {
-            return L.circleMarker(latlng);
-          },
-          onEachFeature: function(feature, layer) {
-            var result = {},
-              bbox,
-              center;
-
-            if (layer.getBounds) {
-              bbox = layer.getBounds();
-              center = bbox.getCenter();
-            } else {
-              center = layer.getLatLng();
-              bbox = L.latLngBounds(center, center);
-            }
-
-            result.name = layer.feature.properties.label;
-            result.center = center;
-            result[bboxname] = bbox;
-            result.properties = layer.feature.properties;
-            results.push(result);
-          }
-        });
-        return results;
-      }
-    }),
-
-    factory: function(apiKey, options) {
-      return new L.Control.Geocoder.Mapzen(apiKey, options);
-    }
-  };
-
-  var ArcGis = {
-    class: L.Class.extend({
-      options: {
-        service_url: 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer'
-      },
-
-      initialize: function(accessToken, options) {
-        L.setOptions(this, options);
-        this._accessToken = accessToken;
-      },
-
-      geocode: function(query, cb, context) {
-        var params = {
-          SingleLine: query,
-          outFields: 'Addr_Type',
-          forStorage: false,
-          maxLocations: 10,
-          f: 'json'
-        };
-
-        if (this._key && this._key.length) {
-          params.token = this._key;
-        }
-
-        getJSON(this.options.service_url + '/findAddressCandidates', L.extend(params, this.options.geocodingQueryParams), function(data) {
+      getJSON(
+        this.options.service_url + '/findAddressCandidates',
+        L.extend(params, this.options.geocodingQueryParams),
+        function(data) {
           var results = [],
             loc,
             latLng,
@@ -15187,226 +14178,1492 @@ this.L.Control.Geocoder = (function (L) {
           }
 
           cb.call(context, results);
-        });
-      },
+        }
+      );
+    },
 
-      suggest: function(query, cb, context) {
-        return this.geocode(query, cb, context);
-      },
+    suggest: function(query, cb, context) {
+      return this.geocode(query, cb, context);
+    },
 
-      reverse: function(location, scale, cb, context) {
-        var params = {
-          location: encodeURIComponent(location.lng) + ',' + encodeURIComponent(location.lat),
-          distance: 100,
-          f: 'json'
-        };
+    reverse: function(location, scale, cb, context) {
+      var params = {
+        location: encodeURIComponent(location.lng) + ',' + encodeURIComponent(location.lat),
+        distance: 100,
+        f: 'json'
+      };
 
-        getJSON(this.options.service_url + '/reverseGeocode', params, function(data) {
-          var result = [],
-            loc;
+      getJSON(this.options.service_url + '/reverseGeocode', params, function(data) {
+        var result = [],
+          loc;
 
-          if (data && !data.error) {
-            loc = L.latLng(data.location.y, data.location.x);
-            result.push({
-              name: data.address.Match_addr,
-              center: loc,
-              bounds: L.latLngBounds(loc, loc)
-            });
-          }
+        if (data && !data.error) {
+          loc = L.latLng(data.location.y, data.location.x);
+          result.push({
+            name: data.address.Match_addr,
+            center: loc,
+            bounds: L.latLngBounds(loc, loc)
+          });
+        }
 
-          cb.call(context, result);
-        });
-      }
-    }),
-
-    factory: function(accessToken, options) {
-      return new L.Control.Geocoder.ArcGis(accessToken, options);
+        cb.call(context, result);
+      });
     }
-  };
+  });
 
-  var HERE = {
-    class: L.Class.extend({
-      options: {
-        geocodeUrl: 'http://geocoder.api.here.com/6.2/geocode.json',
-        reverseGeocodeUrl: 'http://reverse.geocoder.api.here.com/6.2/reversegeocode.json',
-        app_id: '<insert your app_id here>',
-        app_code: '<insert your app_code here>',
-        geocodingQueryParams: {},
-        reverseQueryParams: {}
-      },
+  function arcgis(accessToken, options) {
+    return new ArcGis(accessToken, options);
+  }
 
-      initialize: function(options) {
-        L.setOptions(this, options);
-      },
+  var Bing = L.Class.extend({
+    initialize: function(key) {
+      this.key = key;
+    },
 
-      geocode: function(query, cb, context) {
-        var params = {
-          searchtext: query,
-          gen: 9,
-          app_id: this.options.app_id,
-          app_code: this.options.app_code,
-          jsonattributes: 1
-        };
-        params = L.Util.extend(params, this.options.geocodingQueryParams);
-        this.getJSON(this.options.geocodeUrl, params, cb, context);
-      },
-
-      reverse: function(location, scale, cb, context) {
-        var params = {
-          prox: encodeURIComponent(location.lat) + ',' + encodeURIComponent(location.lng),
-          mode: 'retrieveAddresses',
-          app_id: this.options.app_id,
-          app_code: this.options.app_code,
-          gen: 9,
-          jsonattributes: 1
-        };
-        params = L.Util.extend(params, this.options.reverseQueryParams);
-        this.getJSON(this.options.reverseGeocodeUrl, params, cb, context);
-      },
-
-      getJSON: function(url, params, cb, context) {
-        getJSON(url, params, function(data) {
-          var results = [],
-            loc,
-            latLng,
-            latLngBounds;
-          if (data.response.view && data.response.view.length) {
-            for (var i = 0; i <= data.response.view[0].result.length - 1; i++) {
-              loc = data.response.view[0].result[i].location;
-              latLng = L.latLng(loc.displayPosition.latitude, loc.displayPosition.longitude);
-              latLngBounds = L.latLngBounds(
-                L.latLng(loc.mapView.topLeft.latitude, loc.mapView.topLeft.longitude),
-                L.latLng(loc.mapView.bottomRight.latitude, loc.mapView.bottomRight.longitude)
-              );
+    geocode: function(query, cb, context) {
+      jsonp(
+        'https://dev.virtualearth.net/REST/v1/Locations',
+        {
+          query: query,
+          key: this.key
+        },
+        function(data) {
+          var results = [];
+          if (data.resourceSets.length > 0) {
+            for (var i = data.resourceSets[0].resources.length - 1; i >= 0; i--) {
+              var resource = data.resourceSets[0].resources[i],
+                bbox = resource.bbox;
               results[i] = {
-                name: loc.address.label,
-                bbox: latLngBounds,
-                center: latLng
+                name: resource.name,
+                bbox: L.latLngBounds([bbox[0], bbox[1]], [bbox[2], bbox[3]]),
+                center: L.latLng(resource.point.coordinates)
               };
             }
           }
           cb.call(context, results);
-        });
-      }
-    }),
+        },
+        this,
+        'jsonp'
+      );
+    },
 
-    factory: function(options) {
-      return new L.Control.Geocoder.HERE(options);
-    }
-  };
-
-  var Neutrino = {
-    class: L.Class.extend({
-      options: {
-        userId: '<insert your userId here>',
-        apiKey: '<insert your apiKey here>',
-        serviceUrl: 'https://neutrinoapi.com/'
-      },
-
-      initialize: function(options) {
-        L.Util.setOptions(this, options);
-      },
-
-      // https://www.neutrinoapi.com/api/geocode-address/
-      geocode: function(query, cb, context) {
-        getJSON(
-          this.options.serviceUrl + 'geocode-address',
-          {
-            apiKey: this.options.apiKey,
-            userId: this.options.userId,
-            //get three words and make a dot based string
-            address: query.split(/\s+/).join('.')
-          },
-          function(data) {
-            var results = [],
-              latLng,
-              latLngBounds;
-            if (data.hasOwnProperty('locations')) {
-              data.geometry = data.locations[0];
-              latLng = L.latLng(data.geometry['latitude'], data.geometry['longitude']);
-              latLngBounds = L.latLngBounds(latLng, latLng);
-              results[0] = {
-                name: data.geometry.address,
-                bbox: latLngBounds,
-                center: latLng
-              };
-            }
-
-            cb.call(context, results);
+    reverse: function(location, scale, cb, context) {
+      jsonp(
+        '//dev.virtualearth.net/REST/v1/Locations/' + location.lat + ',' + location.lng,
+        {
+          key: this.key
+        },
+        function(data) {
+          var results = [];
+          for (var i = data.resourceSets[0].resources.length - 1; i >= 0; i--) {
+            var resource = data.resourceSets[0].resources[i],
+              bbox = resource.bbox;
+            results[i] = {
+              name: resource.name,
+              bbox: L.latLngBounds([bbox[0], bbox[1]], [bbox[2], bbox[3]]),
+              center: L.latLng(resource.point.coordinates)
+            };
           }
-        );
-      },
-
-      suggest: function(query, cb, context) {
-        return this.geocode(query, cb, context);
-      },
-
-      // https://www.neutrinoapi.com/api/geocode-reverse/
-      reverse: function(location, scale, cb, context) {
-        getJSON(
-          this.options.serviceUrl + 'geocode-reverse',
-          {
-            apiKey: this.options.apiKey,
-            userId: this.options.userId,
-            latitude: location.lat,
-            longitude: location.lng
-          },
-          function(data) {
-            var results = [],
-              latLng,
-              latLngBounds;
-            if (data.status.status == 200 && data.found) {
-              latLng = L.latLng(location.lat, location.lng);
-              latLngBounds = L.latLngBounds(latLng, latLng);
-              results[0] = {
-                name: data.address,
-                bbox: latLngBounds,
-                center: latLng
-              };
-            }
-            cb.call(context, results);
-          }
-        );
-      }
-    }),
-
-    factory: function(accessToken) {
-      return new L.Control.Geocoder.Neutrino(accessToken);
+          cb.call(context, results);
+        },
+        this,
+        'jsonp'
+      );
     }
-  };
-
-  var Geocoder = L.Util.extend(Control.class, {
-    Nominatim: Nominatim.class,
-    nominatim: Nominatim.factory,
-    Bing: Bing.class,
-    bing: Bing.factory,
-    MapQuest: MapQuest.class,
-    mapQuest: MapQuest.factory,
-    Mapbox: Mapbox.class,
-    mapbox: Mapbox.factory,
-    What3Words: What3Words.class,
-    what3words: What3Words.factory,
-    Google: Google.class,
-    google: Google.factory,
-    Photon: Photon.class,
-    photon: Photon.factory,
-    Mapzen: Mapzen.class,
-    GeocodeEarth: Mapzen.class,
-    Pelias: Mapzen.class,
-    mapzen: Mapzen.factory,
-    geocodeEarth: Mapzen.factory,
-    pelias: Mapzen.factory,
-    ArcGis: ArcGis.class,
-    arcgis: ArcGis.factory,
-    HERE: HERE.class,
-    here: HERE.factory,
-    Neutrino: Neutrino.class,
-    neutrino: Neutrino.factory,
   });
+
+  function bing(key) {
+    return new Bing(key);
+  }
+
+  var Google = L.Class.extend({
+    options: {
+      serviceUrl: 'https://maps.googleapis.com/maps/api/geocode/json',
+      geocodingQueryParams: {},
+      reverseQueryParams: {}
+    },
+
+    initialize: function(key, options) {
+      this._key = key;
+      L.setOptions(this, options);
+      // Backwards compatibility
+      this.options.serviceUrl = this.options.service_url || this.options.serviceUrl;
+    },
+
+    geocode: function(query, cb, context) {
+      var params = {
+        address: query
+      };
+
+      if (this._key && this._key.length) {
+        params.key = this._key;
+      }
+
+      params = L.Util.extend(params, this.options.geocodingQueryParams);
+
+      getJSON(this.options.serviceUrl, params, function(data) {
+        var results = [],
+          loc,
+          latLng,
+          latLngBounds;
+        if (data.results && data.results.length) {
+          for (var i = 0; i <= data.results.length - 1; i++) {
+            loc = data.results[i];
+            latLng = L.latLng(loc.geometry.location);
+            latLngBounds = L.latLngBounds(
+              L.latLng(loc.geometry.viewport.northeast),
+              L.latLng(loc.geometry.viewport.southwest)
+            );
+            results[i] = {
+              name: loc.formatted_address,
+              bbox: latLngBounds,
+              center: latLng,
+              properties: loc.address_components
+            };
+          }
+        }
+
+        cb.call(context, results);
+      });
+    },
+
+    reverse: function(location, scale, cb, context) {
+      var params = {
+        latlng: encodeURIComponent(location.lat) + ',' + encodeURIComponent(location.lng)
+      };
+      params = L.Util.extend(params, this.options.reverseQueryParams);
+      if (this._key && this._key.length) {
+        params.key = this._key;
+      }
+
+      getJSON(this.options.serviceUrl, params, function(data) {
+        var results = [],
+          loc,
+          latLng,
+          latLngBounds;
+        if (data.results && data.results.length) {
+          for (var i = 0; i <= data.results.length - 1; i++) {
+            loc = data.results[i];
+            latLng = L.latLng(loc.geometry.location);
+            latLngBounds = L.latLngBounds(
+              L.latLng(loc.geometry.viewport.northeast),
+              L.latLng(loc.geometry.viewport.southwest)
+            );
+            results[i] = {
+              name: loc.formatted_address,
+              bbox: latLngBounds,
+              center: latLng,
+              properties: loc.address_components
+            };
+          }
+        }
+
+        cb.call(context, results);
+      });
+    }
+  });
+
+  function google(key, options) {
+    return new Google(key, options);
+  }
+
+  var HERE = L.Class.extend({
+    options: {
+      geocodeUrl: 'http://geocoder.api.here.com/6.2/geocode.json',
+      reverseGeocodeUrl: 'http://reverse.geocoder.api.here.com/6.2/reversegeocode.json',
+      app_id: '<insert your app_id here>',
+      app_code: '<insert your app_code here>',
+      geocodingQueryParams: {},
+      reverseQueryParams: {}
+    },
+
+    initialize: function(options) {
+      L.setOptions(this, options);
+    },
+
+    geocode: function(query, cb, context) {
+      var params = {
+        searchtext: query,
+        gen: 9,
+        app_id: this.options.app_id,
+        app_code: this.options.app_code,
+        jsonattributes: 1
+      };
+      params = L.Util.extend(params, this.options.geocodingQueryParams);
+      this.getJSON(this.options.geocodeUrl, params, cb, context);
+    },
+
+    reverse: function(location, scale, cb, context) {
+      var params = {
+        prox: encodeURIComponent(location.lat) + ',' + encodeURIComponent(location.lng),
+        mode: 'retrieveAddresses',
+        app_id: this.options.app_id,
+        app_code: this.options.app_code,
+        gen: 9,
+        jsonattributes: 1
+      };
+      params = L.Util.extend(params, this.options.reverseQueryParams);
+      this.getJSON(this.options.reverseGeocodeUrl, params, cb, context);
+    },
+
+    getJSON: function(url, params, cb, context) {
+      getJSON(url, params, function(data) {
+        var results = [],
+          loc,
+          latLng,
+          latLngBounds;
+        if (data.response.view && data.response.view.length) {
+          for (var i = 0; i <= data.response.view[0].result.length - 1; i++) {
+            loc = data.response.view[0].result[i].location;
+            latLng = L.latLng(loc.displayPosition.latitude, loc.displayPosition.longitude);
+            latLngBounds = L.latLngBounds(
+              L.latLng(loc.mapView.topLeft.latitude, loc.mapView.topLeft.longitude),
+              L.latLng(loc.mapView.bottomRight.latitude, loc.mapView.bottomRight.longitude)
+            );
+            results[i] = {
+              name: loc.address.label,
+              bbox: latLngBounds,
+              center: latLng
+            };
+          }
+        }
+        cb.call(context, results);
+      });
+    }
+  });
+
+  function here(options) {
+    return new HERE(options);
+  }
+
+  var LatLng = L.Class.extend({
+    options: {
+      // the next geocoder to use
+      next: undefined,
+      sizeInMeters: 10000
+    },
+
+    initialize: function(options) {
+      L.Util.setOptions(this, options);
+    },
+
+    geocode: function(query, cb, context) {
+      var match;
+      var center;
+      // regex from https://github.com/openstreetmap/openstreetmap-website/blob/master/app/controllers/geocoder_controller.rb
+      if ((match = query.match(/^([NS])\s*(\d{1,3}(?:\.\d*)?)\W*([EW])\s*(\d{1,3}(?:\.\d*)?)$/))) {
+        // [NSEW] decimal degrees
+        center = L.latLng(
+          (/N/i.test(match[1]) ? 1 : -1) * parseFloat(match[2]),
+          (/E/i.test(match[3]) ? 1 : -1) * parseFloat(match[4])
+        );
+      } else if (
+        (match = query.match(/^(\d{1,3}(?:\.\d*)?)\s*([NS])\W*(\d{1,3}(?:\.\d*)?)\s*([EW])$/))
+      ) {
+        // decimal degrees [NSEW]
+        center = L.latLng(
+          (/N/i.test(match[2]) ? 1 : -1) * parseFloat(match[1]),
+          (/E/i.test(match[4]) ? 1 : -1) * parseFloat(match[3])
+        );
+      } else if (
+        (match = query.match(
+          /^([NS])\s*(\d{1,3})°?\s*(\d{1,3}(?:\.\d*)?)?['′]?\W*([EW])\s*(\d{1,3})°?\s*(\d{1,3}(?:\.\d*)?)?['′]?$/
+        ))
+      ) {
+        // [NSEW] degrees, decimal minutes
+        center = L.latLng(
+          (/N/i.test(match[1]) ? 1 : -1) * (parseFloat(match[2]) + parseFloat(match[3] / 60)),
+          (/E/i.test(match[4]) ? 1 : -1) * (parseFloat(match[5]) + parseFloat(match[6] / 60))
+        );
+      } else if (
+        (match = query.match(
+          /^(\d{1,3})°?\s*(\d{1,3}(?:\.\d*)?)?['′]?\s*([NS])\W*(\d{1,3})°?\s*(\d{1,3}(?:\.\d*)?)?['′]?\s*([EW])$/
+        ))
+      ) {
+        // degrees, decimal minutes [NSEW]
+        center = L.latLng(
+          (/N/i.test(match[3]) ? 1 : -1) * (parseFloat(match[1]) + parseFloat(match[2] / 60)),
+          (/E/i.test(match[6]) ? 1 : -1) * (parseFloat(match[4]) + parseFloat(match[5] / 60))
+        );
+      } else if (
+        (match = query.match(
+          /^([NS])\s*(\d{1,3})°?\s*(\d{1,2})['′]?\s*(\d{1,3}(?:\.\d*)?)?["″]?\W*([EW])\s*(\d{1,3})°?\s*(\d{1,2})['′]?\s*(\d{1,3}(?:\.\d*)?)?["″]?$/
+        ))
+      ) {
+        // [NSEW] degrees, minutes, decimal seconds
+        center = L.latLng(
+          (/N/i.test(match[1]) ? 1 : -1) *
+            (parseFloat(match[2]) + parseFloat(match[3] / 60 + parseFloat(match[4] / 3600))),
+          (/E/i.test(match[5]) ? 1 : -1) *
+            (parseFloat(match[6]) + parseFloat(match[7] / 60) + parseFloat(match[8] / 3600))
+        );
+      } else if (
+        (match = query.match(
+          /^(\d{1,3})°?\s*(\d{1,2})['′]?\s*(\d{1,3}(?:\.\d*)?)?["″]\s*([NS])\W*(\d{1,3})°?\s*(\d{1,2})['′]?\s*(\d{1,3}(?:\.\d*)?)?["″]?\s*([EW])$/
+        ))
+      ) {
+        // degrees, minutes, decimal seconds [NSEW]
+        center = L.latLng(
+          (/N/i.test(match[4]) ? 1 : -1) *
+            (parseFloat(match[1]) + parseFloat(match[2] / 60 + parseFloat(match[3] / 3600))),
+          (/E/i.test(match[8]) ? 1 : -1) *
+            (parseFloat(match[5]) + parseFloat(match[6] / 60) + parseFloat(match[7] / 3600))
+        );
+      } else if (
+        (match = query.match(/^\s*([+-]?\d+(?:\.\d*)?)\s*[\s,]\s*([+-]?\d+(?:\.\d*)?)\s*$/))
+      ) {
+        center = L.latLng(parseFloat(match[1]), parseFloat(match[2]));
+      }
+      if (center) {
+        var results = [
+          {
+            name: query,
+            center: center,
+            bbox: center.toBounds(this.options.sizeInMeters)
+          }
+        ];
+        cb.call(context, results);
+      } else if (this.options.next) {
+        this.options.next.geocode(query, cb, context);
+      }
+    }
+  });
+
+  function latLng(options) {
+    return new LatLng(options);
+  }
+
+  var Mapbox = L.Class.extend({
+    options: {
+      serviceUrl: 'https://api.mapbox.com/geocoding/v5/mapbox.places/',
+      geocodingQueryParams: {},
+      reverseQueryParams: {}
+    },
+
+    initialize: function(accessToken, options) {
+      L.setOptions(this, options);
+      this.options.geocodingQueryParams.access_token = accessToken;
+      this.options.reverseQueryParams.access_token = accessToken;
+    },
+
+    geocode: function(query, cb, context) {
+      var params = this.options.geocodingQueryParams;
+      if (
+        typeof params.proximity !== 'undefined' &&
+        params.proximity.hasOwnProperty('lat') &&
+        params.proximity.hasOwnProperty('lng')
+      ) {
+        params.proximity = params.proximity.lng + ',' + params.proximity.lat;
+      }
+      getJSON(this.options.serviceUrl + encodeURIComponent(query) + '.json', params, function(data) {
+        var results = [],
+          loc,
+          latLng,
+          latLngBounds;
+        if (data.features && data.features.length) {
+          for (var i = 0; i <= data.features.length - 1; i++) {
+            loc = data.features[i];
+            latLng = L.latLng(loc.center.reverse());
+            if (loc.hasOwnProperty('bbox')) {
+              latLngBounds = L.latLngBounds(
+                L.latLng(loc.bbox.slice(0, 2).reverse()),
+                L.latLng(loc.bbox.slice(2, 4).reverse())
+              );
+            } else {
+              latLngBounds = L.latLngBounds(latLng, latLng);
+            }
+
+            var properties = {
+              text: loc.text,
+              address: loc.address
+            };
+
+            for (var j = 0; j < loc.context.length; j++) {
+              var id = loc.context[j].id.split('.')[0];
+              properties[id] = loc.context[j].text;
+            }
+
+            results[i] = {
+              name: loc.place_name,
+              bbox: latLngBounds,
+              center: latLng,
+              properties: properties
+            };
+          }
+        }
+
+        cb.call(context, results);
+      });
+    },
+
+    suggest: function(query, cb, context) {
+      return this.geocode(query, cb, context);
+    },
+
+    reverse: function(location, scale, cb, context) {
+      getJSON(
+        this.options.serviceUrl +
+          encodeURIComponent(location.lng) +
+          ',' +
+          encodeURIComponent(location.lat) +
+          '.json',
+        this.options.reverseQueryParams,
+        function(data) {
+          var results = [],
+            loc,
+            latLng,
+            latLngBounds;
+          if (data.features && data.features.length) {
+            for (var i = 0; i <= data.features.length - 1; i++) {
+              loc = data.features[i];
+              latLng = L.latLng(loc.center.reverse());
+              if (loc.hasOwnProperty('bbox')) {
+                latLngBounds = L.latLngBounds(
+                  L.latLng(loc.bbox.slice(0, 2).reverse()),
+                  L.latLng(loc.bbox.slice(2, 4).reverse())
+                );
+              } else {
+                latLngBounds = L.latLngBounds(latLng, latLng);
+              }
+              results[i] = {
+                name: loc.place_name,
+                bbox: latLngBounds,
+                center: latLng
+              };
+            }
+          }
+
+          cb.call(context, results);
+        }
+      );
+    }
+  });
+
+  function mapbox(accessToken, options) {
+    return new Mapbox(accessToken, options);
+  }
+
+  var MapQuest = L.Class.extend({
+    options: {
+      serviceUrl: 'https://www.mapquestapi.com/geocoding/v1'
+    },
+
+    initialize: function(key, options) {
+      // MapQuest seems to provide URI encoded API keys,
+      // so to avoid encoding them twice, we decode them here
+      this._key = decodeURIComponent(key);
+
+      L.Util.setOptions(this, options);
+    },
+
+    _formatName: function() {
+      var r = [],
+        i;
+      for (i = 0; i < arguments.length; i++) {
+        if (arguments[i]) {
+          r.push(arguments[i]);
+        }
+      }
+
+      return r.join(', ');
+    },
+
+    geocode: function(query, cb, context) {
+      getJSON(
+        this.options.serviceUrl + '/address',
+        {
+          key: this._key,
+          location: query,
+          limit: 5,
+          outFormat: 'json'
+        },
+        L.bind(function(data) {
+          var results = [],
+            loc,
+            latLng;
+          if (data.results && data.results[0].locations) {
+            for (var i = data.results[0].locations.length - 1; i >= 0; i--) {
+              loc = data.results[0].locations[i];
+              latLng = L.latLng(loc.latLng);
+              results[i] = {
+                name: this._formatName(loc.street, loc.adminArea4, loc.adminArea3, loc.adminArea1),
+                bbox: L.latLngBounds(latLng, latLng),
+                center: latLng
+              };
+            }
+          }
+
+          cb.call(context, results);
+        }, this)
+      );
+    },
+
+    reverse: function(location, scale, cb, context) {
+      getJSON(
+        this.options.serviceUrl + '/reverse',
+        {
+          key: this._key,
+          location: location.lat + ',' + location.lng,
+          outputFormat: 'json'
+        },
+        L.bind(function(data) {
+          var results = [],
+            loc,
+            latLng;
+          if (data.results && data.results[0].locations) {
+            for (var i = data.results[0].locations.length - 1; i >= 0; i--) {
+              loc = data.results[0].locations[i];
+              latLng = L.latLng(loc.latLng);
+              results[i] = {
+                name: this._formatName(loc.street, loc.adminArea4, loc.adminArea3, loc.adminArea1),
+                bbox: L.latLngBounds(latLng, latLng),
+                center: latLng
+              };
+            }
+          }
+
+          cb.call(context, results);
+        }, this)
+      );
+    }
+  });
+
+  function mapQuest(key, options) {
+    return new MapQuest(key, options);
+  }
+
+  var Neutrino = L.Class.extend({
+    options: {
+      userId: '<insert your userId here>',
+      apiKey: '<insert your apiKey here>',
+      serviceUrl: 'https://neutrinoapi.com/'
+    },
+
+    initialize: function(options) {
+      L.Util.setOptions(this, options);
+    },
+
+    // https://www.neutrinoapi.com/api/geocode-address/
+    geocode: function(query, cb, context) {
+      getJSON(
+        this.options.serviceUrl + 'geocode-address',
+        {
+          apiKey: this.options.apiKey,
+          userId: this.options.userId,
+          //get three words and make a dot based string
+          address: query.split(/\s+/).join('.')
+        },
+        function(data) {
+          var results = [],
+            latLng,
+            latLngBounds;
+          if (data.hasOwnProperty('locations')) {
+            data.geometry = data.locations[0];
+            latLng = L.latLng(data.geometry['latitude'], data.geometry['longitude']);
+            latLngBounds = L.latLngBounds(latLng, latLng);
+            results[0] = {
+              name: data.geometry.address,
+              bbox: latLngBounds,
+              center: latLng
+            };
+          }
+
+          cb.call(context, results);
+        }
+      );
+    },
+
+    suggest: function(query, cb, context) {
+      return this.geocode(query, cb, context);
+    },
+
+    // https://www.neutrinoapi.com/api/geocode-reverse/
+    reverse: function(location, scale, cb, context) {
+      getJSON(
+        this.options.serviceUrl + 'geocode-reverse',
+        {
+          apiKey: this.options.apiKey,
+          userId: this.options.userId,
+          latitude: location.lat,
+          longitude: location.lng
+        },
+        function(data) {
+          var results = [],
+            latLng,
+            latLngBounds;
+          if (data.status.status == 200 && data.found) {
+            latLng = L.latLng(location.lat, location.lng);
+            latLngBounds = L.latLngBounds(latLng, latLng);
+            results[0] = {
+              name: data.address,
+              bbox: latLngBounds,
+              center: latLng
+            };
+          }
+          cb.call(context, results);
+        }
+      );
+    }
+  });
+
+  function neutrino(accessToken) {
+    return new Neutrino(accessToken);
+  }
+
+  var Nominatim = L.Class.extend({
+    options: {
+      serviceUrl: 'https://nominatim.openstreetmap.org/',
+      geocodingQueryParams: {},
+      reverseQueryParams: {},
+      htmlTemplate: function(r) {
+        var a = r.address,
+          parts = [];
+        if (a.road || a.building) {
+          parts.push('{building} {road} {house_number}');
+        }
+
+        if (a.city || a.town || a.village || a.hamlet) {
+          parts.push(
+            '<span class="' +
+              (parts.length > 0 ? 'leaflet-control-geocoder-address-detail' : '') +
+              '">{postcode} {city} {town} {village} {hamlet}</span>'
+          );
+        }
+
+        if (a.state || a.country) {
+          parts.push(
+            '<span class="' +
+              (parts.length > 0 ? 'leaflet-control-geocoder-address-context' : '') +
+              '">{state} {country}</span>'
+          );
+        }
+
+        return template(parts.join('<br/>'), a, true);
+      }
+    },
+
+    initialize: function(options) {
+      L.Util.setOptions(this, options);
+    },
+
+    geocode: function(query, cb, context) {
+      getJSON(
+        this.options.serviceUrl + 'search',
+        L.extend(
+          {
+            q: query,
+            limit: 5,
+            format: 'json',
+            addressdetails: 1
+          },
+          this.options.geocodingQueryParams
+        ),
+        L.bind(function(data) {
+          var results = [];
+          for (var i = data.length - 1; i >= 0; i--) {
+            var bbox = data[i].boundingbox;
+            for (var j = 0; j < 4; j++) bbox[j] = parseFloat(bbox[j]);
+            results[i] = {
+              icon: data[i].icon,
+              name: data[i].display_name,
+              html: this.options.htmlTemplate ? this.options.htmlTemplate(data[i]) : undefined,
+              bbox: L.latLngBounds([bbox[0], bbox[2]], [bbox[1], bbox[3]]),
+              center: L.latLng(data[i].lat, data[i].lon),
+              properties: data[i]
+            };
+          }
+          cb.call(context, results);
+        }, this)
+      );
+    },
+
+    reverse: function(location, scale, cb, context) {
+      getJSON(
+        this.options.serviceUrl + 'reverse',
+        L.extend(
+          {
+            lat: location.lat,
+            lon: location.lng,
+            zoom: Math.round(Math.log(scale / 256) / Math.log(2)),
+            addressdetails: 1,
+            format: 'json'
+          },
+          this.options.reverseQueryParams
+        ),
+        L.bind(function(data) {
+          var result = [],
+            loc;
+
+          if (data && data.lat && data.lon) {
+            loc = L.latLng(data.lat, data.lon);
+            result.push({
+              name: data.display_name,
+              html: this.options.htmlTemplate ? this.options.htmlTemplate(data) : undefined,
+              center: loc,
+              bounds: L.latLngBounds(loc, loc),
+              properties: data
+            });
+          }
+
+          cb.call(context, result);
+        }, this)
+      );
+    }
+  });
+
+  function nominatim(options) {
+    return new Nominatim(options);
+  }
+
+  var OpenLocationCode = L.Class.extend({
+    options: {
+      OpenLocationCode: undefined,
+      codeLength: undefined
+    },
+
+    initialize: function(options) {
+      L.setOptions(this, options);
+    },
+
+    geocode: function(query, cb, context) {
+      try {
+        var decoded = this.options.OpenLocationCode.decode(query);
+        var result = {
+          name: query,
+          center: L.latLng(decoded.latitudeCenter, decoded.longitudeCenter),
+          bbox: L.latLngBounds(
+            L.latLng(decoded.latitudeLo, decoded.longitudeLo),
+            L.latLng(decoded.latitudeHi, decoded.longitudeHi)
+          )
+        };
+        cb.call(context, [result]);
+      } catch (e) {
+        console.warn(e); // eslint-disable-line no-console
+        cb.call(context, []);
+      }
+    },
+    reverse: function(location, scale, cb, context) {
+      try {
+        var code = this.options.OpenLocationCode.encode(
+          location.lat,
+          location.lng,
+          this.options.codeLength
+        );
+        var result = {
+          name: code,
+          center: L.latLng(location.lat, location.lng),
+          bbox: L.latLngBounds(
+            L.latLng(location.lat, location.lng),
+            L.latLng(location.lat, location.lng)
+          )
+        };
+        cb.call(context, [result]);
+      } catch (e) {
+        console.warn(e); // eslint-disable-line no-console
+        cb.call(context, []);
+      }
+    }
+  });
+
+  function openLocationCode(options) {
+    return new OpenLocationCode(options);
+  }
+
+  var Pelias = L.Class.extend({
+    options: {
+      serviceUrl: 'https://api.geocode.earth/v1',
+      geocodingQueryParams: {},
+      reverseQueryParams: {}
+    },
+
+    initialize: function(apiKey, options) {
+      L.Util.setOptions(this, options);
+      this._apiKey = apiKey;
+      this._lastSuggest = 0;
+    },
+
+    geocode: function(query, cb, context) {
+      var _this = this;
+      getJSON(
+        this.options.serviceUrl + '/search',
+        L.extend(
+          {
+            api_key: this._apiKey,
+            text: query
+          },
+          this.options.geocodingQueryParams
+        ),
+        function(data) {
+          cb.call(context, _this._parseResults(data, 'bbox'));
+        }
+      );
+    },
+
+    suggest: function(query, cb, context) {
+      var _this = this;
+      getJSON(
+        this.options.serviceUrl + '/autocomplete',
+        L.extend(
+          {
+            api_key: this._apiKey,
+            text: query
+          },
+          this.options.geocodingQueryParams
+        ),
+        L.bind(function(data) {
+          if (data.geocoding.timestamp > this._lastSuggest) {
+            this._lastSuggest = data.geocoding.timestamp;
+            cb.call(context, _this._parseResults(data, 'bbox'));
+          }
+        }, this)
+      );
+    },
+
+    reverse: function(location, scale, cb, context) {
+      var _this = this;
+      getJSON(
+        this.options.serviceUrl + '/reverse',
+        L.extend(
+          {
+            api_key: this._apiKey,
+            'point.lat': location.lat,
+            'point.lon': location.lng
+          },
+          this.options.reverseQueryParams
+        ),
+        function(data) {
+          cb.call(context, _this._parseResults(data, 'bounds'));
+        }
+      );
+    },
+
+    _parseResults: function(data, bboxname) {
+      var results = [];
+      L.geoJson(data, {
+        pointToLayer: function(feature, latlng) {
+          return L.circleMarker(latlng);
+        },
+        onEachFeature: function(feature, layer) {
+          var result = {},
+            bbox,
+            center;
+
+          if (layer.getBounds) {
+            bbox = layer.getBounds();
+            center = bbox.getCenter();
+          } else if (layer.feature.bbox) {
+            center = layer.getLatLng();
+            bbox = L.latLngBounds(
+              L.GeoJSON.coordsToLatLng(layer.feature.bbox.slice(0, 2)),
+              L.GeoJSON.coordsToLatLng(layer.feature.bbox.slice(2, 4))
+            );
+          } else {
+            center = layer.getLatLng();
+            bbox = L.latLngBounds(center, center);
+          }
+
+          result.name = layer.feature.properties.label;
+          result.center = center;
+          result[bboxname] = bbox;
+          result.properties = layer.feature.properties;
+          results.push(result);
+        }
+      });
+      return results;
+    }
+  });
+
+  function pelias(apiKey, options) {
+    return new Pelias(apiKey, options);
+  }
+  var GeocodeEarth = Pelias;
+  var geocodeEarth = pelias;
+
+  var Mapzen = Pelias; // r.i.p.
+  var mapzen = pelias;
+
+  var Openrouteservice = Mapzen.extend({
+    options: {
+      serviceUrl: 'https://api.openrouteservice.org/geocode'
+    }
+  });
+  function openrouteservice(apiKey, options) {
+    return new Openrouteservice(apiKey, options);
+  }
+
+  var Photon = L.Class.extend({
+    options: {
+      serviceUrl: 'https://photon.komoot.de/api/',
+      reverseUrl: 'https://photon.komoot.de/reverse/',
+      nameProperties: ['name', 'street', 'suburb', 'hamlet', 'town', 'city', 'state', 'country']
+    },
+
+    initialize: function(options) {
+      L.setOptions(this, options);
+    },
+
+    geocode: function(query, cb, context) {
+      var params = L.extend(
+        {
+          q: query
+        },
+        this.options.geocodingQueryParams
+      );
+
+      getJSON(
+        this.options.serviceUrl,
+        params,
+        L.bind(function(data) {
+          cb.call(context, this._decodeFeatures(data));
+        }, this)
+      );
+    },
+
+    suggest: function(query, cb, context) {
+      return this.geocode(query, cb, context);
+    },
+
+    reverse: function(latLng, scale, cb, context) {
+      var params = L.extend(
+        {
+          lat: latLng.lat,
+          lon: latLng.lng
+        },
+        this.options.reverseQueryParams
+      );
+
+      getJSON(
+        this.options.reverseUrl,
+        params,
+        L.bind(function(data) {
+          cb.call(context, this._decodeFeatures(data));
+        }, this)
+      );
+    },
+
+    _decodeFeatures: function(data) {
+      var results = [],
+        i,
+        f,
+        c,
+        latLng,
+        extent,
+        bbox;
+
+      if (data && data.features) {
+        for (i = 0; i < data.features.length; i++) {
+          f = data.features[i];
+          c = f.geometry.coordinates;
+          latLng = L.latLng(c[1], c[0]);
+          extent = f.properties.extent;
+
+          if (extent) {
+            bbox = L.latLngBounds([extent[1], extent[0]], [extent[3], extent[2]]);
+          } else {
+            bbox = L.latLngBounds(latLng, latLng);
+          }
+
+          results.push({
+            name: this._decodeFeatureName(f),
+            html: this.options.htmlTemplate ? this.options.htmlTemplate(f) : undefined,
+            center: latLng,
+            bbox: bbox,
+            properties: f.properties
+          });
+        }
+      }
+
+      return results;
+    },
+
+    _decodeFeatureName: function(f) {
+      return (this.options.nameProperties || [])
+        .map(function(p) {
+          return f.properties[p];
+        })
+        .filter(function(v) {
+          return !!v;
+        })
+        .join(', ');
+    }
+  });
+
+  function photon(options) {
+    return new Photon(options);
+  }
+
+  var What3Words = L.Class.extend({
+    options: {
+      serviceUrl: 'https://api.what3words.com/v2/'
+    },
+
+    initialize: function(accessToken) {
+      this._accessToken = accessToken;
+    },
+
+    geocode: function(query, cb, context) {
+      //get three words and make a dot based string
+      getJSON(
+        this.options.serviceUrl + 'forward',
+        {
+          key: this._accessToken,
+          addr: query.split(/\s+/).join('.')
+        },
+        function(data) {
+          var results = [],
+            latLng,
+            latLngBounds;
+          if (data.hasOwnProperty('geometry')) {
+            latLng = L.latLng(data.geometry['lat'], data.geometry['lng']);
+            latLngBounds = L.latLngBounds(latLng, latLng);
+            results[0] = {
+              name: data.words,
+              bbox: latLngBounds,
+              center: latLng
+            };
+          }
+
+          cb.call(context, results);
+        }
+      );
+    },
+
+    suggest: function(query, cb, context) {
+      return this.geocode(query, cb, context);
+    },
+
+    reverse: function(location, scale, cb, context) {
+      getJSON(
+        this.options.serviceUrl + 'reverse',
+        {
+          key: this._accessToken,
+          coords: [location.lat, location.lng].join(',')
+        },
+        function(data) {
+          var results = [],
+            latLng,
+            latLngBounds;
+          if (data.status.status == 200) {
+            latLng = L.latLng(data.geometry['lat'], data.geometry['lng']);
+            latLngBounds = L.latLngBounds(latLng, latLng);
+            results[0] = {
+              name: data.words,
+              bbox: latLngBounds,
+              center: latLng
+            };
+          }
+          cb.call(context, results);
+        }
+      );
+    }
+  });
+
+  function what3words(accessToken) {
+    return new What3Words(accessToken);
+  }
+
+
+
+  var geocoders = /*#__PURE__*/Object.freeze({
+    ArcGis: ArcGis,
+    arcgis: arcgis,
+    Bing: Bing,
+    bing: bing,
+    Google: Google,
+    google: google,
+    HERE: HERE,
+    here: here,
+    LatLng: LatLng,
+    latLng: latLng,
+    Mapbox: Mapbox,
+    mapbox: mapbox,
+    MapQuest: MapQuest,
+    mapQuest: mapQuest,
+    Neutrino: Neutrino,
+    neutrino: neutrino,
+    Nominatim: Nominatim,
+    nominatim: nominatim,
+    OpenLocationCode: OpenLocationCode,
+    openLocationCode: openLocationCode,
+    Pelias: Pelias,
+    pelias: pelias,
+    GeocodeEarth: GeocodeEarth,
+    geocodeEarth: geocodeEarth,
+    Mapzen: Mapzen,
+    mapzen: mapzen,
+    Openrouteservice: Openrouteservice,
+    openrouteservice: openrouteservice,
+    Photon: Photon,
+    photon: photon,
+    What3Words: What3Words,
+    what3words: what3words
+  });
+
+  var Geocoder = L.Control.extend({
+    options: {
+      showResultIcons: false,
+      collapsed: true,
+      expand: 'touch', // options: touch, click, anythingelse
+      position: 'topright',
+      placeholder: 'Search...',
+      errorMessage: 'Nothing found.',
+      queryMinLength: 1,
+      suggestMinLength: 3,
+      suggestTimeout: 250,
+      defaultMarkGeocode: true
+    },
+
+    includes: L.Evented.prototype || L.Mixin.Events,
+
+    initialize: function(options) {
+      L.Util.setOptions(this, options);
+      if (!this.options.geocoder) {
+        this.options.geocoder = new Nominatim();
+      }
+
+      this._requestCount = 0;
+    },
+
+    addThrobberClass: function() {
+      L.DomUtil.addClass(this._container, 'leaflet-control-geocoder-throbber');
+    },
+
+    removeThrobberClass: function() {
+      L.DomUtil.removeClass(this._container, 'leaflet-control-geocoder-throbber');
+    },
+
+    onAdd: function(map) {
+      var className = 'leaflet-control-geocoder',
+        container = L.DomUtil.create('div', className + ' leaflet-bar'),
+        icon = L.DomUtil.create('button', className + '-icon', container),
+        form = (this._form = L.DomUtil.create('div', className + '-form', container)),
+        input;
+
+      this._map = map;
+      this._container = container;
+
+      icon.innerHTML = '&nbsp;';
+      icon.type = 'button';
+
+      input = this._input = L.DomUtil.create('input', '', form);
+      input.type = 'text';
+      input.placeholder = this.options.placeholder;
+      L.DomEvent.disableClickPropagation(input);
+
+      this._errorElement = L.DomUtil.create('div', className + '-form-no-error', container);
+      this._errorElement.innerHTML = this.options.errorMessage;
+
+      this._alts = L.DomUtil.create(
+        'ul',
+        className + '-alternatives leaflet-control-geocoder-alternatives-minimized',
+        container
+      );
+      L.DomEvent.disableClickPropagation(this._alts);
+
+      L.DomEvent.addListener(input, 'keydown', this._keydown, this);
+      if (this.options.geocoder.suggest) {
+        L.DomEvent.addListener(input, 'input', this._change, this);
+      }
+      L.DomEvent.addListener(
+        input,
+        'blur',
+        function() {
+          if (this.options.collapsed && !this._preventBlurCollapse) {
+            this._collapse();
+          }
+          this._preventBlurCollapse = false;
+        },
+        this
+      );
+
+      if (this.options.collapsed) {
+        if (this.options.expand === 'click') {
+          L.DomEvent.addListener(
+            container,
+            'click',
+            function(e) {
+              if (e.button === 0 && e.detail !== 2) {
+                this._toggle();
+              }
+            },
+            this
+          );
+        } else if (L.Browser.touch && this.options.expand === 'touch') {
+          L.DomEvent.addListener(
+            container,
+            'touchstart mousedown',
+            function(e) {
+              this._toggle();
+              e.preventDefault(); // mobile: clicking focuses the icon, so UI expands and immediately collapses
+              e.stopPropagation();
+            },
+            this
+          );
+        } else {
+          L.DomEvent.addListener(container, 'mouseover', this._expand, this);
+          L.DomEvent.addListener(container, 'mouseout', this._collapse, this);
+          this._map.on('movestart', this._collapse, this);
+        }
+      } else {
+        this._expand();
+        if (L.Browser.touch) {
+          L.DomEvent.addListener(
+            container,
+            'touchstart',
+            function() {
+              this._geocode();
+            },
+            this
+          );
+        } else {
+          L.DomEvent.addListener(
+            container,
+            'click',
+            function() {
+              this._geocode();
+            },
+            this
+          );
+        }
+      }
+
+      if (this.options.defaultMarkGeocode) {
+        this.on('markgeocode', this.markGeocode, this);
+      }
+
+      this.on('startgeocode', this.addThrobberClass, this);
+      this.on('finishgeocode', this.removeThrobberClass, this);
+      this.on('startsuggest', this.addThrobberClass, this);
+      this.on('finishsuggest', this.removeThrobberClass, this);
+
+      L.DomEvent.disableClickPropagation(container);
+
+      return container;
+    },
+
+    _geocodeResult: function(results, suggest) {
+      if (!suggest && results.length === 1) {
+        this._geocodeResultSelected(results[0]);
+      } else if (results.length > 0) {
+        this._alts.innerHTML = '';
+        this._results = results;
+        L.DomUtil.removeClass(this._alts, 'leaflet-control-geocoder-alternatives-minimized');
+        L.DomUtil.addClass(this._container, 'leaflet-control-geocoder-options-open');
+        for (var i = 0; i < results.length; i++) {
+          this._alts.appendChild(this._createAlt(results[i], i));
+        }
+      } else {
+        L.DomUtil.addClass(this._container, 'leaflet-control-geocoder-options-error');
+        L.DomUtil.addClass(this._errorElement, 'leaflet-control-geocoder-error');
+      }
+    },
+
+    markGeocode: function(result) {
+      result = result.geocode || result;
+
+      this._map.fitBounds(result.bbox);
+
+      if (this._geocodeMarker) {
+        this._map.removeLayer(this._geocodeMarker);
+      }
+
+      this._geocodeMarker = new L.Marker(result.center)
+        .bindPopup(result.html || result.name)
+        .addTo(this._map)
+        .openPopup();
+
+      return this;
+    },
+
+    _geocode: function(suggest) {
+      var value = this._input.value;
+      if (!suggest && value.length < this.options.queryMinLength) {
+        return;
+      }
+
+      var requestCount = ++this._requestCount,
+        mode = suggest ? 'suggest' : 'geocode',
+        eventData = { input: value };
+
+      this._lastGeocode = value;
+      if (!suggest) {
+        this._clearResults();
+      }
+
+      this.fire('start' + mode, eventData);
+      this.options.geocoder[mode](
+        value,
+        function(results) {
+          if (requestCount === this._requestCount) {
+            eventData.results = results;
+            this.fire('finish' + mode, eventData);
+            this._geocodeResult(results, suggest);
+          }
+        },
+        this
+      );
+    },
+
+    _geocodeResultSelected: function(result) {
+      this.fire('markgeocode', { geocode: result });
+    },
+
+    _toggle: function() {
+      if (L.DomUtil.hasClass(this._container, 'leaflet-control-geocoder-expanded')) {
+        this._collapse();
+      } else {
+        this._expand();
+      }
+    },
+
+    _expand: function() {
+      L.DomUtil.addClass(this._container, 'leaflet-control-geocoder-expanded');
+      this._input.select();
+      this.fire('expand');
+    },
+
+    _collapse: function() {
+      L.DomUtil.removeClass(this._container, 'leaflet-control-geocoder-expanded');
+      L.DomUtil.addClass(this._alts, 'leaflet-control-geocoder-alternatives-minimized');
+      L.DomUtil.removeClass(this._errorElement, 'leaflet-control-geocoder-error');
+      L.DomUtil.removeClass(this._container, 'leaflet-control-geocoder-options-open');
+      L.DomUtil.removeClass(this._container, 'leaflet-control-geocoder-options-error');
+      this._input.blur(); // mobile: keyboard shouldn't stay expanded
+      this.fire('collapse');
+    },
+
+    _clearResults: function() {
+      L.DomUtil.addClass(this._alts, 'leaflet-control-geocoder-alternatives-minimized');
+      this._selection = null;
+      L.DomUtil.removeClass(this._errorElement, 'leaflet-control-geocoder-error');
+      L.DomUtil.removeClass(this._container, 'leaflet-control-geocoder-options-open');
+      L.DomUtil.removeClass(this._container, 'leaflet-control-geocoder-options-error');
+    },
+
+    _createAlt: function(result, index) {
+      var li = L.DomUtil.create('li', ''),
+        a = L.DomUtil.create('a', '', li),
+        icon = this.options.showResultIcons && result.icon ? L.DomUtil.create('img', '', a) : null,
+        text = result.html ? undefined : document.createTextNode(result.name),
+        mouseDownHandler = function mouseDownHandler(e) {
+          // In some browsers, a click will fire on the map if the control is
+          // collapsed directly after mousedown. To work around this, we
+          // wait until the click is completed, and _then_ collapse the
+          // control. Messy, but this is the workaround I could come up with
+          // for #142.
+          this._preventBlurCollapse = true;
+          L.DomEvent.stop(e);
+          this._geocodeResultSelected(result);
+          L.DomEvent.on(
+            li,
+            'click',
+            function() {
+              if (this.options.collapsed) {
+                this._collapse();
+              } else {
+                this._clearResults();
+              }
+            },
+            this
+          );
+        };
+
+      if (icon) {
+        icon.src = result.icon;
+      }
+
+      li.setAttribute('data-result-index', index);
+
+      if (result.html) {
+        a.innerHTML = a.innerHTML + result.html;
+      } else {
+        a.appendChild(text);
+      }
+
+      // Use mousedown and not click, since click will fire _after_ blur,
+      // causing the control to have collapsed and removed the items
+      // before the click can fire.
+      L.DomEvent.addListener(li, 'mousedown touchstart', mouseDownHandler, this);
+
+      return li;
+    },
+
+    _keydown: function(e) {
+      var _this = this,
+        select = function select(dir) {
+          if (_this._selection) {
+            L.DomUtil.removeClass(_this._selection, 'leaflet-control-geocoder-selected');
+            _this._selection = _this._selection[dir > 0 ? 'nextSibling' : 'previousSibling'];
+          }
+          if (!_this._selection) {
+            _this._selection = _this._alts[dir > 0 ? 'firstChild' : 'lastChild'];
+          }
+
+          if (_this._selection) {
+            L.DomUtil.addClass(_this._selection, 'leaflet-control-geocoder-selected');
+          }
+        };
+
+      switch (e.keyCode) {
+        // Escape
+        case 27:
+          if (this.options.collapsed) {
+            this._collapse();
+          } else {
+            this._clearResults();
+          }
+          break;
+        // Up
+        case 38:
+          select(-1);
+          break;
+        // Up
+        case 40:
+          select(1);
+          break;
+        // Enter
+        case 13:
+          if (this._selection) {
+            var index = parseInt(this._selection.getAttribute('data-result-index'), 10);
+            this._geocodeResultSelected(this._results[index]);
+            this._clearResults();
+          } else {
+            this._geocode();
+          }
+          break;
+        default:
+          return;
+      }
+
+      L.DomEvent.preventDefault(e);
+    },
+    _change: function() {
+      var v = this._input.value;
+      if (v !== this._lastGeocode) {
+        clearTimeout(this._suggestTimeout);
+        if (v.length >= this.options.suggestMinLength) {
+          this._suggestTimeout = setTimeout(
+            L.bind(function() {
+              this._geocode(true);
+            }, this),
+            this.options.suggestTimeout
+          );
+        } else {
+          this._clearResults();
+        }
+      }
+    }
+  });
+
+  function geocoder(options) {
+    return new Geocoder(options);
+  }
+
+  L.Util.extend(Geocoder, geocoders);
 
   L.Util.extend(L.Control, {
     Geocoder: Geocoder,
-    geocoder: Control.factory
+    geocoder: geocoder
   });
 
   return Geocoder;
@@ -15472,7 +15729,7 @@ this.L.Control.Geocoder = (function (L) {
 				if (attr.indexOf('{attribution.') === -1) {
 					return attr;
 				}
-				return attr.replace(/\{attribution.(\w*)\}/,
+				return attr.replace(/\{attribution.(\w*)\}/g,
 					function (match, attributionName) {
 						return attributionReplacer(providers[attributionName].options.attribution);
 					}
@@ -15608,7 +15865,9 @@ this.L.Control.Geocoder = (function (L) {
 				},
 				Landscape: 'landscape',
 				Outdoors: 'outdoors',
-				Pioneer: 'pioneer'
+				Pioneer: 'pioneer',
+				MobileAtlas: 'mobile-atlas',
+				Neighbourhood: 'neighbourhood'
 			}
 		},
 		OpenMapSurfer: {
@@ -15616,14 +15875,47 @@ this.L.Control.Geocoder = (function (L) {
 			options: {
 				maxZoom: 19,
 				variant: 'roads',
-				attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data {attribution.OpenStreetMap}'
+				attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> | Map data '
 			},
 			variants: {
-				Roads: 'roads',
+				Roads: {
+					options: {
+						variant: 'roads',
+						attribution: '{attribution.OpenMapSurfer}{attribution.OpenStreetMap}'
+					}
+				},
+				Hybrid: {
+					options: {
+						variant: 'hybrid',
+						attribution: '{attribution.OpenMapSurfer}{attribution.OpenStreetMap}'
+					}
+				},
 				AdminBounds: {
 					options: {
 						variant: 'adminb',
-						maxZoom: 18
+						maxZoom: 18,
+						attribution: '{attribution.OpenMapSurfer}{attribution.OpenStreetMap}'
+					}
+				},
+				ContourLines: {
+					options: {
+						variant: 'asterc',
+						maxZoom: 18,
+						minZoom: 13,
+						attribution: '{attribution.OpenMapSurfer} <a href="https://lpdaac.usgs.gov/products/aster_policies">ASTER GDEM</a>'
+					}
+				},
+				Hillshade: {
+					options: {
+						variant: 'asterh',
+						maxZoom: 18,
+						attribution: '{attribution.OpenMapSurfer} <a href="https://lpdaac.usgs.gov/products/aster_policies">ASTER GDEM</a>, <a href="http://srtm.csi.cgiar.org/">SRTM</a>'
+					}
+				},
+				ElementsAtRisk: {
+					options: {
+						variant: 'elements_at_risk',
+						attribution: '{attribution.OpenMapSurfer}{attribution.OpenStreetMap}'
 					}
 				}
 			}

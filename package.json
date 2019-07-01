@@ -15,6 +15,7 @@
   "bugs": {
     "url": "https://github.com/mcguffin/acf-openstreetmap-field/issues"
   },
+  "browserslist": ["last 2 versions"],
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
     "gulp": "^4.0.1",
