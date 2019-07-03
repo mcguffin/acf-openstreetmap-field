@@ -16,10 +16,6 @@ class Core extends Plugin {
 	 */
 	protected function __construct($file) {
 
-
-
-		add_action( 'plugins_loaded' , array( $this , 'load_textdomain' ) );
-
 		add_action( 'acf/include_field_types' , array( $this , 'init' ), 0 );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
@@ -110,25 +106,6 @@ class Core extends Plugin {
 	}
 
 	/**
-	 *	Load frontend styles and scripts
-	 *
-	 *	@action wp_enqueue_scripts
-	 */
-	public function wp_enqueue_style() {
-	}
-
-
-	/**
-	 *	Load text domain
-	 *
-	 *  @action plugins_loaded
-	 */
-	public function load_textdomain() {
-		$path = pathinfo( dirname( ACF_FIELD_OPENSTREETMAP_FILE ), PATHINFO_FILENAME );
-		load_plugin_textdomain( 'acf-field-openstreetmap', false, $path . '/languages' );
-	}
-
-	/**
 	 *	Init hook.
 	 *
 	 *  @action init
@@ -161,6 +138,15 @@ class Core extends Plugin {
 		);
 	}
 
+	/**
+	 *	Get layer data from leaflet providers
+	 *
+	 *	@return array [
+	 *		'provider_key' 			=> 'provider',
+	 *		'provider_key.variant'	=> 'provider.variant',
+	 *		...
+	 * ]
+	 */
 	public function get_leaflet_layers() {
 		$providers = array();
 
@@ -189,8 +175,8 @@ class Core extends Plugin {
 	}
 
 	/**
-	 *	get providers and variants
-	 *	omits proviers with unconfigured api credentials as well as map data having a bounding box
+	 *	Get providers and variants
+	 *	Omits proviers with unconfigured api credentials
 	 *
 	 *	@return array
 	 */
@@ -276,7 +262,7 @@ class Core extends Plugin {
 	 */
 	public function get_leaflet_providers( ) {
 
-		$leaflet_providers	= json_decode( file_get_contents( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/etc/leaflet-providers.json'), true );
+		$leaflet_providers	= json_decode( file_get_contents( $this->get_plugin_dir() . '/etc/leaflet-providers.json'), true );
 
 		return $leaflet_providers;
 
@@ -288,7 +274,7 @@ class Core extends Plugin {
 	 */
 	public function get_provider_token_options( ) {
 
-		$providers		= json_decode( file_get_contents( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/etc/leaflet-providers.json'), true );
+		$providers		= json_decode( file_get_contents( $this->get_plugin_dir() . '/etc/leaflet-providers.json'), true );
 
 		$token_options	= array();
 
@@ -315,7 +301,7 @@ class Core extends Plugin {
 	 *	@return wp_enqueue_editor
 	 */
 	public function get_asset_url( $asset ) {
-		return plugins_url( $asset, ACF_FIELD_OPENSTREETMAP_FILE );
+		return plugins_url( $asset, $this->get_plugin_file() );
 	}
 
 

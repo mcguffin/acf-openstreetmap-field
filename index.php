@@ -3,7 +3,7 @@
 /*
 Plugin Name: ACF OpenStreetMap Field
 Plugin URI: https://github.com/mcguffin/acf-field-openstreetmap
-Description: Adds a configrable OpenStreetMap Field to ACF.
+Description: A configurable OpenStreetMap Field for ACF.
 Author: Jörn Lund
 Version: 0.1.12
 Author URI: https://github.com/mcguffin
@@ -44,26 +44,16 @@ if ( ! defined('ABSPATH') ) {
 	die('FU!');
 }
 
-
-define( 'ACF_FIELD_OPENSTREETMAP_FILE', __FILE__ );
-define( 'ACF_FIELD_OPENSTREETMAP_DIRECTORY', plugin_dir_path(__FILE__) );
-define( 'ACF_FIELD_OPENSTREETMAP_PLUGIN', pathinfo( ACF_FIELD_OPENSTREETMAP_DIRECTORY, PATHINFO_FILENAME ) . '/' . pathinfo( __FILE__, PATHINFO_BASENAME ) );
-
-require_once ACF_FIELD_OPENSTREETMAP_DIRECTORY . 'include/autoload.php';
+require_once dirname(__FILE__) . '/include/autoload.php';
 
 Core\Core::instance( __FILE__ );
-
-
-
-
-
 
 
 
 if ( is_admin() || defined( 'DOING_AJAX' ) ) {
 
 	// don't WP-Update actual repos!
-	if ( ! file_exists( ACF_FIELD_OPENSTREETMAP_DIRECTORY . '/.git/' ) ) {
+	if ( ! file_exists( dirname(__FILE__) . '/.git/' ) ) {
 
 		// Check if https://github.com/afragen/github-updater is active
 		$active_plugins = get_option('active_plugins');
