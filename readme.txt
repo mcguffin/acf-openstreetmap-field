@@ -1,20 +1,45 @@
 === ACF OpenStreetMap Field ===
-Contributors: #### Your wordpress.org Username ####
-Donate link: #### donate link ####
-Tags: #### donate link ####
-Requires at least: 3.8
+Contributors: podpirate
+Donate link: https://www.msf.org/donate
+Tags: map acf openstreetmap leaflet
+Requires at least: 4.8
 Requires PHP: 5.6
-Tested up to: 4.8
+Tested up to: 5.2.2
 Stable tag: 0.1.12
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License: GPLv3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-#### Short Description ####
+A configurable OpenStreetMap Field for ACF.
 
 == Description ==
 
-#### Long Description ####
+Hazzle free OpenStreetMap embeds with [ACF](https://www.advancedcustomfields.com/).
 
+### Usage
+
+ - *Return Format*
+     - Raw Data
+     - Leaflet JS
+     - iFrame (OpenStreetMap.org)
+ - *Map Appearance*
+ - *Map Position* Lat|Lng|Zoom
+ - *Allow layer selection*
+ - *Height*
+ - *Max. number of Markers*
+
+
+
+### Credits
+
+- The [OpenStreetMap](https://www.openstreetmap.org/) project
+- [The Leaflet Project](https://leafletjs.com/)
+- The maintainers and [contributors](https://github.com/leaflet-extras/leaflet-providers/graphs/contributors) of [Leaflet providers](https://github.com/leaflet-extras/leaflet-providers)
+- The [very same](https://github.com/perliedman/leaflet-control-geocoder/graphs/contributors) for [Leaflet Control Geocode](https://github.com/perliedman/leaflet-control-geocoder)
+- Numerous individuals and organizations who provide wonderful Map related services free of charge. (You are credited in the map, I hope)
+
+### Development
+
+Please head over to the source code [on Github](https://github.com/mcguffin/acf-dropzone).
 
 
 == Installation ==
@@ -23,42 +48,25 @@ Follow the standard [WordPress plugin installation procedere](http://codex.wordp
 
 == Frequently asked questions ==
 
+
+== Frequently asked questions ==
+
 = I found a bug. Where should I post it? =
 
-You can can either go into the Support forum, or in the [ACF OpenStreetMap Field Repository](https://github.com/mcguffin/acf-openstreetmap-field).
+Please use the issues section in the [GitHub-Repository](https://github.com/mcguffin/acf-field-openstreetmap/issues).
+
+I will most likely not maintain the forum support forum on wordpress.org. Anyway, other users might have an answer for you, so it's worth a shot.
 
 = I'd like to suggest a feature. Where should I post it? =
 
-I personally prefer GitHub. The plugin code is here: [GitHub](https://github.com/mcguffin/acf-openstreetmap-field)
-(See above as well.)
-
-= I want to use the latest files. How can I do this? =
-
-Use the GitHub Repo rather than the WordPress Plugin. Do as follows:
-
-1. If you haven't done so: [Install git](https://help.github.com/articles/set-up-git)
-
-2. in the console cd into Your 'wp-content/plugins' directory
-
-3. type `git clone git@github.com:mcguffin/acf-openstreetmap-field.git`
-
-4. If you want to update to the latest files (be careful, might be untested with your WP-Version) type `git pull`.
-
-= I found a bug and fixed it. How can I let You know? =
-
-Either post it on the [GitHub-repo](https://github.com/mcguffin/acf-openstreetmap-field) or—if you cloned the repository—send me a pull request.
-
-= Will you accept translations? =
-
-Yep sure! (And a warm thankyou in advance.) It might take some time until your localization
-will appear in an official plugin release, and it is not unlikely that I will have added
-or removed some strings in the meantime.
-
-As soon as there is a [public centralized repository for WordPress plugin translations](https://translate.wordpress.org/projects/wp-plugins)
-I will migrate all the translation stuff there.
+Please post an issue in the [GitHub-Repository](https://github.com/mcguffin/acf-field-openstreetmap/issues)
 
 
 == Screenshots ==
+
+1. ACF Field Group Editor
+2. Editing the Field Value
+3. Display in the Frontend
 
 == Changelog ==
 
