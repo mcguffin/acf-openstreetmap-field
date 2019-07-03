@@ -153,7 +153,7 @@ class SettingsOpenStreetMap extends Settings {
 			$value = '';
 		}
 
-		printf('<input id="%1$s" name="%2$s" value="%3$s" class="code widefat" />',
+		printf('<input id="%1$s" type="text" name="%2$s" value="%3$s" class="large-text code" />',
 			esc_attr($field_id),
 			esc_attr($field_name),
 			esc_attr($value)
