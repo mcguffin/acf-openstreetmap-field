@@ -1,20 +1,96 @@
+# Copyright (C) 2019 Jörn Lund
+# This file is distributed under the same license as the ACF OpenStreetMap Field plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: acf-field-openstreetmap\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-20 23:33+0100\n"
-"PO-Revision-Date: 2016-03-20 23:36+0100\n"
-"Last-Translator: Jörn Lund <joern@podpirate.org>\n"
+"Project-Id-Version: ACF OpenStreetMap Field 0.1.12\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/acf-field-openstreetmap\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.8.1\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
-"_n_noop:1,2;_x:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_ex:1,2c;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
-"X-Poedit-Basepath: ../\n"
-"X-Textdomain-Support: yes\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: node_modules"
+"POT-Creation-Date: 2019-07-03T14:44:57+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.1.0\n"
+"X-Domain: acf-field-openstreetmap\n"
+
+#. Plugin Name of the plugin
+msgid "ACF OpenStreetMap Field"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://github.com/mcguffin/acf-field-openstreetmap"
+msgstr ""
+
+#. Description of the plugin
+msgid "Adds a configrable OpenStreetMap Field to ACF."
+msgstr ""
+
+#. Author of the plugin
+msgid "Jörn Lund"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/mcguffin"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:37
+msgid "OpenStreetMap Settings"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:37
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:51
+msgid "OpenStreetMap"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:51
+msgid "acf-field-openstreetmap Settings"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:57
+msgid "Save Settings"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:86
+msgid "Access Tokens"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:139
+msgid "Enter Access Tokens for various Map Tile providers."
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/AutoUpdate/AutoUpdateGithub.php:60
+msgid "Releases"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/AutoUpdate/AutoUpdateGithub.php:62
+msgid "Wiki"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/AutoUpdate/AutoUpdateGithub.php:65
+msgid "Issues"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/AutoUpdate/AutoUpdateGithub.php:91
+msgid "Description"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/AutoUpdate/AutoUpdateGithub.php:95
+msgid "Links"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/AutoUpdate/AutoUpdateGithub.php:107
+msgid "Notes"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:380
+msgid "Locate Marker"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:407
+msgid "Remove Marker"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:734
+msgid "View Larger Map"
+msgstr ""

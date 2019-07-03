@@ -83,7 +83,7 @@ class SettingsOpenStreetMap extends Settings {
 
 		$settings_section	= 'acf_osm_settings';
 
-		add_settings_section( $settings_section, __( 'Access Tokens', 'acf-open-street-map' ), array( $this, 'tokens_description' ), $this->optionset );
+		add_settings_section( $settings_section, __( 'Access Tokens', 'acf-field-openstreetmap' ), array( $this, 'tokens_description' ), $this->optionset );
 
 		// more settings go here ...
 		$option_name		= 'acf_osm_provider_tokens';
@@ -136,7 +136,7 @@ class SettingsOpenStreetMap extends Settings {
 
 		?>
 		<div class="inside">
-			<p><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-open-street-map' ); ?></p>
+			<p><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-field-openstreetmap' ); ?></p>
 		</div>
 		<?php
 	}

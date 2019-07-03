@@ -48,7 +48,7 @@ class OpenStreetMap extends \acf_field {
 		/*
 		*  label (string) Multiple words, can include spaces, visible when selecting a field type
 		*/
-		$this->label = __("OpenStreetMap",'acf-open-street-map');
+		$this->label = __("OpenStreetMap",'acf-field-openstreetmap');
 
 		/*
 		*  category (string) basic | content | choice | relational | jquery | layout | CUSTOM GROUP NAME
