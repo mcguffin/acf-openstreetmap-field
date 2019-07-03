@@ -6,3 +6,6 @@ gulpfile.js export-ignore
 package*.json export-ignore
 /src export-ignore
 /tests export-ignore
+wp-plugin-boilerplate.json export-ignore
+.wporg export-ignore
+*.md export-ignore

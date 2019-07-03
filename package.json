@@ -1,10 +1,18 @@
 {
-  "name": "acf-openstreetmap-field",
-  "version": "0.0.1",
-  "description": "Plugin description",
+  "name": "acf-field-openstreetmap",
+  "version": "0.1.12",
+  "description": "A configrable OpenStreetMap Field to ACF.",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "gulp dev",
+    "build": "gulp build && npm run i18n",
+    "release": "npm run release:build && npm run release:github",
+    "release:build": "npm run i18n && node ./src/run/release.js",
+    "release:github": "node ./src/run/release-github.js",
+    "release:wporg": "node ./src/run/release-wporg.js",
+    "i18n": "wp i18n make-pot . languages/acf-field-openstreetmap.pot --domain=acf-field-openstreetmap",
+    "package:wporg": "cp ./.wporg/screenshot-*.png . && git add . && git commit -m \"tmp\" && git archive --format=zip --prefix=acf-field-openstreetmap/ --output=../acf-field-openstreetmap.zip --worktree-attributes HEAD && git reset --hard HEAD~",
+    "rollback": "git reset --hard HEAD~ && git push origin +master"
   },
   "repository": {
     "type": "git",
@@ -15,7 +23,9 @@
   "bugs": {
     "url": "https://github.com/mcguffin/acf-openstreetmap-field/issues"
   },
-  "browserslist": ["last 2 versions"],
+  "browserslist": [
+    "last 2 versions"
+  ],
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
     "gulp": "^4.0.1",
@@ -28,7 +38,8 @@
     "gulp-util": "^3.0.8",
     "leaflet": "^1.4.0",
     "leaflet-control-geocoder": "^1.7.0",
-    "leaflet-providers": "^1.6.0"
+    "leaflet-providers": "^1.6.0",
+    "simple-git": "^1.118.0"
   },
   "dependencies": {
     "tar": ">=2.2.2"
