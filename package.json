@@ -1,6 +1,6 @@
 {
   "name": "acf-field-openstreetmap",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "A configrable OpenStreetMap Field to ACF.",
   "private": true,
   "scripts": {
