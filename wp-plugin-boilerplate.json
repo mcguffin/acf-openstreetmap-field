@@ -1,6 +1,5 @@
 {
   "modules": {
-    "autoupdate": {},
     "compat": {},
     "core": {
       "css": true,

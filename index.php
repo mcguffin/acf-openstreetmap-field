@@ -49,26 +49,7 @@ require_once dirname(__FILE__) . '/include/autoload.php';
 Core\Core::instance( __FILE__ );
 
 
-
 if ( is_admin() || defined( 'DOING_AJAX' ) ) {
-
-	// don't WP-Update actual repos!
-	if ( ! file_exists( dirname(__FILE__) . '/.git/' ) ) {
-
-		// Check if https://github.com/afragen/github-updater is active
-		$active_plugins = get_option('active_plugins');
-
-		if ( $sitewide_plugins = get_site_option('active_sitewide_plugins') ) {
-			$active_plugins = array_merge( $active_plugins, array_keys( $sitewide_plugins ) );
-		}
-
-		if ( ! in_array( 'github-updater/github-updater.php', $active_plugins ) ) {
-
-			AutoUpdate\AutoUpdateGithub::instance()->init( __FILE__ );
-		}
-	}
-
-
 
 	Settings\SettingsOpenStreetMap::instance();
 
