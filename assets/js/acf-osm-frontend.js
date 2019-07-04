@@ -16611,7 +16611,7 @@ this.L.Control.Geocoder = (function (L) {
 		}
 	});
 	// init all maps
-	$.acf_leaflet();
+	$(document).ready( $.acf_leaflet );
 
 
 })( jQuery, acf_osm );
