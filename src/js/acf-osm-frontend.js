@@ -1,8 +1,5 @@
 (function( $, arg ){
 
-	$(document).on( 'acf-osm-map-marker-create', function(e){
-		e.markerOptions.opacity = 0.8;
-	});
 	L.TileLayer.Provider.providers = arg.providers;
 
 	var options = arg.options;

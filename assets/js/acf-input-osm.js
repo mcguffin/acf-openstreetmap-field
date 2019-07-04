@@ -42,8 +42,6 @@
 			this.$el.html( this.template( this ) );
 			this._update_values_from_marker();
 
-			this.$el.height( this.$el.data('height') );
-
 			this.$el.find('[id$="-marker-label"]')
 				.on('focus',function(e) {
 					self.hilite_marker();
@@ -584,6 +582,14 @@
 			// wrap osm.field backbone view around editors
 			if ( $(e.target).is('[data-editor-config]') ) {
 				e.preventDefault();
+
+				(function checkVis(){
+					if ( ! $(e.target).is(':visible') ) {
+						return setTimeout(checkVis,250);
+					}
+					map.invalidateSize();
+				})();
+
 				$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );
 			}
 		})
@@ -607,10 +613,11 @@
 			editor.init_layers();
 		});
 
-	// when fields get loaded ...
+	// init when fields get loaded ...
 	acf.addAction( 'append', function(){
 		$.acf_leaflet();
 	});
+	// init when fields shw ...
 	acf.addAction( 'show_field/type=open_street_map', function( field ){
 	    var editor = field.$el.find('[data-editor-config]').data( '_map_editor' );
 	    editor.update_visible();
