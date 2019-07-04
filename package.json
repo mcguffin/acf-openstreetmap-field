@@ -1,5 +1,5 @@
 {
-  "name": "acf-field-openstreetmap",
+  "name": "acf-openstreetmap-field",
   "version": "0.1.13",
   "description": "A configrable OpenStreetMap Field to ACF.",
   "private": true,
@@ -11,8 +11,8 @@
     "release:github": "node ./src/run/release.js -- github",
     "release:bitbucket": "node ./src/run/release.js -- bitbucket",
     "release:wporg": "node ./src/run/release.js -- wporg",
-    "i18n": "wp i18n make-pot . languages/acf-field-openstreetmap.pot --domain=acf-field-openstreetmap",
-    "package:wporg": "cp ./.wporg/screenshot-*.png . && git add . && git commit -m \"tmp\" && git archive --format=zip --prefix=acf-field-openstreetmap/ --output=../acf-field-openstreetmap.zip --worktree-attributes HEAD && git reset --hard HEAD~",
+    "i18n": "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field",
+    "package:wporg": "cp ./.wporg/screenshot-*.png . && git add . && git commit -m \"tmp\" && git archive --format=zip --prefix=acf-openstreetmap-field/ --output=../acf-openstreetmap-field.zip --worktree-attributes HEAD && git reset --hard HEAD~",
     "rollback": "git reset --hard HEAD~ && git push origin +master"
   },
   "repository": {

@@ -44,7 +44,7 @@ You can choose from a long list of map styles and it supports multiple markers.
 
 ## Development
 
-Please head over to the source code [on Github](https://github.com/mcguffin/acf-dropzone).
+Please head over to the source code [on Github](https://github.com/mcguffin/acf-openstreetmap-field).
 ## Credits
 - Eliott Condon's [ACF](https://www.advancedcustomfields.com/) for sure!
 - The [OpenStreetMap](https://www.openstreetmap.org/) project
@@ -62,19 +62,19 @@ Follow the standard [WordPress plugin installation procedere](http://codex.wordp
 
 = I found a bug. Where should I post it? =
 
-Please use the issues section in the [GitHub-Repository](https://github.com/mcguffin/acf-field-openstreetmap/issues).
+Please use the issues section in the [GitHub-Repository](https://github.com/mcguffin/acf-openstreetmap-field/issues).
 
 I will most likely not maintain the forum support forum on wordpress.org. Anyway, other users might have an answer for you, so it's worth a shot.
 
 = I'd like to suggest a feature. Where should I post it? =
 
-Please post an issue in the [GitHub-Repository](https://github.com/mcguffin/acf-field-openstreetmap/issues)
+Please post an issue in the [GitHub-Repository](https://github.com/mcguffin/acf-openstreetmap-field/issues)
 
 = I am a map tile provider. Please don't include our service in your plugin. =
 
 The provisers list is taken from [Leaflet providers](https://github.com/leaflet-extras/leaflet-providers), so requests for an unlisting should go there first.
 
-If you want your service to remain in Leaflet Providers, you can Post an issue in the plugin's [GitHub-Repository](https://github.com/mcguffin/acf-field-openstreetmap/issues).
+If you want your service to remain in Leaflet Providers, you can Post an issue in the plugin's [GitHub-Repository](https://github.com/mcguffin/acf-openstreetmap-field/issues).
 Please provide me some way for me to verify, that you are acting on behalf of the Tile service provider your want to exclude.
 (E.g. the providers website has a link to your github account.)
 
@@ -88,7 +88,7 @@ There is very likely an issue with the map tiles provider you've choosen. Some o
 
 = I need to do some fancy JS magic with my map. =
 
-Check out the [GitHub wiki](https://github.com/mcguffin/acf-field-openstreetmap/wiki). Some of the js events might come in handy for you.
+Check out the [GitHub wiki](https://github.com/mcguffin/acf-openstreetmap-field/wiki). Some of the js events might come in handy for you.
 For Documentation of the map object, please refer to [LeafletJS](https://leafletjs.com).
 
 = Will you anwser support requests via emails? =

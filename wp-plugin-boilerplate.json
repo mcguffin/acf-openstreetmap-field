@@ -13,9 +13,9 @@
   },
   "plugin_author": "J\u00f6rn Lund",
   "plugin_author_uri": "https://github.com/mcguffin",
-  "plugin_name": "acf-field-openstreetmap",
+  "plugin_name": "acf-openstreetmap-field",
   "plugin_namespace": "ACFFieldOpenstreetmap",
-  "plugin_slug": "acf-field-openstreetmap",
+  "plugin_slug": "acf-openstreetmap-field",
   "this_year": 2018,
-  "wp_plugin_slug": "acf-field-openstreetmap"
+  "wp_plugin_slug": "acf-openstreetmap-field"
 }

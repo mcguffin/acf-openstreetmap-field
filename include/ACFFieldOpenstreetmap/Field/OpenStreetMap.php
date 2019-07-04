@@ -48,7 +48,7 @@ class OpenStreetMap extends \acf_field {
 		/*
 		*  label (string) Multiple words, can include spaces, visible when selecting a field type
 		*/
-		$this->label = __("OpenStreetMap",'acf-field-openstreetmap');
+		$this->label = __("OpenStreetMap",'acf-openstreetmap-field');
 
 		/*
 		*  category (string) basic | content | choice | relational | jquery | layout | CUSTOM GROUP NAME
@@ -377,7 +377,7 @@ class OpenStreetMap extends \acf_field {
 		<div class="osm-markers">
 			<div class="osm-marker" data-id="__osm_marker_template__">
 				<div class="locate">
-					<a class="dashicons dashicons-location" data-name="locate-marker"><span class="screen-reader-text"><?php _e('Locate Marker','acf-field-openstreetmap'); ?></span></a>
+					<a class="dashicons dashicons-location" data-name="locate-marker"><span class="screen-reader-text"><?php _e('Locate Marker','acf-openstreetmap-field'); ?></span></a>
 				</div>
 				<div class="input">
 				<?php
@@ -404,7 +404,7 @@ class OpenStreetMap extends \acf_field {
 				?>
 				</div>
 				<div class="tools">
-					<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php _e('Remove Marker', 'acf-field-openstreetmap'); ?>"></a>
+					<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php _e('Remove Marker', 'acf-openstreetmap-field'); ?>"></a>
 				</div>
 			</div>
 		</div>
@@ -731,7 +731,7 @@ class OpenStreetMap extends \acf_field {
 			 */
 			$html = apply_filters( 'osm_map_iframe_template', $html );
 
-			$value = sprintf( $html, acf_esc_attr( $iframe_atts ), $map_link, __( 'View Larger Map','acf-field-openstreetmap' ) );
+			$value = sprintf( $html, acf_esc_attr( $iframe_atts ), $map_link, __( 'View Larger Map','acf-openstreetmap-field' ) );
 
 		} else if ( $field['return_format'] === 'leaflet' ) {
 			// features: multiple markers. lots of maps to choose from

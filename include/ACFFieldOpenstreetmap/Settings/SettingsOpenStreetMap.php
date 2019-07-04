@@ -19,7 +19,7 @@ class SettingsOpenStreetMap extends Settings {
 	protected function __construct() {
 
 
-//		add_option( 'acf-field-openstreetmap_setting_1' , 'Default Value' , '' , False );
+//		add_option( 'acf-openstreetmap-field_setting_1' , 'Default Value' , '' , False );
 		add_option( 'acf_osm_provider_tokens' , array() , '' , False );
 
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
@@ -34,7 +34,7 @@ class SettingsOpenStreetMap extends Settings {
 	 *	@action admin_menu
 	 */
 	public function admin_menu() {
-		add_options_page( __('OpenStreetMap Settings' , 'acf-field-openstreetmap' ),__('OpenStreetMap' , 'acf-field-openstreetmap'),'manage_options',$this->optionset, array( $this, 'settings_page' ) );
+		add_options_page( __('OpenStreetMap Settings' , 'acf-openstreetmap-field' ),__('OpenStreetMap' , 'acf-openstreetmap-field'),'manage_options',$this->optionset, array( $this, 'settings_page' ) );
 	}
 
 	/**
@@ -48,13 +48,13 @@ class SettingsOpenStreetMap extends Settings {
 
 		?>
 		<div class="wrap">
-			<h2><?php _e('acf-field-openstreetmap Settings', 'acf-field-openstreetmap') ?></h2>
+			<h2><?php _e('acf-openstreetmap-field Settings', 'acf-openstreetmap-field') ?></h2>
 
 			<form action="options.php" method="post">
 				<?php
 				settings_fields(  $this->optionset );
 				do_settings_sections( $this->optionset );
-				submit_button( __('Save Settings' , 'acf-field-openstreetmap' ) );
+				submit_button( __('Save Settings' , 'acf-openstreetmap-field' ) );
 				?>
 			</form>
 		</div><?php
@@ -83,7 +83,7 @@ class SettingsOpenStreetMap extends Settings {
 
 		$settings_section	= 'acf_osm_settings';
 
-		add_settings_section( $settings_section, __( 'Access Tokens', 'acf-field-openstreetmap' ), array( $this, 'tokens_description' ), $this->optionset );
+		add_settings_section( $settings_section, __( 'Access Tokens', 'acf-openstreetmap-field' ), array( $this, 'tokens_description' ), $this->optionset );
 
 		// more settings go here ...
 		$option_name		= 'acf_osm_provider_tokens';
@@ -136,7 +136,7 @@ class SettingsOpenStreetMap extends Settings {
 
 		?>
 		<div class="inside">
-			<p><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-field-openstreetmap' ); ?></p>
+			<p><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
 		</div>
 		<?php
 	}

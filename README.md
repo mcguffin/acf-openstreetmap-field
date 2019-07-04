@@ -18,14 +18,14 @@ Features
 
   ### Production (using Github Updater – recommended for Multisite)
    - Install [Andy Fragen's GitHub Updater](https://github.com/afragen/github-updater) first.
-   - In WP Admin go to Settings / GitHub Updater / Install Plugin. Enter `mcguffin/acf-field-openstreetmap` as a Plugin-URI.
+   - In WP Admin go to Settings / GitHub Updater / Install Plugin. Enter `mcguffin/acf-openstreetmap-field` as a Plugin-URI.
 
   ### Development
    - cd into your plugin directory
-   - $ `git clone git@github.com:mcguffin/acf-field-openstreetmap.git`
-   - $ `cd acf-field-openstreetmap`
+   - $ `git clone git@github.com:mcguffin/acf-openstreetmap-field.git`
+   - $ `cd acf-openstreetmap-field`
    - $ `npm install`
-   - $ `gulp
+   - $ `npm run dev`
 
 
 Developing
