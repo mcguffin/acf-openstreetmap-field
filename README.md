@@ -1,7 +1,7 @@
 ACF OpenStreetMap Field
 =======================
 
-This is the official github repository of the [ACF Dropzone](https://wordpress.org/plugins/acf-openstreetmap-field/) plugin.
+This is the official github repository of the [ACF OpenStreetMap Field](https://wordpress.org/plugins/acf-openstreetmap-field/) plugin.
 
 About
 -----
