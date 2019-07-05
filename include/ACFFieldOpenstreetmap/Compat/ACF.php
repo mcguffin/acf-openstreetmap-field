@@ -11,7 +11,7 @@ use ACFFieldOpenstreetmap\Core;
 use ACFFieldOpenstreetmap\Field;
 
 
-class ACF extends Core\PluginComponent {
+class ACF extends Core\Singleton {
 
 	/**
 	 *	@inheritdoc
@@ -58,7 +58,7 @@ class ACF extends Core\PluginComponent {
 	}
 
 	/**
-	 *  include_field_types
+	 *  @action acf/include_field_types
 	 *
 	 *  This function will include the field type class
 	 *
@@ -71,40 +71,10 @@ class ACF extends Core\PluginComponent {
 	 */
 	function include_field_types( $version = false ) {
 
-		// array(
-		// 	'version'	=> '0.0.1',
-		// 	'url'		=> plugin_dir_url( __FILE__ ),
-		// 	'path'		=> plugin_dir_path( __FILE__ )
-		// );
+		if ( version_compare( acf_get_setting('version'), '5.7', '>=' ) ) {
+			Field\OpenStreetMap::get_instance();
+		}
 
-		Field\OpenStreetMap::get_instance();
-	}
-
-	/**
-	 *	@inheritdoc
-	 */
-	public function activate(){
-
-	}
-
-	/**
-	 *	@inheritdoc
-	 */
-	public function deactivate(){
-
-	}
-
-	/**
-	 *	@inheritdoc
-	 */
-	public static function uninstall() {
-	 // remove content and settings
-	}
-
-	/**
- 	 *	@inheritdoc
-	 */
-	public function upgrade( $new_version, $old_version ) {
 	}
 
 }

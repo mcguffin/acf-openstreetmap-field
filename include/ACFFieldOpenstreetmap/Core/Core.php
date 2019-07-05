@@ -16,13 +16,14 @@ class Core extends Plugin {
 	 */
 	protected function __construct($file) {
 
-		add_action( 'acf/include_field_types' , array( $this , 'init' ), 0 );
+		add_action( 'acf/include_field_types' , array( '\ACFFieldOpenstreetmap\Compat\ACF' , 'instance' ), 0 );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
 
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
 		}
+
 		$args = func_get_args();
 		parent::__construct( ...$args );
 	}
@@ -46,6 +47,7 @@ class Core extends Plugin {
 		}
 
 		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), array( 'jquery' ), $this->get_version(), true );
+
 		wp_localize_script('acf-osm-frontend','acf_osm',array(
 			'options'	=> array(
 				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
@@ -106,21 +108,11 @@ class Core extends Plugin {
 	}
 
 	/**
-	 *	Init hook.
-	 *
-	 *  @action init
-	 */
-	public function init() {
-		Compat\ACF::instance();
-
-	}
-
-
-	/**
-	 *	get default OPenStreetMap Layers
+	 *	get default OpenStreetMap Layers
 	 *
 	 *	@return array(
-	 *		'layer_id' => 'Layer Label'
+	 *		'layer_id' => 'Layer Label',
+	 *		...
 	 *	)
 	 */
 	public function get_osm_layers( ) {

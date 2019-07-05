@@ -24,8 +24,7 @@ class Plugin extends PluginComponent {
 	private $plugin_meta;
 
 	/** @var string plugin components which might need upgrade */
-	private static $components = array(
-	);
+	private static $components = array();
 
 	/**
 	 *	@inheritdoc
