@@ -8,6 +8,10 @@ module.exports = ( dry = false ) => {
 		let svn_user = null;
 		let svn_version;
 		let commit_message;
+		const assets_arg = process.argv.indexOf( 'assets' ) !== -1;
+		const sources_arg = process.argv.indexOf( 'source' ) !== -1;
+		let do_assets = ! assets_arg && ! sources_arg ? true : assets_arg;
+		let do_sources = ! assets_arg && ! sources_arg ? true : sources_arg;
 
 		const contributors = wp.read_header_tag('readme.txt','Contributors').split(',');
 
@@ -48,14 +52,25 @@ module.exports = ( dry = false ) => {
 
 		console.log('WPORG Fetch svn')
 		exec.execSync(`svn checkout --depth immediates "${svn_url}" "${svn_dir}"`)
-		console.log(exec.execSync('svn update --set-depth infinity assets',{
-			cwd:svn_dir,
-			encoding:'utf8',
-		}))
-		console.log(exec.execSync('svn update --set-depth infinity trunk',{
-			cwd:svn_dir,
-			encoding:'utf8',
-		}))
+		if ( do_assets ) {
+			console.log(exec.execSync('svn update --set-depth infinity assets',{
+				cwd:svn_dir,
+				encoding:'utf8',
+			}))
+		}
+		if ( do_sources ) {
+			console.log(exec.execSync('svn update --set-depth infinity trunk',{
+				cwd:svn_dir,
+				encoding:'utf8',
+			}))
+		} else {
+			console.log(exec.execSync('svn update --set-depth infinity trunk/readme.txt',{
+				cwd:svn_dir,
+				encoding:'utf8',
+			}))
+			
+		}
+
 		console.log('...done')
 		try {
 			svn_version = wp.read_header_tag(`${svn_dir}/trunk/readme.txt`,'Stable tag')
@@ -64,8 +79,12 @@ module.exports = ( dry = false ) => {
 		}
 
 		console.log('WPORG Update svn')
-		exec.execSync(`rsync -rc "${git_dir}/" ${svn_dir}/trunk/ --delete`)
-		exec.execSync(`rsync -rc ".wporg/" ${svn_dir}/assets/ --delete`)
+		if ( do_assets ) {
+			exec.execSync(`rsync -rc ".wporg/" ${svn_dir}/assets/ --delete`)
+		}
+		if ( do_sources ) {
+			exec.execSync(`rsync -rc "${git_dir}/" ${svn_dir}/trunk/ --delete`)
+		}
 
 		exec.execSync('svn add . --force',{
 			cwd:'./'+svn_dir,
@@ -77,14 +96,20 @@ module.exports = ( dry = false ) => {
 
 		//
 		if ( svn_version !== package.version ) {
-			console.log( `WPORG Create svn Tag: tags/${package.version}` )
-			exec.execSync(`svn cp "trunk" "tags/${package.version}"`,{
-				cwd:svn_dir,
-			})
+			if ( do_sources ) {
+				console.log( `WPORG Create svn Tag: tags/${package.version}` )
+				exec.execSync(`svn cp "trunk" "tags/${package.version}"`,{
+					cwd:svn_dir,
+				})
+			}
 			commit_message = `Release ${package.version}`;
 			console.log('...done');
 		} else {
-			commit_message = `Update trunk`;
+			if ( do_sources ) {
+				commit_message = `Update trunk`;
+			} else {
+				commit_message = `Update assets`;
+			}
 		}
 
 		console.log('WPORG svn Status:')
