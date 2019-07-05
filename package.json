@@ -4,9 +4,9 @@
   "description": "A configrable OpenStreetMap Field to ACF.",
   "private": true,
   "scripts": {
-    "dev": "gulp dev",
+    "dev": "gulp providers && gulp leaflet-css && gulp dev",
     "build": "gulp build && npm run i18n",
-    "release": "npm run i18n && node ./src/run/release.js -- build github",
+    "release": "npm run i18n && node ./src/run/release.js -- build github wporg",
     "release:build": "npm run i18n && node ./src/run/release.js -- build",
     "release:github": "node ./src/run/release.js -- github",
     "release:bitbucket": "node ./src/run/release.js -- bitbucket",
@@ -36,10 +36,10 @@
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
-    "gulp-util": "^3.0.8",
-    "leaflet": "^1.4.0",
-    "leaflet-control-geocoder": "^1.7.0",
-    "leaflet-providers": "^1.6.0",
+    "gulp-uglifycss": "^1.1.0",
+    "leaflet": "^1.5.1",
+    "leaflet-control-geocoder": "^1.8.2",
+    "leaflet-providers": "^1.8.0",
     "simple-git": "^1.118.0"
   },
   "dependencies": {

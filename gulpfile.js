@@ -1,11 +1,11 @@
 var autoprefixer = require('gulp-autoprefixer');
 var concat = require('gulp-concat');
 var gulp = require('gulp');
-var gulputil = require('gulp-util');
 var rename = require('gulp-rename');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
+var uglifycss = require('gulp-uglifycss');
 var fs = require('fs');
 
 
@@ -30,7 +30,7 @@ function do_js( src ) {
 	return gulp.src( './src/js/' + src + '.js' )
 		.pipe( sourcemaps.init() )
 		.pipe( gulp.dest( './assets/js/' + dir ) )
-		.pipe( uglify().on('error', gulputil.log ) )
+		.pipe( uglify() )
 		.pipe( rename( { suffix: '.min' } ) )
 		.pipe( sourcemaps.write() )
 		.pipe( gulp.dest( './assets/js/' + dir ) );
@@ -40,13 +40,13 @@ function concat_js( src, dest ) {
 	return gulp.src( src )
 		.pipe( sourcemaps.init() )
 		.pipe( concat( dest ) )
-		.pipe( gulp.dest( './assets/js/' ) )
-		.pipe( uglify().on('error', gulputil.log ) )
-		.pipe( rename( { suffix: '.min' } ) )
 		.pipe( sourcemaps.write() )
+		.pipe( gulp.dest( './assets/js/' ) )
+		.pipe( uglify() )
+		.pipe( rename( { suffix: '.min' } ) )
 		.pipe( gulp.dest( './assets/js/' ) );
-
 }
+
 
 // fake leaflet
 L = {
@@ -76,9 +76,7 @@ gulp.task('scss', function() {
 });
 
 
-gulp.task('leaflet-css', function() {
-
-	return gulp.parallel(
+gulp.task('leaflet-css', gulp.parallel(
 		function() {
 			// frontend
 			return gulp.src([
@@ -87,6 +85,9 @@ gulp.task('leaflet-css', function() {
 			])
 				.pipe( concat('./assets/css/') )
 				.pipe( rename('leaflet.css') )
+				.pipe( gulp.dest( './assets/css/' ) )
+				.pipe( uglifycss() )
+				.pipe( rename( { suffix: '.min' } ) )
 				.pipe( gulp.dest( './assets/css/' ) );
 		},
 		function() {
@@ -98,10 +99,10 @@ gulp.task('leaflet-css', function() {
 				'./node_modules/leaflet-control-geocoder/dist/images/*.png',
 			])
 				.pipe( gulp.dest( './assets/css/images/' ) );
-		},
+		}
 
-	);
-});
+	)
+);
 
 
 gulp.task('js-admin', function() {
