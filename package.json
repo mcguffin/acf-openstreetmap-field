@@ -4,7 +4,7 @@
   "description": "A configrable OpenStreetMap Field to ACF.",
   "private": true,
   "scripts": {
-    "dev": "gulp providers && gulp leaflet-css && gulp dev",
+    "dev": "gulp dev",
     "build": "gulp build && npm run i18n",
     "release": "npm run i18n && node ./src/run/release.js -- build github wporg",
     "release:build": "npm run i18n && node ./src/run/release.js -- build",

@@ -123,7 +123,10 @@ gulp.task( 'js', function(){
 } );
 
 
-gulp.task('build', gulp.parallel('scss','js','js-admin') );
+gulp.task('pre-build', gulp.parallel('providers','leaflet-css') );
+
+gulp.task('build', gulp.parallel('pre-build','scss','js','js-admin') );
+
 
 
 gulp.task('watch', function() {
@@ -132,7 +135,7 @@ gulp.task('watch', function() {
 	gulp.watch('./src/js/**/*.js',		gulp.parallel( 'js', 'js-admin' ) );
 });
 
-gulp.task( 'dev', gulp.series('build', 'watch') );
+gulp.task( 'dev', gulp.series('pre-build', 'build', 'watch') );
 
 gulp.task('default',cb => {
 	console.log('run either `gulp build` or `gulp dev`');
