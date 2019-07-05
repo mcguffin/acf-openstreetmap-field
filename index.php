@@ -2,15 +2,12 @@
 
 /*
 Plugin Name: ACF OpenStreetMap Field
-Plugin URI: https://github.com/mcguffin/acf-openstreetmap-field
+Plugin URI: https://wordpress.org/plugins/acf-openstreetmap-field
 Description: A configurable OpenStreetMap Field for ACF.
 Author: Jörn Lund
 Version: 0.1.14
 Author URI: https://github.com/mcguffin
 License: GPL3
-Github Repository: mcguffin/acf-openstreetmap-field
-GitHub Plugin URI: mcguffin/acf-openstreetmap-field
-Release Asset: false
 Text Domain: acf-openstreetmap-field
 Domain Path: /languages/
 */
