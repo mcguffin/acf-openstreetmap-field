@@ -591,16 +591,32 @@ class OpenStreetMap extends \acf_field {
 	*  @param	$field (array) the field array holding all the field options
 	*  @return	$value
 	*/
-
-	/*
-
 	function load_value( $value, $post_id, $field ) {
+		if ( is_array($value) ) {
+			// convert from ACF GM-Field
+			if ( isset( $value['lat'], $value['lng'] ) ) {
+				if ( ! isset( $value['center_lat'] ) && ! isset( $value['center_lng'] ) ) {
+					$value['center_lat'] = $value['lat'];
+					$value['center_lng'] = $value['lng'];
+					unset( $value['lat'], $value['lng'] );
+				}
+				if ( isset( $value['address'] ) && $field['max_markers'] >= 1 && ! isset( $value['markers'] ) ) {
+					$value['markers'] = array(
+						array(
+							'label'	=> $value['address'],
+							'lat'	=> $value['center_lat'],
+							'lng'	=> $value['center_lng'],
+						)
+					);
+				}				
+			}
+			if ( ! isset( $value['layers'] ) ) {
+				$value['layers'] = $field['layers'];
+			}
+		}
 
 		return $value;
-
 	}
-
-	*/
 
 
 	/*

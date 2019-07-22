@@ -105,5 +105,8 @@ No.
 
 == Changelog ==
 
+= 1.0.1 =
+Convert Values from ACF Googlemaps-Field
+
 = 1.0.0 =
 Initial Release
