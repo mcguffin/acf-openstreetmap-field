@@ -44,5 +44,30 @@
   },
   "dependencies": {
     "tar": ">=2.2.2"
+  },
+  "wporg": {
+    "steps": [
+      "build",
+      "git",
+      "github",
+      "wporg"
+    ],
+    "type": "plugin",
+    "build": {
+      "prebuild": [
+        "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp"
+      ],
+      "build": [
+        "gulp build"
+      ]
+    },
+    "git": {
+      "host": "github.com",
+      "user": "mcguffin"
+    },
+    "wporg": {
+      "assets": ".wporg",
+      "svn": "https://plugins.svn.wordpress.org/acf-openstreetmap-field/"
+    }
   }
 }
