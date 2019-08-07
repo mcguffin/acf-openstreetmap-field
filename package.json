@@ -5,14 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "gulp dev",
-    "build": "gulp build && npm run i18n",
-    "release": "npm run i18n && node ./src/run/release.js -- build github wporg",
-    "release:build": "npm run i18n && node ./src/run/release.js -- build",
-    "release:github": "node ./src/run/release.js -- github",
-    "release:bitbucket": "node ./src/run/release.js -- bitbucket",
-    "release:wporg": "node ./src/run/release.js -- wporg",
-    "i18n": "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field",
-    "package:wporg": "cp ./.wporg/screenshot-*.png . && git add . && git commit -m \"tmp\" && git archive --format=zip --prefix=acf-openstreetmap-field/ --output=../acf-openstreetmap-field.zip --worktree-attributes HEAD && git reset --hard HEAD~",
+    "test": "node ./src/run/test.js",
+    "dev-test": "./src/run/dev-test.sh",
+    "dashicons": "node ./src/run/dashicons.js",
+    "i18n": "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp/*",
     "rollback": "git reset --hard HEAD~ && git push origin +master"
   },
   "repository": {

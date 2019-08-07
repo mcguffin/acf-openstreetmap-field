@@ -1,54 +1,82 @@
-(function( $, arg ){
+(function( $, arg, exports ){
 	var options = arg.options,
 		result_tpl = '<div tabindex="<%= data.i %>" class="osm-result">'
 			+ '<%= data.result_text %>'
 			+ '<br /><small><%= data.properties.osm_value %></small>'
 			+ '</div>';
 
-	var osm = {
+	var osm = exports.osm = {
 	};
 
-	osm.MarkerList = Backbone.View.extend({
+	osm.MarkerData = Backbone.Model.extend({
+		isDefaultLabel:function() {
+			return this.get('label') === this.get('default_label');
+		}
+	});
+	osm.MarkerCollection = Backbone.Collection.extend({
+		model:osm.MarkerData
 	})
-	osm.MarkerEntry = Backbone.View.extend({
+	osm.MapData = Backbone.Model.extend({
+		initialize:function(o) {
+			this.set( 'markers', new osm.MarkerCollection(o.markers) );
+			Backbone.Model.prototype.initialize.apply(this,arguments)
+		}
+	});
+	osm.MarkerEntry = wp.media.View.extend({
 		tagName: 'div',
 		className:'osm-marker',
+		template:wp.template('osm-marker-input'),
 		events: {
 			'click [data-name="locate-marker"]' : 'locate_marker',
 			'click [data-name="remove-marker"]' : 'remove_marker',
-			'change [id$="-marker-label"]'		: 'update_marker_label',
+			'change [data-name="label"]'		: 'update_marker_label',
 //			'focus [type="text"]'				: 'hilite_marker'
 		},
-		get_label: function() {
-			return this.$el.find('[id$="-marker-label"]').val();
-		},
-		get_default_label: function() {
-			return this.$el.find('[id$="-marker-geocode"]').val();
-		},
-		is_default_label: function() {
-			return this.get_default_label() === this.get_label();
-		},
 		initialize:function(opt){
-			var self = this;
-			this.template = opt.template;
-			this.marker = opt.marker;
+			wp.media.View.prototype.initialize.apply(this,arguments);
+			this.marker = opt.marker; // leaflet marker
 			this.marker.osm_controller = this;
+			this.model = opt.model;
+			this.listenTo( this.model, 'change:label', this.changedLabel );
+			this.listenTo( this.model, 'change:default_label', this.changedDefaultLabel );
+			this.listenTo( this.model, 'change:lat', this.changedlatLng );
+			this.listenTo( this.model, 'change:lng', this.changedlatLng );
+			this.listenTo( this.model, 'destroy', this.remove );
+			return this.render();
+		},
+		changedLabel: function() {
+			var label = this.model.get('label');
+			this.$('[data-name="label"]').val( label );
 
-			return this;
+			this.marker.unbindTooltip();
+			this.marker.bindTooltip(label);
+
+			this.marker.options.title = label;
+
+			$( this.marker._icon ).attr( 'title', label );
+
+		},
+		changedDefaultLabel: function() {
+			// update label too, if
+			if ( this.model.get('label') === this.model.previous('default_label') ) {
+				this.model.set('label', this.model.get('default_label') );
+			}
+		},
+		changedlatLng: function() {
+			this.marker.setLatLng( { lat:this.model.get('lat'), lng:this.model.get('lng') } )
 		},
 		render:function(){
+			wp.media.View.prototype.render.apply(this,arguments);
 			var self = this;
 
-			this.$el.html( this.template( this ) );
-			this._update_values_from_marker();
-
-			this.$el.find('[id$="-marker-label"]')
+			this.$el.find('[data-name="label"]')
 				.on('focus',function(e) {
 					self.hilite_marker();
 				})
 				.on('blur',function(e) {
 					self.lolite_marker();
-				});
+				})
+				.val( this.model.get('label') );
 			$(this.marker._icon)
 				.on('focus',function(e){
 					self.hilite_marker();
@@ -59,27 +87,16 @@
 			return this;
 		},
 		update_marker_label:function(e) {
-			var label = this.get_label();
-
-			if ( label === '' ) {
-				label = this.get_default_label();
+			var label = $(e.target).val();
+			if ( '' === label ) {
+				label = this.model.get('default_label');
 			}
-			// restore geocode default
-			$(e.target).val(label);
-
-			return this.set_marker_label( label );
-		},
-		set_marker_label:function(label) {
-			this.marker.unbindTooltip();
-			this.marker.bindTooltip(label);
-
-			this.marker.options.title = label;
-			$( this.marker._icon ).attr( 'title', label );
+			this.model.set('label', label );
 			return this;
 		},
 		update_marker_geocode:function( label ) {
 
-			if ( this.is_default_label() ) {
+			if ( this.model.isDefaultLabel() ) {
 				// update marker labels
 				this.set_marker_label( label );
 				// update marker label input
@@ -93,9 +110,15 @@
 		},
 		_update_values_from_marker: function( ) {
 			var latlng = this.marker.getLatLng();
+			/*
 			this.$el.find('[id$="-marker-lat"]').val( latlng.lat );
 			this.$el.find('[id$="-marker-lng"]').val( latlng.lng );
 			this.$el.find('[id$="-marker-label"]').val( this.marker.options.title );
+			/*/
+			this.model.set( 'lat', latlng.lat.toFixed(6) );
+			this.model.set( 'lng', latlng.lng.toFixed(6) );
+			this.model.set( 'label', this.marker.options.title );
+			//*/
 			return this;
 		},
 		hilite_marker:function(e) {
@@ -111,34 +134,23 @@
 			return this;
 		},
 		remove_marker:function(e) {
-			e.preventDefault()
-			this.marker.remove();
+			// click remove
+			e.preventDefault();
+			this.model.destroy(); // 
 			return this;
 		}
 	});
 
-	osm.field = Backbone.View.extend({
+	osm.Field = Backbone.View.extend({
 
 		map: null,
 		geocoder: null,
 		visible: null,
-		events:{
-		},
-
 		$parent:function(){
 			return this.$el.closest('.acf-field-settings,.acf-field-open-street-map')
 		},
-		$zoom : function() {
-			return this.$parent().find('input[id$="-zoom"]');
-		},
-		$lat : function() {
-			return this.$parent().find('input[id$="-center_lat"]');
-		},
-		$lng : function() {
-			return this.$parent().find('input[id$="-center_lng"]');
-		},
-		$layerStore: function() {
-			return this.$parent().find('.acf-osm-layers');
+		$value: function() {
+			return this.$parent().find('input.osm-json');
 		},
 		$results : function() {
 			return this.$parent().find('.osm-results');
@@ -148,43 +160,101 @@
 		},
 		initialize:function(conf) {
 
+			var self = this,
+				data = this.getMapData();
+
 			this.map		= conf.map;
 
-			this.update_map(); // set map to input values
+			this.model		= new osm.MapData(data);
 
 			this.init_acf();
 
-			this.init_layers();
+			this.initLayers();
 
-			this.init_markers();
+			this.initMarkers();
+
+			this.listenTo( this.model, 'change', this.updateValue );
+			this.listenTo( this.model.get('markers'), 'add', this.addMarker );
+			this.listenTo( this.model.get('markers'), 'add', this.updateValue );
+			this.listenTo( this.model.get('markers'), 'remove', this.updateValue );
+			this.listenTo( this.model.get('markers'), 'change', this.updateValue );
+			//this.listenTo( this.model, 'change:layers', console.trace );
+
+			// update on map view change
+			this.map.on('zoomend',function(){
+				self.model.set('zoom',self.map.getZoom());
+			});
+			this.map.on('moveend',function(){
+				var latlng = self.map.getCenter();
+				self.model.set('center_lat',latlng.lat.toFixed(6));
+				self.model.set('center_lng',latlng.lng.toFixed(6));
+			});
 
 			this.update_visible();
 
+			this.update_map();
+			
 			return this;
 		},
-		_get_geocoder_result_label:function( e, latlng ) {
-			var label = false;
-
-			if ( ! e.length ) {
-				label = latlng.lat.toString() + ', ' + latlng.lng.toString();
-			} else {
-				$.each( e, function( i, result ) {
-					if ( !! result.html ) {
-						label = result.html;
-					} else {
-						label = result.name;
-					}
-					return false;
-				});
-			}
-			return $('<p>'+label+'</p>').text().replace(/^(\s+)/g,'').replace(/(\s+)$/g,'').replace(/(\s+)/g,' ');
+		getMapData:function() {
+			return JSON.parse( this.$value().val() );
 		},
-		init_markers:function(){
+		updateValue:function() {
+			this.$value().val( JSON.stringify( this.model.toJSON() ) );
+			//this.$el.trigger('change')
+		},
+
+		/**
+		 *	Markers
+		 */
+		addMarker:function( model, collection ) {
+
+			var self = this;
+
+			// add marker to map
+			var marker = L.marker( { lat: model.get('lat'), lng: model.get('lng') }, {
+					title: model.get('label'),
+					icon: this.icon,
+				})
+				.bindTooltip( model.get('label') );
+
+			// 
+			var entry = new osm.MarkerEntry({
+				controller: this,
+				marker: marker,
+				model: model
+			});
+
+			this.map.once('layeradd',function(e){
+				marker
+					.on('click',function(e){
+						model.destroy();
+					})
+					.on('dragend',function(e){
+						// update model lnglat
+						var latlng = this.getLatLng();
+						model.set( 'lat', latlng.lat.toFixed(6) );
+						model.set( 'lng', latlng.lng.toFixed(6) );
+						self.reverseGeocode( model );
+						// geocode, get label, set model label...
+					})
+					.dragging.enable();
+				entry.$el.appendTo( self.$markers() );
+			});
+
+			model.on('destroy',function(){
+				marker.remove();
+			});
+
+			marker.addTo( this.map );
+
+		},
+		initMarkers:function(){
 
 			var self = this,
 				editor_config = this.$el.data().editorConfig;
 
-			this.init_geocode();
+			this.initGeocode();
 
 			// no markers allowed!
 			if ( editor_config.max_markers === 0 ) {
@@ -196,98 +266,221 @@
 				className:'osm-marker-icon'
 			});
 
-			this.map.on('click', function(e){
-				var latlng = e.latlng,
-					count_markers = self.$markers().children().not('[data-id]').length;
+			this.model.get('markers').forEach( function( model ) {
+				self.addMarker( model );
+			} );
 
+			this.map.on('dblclick', function(e){
+				var latlng = e.latlng,
+					count_markers = self.$markers().children().not('[data-id]').length,
+					model;
+				
+				e.originalEvent.preventDefault();
+				e.originalEvent.stopPropagation();
 				// no more markers
 				if ( editor_config.max_markers !== false && count_markers >= editor_config.max_markers ) {
 					return;
 				}
-
-				self.geocoder.options.geocoder.reverse(e.latlng,self.map.getZoom(),function(e){
-
-					var label = self._get_geocoder_result_label( e, latlng );
-
-					self.add_marker( latlng, label );
-
-				},self);
-			});
-
-			this.map.on( 'layeradd', function(e){
-				if ( e.layer.constructor !== L.Marker ) {
-					return;
-				}
-				// marker added
-				var template = self.$markers().find('[data-id="__osm_marker_template__"]').html().split('__osm_marker_template__').join( '<%= id %>' ),
-					entry = new osm.MarkerEntry({
-						controller: this,
-						marker: e.layer,
-						id: acf.uniqid(), //self.$markers().children().length,
-						template: _.template( template ),
-					});
-
-				entry.render().$el.appendTo( self.$markers() );
-
-				self.geocode_marker( entry );
-
-				e.layer
-					.setIcon( self.icon )
-					.on('click',function(e){
-						this.remove();
-					})
-					.on('remove',function(e){
-						entry.$el.remove();
-						self.$el.trigger('change');
-					})
-					.on('dragend',function(e){
-						self.geocode_marker( entry );
-						self.$el.trigger('change');
-					})
-					.dragging.enable();
-			} );
-			this.map.on( 'layerremove', function(e){
-				if ( e.layer.constructor !== L.Marker ) {
-					return;
-				}
-				self.$el.trigger('change');
-			} );
-			// add markers
-			$.each( this.$el.data().mapMarkers,function( i, markerData ) {
-				// add markers
-				var marker = L.marker( L.latLng( markerData.lat * 1, markerData.lng * 1 ), {
-						title: markerData.label
-					})
-					.bindTooltip( markerData.label )
-					.addTo( self.map );
-
-			});
-
-		},
-		geocode_marker:function( marker_entry ) {
-			var self = this,
-				entry = marker_entry,
-				latlng = entry.marker.getLatLng();
-
-			self.geocoder.options.geocoder.reverse( latlng, self.map.getZoom(), function(e){
-
-				var label = self._get_geocoder_result_label( e, latlng );
-
-				entry.update_marker_geocode( label );
-
-			}, this );
-
-		},
-		add_marker:function( lnglat, label ){
-			L.marker(lnglat,{
-				title: label,
-				icon: this.icon,
+				model = new osm.MarkerData({
+					label: '',
+					default_label: '',
+					lat: latlng.lat,
+					lng: latlng.lng,
+//					collection:self.model.get('markers')
+				})
+				self.model.get('markers').add( model );
+				self.reverseGeocode(model);
 			})
-			.bindTooltip( label )
-			.addTo( this.map );
-
-			this.$el.trigger('change');
+			.doubleClickZoom.disable(); 
 		},
+
+		/**
+		 *	Geocoding
+		 *
+		 *	@on map.layeradd, layer.dragend
+		 */
+		 initGeocode:function() {
+
+ 			var self = this,
+ 				editor_config = this.$el.data().editorConfig;
+
+ 			this.map._controlCorners['above'] = $('<div class="acf-osm-above"></div>').insertBefore( this.$el ).get(0);
+
+ 			this.geocoder = L.Control.geocoder({
+ 				collapsed: false,
+ 				position:'above',
+ 				placeholder:'Search...',
+ 				errorMessage:'Nothing found...',
+ 				showResultIcons:true,
+ 				suggestMinLength:3,
+ 				suggestTimeout:250,
+ 				queryMinLength:3,
+ 				defaultMarkGeocode:false,
+ 			})
+ 			.on('markgeocode',function(e){
+ 				// search result click
+ 				var latlng =  e.geocode.center,
+ 					editor_config = self.$el.data().editorConfig,
+ 					count_markers = self.model.get('markers').length,
+ 					label = self.parseGeocodeResult( [ e.geocode ], latlng ),
+ 					marker_data = {
+ 						label: label,
+ 						default_label: label,
+ 						lat: latlng.lat,
+ 						lng: latlng.lng
+ 					}, 
+ 					model;
+
+ 				if ( editor_config.max_markers === 0 ) {
+
+ 					return self.map.fitBounds( e.geocode.bbox );
+
+ 				}
+ 				if ( count_markers < editor_config.max_markers ) {
+
+ 					self.model.get('markers').add( marker_data );
+
+ 				} else if ( editor_config.max_markers === 1 ) {
+ 					self.model.get('markers').at(0).set( marker_data );
+
+ 				}
+
+ 				self.map.setView( latlng, self.map.getZoom() ); // keep zoom, might be confusing else
+
+ 			})
+ 			.addTo( this.map );
+
+ 		},
+		reverseGeocode:function( model ) {
+			var self = this, 
+				latlng = { lat: model.get('lat'), lng: model.get('lng') };
+			this.geocoder.options.geocoder.reverse( 
+				latlng, 
+				self.map.getZoom(), 
+				function( results ) {
+					model.set('default_label', self.parseGeocodeResult( results, latlng ) );
+				}
+			);
+		},
+		parseGeocodeResult: function( results, latlng ) {
+			var label = false;
+
+			if ( ! results.length ) {
+				// https://xkcd.com/2170/
+				label = latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6);
+			} else {
+				$.each( results, function( i, result ) {
+					if ( !! result.html ) {
+						label = $('<p>'+result.html+'</p>').text().trim().replace(/(\s+)/g,' ');
+					} else {
+						label = result.name;
+					}
+					return false;
+				});
+			}
+			// trim
+			return label;
+		},
+
+
+
+		/**
+		 *	Layers
+		 */
+		 initLayers:function() {
+ 			var self = this,
+ 				selectedLayers = [],
+ 				baseLayers = {},
+ 				overlays = {},
+ 				mapLayers = {},
+ 				editor_config = this.$el.data().editorConfig,
+ 				is_omitted = function(key) {
+ 					return key === null || ( !! editor_config.restrict_providers && editor_config.restrict_providers.indexOf( key ) === -1 );
+ 				},
+ 				setupMap = function( val, key ){
+ 					var layer, layer_config;
+ 					if ( _.isObject(val) ) {
+ 						return $.each( val, setupMap );
+ 					}
+
+ 					if ( is_omitted(key) ) {
+ 						return;
+ 					}
+ 					if ( !! mapLayers[ key ] ) {
+ 						layer = mapLayers[ key ];
+ 						self.map.addLayer(layer)
+ 					} else {
+ 						try {
+ 							layer = L.tileLayer.provider( key /*, layer_config.options*/ );
+ 						} catch(ex) {
+ 							return;
+ 						}
+ 						layer.providerKey = key;
+ 					}
+
+ 					if ( self.layer_is_overlay( key, layer ) ) {
+ 						overlays[key] = layer;
+ 					} else {
+ 						baseLayers[key] = layer;
+ 					}
+
+ 					if ( selectedLayers.indexOf( key ) !== -1 ) {
+ 						self.map.addLayer(layer);
+ 					}
+ 				};
+
+ 			selectedLayers = this.model.get('layers'); // should be layer store value
+
+ 			// filter avaialble layers in field value
+ 			if ( editor_config.restrict_providers !== false && _.isArray( editor_config.restrict_providers ) ) {
+ 				selectedLayers = selectedLayers.filter( function(el) {
+ 					return editor_config.restrict_providers.indexOf( el ) !== -1;
+ 				});
+ 			}
+
+ 			// set default layer
+ 			if ( ! selectedLayers.length ) {
+
+ 				selectedLayers = editor_config.restrict_providers.slice( 0, 1 );
+
+ 			}
+
+ 			// editable layers!
+ 			if ( editor_config.allow_providers ) {
+
+ 				this.map.on( 'baselayerchange layeradd layerremove', function(e){
+					
+ 					if ( ! e.layer.providerKey ) {
+ 						return;
+ 					}
+ 					var layers = [];
+
+ 					self.map.eachLayer(function(layer) {
+ 						if ( ! layer.providerKey ) {
+ 							return;
+ 						}
+
+ 						if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
+ 							layers.push( layer.providerKey )
+ 						} else {
+ 							layers.unshift( layer.providerKey )
+ 						}
+ 					});
+					self.model.set( 'layers', layers );
+ 				} );
+ 			}
+
+
+ 			$.each( editor_config.restrict_providers, setupMap );
+ 			// ... no layer editing allowed
+ 			if ( editor_config.allow_providers ) {
+
+ 				this.layersControl = L.control.layers( baseLayers, overlays, {
+ 					collapsed: true,
+ 					hideSingleBase: true,
+ 				}).addTo(this.map);
+ 			}
+ 		},
 		layer_is_overlay: function(  key, layer ) {
 			var patterns;
 
@@ -311,183 +504,16 @@
 			];
 			return key.match('(' + patterns.join('|') + ')') !== null;
 		},
-		reset_layers:function() {
-			// set this.$el.data().mapLayers so it fits
+		resetLayers:function() {
 			// remove all map layers
 			this.map.eachLayer(function(layer){
 				if ( layer.constructor === L.TileLayer.Provider ) {
 					layer.remove();
 				}
 			})
-			// remove layer store
-			this.$layerStore().remove();
 
 			// remove layer control
 			!! this.layersControl && this.layersControl.remove()
-		},
-		init_layers:function() {
-			var self = this,
-				selectedLayers = [],
-				baseLayers = {},
-				overlays = {},
-				mapLayers = {},
-				editor_config = this.$el.data().editorConfig,
-				is_omitted = function(key) {
-					return key === null || ( !! editor_config.restrict_providers && editor_config.restrict_providers.indexOf( key ) === -1 );
-				},
-				setupMap = function( val, key ){
-					var layer, layer_config;
-					if ( _.isObject(val) ) {
-						return $.each( val, setupMap );
-					}
-
-					if ( is_omitted(key) ) {
-						return;
-					}
-					if ( !! mapLayers[ key ] ) {
-						layer = mapLayers[ key ];
-						self.map.addLayer(layer)
-					} else {
-						try {
-							layer = L.tileLayer.provider( key /*, layer_config.options*/ );
-						} catch(ex) {
-							return;
-						}
-						layer.providerKey = key;
-					}
-
-					if ( self.layer_is_overlay( key, layer ) ) {
-						overlays[key] = layer;
-					} else {
-						baseLayers[key] = layer;
-					}
-
-					if ( selectedLayers.indexOf( key ) !== -1 ) {
-						self.map.addLayer(layer);
-					}
-				};
-
-			selectedLayers = this.$el.data().mapLayers; // should be layer store value
-
-			// filter avaialble layers in field value
-			if ( editor_config.restrict_providers !== false && _.isArray( editor_config.restrict_providers ) ) {
-				selectedLayers = selectedLayers.filter( function(el) {
-					return editor_config.restrict_providers.indexOf( el ) !== -1;
-				});
-			}
-
-			// set default layer
-			if ( ! selectedLayers.length ) {
-
-				selectedLayers = Object.keys( editor_config.restrict_providers ).slice( 0, 1 );
-
-			}
-
-			// editable layers!
-			if ( editor_config.allow_providers ) {
-
-				$('<div class="acf-osm-layers"></div>').insertAfter( this.$el );
-
-				this.map.on( 'baselayerchange layeradd layerremove', function(e){
-
-					if ( ! e.layer.providerKey) {
-						return;
-					}
-					var $layerStore = self.$layerStore(),
-						$template = self.$parent().find('[data-id="__osm_layer_template__"]');
-
-					$layerStore.html('');
-
-					self.map.eachLayer(function(layer) {
-						var $layerInput;
-						if ( ! layer.providerKey ) {
-							return;
-						}
-						/*
-						$layerInput = $template.clone().removeAttr('data-id');
-						/*/
-						$layerInput = $('<input type="hidden" name="' + editor_config.name_prefix + '[layers][]" />');
-						//*/
-						$layerInput.val( layer.providerKey );
-
-						if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
-							$layerStore.append( $layerInput );
-						} else {
-							$layerStore.prepend( $layerInput );
-						}
-					});
-					self.$el.trigger('change');
-				} );
-			}
-
-
-			$.each( editor_config.restrict_providers, setupMap );
-
-			// ... no layer editing allowed
-			if ( this.$layerStore().length ) {
-				this.layersControl = L.control.layers( baseLayers, overlays, {
-					collapsed: true,
-					hideSingleBase: true,
-				}).addTo(this.map);
-			}
-		},
-		init_geocode:function() {
-
-			var self = this,
-				editor_config = this.$el.data().editorConfig;
-
-			this.map._controlCorners['above'] = $('<div class="acf-osm-above"></div>').insertBefore( this.$el ).get(0);
-
-			this.geocoder = L.Control.geocoder({
-				collapsed: false,
-				position:'above',
-				placeholder:'Search...',
-				errorMessage:'Nothing found...',
-				showResultIcons:true,
-				suggestMinLength:3,
-				suggestTimeout:250,
-				queryMinLength:3,
-				defaultMarkGeocode:false,
-			})
-			.on('markgeocode',function(e){
-				var latlng =  e.geocode.center,
-					editor_config = self.$el.data().editorConfig,
-					count_markers = self.$markers().children().not('[data-id]').length,
-					label = self._get_geocoder_result_label( [ e.geocode ], latlng );
-
-				if ( count_markers === false || count_markers < editor_config.max_markers ) {
-					// add marker if no restriction or max markers not exceeded
-					self.add_marker( latlng, label );
-				}
-				if ( editor_config.max_markers === 1 && count_markers === 1 ) {
-					// update single marker
-					marker = self.get_first_marker();
-					if ( !! marker ) {
-						entry = marker.osm_controller;
-						marker.setLatLng( latlng );
-						entry.update_marker_geocode( label );
-					}
-				}
-
-				if ( editor_config.max_markers === 0 ) {
-					self.map.fitBounds( e.geocode.bbox );
-				} else {
-					self.map.setView( latlng, self.map.getZoom() ); // keep zoom, might be confusing else
-				}
-
-			})
-			.addTo( this.map );
-
-		},
-		get_first_marker:function() {
-			var marker = false;
-			this.map.eachLayer(function(layer){
-				if ( layer.constructor === L.Marker ) {
-					marker = layer;
-					return false;
-				}
-			});
-			return marker;
 		},
 		update_visible: function() {
 
@@ -499,10 +525,7 @@
 
 			if ( this.visible ) {
 				this.map.invalidateSize();
-				this.bind_events();
-				return this;
 			}
-			this.unbind_events();
 			return this;
 		},
 		init_acf: function() {
@@ -515,59 +538,17 @@
 			// expand/collapse acf setting
 			acf.addAction( 'show', toggle_cb );
 			acf.addAction( 'hide', toggle_cb );
-			acf.addAction( 'disable_field', function(){
-				self.unbind_events();
-			} );
 
 			// expand wp metabox
 			$(document).on('postbox-toggled', toggle_cb );
 			$(document).on('click','.widget-top *', toggle_cb );
 
-
-
-		},
-		unbind_events:function() {
-			var self = this;
-			self.$lat().off('blur');
-			self.$lng().off('blur');
-			self.$zoom().off('blur');
-			self.$zoom().off('keyup focus');
-
-			this.map.off('zoomend', this.map_zoomed, this );
-			this.map.off('moveend', this.map_moved, this );
-		},
-		bind_events: function() {
-			var self = this;
-
-			self.$lat().on('blur',function(e){
-				self.update_map();
-			});
-			self.$lng().on('blur',function(e){
-				self.update_map();
-			});
-			self.$zoom().on('blur',function(e){
-				self.update_map();
-			});
-
-			this.map.on('zoomend', this.map_zoomed, this );
-			this.map.on('moveend', this.map_moved, this );
 		},
 		update_map:function() {
-			if ( ! this.$lat().val() || ! this.$lng().val() ) {
-				return;
-			}
-			var latlng = L.latLng( this.$lat().val(), this.$lng().val() );
-			this.map.setView( latlng,  this.$zoom().val() );
-		},
-		map_moved:function(e){
-			var center = this.map.getCenter();
-			this.$lat().val(center.lat);
-			this.$lng().val(center.lng);
-			this.$el.trigger('change');
-		},
-		map_zoomed:function(e){
-			this.$zoom().val( this.map.getZoom() );
-			this.$el.trigger('change');
+			this.map.setView( 
+				L.latLng( this.model.get('center_lat'), this.model.get('center_lng') ),
+				this.model.get('zoom') 
+			);
 		}
 	});
 
@@ -579,7 +560,7 @@
 				e.preventDefault();
 				return;
 			}
-			// wrap osm.field backbone view around editors
+			// wrap osm.Field backbone view around editors
 			if ( $(e.target).is('[data-editor-config]') ) {
 				e.preventDefault();
 
@@ -590,27 +571,8 @@
 					map.invalidateSize();
 				})();
 
-				$(e.target).data( '_map_editor', new osm.field( { el: e.target, map: map } ) );
+				$(e.target).data( '_map_editor', new osm.Field( { el: e.target, map: map } ) );
 			}
-		})
-		// field settings
-		.on('change','[data-type="open_street_map"] [data-name="return_format"] input',function(e){
-			// find map field
-			$('[data-name="return_format"] input:checked').val()
-			var $map = $(this).closest('.acf-field-object').find('[data-editor-config]'),
-				editor = $map.data( '_map_editor' ),
-				conf = $map.data('editor-config');
-			// map
-			editor.reset_layers();
-			if ( $(this).val() === 'osm' ) {
-				// set provider restriction to osm providers
-				conf.restrict_providers = Object.values( arg.options.osm_layers );
-			} else {
-				// set provider restriction to osm providers
-				conf.restrict_providers = Object.values( arg.options.leaflet_layers );
-			}
-			$map.data( 'editor-config', conf );
-			editor.init_layers();
 		});
 
 	// init when fields get loaded ...
@@ -622,4 +584,4 @@
 	    var editor = field.$el.find('[data-editor-config]').data( '_map_editor' );
 	    editor.update_visible();
 	});
-})( jQuery, acf_osm_admin );
+})( jQuery, acf_osm_admin, window );
