@@ -105,6 +105,20 @@ gulp.task('leaflet-css', gulp.parallel(
 );
 
 
+
+gulp.task('js-compat', function() {
+    return concat_js( [
+			'./src/js/compat/acf-duplicate-repeater.js',
+		], 'compat/acf-duplicate-repeater.js');
+});
+
+
+gulp.task('js-field-group', function() {
+    return concat_js( [
+			'./src/js/acf-field-group-osm.js',
+		], 'acf-field-group-osm.js');
+});
+
 gulp.task('js-admin', function() {
     return concat_js( [
 			'./src/js/acf-input-osm.js',
@@ -112,7 +126,7 @@ gulp.task('js-admin', function() {
 });
 
 
-gulp.task( 'js', function(){
+gulp.task( 'js-frontend', function(){
 	return concat_js( [
 			'./node_modules/leaflet/dist/leaflet-src.js',
 			'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.js',
@@ -121,18 +135,19 @@ gulp.task( 'js', function(){
 
 		], 'acf-osm-frontend.js');
 } );
+gulp.task('js', gulp.parallel('js-admin','js-field-group','js-compat') );
 
 
 gulp.task('pre-build', gulp.parallel('providers','leaflet-css') );
 
-gulp.task('build', gulp.parallel('pre-build','scss','js','js-admin') );
+gulp.task('build', gulp.parallel('pre-build','scss','js') );
 
 
 
 gulp.task('watch', function() {
 	// place code for your default task here
 	gulp.watch('./src/scss/**/*.scss',	gulp.parallel( 'scss' ) );
-	gulp.watch('./src/js/**/*.js',		gulp.parallel( 'js', 'js-admin' ) );
+	gulp.watch('./src/js/**/*.js',		gulp.parallel( 'js' ) );
 });
 
 gulp.task( 'dev', gulp.series('pre-build', 'build', 'watch') );

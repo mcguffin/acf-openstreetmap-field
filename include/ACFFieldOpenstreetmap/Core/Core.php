@@ -14,7 +14,7 @@ class Core extends Plugin {
 	/**
 	 *	@inheritdoc
 	 */
-	protected function __construct($file) {
+	protected function __construct( $file ) {
 
 		add_action( 'acf/include_field_types' , array( '\ACFFieldOpenstreetmap\Compat\ACF' , 'instance' ), 0 );
 
@@ -100,6 +100,7 @@ class Core extends Plugin {
 				'leaflet_layers'	=> $this->get_leaflet_layers(),
 			),
 		));
+		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), array('acf-field-group','acf-input-osm','backbone'), $this->get_version(), true );
 
 		// field css
 		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), array('acf-input','dashicons'), $this->get_version() );

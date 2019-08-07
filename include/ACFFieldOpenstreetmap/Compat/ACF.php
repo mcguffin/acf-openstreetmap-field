@@ -26,8 +26,23 @@ class ACF extends Core\Singleton {
 		add_action( 'acf/render_field/type=leaflet_map', array( $this, 'render_map_input' ) );
 
 		// Compat with https://github.com/mcguffin/polylang-sync
-		add_filter('polylang_acf_sync_supported_fields', array( $this, 'add_pll_sync_field_type') );
+		add_filter( 'polylang_acf_sync_supported_fields', array( $this, 'add_pll_sync_field_type') );
 
+		// Compat with https://wordpress.org/plugins/acf-openstreetmap-field/
+		add_action( 'acf/input/admin_enqueue_scripts', array( $this, 'acf_admin_enqueue_scripts' ) );
+
+	}
+
+
+	/**
+	 *	@action acf/input/admin_enqueue_scripts
+	 */
+	public function acf_admin_enqueue_scripts() {
+		$core = Core\Core::instance();
+
+		wp_enqueue_media();
+
+		wp_enqueue_script( 'acf-osm-compat-duplicate-repeater', $core->get_asset_url( 'assets/js/compat/acf-duplicate-repeater.js' ), array( 'acf-duplicate-repeater' ), $core->get_version() );
 	}
 
 	/**

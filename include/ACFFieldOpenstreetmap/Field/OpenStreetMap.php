@@ -51,14 +51,14 @@ class OpenStreetMap extends \acf_field {
 		$this->label = __("OpenStreetMap",'acf-openstreetmap-field');
 
 		/*
-		*  category (string) basic | content | choice | relational | jquery | layout | CUSTOM GROUP NAME
-		*/
+		 *  category (string) basic | content | choice | relational | jquery | layout | CUSTOM GROUP NAME
+		 */
 		$this->category = 'jquery';
 
 		$this->default_values = array(
-			'center_lat'	=> '-37.81411',
-			'center_lng'	=> '144.96328',
-			'zoom'			=> '14',
+			'center_lat'	=> 53.55064,
+			'center_lng'	=> 10.00065,
+			'zoom'			=> 12,
 			'layers'		=> array( 'OpenStreetMap' ),
 			'markers'		=> array(),
 		);
@@ -81,6 +81,7 @@ class OpenStreetMap extends \acf_field {
 		$this->l10n = array(
 		);
 
+		add_action( 'print_media_templates', array( $this, 'print_media_templates' ) );
 
 		// do not delete!
     	parent::__construct();
@@ -302,36 +303,14 @@ class OpenStreetMap extends \acf_field {
 		// value
 		$field['value'] = wp_parse_args( $field['value'], $this->default_values );
 
-		// center
-		acf_hidden_input(array(
-			'id'		=> $field['id'] . '-center_lat',
-			'name'		=> $field['name'] . '[center_lat]',
-			'value'		=> $field['value']['center_lat'],
+		// json_encoded value
+		acf_text_input(array(
+			'id'		=> $field['id'],
+			'name'		=> $field['name'],
+			'value'		=> json_encode( $field['value'] ),
+			'class'		=> 'osm-json',
 		));
 
-		acf_hidden_input(array(
-			'id'		=> $field['id'] . '-center_lng',
-			'name'		=> $field['name'] . '[center_lng]',
-			'value'		=> $field['value']['center_lng'],
-		));
-
-		acf_hidden_input(array(
-			'id'		=> $field['id'] . '-zoom',
-			'name'		=> $field['name'] . '[zoom]',
-			'value'		=> $field['value']['zoom'],
-		));
-
-
-
-		// layers
-		if ( ! $field['allow_map_layers'] ) {
-			foreach ( $field['layers'] as $layer ) {
-				acf_hidden_input(array(
-					'name'		=> $field['name'] . '[layers][]',
-					'value'		=> $layer,
-				));
-			}
-		}
 
 		$providers = false;
 
@@ -375,38 +354,6 @@ class OpenStreetMap extends \acf_field {
 
 		?>
 		<div class="osm-markers">
-			<div class="osm-marker" data-id="__osm_marker_template__">
-				<div class="locate">
-					<a class="dashicons dashicons-location" data-name="locate-marker"><span class="screen-reader-text"><?php _e('Locate Marker','acf-openstreetmap-field'); ?></span></a>
-				</div>
-				<div class="input">
-				<?php
-				acf_hidden_input(array(
-					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-geocode',
-					'name'		=> $field['name'] . '[markers][__osm_marker_template__][default_label]',
-					'value'		=> '',
-				));
-				acf_hidden_input(array(
-					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-lat',
-					'name'		=> $field['name'] . '[markers][__osm_marker_template__][lat]',
-					'value'		=> '',
-				));
-				acf_hidden_input(array(
-					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-lng',
-					'name'		=> $field['name'] . '[markers][__osm_marker_template__][lng]',
-					'value'		=> '',
-				));
-				acf_text_input(array(
-					'id'		=> $field['id'] . '-markers-__osm_marker_template__-marker-label',
-					'name'		=> $field['name'] . '[markers][__osm_marker_template__][label]',
-					'value'		=> '',
-				));
-				?>
-				</div>
-				<div class="tools">
-					<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php _e('Remove Marker', 'acf-openstreetmap-field'); ?>"></a>
-				</div>
-			</div>
 		</div>
 		<?php
 
@@ -443,7 +390,11 @@ class OpenStreetMap extends \acf_field {
 
 	function field_group_admin_enqueue_scripts() {
 
+		wp_enqueue_media();
+
 		wp_enqueue_script('acf-input-osm');
+
+		wp_enqueue_script('acf-field-group-osm');
 
 		wp_enqueue_script('acf-osm-frontend');
 
@@ -613,6 +564,9 @@ class OpenStreetMap extends \acf_field {
 			if ( ! isset( $value['layers'] ) ) {
 				$value['layers'] = $field['layers'];
 			}
+			$value['zoom'] = intval( $value['zoom'] );
+			$value['center_lat'] = floatval( $value['center_lat'] );
+			$value['center_lng'] = floatval( $value['center_lng'] );
 		}
 
 		return $value;
@@ -638,9 +592,17 @@ class OpenStreetMap extends \acf_field {
 		// normalize markers
 		$markers = array();
 
+		if ( is_string( $value ) ) {
+			$value = json_decode( stripslashes($value), true );
+		}
+
 		if ( ! is_array( $value ) ) {
 			$value = $this->defaults;
 		}
+
+		$value['zoom'] = intval( $value['zoom'] );
+		$value['center_lat'] = floatval( $value['center_lat'] );
+		$value['center_lng'] = floatval( $value['center_lng'] );
 
 		if ( isset( $value['markers'] ) ) {
 			foreach ( $value['markers'] as $key => $marker ) {
@@ -933,5 +895,23 @@ class OpenStreetMap extends \acf_field {
 
 	*/
 
+	/**
+	 *	@action print_media_templates
+	 */
+	public function print_media_templates() {
+		?>
+		<script type="text/html" id="tmpl-osm-marker-input">
+			<div class="locate">
+				<a class="dashicons dashicons-location" data-name="locate-marker"><span class="screen-reader-text"><?php _e('Locate Marker','acf-openstreetmap-field'); ?></span></a>
+			</div>
+			<div class="input">
+				<input type="text" data-name="label" />
+			</div>
+			<div class="tools">
+				<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php _e('Remove Marker', 'acf-openstreetmap-field'); ?>"></a>
+			</div>
+		</script>
+		<?php
+	}
 
 }
