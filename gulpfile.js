@@ -135,7 +135,7 @@ gulp.task( 'js-frontend', function(){
 
 		], 'acf-osm-frontend.js');
 } );
-gulp.task('js', gulp.parallel('js-admin','js-field-group','js-compat') );
+gulp.task('js', gulp.parallel('js-frontend','js-admin','js-field-group','js-compat') );
 
 
 gulp.task('pre-build', gulp.parallel('providers','leaflet-css') );

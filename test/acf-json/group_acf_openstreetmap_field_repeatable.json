@@ -112,8 +112,8 @@
         },
         {
             "key": "field_5d4bc47a935b2",
-            "label": "Layout Leaflet Map",
-            "name": "layout_leaflet_map",
+            "label": "Map Layouts",
+            "name": "map_layouts",
             "type": "flexible_content",
             "instructions": "",
             "required": 0,
@@ -126,8 +126,8 @@
             "layouts": {
                 "layout_5d4bc487cbd7b": {
                     "key": "layout_5d4bc487cbd7b",
-                    "name": "",
-                    "label": "",
+                    "name": "leaflet_map",
+                    "label": "Leaflet Map",
                     "display": "block",
                     "sub_fields": [
                         {
@@ -143,12 +143,13 @@
                                 "class": "",
                                 "id": ""
                             },
-                            "return_format": "",
+                            "return_format": "raw",
                             "layers": [
+                                "MapBox.Outdoors",
                                 "OpenSeaMap"
                             ],
                             "center_lat": "53.54704",
-                            "center_lng": "10.009068",
+                            "center_lng": "10.00906",
                             "zoom": 12,
                             "allow_map_layers": 1,
                             "height": 400,
@@ -166,34 +167,15 @@
                     ],
                     "min": "",
                     "max": ""
-                }
-            },
-            "button_label": "Add Row",
-            "min": "",
-            "max": ""
-        },
-        {
-            "key": "field_5d4bc4bd935b4",
-            "label": "Layout iFrame Map",
-            "name": "layout_iframe_map",
-            "type": "flexible_content",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "layouts": {
-                "layout_5d4bc487cbd7b": {
-                    "key": "layout_5d4bc487cbd7b",
-                    "name": "",
-                    "label": "",
+                },
+                "layout_5d4bc9f806111": {
+                    "key": "layout_5d4bc9f806111",
+                    "name": "iframe_map",
+                    "label": "iFrame Map",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_5d4bc4bd935b5",
+                            "key": "field_5d4bc9f806112",
                             "label": "iFrame Map",
                             "name": "iframe_map",
                             "type": "open_street_map",
@@ -208,7 +190,7 @@
                             "return_format": "osm",
                             "layers": [
                                 "OpenSeaMap",
-                                "Thunderforest.OpenCycleMap"
+                                "Thunderforest.Transport"
                             ],
                             "center_lat": "53.54704",
                             "center_lng": "10.00906",
@@ -253,5 +235,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565246673
+    "modified": 1565265346
 }

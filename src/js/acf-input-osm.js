@@ -1,5 +1,6 @@
 (function( $, arg, exports ){
 	var options = arg.options,
+		i18n = arg.i18n,
 		result_tpl = '<div tabindex="<%= data.i %>" class="osm-result">'
 			+ '<%= data.result_text %>'
 			+ '<br /><small><%= data.properties.osm_value %></small>'
@@ -132,7 +133,7 @@
 		},
 		changedLabel: function() {
 			var label = this.model.get('label');
-			this.$('[data-name="label"]').val( label );
+			this.$('[data-name="label"]').val( label ).trigger('change');
 
 			this.marker.unbindTooltip();
 			this.marker.bindTooltip(label);
@@ -162,7 +163,7 @@
 				.on('blur',function(e) {
 					self.lolite_marker();
 				})
-				.val( this.model.get('label') );
+				.val( this.model.get('label') ).trigger('change');
 			$(this.marker._icon)
 				.on('focus',function(e){
 					self.hilite_marker();
@@ -188,7 +189,7 @@
 				// update marker label input
 			}
 
-			this.$el.find('[id$="-marker-geocode"]').val( label );
+			this.$el.find('[id$="-marker-geocode"]').val( label ).trigger('change');
 
 			this._update_values_from_marker();
 
@@ -244,10 +245,14 @@
 		$markers:function(){
 			return this.$parent().find('.osm-markers');
 		},
+		preventDefault: function( e ) {
+			e.preventDefault();
+		},
 		initialize:function(conf) {
 
 			var self = this,
-				data = this.getMapData();
+				data = this.getMapData(),
+				editor_config = this.$el.data().editorConfig;
 
 			this.map		= conf.map;
 
@@ -255,7 +260,12 @@
 
 			this.init_acf();
 
-			this.initLayers();
+			if ( editor_config.allow_providers ) {
+				this.$el.on( 'acf-osm-map-create-layers', this.preventDefault );
+				this.initLayers();
+			}
+
+			this.$el.on( 'acf-osm-map-create-markers', this.preventDefault );
 
 			this.initMarkers();
 
@@ -285,13 +295,13 @@
 		},
 		getMapData:function() {
 			var data = JSON.parse( this.$value().val() );
-			data.center_lat = data.center_lat || 0;
-			data.center_lng = data.center_lng || 0;
-			data.zoom = data.zoom || 0;
+			data.center_lat = data.center_lat || this.$el.attr('data-map-lat');
+			data.center_lng = data.center_lng || this.$el.attr('data-map-lng');
+			data.zoom = data.zoom || this.$el.attr('data-map-zoom');
 			return data;
 		},
 		updateValue:function() {
-			this.$value().val( JSON.stringify( this.model.toJSON() ) );
+			this.$value().val( JSON.stringify( this.model.toJSON() ) ).trigger('change');
 			//this.$el.trigger('change')
 		},
 
@@ -393,15 +403,21 @@
 		 initGeocode:function() {
 
  			var self = this,
- 				editor_config = this.$el.data().editorConfig;
-
- 			this.map._controlCorners['above'] = $('<div class="acf-osm-above"></div>').insertBefore( this.$el ).get(0);
+ 				editor_config = this.$el.data().editorConfig,
+				$above = this.$el.prev();
+			if ( ! $above.is( '.acf-osm-above' ) ) {
+				$above = $('<div class="acf-osm-above"></div>').insertBefore( this.$el );
+			} else {
+				$above.html('');				
+			}
+			// add an extra control panel region for out search
+ 			this.map._controlCorners['above'] = $above.get(0);
 
  			this.geocoder = L.Control.geocoder({
  				collapsed: false,
  				position:'above',
- 				placeholder:'Search...',
- 				errorMessage:'Nothing found...',
+ 				placeholder:i18n.search,
+ 				errorMessage:i18n.nothing_found,
  				showResultIcons:true,
  				suggestMinLength:3,
  				suggestTimeout:250,
@@ -477,46 +493,46 @@
 
 		/**
 		 *	Layers
-		 */
-		 initLayers:function() {
- 			var self = this,
- 				selectedLayers = [],
- 				baseLayers = {},
- 				overlays = {},
- 				mapLayers = {},
- 				editor_config = this.$el.data().editorConfig,
- 				is_omitted = function(key) {
- 					return key === null || ( !! editor_config.restrict_providers && editor_config.restrict_providers.indexOf( key ) === -1 );
- 				},
- 				setupMap = function( val, key ){
- 					var layer, layer_config;
- 					if ( _.isObject(val) ) {
- 						return $.each( val, setupMap );
- 					}
+	 	*/
+		initLayers:function() {
+			var self = this,
+				selectedLayers = [],
+				baseLayers = {},
+				overlays = {},
+				mapLayers = {},
+				editor_config = this.$el.data().editorConfig,
+				is_omitted = function(key) {
+					return key === null || ( !! editor_config.restrict_providers && editor_config.restrict_providers.indexOf( key ) === -1 );
+				},
+				setupMap = function( val, key ){
+					var layer, layer_config;
+					if ( _.isObject(val) ) {
+						return $.each( val, setupMap );
+					}
 
- 					if ( is_omitted(key) ) {
- 						return;
- 					}
- 					if ( !! mapLayers[ key ] ) {
- 						layer = mapLayers[ key ];
- 						self.map.addLayer(layer)
- 					} else {
- 						try {
- 							layer = L.tileLayer.provider( key /*, layer_config.options*/ );
- 						} catch(ex) {
- 							return;
- 						}
- 						layer.providerKey = key;
- 					}
+					if ( is_omitted(key) ) {
+						return;
+					}
+					if ( !! mapLayers[ key ] ) {
+						layer = mapLayers[ key ];
+						self.map.addLayer(layer)
+					} else {
+						try {
+							layer = L.tileLayer.provider( key /*, layer_config.options*/ );
+						} catch(ex) {
+							return;
+						}
+						layer.providerKey = key;
+					}
 
- 					if ( self.layer_is_overlay( key, layer ) ) {
- 						overlays[key] = layer;
- 					} else {
- 						baseLayers[key] = layer;
- 					}
+					if ( self.layer_is_overlay( key, layer ) ) {
+						overlays[key] = layer;
+					} else {
+						baseLayers[key] = layer;
+					}
 
- 					if ( selectedLayers.indexOf( key ) !== -1 ) {
- 						self.map.addLayer(layer);
+					if ( selectedLayers.indexOf( key ) !== -1 ) {
+						self.map.addLayer(layer);
  					}
  				};
 
@@ -537,40 +553,34 @@
  			}
 
  			// editable layers!
- 			if ( editor_config.allow_providers ) {
 
- 				this.map.on( 'baselayerchange layeradd layerremove', function(e){
-					
- 					if ( ! e.layer.providerKey ) {
- 						return;
- 					}
- 					var layers = [];
+			this.map.on( 'baselayerchange layeradd layerremove', function(e){
+			
+				if ( ! e.layer.providerKey ) {
+					return;
+				}
+				var layers = [];
 
- 					self.map.eachLayer(function(layer) {
- 						if ( ! layer.providerKey ) {
- 							return;
- 						}
+				self.map.eachLayer(function(layer) {
+					if ( ! layer.providerKey ) {
+						return;
+					}
 
- 						if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
- 							layers.push( layer.providerKey )
- 						} else {
- 							layers.unshift( layer.providerKey )
- 						}
- 					});
-					self.model.set( 'layers', layers );
- 				} );
- 			}
-
+					if ( self.layer_is_overlay( layer.providerKey, layer ) ) {
+						layers.push( layer.providerKey )
+					} else {
+						layers.unshift( layer.providerKey )
+					}
+				});
+				self.model.set( 'layers', layers );
+			} );
 
  			$.each( editor_config.restrict_providers, setupMap );
- 			// ... no layer editing allowed
- 			if ( editor_config.allow_providers ) {
-
- 				this.layersControl = L.control.layers( baseLayers, overlays, {
- 					collapsed: true,
- 					hideSingleBase: true,
- 				}).addTo(this.map);
- 			}
+			
+			this.layersControl = L.control.layers( baseLayers, overlays, {
+				collapsed: true,
+				hideSingleBase: true,
+			}).addTo(this.map);
  		},
 		layer_is_overlay: function(  key, layer ) {
 			var patterns;
@@ -646,33 +656,40 @@
 
 
 	$(document)
-		.on('acf-osm-map-init',function( e, map ) {
+		.on( 'acf-osm-map-create', function( e ) {
 			// don't init in repeater templates
 			if ( $(e.target).closest('[data-id="acfcloneindex"]').length ) {
 				e.preventDefault();
 				return;
 			}
+		})
+		.on( 'acf-osm-map-init', function( e, map ) {
+			var editor;
 			// wrap osm.Field backbone view around editors
 			if ( $(e.target).is('[data-editor-config]') ) {
-				e.preventDefault();
+				// e.preventDefault();
 
 				(function checkVis(){
 					if ( ! $(e.target).is(':visible') ) {
-						return setTimeout(checkVis,250);
+						return setTimeout( checkVis, 250 );
 					}
 					map.invalidateSize();
 				})();
-
-				$(e.target).data( '_map_editor', new osm.Field( { el: e.target, map: map } ) );
+				editor = new osm.Field( { el: e.target, map: map } );
+				$(e.target).data( '_map_editor', editor );
 			}
 		});
-
+//	acf.addAction( 'new_field', function(field){console.log(field)} );
 	// init when fields get loaded ...
 	acf.addAction( 'append', function(){
 		$.acf_leaflet();
 	});
 	// init when fields shw ...
-	acf.addAction( 'show_field/type=open_street_map', function( field ){
+	acf.addAction( 'show_field', function( field ) {
+
+		if ( 'open_street_map' !== field.type ) {
+			return;
+		}
 	    var editor = field.$el.find('[data-editor-config]').data( '_map_editor' );
 	    editor.update_visible();
 	});

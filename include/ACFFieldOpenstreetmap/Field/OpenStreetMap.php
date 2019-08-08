@@ -231,45 +231,7 @@ class OpenStreetMap extends \acf_field {
 
 		// layers
 
-
-		// acf_render_field_setting( $field, array(
-		// 	'label'			=> __('Default OSM Map Layer','acf-openstreetmap-field'),
-		// 	'instructions'	=> '',
-		// 	'type'			=> 'select',
-		// 	'name'			=> 'default_osm_layer',
-		// 	'choices'		=> $core->get_osm_layers( ),
-		// 	'multiple'		=> 0,
-		// 	'ui'			=> 0,
-		// 	'allow_null'	=> 0,
-		// 	'placeholder'	=> __("Map Layers",'acf-openstreetmap-field'),
-		// ));
-
-
 	}
-
-
-	/**
-	 *	@param string $key
-	 *	@param array $array
-	 *	@return scalar
-	 */
-	// private function array_search_recursive_key( $key, $array ) {
-	//
-	// 	if ( isset( $array[ $key ] ) && ! is_array( $array[ $key ] ) ) {
-	// 		return $array[ $key ];
-	// 	}
-	//
-	// 	foreach ( $array as $k => $v ) {
-	// 		if ( ! is_array($v) ) {
-	// 			continue;
-	// 		}
-	// 		$result = $this->array_search_recursive_key( $key, $v );
-	// 		if ( $result !== false ) {
-	// 			return $result;
-	// 		}
-	// 	}
-	// 	return false;
-	// }
 
 	/*
 	 *  render_field()
@@ -311,7 +273,6 @@ class OpenStreetMap extends \acf_field {
 			'class'		=> 'osm-json',
 		));
 
-
 		$providers = false;
 
 		if ( isset($field['return_format']) ) {
@@ -346,12 +307,27 @@ class OpenStreetMap extends \acf_field {
 					'max_markers'			=> $max_markers,
 					'name_prefix'			=> $field['name'],
 				),
+				'data-map-lat'	=> $field['leaflet_map']['center_lat'],
+				'data-map-lng'	=> $field['leaflet_map']['center_lng'],
+				'data-map-zoom'	=> $field['leaflet_map']['zoom'],
 			),
 		) );
+
+		?>
+		<?php
 
 		// markers
 		$markers = array(); // $field['value']['markers'];
 
+
+		if ( $max_markers !== 0 ) {
+			?>
+				<div class="markers-instruction">
+					<p class="description"><?php _e('Double click to add Marker. Drag to move.', 'acf-openstreetmap-field' ); ?></p>
+				</div>
+			<?php
+			
+		}
 		?>
 		<div class="osm-markers">
 		</div>
@@ -559,9 +535,9 @@ class OpenStreetMap extends \acf_field {
 							'lng'	=> $value['center_lng'],
 						)
 					);
-				}				
+				}
 			}
-			if ( ! isset( $value['layers'] ) ) {
+			if ( ! isset( $value['layers'] ) || ! $field['allow_map_layers'] ) {
 				$value['layers'] = $field['layers'];
 			}
 			$value['zoom'] = intval( $value['zoom'] );
@@ -669,20 +645,28 @@ class OpenStreetMap extends \acf_field {
 		// apply setting
 		if( $field['return_format'] === 'osm' ) {
 			// features: one marker. 4 maps to choose from
+			$core = Core\Core::instance();
 			$bbox = Helper\MapHelper::getBbox( $value['center_lat'], $value['center_lng'], $value['zoom'] );
-
 			$iframe_src_args = array(
 				'bbox'	=> implode( ',', $bbox ),
-				'layer'	=> $value['layers'],
 			);
+
 			$map_link_args = array();
+
+			if ( $i_layer = $core->map_osm_layer( $value['layers'], 'iframe' ) ) {
+				$iframe_src_args['layer'] = $i_layer;
+			}
 
 			if ( ! empty( $value['address'] ) ) {
 				$iframe_src_args['marker'] = implode(',', array( $value['center_lat'], $value['center_lng'] ) );
 				$map_link_args['mlat'] = $value['center_lat'];
 				$map_link_args['mlon'] = $value['center_lng'];
 			}
-
+			foreach ( $value['markers'] as $marker ) {
+				$iframe_src_args['marker'] = implode(',', array( $marker['lat'], $marker['lng'] ) );
+				$map_link_args['mlat'] = $marker['lat'];
+				$map_link_args['mlon'] = $marker['lng'];
+			}
 			$iframe_src = add_query_arg( $iframe_src_args, 'https://www.openstreetmap.org/export/embed.html' );
 
 			$iframe_atts = array(
@@ -697,10 +681,12 @@ class OpenStreetMap extends \acf_field {
 
 			$map_link = add_query_arg( $map_link_args, 'https://www.openstreetmap.org/' );
 			$map_link .= '#map=' . implode( '/', array( $value['zoom'], $value['center_lat'], $value['center_lng'] ) );
-			if ( isset($value['osm_layer']) && $value['osm_layer'] !== 'mapnik' ) {
-				$map_link .= '&layers=' . strtoupper($value['osm_layer'][0]); // query var for layer is only the first letter
+
+			if ( $l_layer = $core->map_osm_layer( $value['layers'], 'link' ) ) {
+				$map_link .= '&amp;layers='.$l_layer;
 			}
-			$html = '<iframe %1$s></iframe><br/><small><a href="%2$s">%3$s</a></small>';
+
+			$html = '<iframe %1$s></iframe><br/><small><a target="_blank" href="%2$s">%3$s</a></small>';
 
 			/**
 			 *	Filter iframe HTML.

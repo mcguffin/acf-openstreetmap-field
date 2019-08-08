@@ -1,0 +1,57 @@
+{
+    "key": "group_acf_openstreetmap_field_block_osm",
+    "title": "OpenStreetMap Field - Block iFrame",
+    "fields": [
+        {
+            "key": "field_5d4c28a9ffcb9",
+            "label": "OSM Map",
+            "name": "osm_map_block",
+            "type": "open_street_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "osm",
+            "layers": [
+                "OpenStreetMap.HOT"
+            ],
+            "center_lat": "53.550711",
+            "center_lng": "10.000477",
+            "zoom": 12,
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": 5,
+            "leaflet_map": {
+                "center_lat": 53.55064,
+                "center_lng": 10.00065,
+                "zoom": 12,
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "acf\/osm-map"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1565273354
+}

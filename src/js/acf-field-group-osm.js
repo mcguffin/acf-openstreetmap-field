@@ -29,7 +29,6 @@
 			osmField.prototype.initialize.apply( this, arguments );
 			this.bindMapListener();
 			this.bindListener();
-			
 		},
 		updateInput: function() {
 			this.$lat().val( this.model.get('center_lat') );
@@ -50,12 +49,14 @@
 			// if ( ! $layers.find(':checked').length ) {
 			// 	this.model.set('layers',[ $layers.first().attr('value') ]);
 			// }
-			
+
 			// select default layer if non is selected
 			return this;
 		},
 		bindInputListener: function() {
+
 			var self = this;
+
 			this.$lat().on('change',function(e){
 				self.model.set( 'center_lat', $(e.target).val() );
 				self.update_map();
@@ -65,8 +66,8 @@
 			})
 			.on('blur',function(e){
 				self.bindMapListener();
-			})
-			;
+			});
+
 			this.$lng().on('change',function(e){
 				self.model.set( 'center_lng', $(e.target).val() );
 				self.update_map();
@@ -76,8 +77,8 @@
 			})
 			.on('blur',function(e){
 				self.bindMapListener();
-			})
-			;
+			});
+
 			this.$zoom().on('change',function(e){
 				self.model.set( 'zoom', $(e.target).val() );
 				self.update_map();
@@ -139,10 +140,11 @@
 			}
 		}
 	});
-	acf.addAction('render_field_object', function(field){
-		if ( 'open_street_map' === field.data.type ) {
-			$.acf_leaflet();
-		}
-	});
+	// acf.addAction('render_field_object', function(field){
+	// 	if ( 'open_street_map' === field.data.type ) {
+	// 
+	// 		//$.acf_leaflet();
+	// 	}
+	// });
 
 })( jQuery, acf_osm_admin, window );

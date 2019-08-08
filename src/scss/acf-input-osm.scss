@@ -8,6 +8,17 @@
 	width:100%;
 }
 
+.leaflet-map {
+	.block-editor__container & {
+		width:100%;
+		.leaflet-top, 
+		.leaflet-bottom {
+			/* .editor-block-toolbar: 101 */
+			z-index:80;
+		}
+	}	
+}
+
 .acf-field-open-street-map {
 	.acf-osm-map {
 		width:100%;

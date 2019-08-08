@@ -99,6 +99,10 @@ class Core extends Plugin {
 				'osm_layers'		=> $this->get_osm_layers(),
 				'leaflet_layers'	=> $this->get_leaflet_layers(),
 			),
+			'i18n'	=> array(
+				'search'		=> __('Search...','acf-openstreetmap-field'),
+				'nothing_found'	=> __('Nothing found...','acf-openstreetmap-field'),
+			),
 		));
 		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), array('acf-field-group','acf-input-osm','backbone'), $this->get_version(), true );
 
@@ -120,19 +124,41 @@ class Core extends Plugin {
 	 *		...
 	 *	)
 	 */
-	public function get_osm_layers( ) {
+	public function get_osm_layers( $context = 'iframe' ) {
 		/*
 		mapnik
 		cyclemap C 	Cycle
 		transportmap T	Transport
 		hot H	Humantarian
 		*/
-		return array(
-			'mapnik'		=> 'OpenStreetMap',
-			'cyclemap'		=> 'Thunderforest.OpenCycleMap',
-			'transportmap'	=> 'Thunderforest.Transport',
-			'hot'			=> 'OpenStreetMap.HOT',
-		);
+		if ( 'iframe' === $context ) {
+			return array(
+				'mapnik'		=> 'OpenStreetMap',
+				'cyclemap'		=> 'Thunderforest.OpenCycleMap',
+				'transportmap'	=> 'Thunderforest.Transport',
+				'hot'			=> 'OpenStreetMap.HOT',
+			);			
+		} else if ( 'link' === $context ) {
+			return array(
+				'H' => 'OpenStreetMap.HOT',
+				'T' => 'Thunderforest.Transport',
+				'C' => 'Thunderforest.OpenCycleMap',
+			);
+		}
+	}
+
+
+	public function map_osm_layer( $layers, $context = 'iframe' ) {
+
+		$mapping = $this->get_osm_layers( $context );
+
+		foreach ( (array) $layers as $layer ) {
+			$mapped = array_search( $layer, $mapping );
+			if ( $mapped !== false ) {
+				return $mapped;
+			}
+		}
+		return false;
 	}
 
 	/**

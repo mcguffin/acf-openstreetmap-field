@@ -1,9 +1,9 @@
 {
-    "key": "group_acf_openstreetmap_field_layers",
-    "title": "OpenStreetMap Field - Layers",
+    "key": "group_acf_openstreetmap_field_no_layers",
+    "title": "OpenStreetMap Field - No Layers",
     "fields": [
         {
-            "key": "field_5d4bc3655263c",
+            "key": "field_5d5bc3655263c",
             "label": "Leaflet Map",
             "name": "leaflet_map",
             "type": "open_street_map",
@@ -17,13 +17,13 @@
             },
             "return_format": "leaflet",
             "layers": [
-                "Wikimedia",
+                "MapBox.Light",
                 "SafeCast"
             ],
-            "center_lat": "53.543368",
-            "center_lng": "10.108556",
+            "center_lat": "53.550711",
+            "center_lng": "10.000477",
             "zoom": 12,
-            "allow_map_layers": 1,
+            "allow_map_layers": 0,
             "height": 400,
             "max_markers": "",
             "leaflet_map": {
@@ -37,7 +37,7 @@
             }
         },
         {
-            "key": "field_5d4bc36f5263d",
+            "key": "field_5d5bc36f5263d",
             "label": "iFrame Map",
             "name": "iframe_map",
             "type": "open_street_map",
@@ -56,7 +56,7 @@
             "center_lat": "",
             "center_lng": "",
             "zoom": "",
-            "allow_map_layers": 1,
+            "allow_map_layers": 0,
             "height": 400,
             "max_markers": "",
             "leaflet_map": {
@@ -85,7 +85,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 0,
+    "active": 1,
     "description": "",
-    "modified": 1565265519
+    "modified": 1565271476
 }

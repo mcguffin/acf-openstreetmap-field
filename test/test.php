@@ -16,6 +16,50 @@ class PluginTest {
 		add_action( 'acf/untrash_field_group', [ $this, 'mutate_field_group' ], 9 );
 		add_action( 'acf/update_field_group', [ $this, 'mutate_field_group' ], 9 );
 
+		add_action( 'acf/init', [ $this, 'register_blocks' ] );
+
+	}
+	
+	/**
+	 *	@action 'acf/init'
+	 */
+	public function register_blocks() {
+
+		if( function_exists('acf_register_block') ) {
+
+			// register a testimonial block
+			acf_register_block(array(
+				'name'				=> 'leaflet-map',
+				'title'				=> __('Leaflet Map'),
+				'description'		=> __('A Leaflet Map'),
+				'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
+					the_field( 'leaflet_map_block' );
+					?><hr /><?php
+				},
+				'category'			=> 'embed',
+				'icon'				=> 'location-alt',
+				'mode'				=> 'preview', // auto|preview|edit
+				'align'				=> 'full',
+				'keywords'			=> array( 'map' ),
+			));
+
+			// register a testimonial block
+			acf_register_block(array(
+				'name'				=> 'osm-map',
+				'title'				=> __('OpenStreetMap (iFrame)'),
+				'description'		=> __('Am Open Street Map'),
+				'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
+					the_field( 'osm_map_block' );
+					?><hr /><?php
+				},
+				'category'			=> 'embed',
+				'icon'				=> 'location-alt',
+				'mode'				=> 'preview', // auto|preview|edit
+				'align'				=> 'full',
+				'keywords'			=> array( 'map' ),
+
+			));
+		}
 	}
 
 	/**
