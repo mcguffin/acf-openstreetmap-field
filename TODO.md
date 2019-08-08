@@ -17,7 +17,11 @@ ACF OpenStreetMap Field ToDo
         - At save: json_decode( $value, true )
     - [x] JS: use Backbone.model.set('lat') // lng, zoom, layers, markers, ...
  - [ ] localize js
- - [ ] Bug: Map with allow_layer_select=false doesn't init
+ - [ ] Bugs: 
+     - [ ] Map with allow_layer_select=false doesn't init
+     - [x] Field Group Admin: add map > map doesn't init
+     - [ ] Field Group Admin: Duplicate Field > 2 Search inputs
  - [ ] Test:
      - [ ] Data generated in <= 1.0.1
+     - [x] Tester Fields
  - [ ] Settings: individually disable map providers

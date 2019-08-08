@@ -1,0 +1,91 @@
+{
+    "key": "group_acf_openstreetmap_field_layers",
+    "title": "OpenStreetMap Field - Layers",
+    "fields": [
+        {
+            "key": "field_5d4bc3655263c",
+            "label": "Leaflet Map",
+            "name": "leaflet_map",
+            "type": "open_street_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "leaflet",
+            "layers": [
+                "Stamen.Toner",
+                "OpenFireMap"
+            ],
+            "center_lat": "",
+            "center_lng": "",
+            "zoom": "",
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": "",
+            "leaflet_map": {
+                "center_lat": 53.55064,
+                "center_lng": 10.00065,
+                "zoom": 12,
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        },
+        {
+            "key": "field_5d4bc36f5263d",
+            "label": "iFrame Map",
+            "name": "iframe_map",
+            "type": "open_street_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "osm",
+            "layers": [
+                "Thunderforest.Transport"
+            ],
+            "center_lat": "",
+            "center_lng": "",
+            "zoom": "",
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": "",
+            "leaflet_map": {
+                "center_lat": 53.55064,
+                "center_lng": 10.00065,
+                "zoom": 12,
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "post"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1565246366
+}

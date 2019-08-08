@@ -1,0 +1,257 @@
+{
+    "key": "group_acf_openstreetmap_field_repeatable",
+    "title": "OpenStreetMap Field - Repeatables",
+    "fields": [
+        {
+            "key": "field_5d4bc3af006a8",
+            "label": "Repeat Leaflet Map",
+            "name": "repeat_leaflet_map",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 0,
+            "layout": "table",
+            "button_label": "",
+            "sub_fields": [
+                {
+                    "key": "field_5d4bc3c4006a9",
+                    "label": "Leaflet Map",
+                    "name": "leaflet_map",
+                    "type": "open_street_map",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "leaflet",
+                    "layers": [
+                        "OpenStreetMap.HOT"
+                    ],
+                    "center_lat": "",
+                    "center_lng": "",
+                    "zoom": "",
+                    "allow_map_layers": 1,
+                    "height": 400,
+                    "max_markers": 5,
+                    "leaflet_map": {
+                        "center_lat": 53.55064,
+                        "center_lng": 10.00065,
+                        "zoom": 12,
+                        "layers": [
+                            "OpenStreetMap"
+                        ],
+                        "markers": []
+                    }
+                }
+            ]
+        },
+        {
+            "key": "field_5d4bc3e90eb56",
+            "label": "Repeat iFrame Map",
+            "name": "repeat_iframe_map",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 0,
+            "layout": "table",
+            "button_label": "",
+            "sub_fields": [
+                {
+                    "key": "field_5d4bc3e90eb57",
+                    "label": "iFrmae Map",
+                    "name": "ifrmae_map",
+                    "type": "open_street_map",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "",
+                    "center_lat": "53.550711",
+                    "center_lng": "10.000477",
+                    "zoom": 12,
+                    "allow_map_layers": 1,
+                    "height": 400,
+                    "max_markers": 5,
+                    "leaflet_map": {
+                        "center_lat": 53.55064,
+                        "center_lng": 10.00065,
+                        "zoom": 12,
+                        "layers": [
+                            "OpenStreetMap"
+                        ],
+                        "markers": []
+                    },
+                    "layers": [
+                        "OpenStreetMap"
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "field_5d4bc47a935b2",
+            "label": "Layout Leaflet Map",
+            "name": "layout_leaflet_map",
+            "type": "flexible_content",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layouts": {
+                "layout_5d4bc487cbd7b": {
+                    "key": "layout_5d4bc487cbd7b",
+                    "name": "",
+                    "label": "",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5d4bc48a935b3",
+                            "label": "Leaflet Map",
+                            "name": "leaflet_map",
+                            "type": "open_street_map",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "",
+                            "layers": [
+                                "OpenSeaMap"
+                            ],
+                            "center_lat": "53.54704",
+                            "center_lng": "10.009068",
+                            "zoom": 12,
+                            "allow_map_layers": 1,
+                            "height": 400,
+                            "max_markers": "",
+                            "leaflet_map": {
+                                "center_lat": 53.55064,
+                                "center_lng": 10.00065,
+                                "zoom": 12,
+                                "layers": [
+                                    "OpenStreetMap"
+                                ],
+                                "markers": []
+                            }
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                }
+            },
+            "button_label": "Add Row",
+            "min": "",
+            "max": ""
+        },
+        {
+            "key": "field_5d4bc4bd935b4",
+            "label": "Layout iFrame Map",
+            "name": "layout_iframe_map",
+            "type": "flexible_content",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layouts": {
+                "layout_5d4bc487cbd7b": {
+                    "key": "layout_5d4bc487cbd7b",
+                    "name": "",
+                    "label": "",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_5d4bc4bd935b5",
+                            "label": "iFrame Map",
+                            "name": "iframe_map",
+                            "type": "open_street_map",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "osm",
+                            "layers": [
+                                "OpenSeaMap",
+                                "Thunderforest.OpenCycleMap"
+                            ],
+                            "center_lat": "53.54704",
+                            "center_lng": "10.00906",
+                            "zoom": 12,
+                            "allow_map_layers": 1,
+                            "height": 400,
+                            "max_markers": "",
+                            "leaflet_map": {
+                                "center_lat": 53.55064,
+                                "center_lng": 10.00065,
+                                "zoom": 12,
+                                "layers": [
+                                    "OpenStreetMap"
+                                ],
+                                "markers": []
+                            }
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                }
+            },
+            "button_label": "Add Row",
+            "min": "",
+            "max": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "post"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "modified": 1565246673
+}

@@ -7,19 +7,105 @@
 
 	var osm = exports.osm = {
 	};
+	
+	var fixedFloatGetter = function( prop, fix ) {
+		return function() {
+			return parseFloat( this.attributes[ prop ] );
+		}
+	}
+	var fixedFloatSetter = function( prop, fix ) {
+		return function(value) {
+			return parseFloat(parseFloat(value).toFixed(fix) );
+		}
+	}
+	var intGetter = function(prop) {
+		return function() {
+			return parseInt( this.attributes[ prop ] );
+		}
+	}
+	var intSetter = function(prop) {
+		return function(value) {
+			return parseInt( value );
+		}
+	}
 
-	osm.MarkerData = Backbone.Model.extend({
+	var GSModel = Backbone.Model.extend({
+
+		get: function(attr) {
+			// Call the getter if available
+			if (_.isFunction(this.getters[attr])) {
+				return this.getters[attr].call(this);
+			}
+
+			return Backbone.Model.prototype.get.call(this, attr);
+		},
+
+		set: function(key, value, options) {
+			var attrs, attr;
+
+			// Normalize the key-value into an object
+			if (_.isObject(key) || key == null) {
+				attrs = key;
+				options = value;
+			} else {
+				attrs = {};
+				attrs[key] = value;
+			}
+
+			// always pass an options hash around. This allows modifying
+			// the options inside the setter
+			options = options || {};
+
+			// Go over all the set attributes and call the setter if available
+			for (attr in attrs) {
+				if (_.isFunction(this.setters[attr])) {
+					attrs[attr] = this.setters[attr].call(this, attrs[attr], options);
+				}
+			}
+
+			return Backbone.Model.prototype.set.call(this, attrs, options);
+		},
+
+		getters: {},
+
+		setters: {}
+
+	});
+
+	osm.MarkerData = GSModel.extend({
+		getters: {
+			lat:fixedFloatGetter('lat',6),
+			lng:fixedFloatGetter('lng',6),
+			zoom:intGetter('zoom'),
+		},
+		setters: {
+			lat:fixedFloatSetter('lat',6),
+			lng:fixedFloatSetter('lng',6),
+			zoom:intSetter('zoom'),
+		},
 		isDefaultLabel:function() {
 			return this.get('label') === this.get('default_label');
 		}
 	});
 	osm.MarkerCollection = Backbone.Collection.extend({
 		model:osm.MarkerData
-	})
-	osm.MapData = Backbone.Model.extend({
+	});
+	
+	
+	osm.MapData = GSModel.extend({
+		getters: {
+			center_lat:fixedFloatGetter('center_lat',6),
+			center_lng:fixedFloatGetter('center_lng',6),
+			zoom:intGetter('zoom'),
+		},
+		setters: {
+			center_lat:fixedFloatSetter('center_lat',6),
+			center_lng:fixedFloatSetter('center_lng',6),
+			zoom:intSetter('zoom'),
+		},
 		initialize:function(o) {
 			this.set( 'markers', new osm.MarkerCollection(o.markers) );
-			Backbone.Model.prototype.initialize.apply(this,arguments)
+			GSModel.prototype.initialize.apply(this,arguments)
 		}
 	});
 	osm.MarkerEntry = wp.media.View.extend({
@@ -115,8 +201,8 @@
 			this.$el.find('[id$="-marker-lng"]').val( latlng.lng );
 			this.$el.find('[id$="-marker-label"]').val( this.marker.options.title );
 			/*/
-			this.model.set( 'lat', latlng.lat.toFixed(6) );
-			this.model.set( 'lng', latlng.lng.toFixed(6) );
+			this.model.set( 'lat', latlng.lat );
+			this.model.set( 'lng', latlng.lng );
 			this.model.set( 'label', this.marker.options.title );
 			//*/
 			return this;
@@ -186,18 +272,23 @@
 			});
 			this.map.on('moveend',function(){
 				var latlng = self.map.getCenter();
-				self.model.set('center_lat',latlng.lat.toFixed(6));
-				self.model.set('center_lng',latlng.lng.toFixed(6));
+				
+				self.model.set('center_lat',latlng.lat );
+				self.model.set('center_lng',latlng.lng );
 			});
 
 			this.update_visible();
 
 			this.update_map();
-			
+
 			return this;
 		},
 		getMapData:function() {
-			return JSON.parse( this.$value().val() );
+			var data = JSON.parse( this.$value().val() );
+			data.center_lat = data.center_lat || 0;
+			data.center_lng = data.center_lng || 0;
+			data.zoom = data.zoom || 0;
+			return data;
 		},
 		updateValue:function() {
 			this.$value().val( JSON.stringify( this.model.toJSON() ) );
@@ -233,8 +324,8 @@
 					.on('dragend',function(e){
 						// update model lnglat
 						var latlng = this.getLatLng();
-						model.set( 'lat', latlng.lat.toFixed(6) );
-						model.set( 'lng', latlng.lng.toFixed(6) );
+						model.set( 'lat', latlng.lat );
+						model.set( 'lng', latlng.lng );
 						self.reverseGeocode( model );
 						// geocode, get label, set model label...
 					})
@@ -367,7 +458,7 @@
 
 			if ( ! results.length ) {
 				// https://xkcd.com/2170/
-				label = latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6);
+				label = latlng.lat + ', ' + latlng.lng;
 			} else {
 				$.each( results, function( i, result ) {
 					if ( !! result.html ) {
@@ -545,8 +636,9 @@
 
 		},
 		update_map:function() {
+			var latlng = { lat: this.model.get('center_lat'), lng: this.model.get('center_lng') }
 			this.map.setView( 
-				L.latLng( this.model.get('center_lat'), this.model.get('center_lng') ),
+				latlng,
 				this.model.get('zoom') 
 			);
 		}

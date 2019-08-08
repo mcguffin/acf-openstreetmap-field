@@ -30,6 +30,7 @@ class ACF extends Core\Singleton {
 
 		// Compat with https://wordpress.org/plugins/acf-openstreetmap-field/
 		add_action( 'acf/input/admin_enqueue_scripts', array( $this, 'acf_admin_enqueue_scripts' ) );
+		add_action( 'acf/field_group/admin_enqueue_scripts', array( $this, 'acf_field_group_dequeue_scripts' ) );
 
 	}
 
@@ -38,11 +39,14 @@ class ACF extends Core\Singleton {
 	 *	@action acf/input/admin_enqueue_scripts
 	 */
 	public function acf_admin_enqueue_scripts() {
-		$core = Core\Core::instance();
-
 		wp_enqueue_media();
-
-		wp_enqueue_script( 'acf-osm-compat-duplicate-repeater', $core->get_asset_url( 'assets/js/compat/acf-duplicate-repeater.js' ), array( 'acf-duplicate-repeater' ), $core->get_version() );
+		wp_enqueue_script( 'acf-osm-compat-duplicate-repeater' );
+	}
+	/**
+	 *	@action acf/input/admin_enqueue_scripts
+	 */
+	public function acf_field_group_dequeue_scripts() {
+		wp_dequeue_script( 'acf-osm-compat-duplicate-repeater' );
 	}
 
 	/**

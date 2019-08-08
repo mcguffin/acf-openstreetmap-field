@@ -2,15 +2,6 @@
 	var osm = exports.osm;
 
 
-	function getGeo( view ) {
-		var inp = getInput( view );
-		return {
-			center_lat:parseFloat(inp.$lat.val()),
-			center_lng:parseFloat(inp.$lng.val()),
-			zoom:parseInt(inp.$zoom.val()),
-		};
-		
-	}
 	var osmField = osm.Field;
 	osm.Field = osmField.extend({
 		$lat: function() {
@@ -26,21 +17,23 @@
 			return this.$el.closest('.acf-field-settings').find('[data-name="return_format"]');
 		},
 		getMapData:function() {
-			return {
-				center_lat: parseFloat(this.$lat().val()) || this.$el.data().mapLat,
-				center_lng: parseFloat(this.$lng().val()) || this.$el.data().mapLng,
-				zoom: parseInt(this.$zoom().val()) || this.$el.data().mapZoom,
+			var data = {
+				center_lat: parseFloat(this.$lat().val() || this.$el.data().mapLat ),
+				center_lng: parseFloat(this.$lng().val() || this.$el.data().mapLng ),
+				zoom: parseInt(this.$zoom().val() || this.$el.data().mapZoom ),
 				layers: this.$el.data().mapLayers,
 			};
+			return data;
 		},
 		initialize:function(conf) {
 			osmField.prototype.initialize.apply( this, arguments );
 			this.bindMapListener();
 			this.bindListener();
+			
 		},
 		updateInput: function() {
-			this.$lat().val( this.model.get('center_lat').toFixed(6) );
-			this.$lng().val( this.model.get('center_lng').toFixed(6) );
+			this.$lat().val( this.model.get('center_lat') );
+			this.$lng().val( this.model.get('center_lng') );
 			this.$zoom().val( this.model.get('zoom') );
 		},
 		initLayers:function() {
@@ -64,7 +57,7 @@
 		bindInputListener: function() {
 			var self = this;
 			this.$lat().on('change',function(e){
-				self.model.set( 'center_lat', parseFloat( $(e.target).val() ) );
+				self.model.set( 'center_lat', $(e.target).val() );
 				self.update_map();
 			})
 			.on('focus',function(e){
@@ -75,7 +68,7 @@
 			})
 			;
 			this.$lng().on('change',function(e){
-				self.model.set( 'center_lng', parseFloat( $(e.target).val() ) );
+				self.model.set( 'center_lng', $(e.target).val() );
 				self.update_map();
 			})
 			.on('focus',function(e){
@@ -86,7 +79,7 @@
 			})
 			;
 			this.$zoom().on('change',function(e){
-				self.model.set( 'zoom', parseInt( $(e.target).val() ) );
+				self.model.set( 'zoom', $(e.target).val() );
 				self.update_map();
 			})
 			.on('focus',function(e){
@@ -145,34 +138,11 @@
 				}
 			}
 		}
-	})
-
-	// unbind_events:function() {
-	// 	var self = this;
-	// 	self.$lat().off('blur');
-	// 	self.$lng().off('blur');
-	// 	self.$zoom().off('blur');
-	// 	self.$zoom().off('keyup focus');
-	// 
-	// 	this.map.off('zoomend', this.map_zoomed, this );
-	// 	this.map.off('moveend', this.map_moved, this );
-	// },
-	// bind_events: function() {
-	// 	var self = this;
-	// 
-	// 	self.$lat().on('blur',function(e){
-	// 		self.update_map();
-	// 	});
-	// 	self.$lng().on('blur',function(e){
-	// 		self.update_map();
-	// 	});
-	// 	self.$zoom().on('blur',function(e){
-	// 		self.update_map();
-	// 	});
-	// 
-	// 	this.map.on('zoomend', this.map_zoomed, this );
-	// 	this.map.on('moveend', this.map_moved, this );
-	// },
-
+	});
+	acf.addAction('render_field_object', function(field){
+		if ( 'open_street_map' === field.data.type ) {
+			$.acf_leaflet();
+		}
+	});
 
 })( jQuery, acf_osm_admin, window );
