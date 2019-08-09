@@ -26,10 +26,15 @@ ACF OpenStreetMap Field ToDo
              - [x] Marker-labels below map (z-index)
          - [x] As Metabox
      - [x] ACF: Widgets
-     - [ ] ACF: Frontend-Form
-     - [ ] ACF: Options Page
-     - [ ] 3rd Party: With ACF-Customizer
+     - [x] ACF: Frontend-Form
+     - [x] ACF: Options Page
+     - [ ] 3rd Party: 
+        - [ ] ACF-Customizer
+        - [ ] ACF WP-Objects
+        - [x] ACF Duplicate Repeater
+        - [ ] ACF Quick Edit Fields
      - [ ] Hide JSON Data input
- - [ ] Settings: individually disable map providers
+ - [x] Settings: individually disable map providers
+ - [ ] Marker Message: hide if max_markers exceeded
  - [ ] Move Accuracy to script l10n
  

@@ -268,7 +268,7 @@ class OpenStreetMap extends \acf_field {
 		$field['value'] = wp_parse_args( $field['value'], $this->default_values );
 
 		// json_encoded value
-		acf_text_input(array(
+		acf_hidden_input(array(
 			'id'		=> $field['id'],
 			'name'		=> $field['name'],
 			'value'		=> json_encode( $field['value'] ),
