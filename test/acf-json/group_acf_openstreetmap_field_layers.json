@@ -77,6 +77,13 @@
                 "operator": "==",
                 "value": "post"
             }
+        ],
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
+            }
         ]
     ],
     "menu_order": 0,
@@ -87,5 +94,5 @@
     "hide_on_screen": "",
     "active": 0,
     "description": "",
-    "modified": 1565265519
+    "modified": 1565330570
 }
