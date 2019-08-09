@@ -5,10 +5,10 @@
 	var osmField = osm.Field;
 	osm.Field = osmField.extend({
 		$lat: function() {
-			return this.$el.closest('.acf-field-settings').find('input[id$="-center_lat"]');
+			return this.$el.closest('.acf-field-settings').find('input[id$="-lat"]');
 		},
 		$lng: function() {
-			return this.$el.closest('.acf-field-settings').find('input[id$="-center_lng"]');
+			return this.$el.closest('.acf-field-settings').find('input[id$="-lng"]');
 		},
 		$zoom: function() {
 			return this.$el.closest('.acf-field-settings').find('input[id$="-zoom"]');
@@ -18,8 +18,8 @@
 		},
 		getMapData:function() {
 			var data = {
-				center_lat: parseFloat(this.$lat().val() || this.$el.data().mapLat ),
-				center_lng: parseFloat(this.$lng().val() || this.$el.data().mapLng ),
+				lat: parseFloat(this.$lat().val() || this.$el.data().mapLat ),
+				lng: parseFloat(this.$lng().val() || this.$el.data().mapLng ),
 				zoom: parseInt(this.$zoom().val() || this.$el.data().mapZoom ),
 				layers: this.$el.data().mapLayers,
 			};
@@ -31,8 +31,8 @@
 			this.bindListener();
 		},
 		updateInput: function() {
-			this.$lat().val( this.model.get('center_lat') );
-			this.$lng().val( this.model.get('center_lng') );
+			this.$lat().val( this.model.get('lat') );
+			this.$lng().val( this.model.get('lng') );
 			this.$zoom().val( this.model.get('zoom') );
 		},
 		initLayers:function() {
@@ -58,7 +58,7 @@
 			var self = this;
 
 			this.$lat().on('change',function(e){
-				self.model.set( 'center_lat', $(e.target).val() );
+				self.model.set( 'lat', $(e.target).val() );
 				self.update_map();
 			})
 			.on('focus',function(e){
@@ -69,7 +69,7 @@
 			});
 
 			this.$lng().on('change',function(e){
-				self.model.set( 'center_lng', $(e.target).val() );
+				self.model.set( 'lng', $(e.target).val() );
 				self.update_map();
 			})
 			.on('focus',function(e){
@@ -91,8 +91,8 @@
 			});
 		},
 		bindMapListener: function() {
-			this.listenTo( this.model, 'change:center_lat', this.updateInput );
-			this.listenTo( this.model, 'change:center_lng', this.updateInput );
+			this.listenTo( this.model, 'change:lat', this.updateInput );
+			this.listenTo( this.model, 'change:lng', this.updateInput );
 			this.listenTo( this.model, 'change:zoom', this.updateInput );
 
 		},
@@ -124,8 +124,8 @@
 			this.$zoom().off('change').off('focus').off('blur');
 		},
 		unbindMapListener: function() {
-			this.stopListening( this.model, 'change:center_lat', this.updateInput );
-			this.stopListening( this.model, 'change:center_lng', this.updateInput );
+			this.stopListening( this.model, 'change:lat', this.updateInput );
+			this.stopListening( this.model, 'change:lng', this.updateInput );
 			this.stopListening( this.model, 'change:zoom', this.updateInput );
 		},
 		update_visible: function() {

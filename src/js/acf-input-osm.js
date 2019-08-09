@@ -77,12 +77,10 @@
 		getters: {
 			lat:fixedFloatGetter( 'lat', options.accuracy ),
 			lng:fixedFloatGetter( 'lng', options.accuracy ),
-			zoom:intGetter('zoom'),
 		},
 		setters: {
 			lat:fixedFloatSetter( 'lat', options.accuracy ),
 			lng:fixedFloatSetter( 'lng', options.accuracy ),
-			zoom:intSetter('zoom'),
 		},
 		isDefaultLabel:function() {
 			return this.get('label') === this.get('default_label');
@@ -95,13 +93,13 @@
 	
 	osm.MapData = GSModel.extend({
 		getters: {
-			center_lat:fixedFloatGetter( 'center_lat', options.accuracy ),
-			center_lng:fixedFloatGetter( 'center_lng', options.accuracy ),
+			lat:fixedFloatGetter( 'lat', options.accuracy ),
+			lng:fixedFloatGetter( 'lng', options.accuracy ),
 			zoom:intGetter('zoom'),
 		},
 		setters: {
-			center_lat:fixedFloatSetter( 'center_lat', options.accuracy ),
-			center_lng:fixedFloatSetter( 'center_lng', options.accuracy ),
+			lat:fixedFloatSetter( 'lat', options.accuracy ),
+			lng:fixedFloatSetter( 'lng', options.accuracy ),
 			zoom:intSetter('zoom'),
 		},
 		initialize:function(o) {
@@ -254,7 +252,7 @@
 			var self = this,
 				data = this.getMapData(),
 				editor_config = this.$el.data().editorConfig;
-
+console.log(data)
 			this.map		= conf.map;
 			this.field		= conf.field;
 
@@ -285,8 +283,8 @@
 			this.map.on('moveend',function(){
 				var latlng = self.map.getCenter();
 				
-				self.model.set('center_lat',latlng.lat );
-				self.model.set('center_lng',latlng.lng );
+				self.model.set('lat',latlng.lat );
+				self.model.set('lng',latlng.lng );
 			});
 
 			this.update_visible();
@@ -303,8 +301,8 @@
 		},
 		getMapData:function() {
 			var data = JSON.parse( this.$value().val() );
-			data.center_lat = data.center_lat || this.$el.attr('data-map-lat');
-			data.center_lng = data.center_lng || this.$el.attr('data-map-lng');
+			data.lat = data.lat || this.$el.attr('data-map-lat');
+			data.lng = data.lng || this.$el.attr('data-map-lng');
 			data.zoom = data.zoom || this.$el.attr('data-map-zoom');
 			return data;
 		},
@@ -654,7 +652,7 @@
 
 		},
 		update_map:function() {
-			var latlng = { lat: this.model.get('center_lat'), lng: this.model.get('center_lng') }
+			var latlng = { lat: this.model.get('lat'), lng: this.model.get('lng') }
 			this.map.setView( 
 				latlng,
 				this.model.get('zoom') 

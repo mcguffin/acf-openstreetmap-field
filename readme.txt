@@ -15,13 +15,18 @@ A configurable OpenStreetMap Field for ACF.
 
 Hazzle free OpenStreetMap with [ACF](https://www.advancedcustomfields.com/).
 
+## Features
+ - Select map display from multiple providers
+ - Multiple Map markers
+ - Choose map output as either leaflet js or iframe
+
 ## Usage
 
 #### In the Fieldgroup editor:
 
 **Return Format:**
 
- - *Raw data* will return an array hoding the field configuration.
+ - *Raw data* will return an array holding the field configuration.
 
  - *Leaflet JS* will return a fully functional leaflet map. Just include `<?php the_field('my_field_name'); ?>` in your Theme.
 You can choose from a long list of map styles and it supports multiple markers.

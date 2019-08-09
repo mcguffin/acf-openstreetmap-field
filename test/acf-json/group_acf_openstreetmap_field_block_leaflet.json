@@ -16,25 +16,16 @@
                 "id": ""
             },
             "return_format": "leaflet",
-            "layers": [
-                "OpenMapSurfer.Roads",
-                "Stamen.TonerLines"
-            ],
-            "center_lat": "53.550711",
-            "center_lng": "10.000477",
-            "zoom": 12,
+            "lat": "53.0000127",
+            "lng": "11.0000181",
+            "zoom": 15,
             "allow_map_layers": 1,
             "height": 400,
             "max_markers": "",
-            "leaflet_map": {
-                "center_lat": 53.55064,
-                "center_lng": 10.00065,
-                "zoom": 12,
-                "layers": [
-                    "OpenStreetMap"
-                ],
-                "markers": []
-            }
+            "layers": [
+                "OpenMapSurfer.Roads",
+                "Stamen.TonerLines"
+            ]
         }
     ],
     "location": [
@@ -61,5 +52,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565281545
+    "modified": 1565358432
 }
