@@ -14,16 +14,22 @@ ACF OpenStreetMap Field ToDo
      - [x] Repeater > Map: Map doesn't init.
  - [ ] Test:
      - [ ] Data generated in <= 1.0.1
-         - [ ] iFrame: there used to be address, ... hmm...
+         - [ ] iFrame: there used to be address, ... hmm... ACF Artifacts?
      - [x] Greate Tester Fields
      - [x] ACF: Block Editor
          - [x] As Block
              - [x] Map-CC z-index
              - [x] Align Left + Right
              - [x] iFrame: wrong layers-param
+             - [x] iFrame: cant select, catches mouse events
+             - [x] Switch edit/preview: Map invalidate size 
+             - [x] Marker-labels below map (z-index)
          - [x] As Metabox
-     - [ ] ACF: Widgets
-     - [ ] ACF: Options Page
+     - [x] ACF: Widgets
      - [ ] ACF: Frontend-Form
-     - [ ] 3rd: With ACF-Customizer
+     - [ ] ACF: Options Page
+     - [ ] 3rd Party: With ACF-Customizer
+     - [ ] Hide JSON Data input
  - [ ] Settings: individually disable map providers
+ - [ ] Move Accuracy to script l10n
+ 

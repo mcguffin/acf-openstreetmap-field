@@ -1,10 +1,10 @@
 {
     "key": "group_acf_openstreetmap_field_block_leaflet",
-    "title": "OpenStreetMap Field - Block Leaflet",
+    "title": "OpenStreetMap Field - Block+Widget Leaflet",
     "fields": [
         {
             "key": "field_5d4c2962d6960",
-            "label": "leaflet_map",
+            "label": "Leaflet Map",
             "name": "leaflet_map_block",
             "type": "open_street_map",
             "instructions": "",
@@ -44,6 +44,13 @@
                 "operator": "==",
                 "value": "acf\/leaflet-map"
             }
+        ],
+        [
+            {
+                "param": "widget",
+                "operator": "==",
+                "value": "acf-leaflet-widget"
+            }
         ]
     ],
     "menu_order": 0,
@@ -54,5 +61,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565273365
+    "modified": 1565281545
 }

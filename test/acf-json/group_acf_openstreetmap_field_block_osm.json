@@ -1,6 +1,6 @@
 {
     "key": "group_acf_openstreetmap_field_block_osm",
-    "title": "OpenStreetMap Field - Block iFrame",
+    "title": "OpenStreetMap Field - Block+Widget iFrame",
     "fields": [
         {
             "key": "field_5d4c28a9ffcb9",
@@ -43,6 +43,13 @@
                 "operator": "==",
                 "value": "acf\/osm-map"
             }
+        ],
+        [
+            {
+                "param": "widget",
+                "operator": "==",
+                "value": "acf-osm-widget"
+            }
         ]
     ],
     "menu_order": 0,
@@ -53,5 +60,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565273354
+    "modified": 1565281830
 }

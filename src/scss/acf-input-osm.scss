@@ -18,6 +18,11 @@
 		}
 	}	
 }
+.acf-block-preview {
+	iframe {
+		pointer-events:none;
+	}
+}
 
 .acf-field-open-street-map {
 	.acf-osm-map {
@@ -195,11 +200,30 @@
 	}
 }
 
+$leaflet-panes: (
+	// original 
+	leaflet-pane:400,
+	leaflet-tile-pane: 200,
+	leaflet-shadow-pane: 500,
+	leaflet-overlay-pane: 400,
+	leaflet-marker-pane: 600,
+	leaflet-tooltip-pane: 650,
+	leaflet-popup-pane: 700,
+);
+
+.wp-block {
+	@each $pane,$zindex in $leaflet-panes {
+		
+		.#{$pane} {
+			z-index: $zindex / 10;
+		}
+	}
+}
 
 // block editor fixes
 .leaflet-pane {
 	.wp-block & {
-		z-index:auto;
+//		z-index:auto;
 	}
 }
 .leaflet-control-layers {

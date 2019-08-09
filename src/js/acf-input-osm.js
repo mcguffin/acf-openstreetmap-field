@@ -231,6 +231,7 @@
 	osm.Field = Backbone.View.extend({
 
 		map: null,
+		field: null,
 		geocoder: null,
 		visible: null,
 		$parent:function(){
@@ -255,6 +256,7 @@
 				editor_config = this.$el.data().editorConfig;
 
 			this.map		= conf.map;
+			this.field		= conf.field;
 
 			this.model		= new osm.MapData(data);
 
@@ -291,6 +293,12 @@
 
 			this.update_map();
 
+
+			acf.addAction('remount_field/type=open_street_map', function(field){
+				if ( self.field === field ) {
+					self.map.invalidateSize();
+				}
+			})
 			return this;
 		},
 		getMapData:function() {
@@ -675,7 +683,7 @@
 					}
 					map.invalidateSize();
 				})();
-				editor = new osm.Field( { el: e.target, map: map } );
+				editor = new osm.Field( { el: e.target, map: map, field: acf.getField( $(e.target).closest('.acf-field') ) } );
 				$(e.target).data( '_map_editor', editor );
 			}
 		});
@@ -693,4 +701,7 @@
 	    var editor = field.$el.find('[data-editor-config]').data( '_map_editor' );
 	    editor.update_visible();
 	});
+
+	
+
 })( jQuery, acf_osm_admin, window );

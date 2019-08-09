@@ -1,6 +1,34 @@
 <?php
 
-namespace AcfDuplicateRepeater;
+namespace ACFFieldOpenstreetmap;
+
+abstract class Test_Widget extends \WP_Widget {
+	public function form( $instance ) {
+	}
+	public function update( $new_instance, $old_instance ) {
+		return $new_instance;
+	}
+}
+
+class OSM_Widget extends Test_Widget {
+	public function __construct() {
+		parent::__construct( 'acf-osm-widget', 'OSM Map', [] );
+	}
+	public function widget( $args, $instance ) {
+		the_field('osm_map_block','widget_'.$this->id);
+	}
+}
+
+class Leaflet_Widget extends Test_Widget {
+	public function __construct() {
+		parent::__construct( 'acf-leaflet-widget', 'Leaflet Map', [] );
+	}
+	public function widget( $args, $instance ) {
+		the_field('leaflet_map_block','widget_'.$this->id);
+	}
+}
+
+
 
 class PluginTest {
 
@@ -17,7 +45,11 @@ class PluginTest {
 		add_action( 'acf/update_field_group', [ $this, 'mutate_field_group' ], 9 );
 
 		add_action( 'acf/init', [ $this, 'register_blocks' ] );
-
+		
+		add_action( 'widgets_init', function(){
+			register_widget( '\ACFFieldOpenstreetmap\OSM_Widget' );
+			register_widget( '\ACFFieldOpenstreetmap\Leaflet_Widget' );
+		});
 	}
 	
 	/**
