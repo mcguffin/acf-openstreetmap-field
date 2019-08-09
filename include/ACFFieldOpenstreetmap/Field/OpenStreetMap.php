@@ -443,7 +443,9 @@ class OpenStreetMap extends \acf_field {
 				$value['lng'] = floatval( $value['center_lng'] );
 				unset( $value['center_lng'] );
 			}
-
+			if ( ! isset( $value['zoom']  ) ) {
+				$value['zoom'] = $field['zoom'];
+			}
 			// convert from ACF GM-Field
 			if ( isset( $value['lat'], $value['lng'] ) ) {
 				
