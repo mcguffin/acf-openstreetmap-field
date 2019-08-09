@@ -80,6 +80,13 @@
         ],
         [
             {
+                "param": "post_type",
+                "operator": "==",
+                "value": "acf-osm-test-sub"
+            }
+        ],
+        [
+            {
                 "param": "options_page",
                 "operator": "==",
                 "value": "acf-options-acf-osm-test"
@@ -92,7 +99,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 0,
+    "active": 1,
     "description": "",
-    "modified": 1565330570
+    "modified": 1565334353
 }

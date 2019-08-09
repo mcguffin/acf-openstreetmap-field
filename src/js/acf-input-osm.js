@@ -109,7 +109,7 @@
 			GSModel.prototype.initialize.apply(this,arguments)
 		}
 	});
-	osm.MarkerEntry = wp.media.View.extend({
+	osm.MarkerEntry = wp.Backbone.View.extend({
 		tagName: 'div',
 		className:'osm-marker',
 		template:wp.template('osm-marker-input'),
@@ -673,6 +673,7 @@
 		})
 		.on( 'acf-osm-map-init', function( e, map ) {
 			var editor;
+
 			// wrap osm.Field backbone view around editors
 			if ( $(e.target).is('[data-editor-config]') ) {
 				// e.preventDefault();

@@ -83,6 +83,8 @@ class OpenStreetMap extends \acf_field {
 
 		add_action( 'print_media_templates', array( $this, 'print_media_templates' ) );
 
+		add_action( 'wp_footer', array( $this, 'maybe_print_media_templates' ), 11 );
+
 		// do not delete!
     	parent::__construct();
 
@@ -364,22 +366,6 @@ class OpenStreetMap extends \acf_field {
 
 	}
 
-	function field_group_admin_enqueue_scripts() {
-
-		wp_enqueue_media();
-
-		wp_enqueue_script('acf-input-osm');
-
-		wp_enqueue_script('acf-field-group-osm');
-
-		wp_enqueue_script('acf-osm-frontend');
-
-		wp_enqueue_style('acf-input-osm');
-
-		wp_enqueue_style('leaflet');
-
-	}
-
 
 	/*
 	*  input_admin_head()
@@ -471,14 +457,20 @@ class OpenStreetMap extends \acf_field {
 	*  @param	n/a
 	*  @return	n/a
 	*/
-
-	/*
-
 	function field_group_admin_enqueue_scripts() {
+
+		wp_enqueue_script('acf-input-osm');
+
+		wp_enqueue_script('acf-field-group-osm');
+
+		wp_enqueue_script('acf-osm-frontend');
+
+		wp_enqueue_style('acf-input-osm');
+
+		wp_enqueue_style('leaflet');
 
 	}
 
-	*/
 
 
 	/*
@@ -880,6 +872,16 @@ class OpenStreetMap extends \acf_field {
 	}
 
 	*/
+
+	/**
+	 *	@action wp_footer
+	 */
+	public function maybe_print_media_templates() {
+		if ( ! did_action( 'print_media_templates' ) ) {
+			$this->print_media_templates();
+		}
+	}
+	
 
 	/**
 	 *	@action print_media_templates

@@ -216,6 +216,24 @@
             "button_label": "Add Row",
             "min": "",
             "max": ""
+        },
+        {
+            "key": "field_5d4d12cddc47b",
+            "label": "Google Map",
+            "name": "google_map",
+            "type": "google_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "center_lat": "",
+            "center_lng": "",
+            "zoom": "",
+            "height": ""
         }
     ],
     "location": [
@@ -224,6 +242,20 @@
                 "param": "post_type",
                 "operator": "==",
                 "value": "post"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "acf-osm-test-sub"
+            }
+        ],
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
             }
         ]
     ],
@@ -235,5 +267,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565265346
+    "modified": 1565334353
 }

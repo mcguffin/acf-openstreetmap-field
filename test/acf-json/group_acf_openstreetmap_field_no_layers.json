@@ -5,7 +5,7 @@
         {
             "key": "field_5d5bc3655263c",
             "label": "Leaflet Map",
-            "name": "leaflet_map",
+            "name": "leaflet_map_nolay",
             "type": "open_street_map",
             "instructions": "",
             "required": 0,
@@ -39,7 +39,7 @@
         {
             "key": "field_5d5bc36f5263d",
             "label": "iFrame Map",
-            "name": "iframe_map",
+            "name": "iframe_map_nolay",
             "type": "open_street_map",
             "instructions": "",
             "required": 0,
@@ -77,6 +77,20 @@
                 "operator": "==",
                 "value": "post"
             }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "acf-osm-test-sub"
+            }
+        ],
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
+            }
         ]
     ],
     "menu_order": 0,
@@ -87,5 +101,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565271476
+    "modified": 1565334353
 }

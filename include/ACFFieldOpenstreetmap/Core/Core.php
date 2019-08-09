@@ -93,7 +93,7 @@ class Core extends Plugin {
 		/* backend */
 
 		// field js
-		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','backbone'), $this->get_version(), true );
+		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','wp-backbone'), $this->get_version(), true );
 		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
 			'options'	=> array(
 				'osm_layers'		=> $this->get_osm_layers(),
@@ -105,7 +105,7 @@ class Core extends Plugin {
 				'nothing_found'	=> __('Nothing found...','acf-openstreetmap-field'),
 			),
 		));
-		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), array('acf-field-group','acf-input-osm','backbone'), $this->get_version(), true );
+		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), array('acf-field-group','acf-input-osm'), $this->get_version(), true );
 
 		// compat duplicate repeater
 		wp_register_script( 'acf-osm-compat-duplicate-repeater', $this->get_asset_url( 'assets/js/compat/acf-duplicate-repeater.js' ), array( 'acf-duplicate-repeater' ), $this->get_version() );
@@ -114,6 +114,20 @@ class Core extends Plugin {
 		// field css
 		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), array('acf-input','dashicons'), $this->get_version() );
 
+
+
+		/*
+		Deps:
+			acf-osm-compat-duplicate-repeater
+				acf-duplicate-repeater (3rd party)
+			acf-field-group-osm
+				acf-field-group
+				acf-input-osm
+					acf-input
+					wp-backbone
+			acf-osm-frontend
+				jquery
+		*/
 
 	}
 
