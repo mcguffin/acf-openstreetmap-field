@@ -75,13 +75,13 @@
 
 	osm.MarkerData = GSModel.extend({
 		getters: {
-			lat:fixedFloatGetter('lat',6),
-			lng:fixedFloatGetter('lng',6),
+			lat:fixedFloatGetter( 'lat', options.accuracy ),
+			lng:fixedFloatGetter( 'lng', options.accuracy ),
 			zoom:intGetter('zoom'),
 		},
 		setters: {
-			lat:fixedFloatSetter('lat',6),
-			lng:fixedFloatSetter('lng',6),
+			lat:fixedFloatSetter( 'lat', options.accuracy ),
+			lng:fixedFloatSetter( 'lng', options.accuracy ),
 			zoom:intSetter('zoom'),
 		},
 		isDefaultLabel:function() {
@@ -95,13 +95,13 @@
 	
 	osm.MapData = GSModel.extend({
 		getters: {
-			center_lat:fixedFloatGetter('center_lat',6),
-			center_lng:fixedFloatGetter('center_lng',6),
+			center_lat:fixedFloatGetter( 'center_lat', options.accuracy ),
+			center_lng:fixedFloatGetter( 'center_lng', options.accuracy ),
 			zoom:intGetter('zoom'),
 		},
 		setters: {
-			center_lat:fixedFloatSetter('center_lat',6),
-			center_lng:fixedFloatSetter('center_lng',6),
+			center_lat:fixedFloatSetter( 'center_lat', options.accuracy ),
+			center_lng:fixedFloatSetter( 'center_lng', options.accuracy ),
 			zoom:intSetter('zoom'),
 		},
 		initialize:function(o) {

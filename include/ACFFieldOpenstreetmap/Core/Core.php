@@ -98,6 +98,7 @@ class Core extends Plugin {
 			'options'	=> array(
 				'osm_layers'		=> $this->get_osm_layers(),
 				'leaflet_layers'	=> $this->get_leaflet_layers(),
+				'accuracy'			=> 7,
 			),
 			'i18n'	=> array(
 				'search'		=> __('Search...','acf-openstreetmap-field'),
