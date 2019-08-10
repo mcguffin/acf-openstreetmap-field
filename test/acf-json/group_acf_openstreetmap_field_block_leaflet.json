@@ -3,6 +3,8 @@
     "title": "OpenStreetMap Field - Block+Widget Leaflet",
     "fields": [
         {
+            "lat": 53.0000127,
+            "lng": 11.0000181,
             "key": "field_5d4c2962d6960",
             "label": "Leaflet Map",
             "name": "leaflet_map_block",
@@ -16,8 +18,6 @@
                 "id": ""
             },
             "return_format": "leaflet",
-            "lat": "53.0000127",
-            "lng": "11.0000181",
             "zoom": 15,
             "allow_map_layers": 1,
             "height": 400,
@@ -52,5 +52,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565358432
+    "modified": 1565428834
 }

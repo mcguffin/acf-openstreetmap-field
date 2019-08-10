@@ -3,6 +3,8 @@
     "title": "OpenStreetMap Field - Block+Widget iFrame",
     "fields": [
         {
+            "lat": 53.5527509,
+            "lng": 9.9769592,
             "key": "field_5d4c28a9ffcb9",
             "label": "OSM Map",
             "name": "osm_map_block",
@@ -19,8 +21,6 @@
             "layers": [
                 "OpenStreetMap.HOT"
             ],
-            "center_lat": "53.550711",
-            "center_lng": "10.000477",
             "zoom": 12,
             "allow_map_layers": 1,
             "height": 400,
@@ -32,14 +32,14 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf\/osm-map"
+                "value": "all"
             }
         ],
         [
             {
                 "param": "widget",
                 "operator": "==",
-                "value": "acf-osm-widget"
+                "value": "all"
             }
         ]
     ],
@@ -51,5 +51,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565359213
+    "modified": 1565428910
 }

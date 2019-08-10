@@ -110,6 +110,12 @@ No.
 
 == Changelog ==
 
+= 1.1.0 =
+ - UI: Usability Improvements
+ - Tested: Verfied Compatibility with Widgets, Block-Editor, Frontend Form
+ - Stored data pretty much like google map field
+ - Code: Refactored JS
+
 = 1.0.1 =
 Convert Values from ACF Googlemaps-Field
 

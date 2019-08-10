@@ -3,6 +3,8 @@
     "title": "OpenStreetMap Field - No Layers",
     "fields": [
         {
+            "lat": 53.5507112,
+            "lng": 10.0006485,
             "key": "field_5d5bc3655263c",
             "label": "Leaflet Map",
             "name": "leaflet_map_nolay",
@@ -20,14 +22,14 @@
                 "MapBox.Light",
                 "SafeCast"
             ],
-            "center_lat": "53.550711",
-            "center_lng": "10.000477",
             "zoom": 12,
             "allow_map_layers": 0,
             "height": 400,
             "max_markers": ""
         },
         {
+            "lat": 53.55064,
+            "lng": 10.00065,
             "key": "field_5d5bc36f5263d",
             "label": "iFrame Map",
             "name": "iframe_map_nolay",
@@ -44,9 +46,7 @@
             "layers": [
                 "Thunderforest.Transport"
             ],
-            "center_lat": "",
-            "center_lng": "",
-            "zoom": "",
+            "zoom": 12,
             "allow_map_layers": 0,
             "height": 400,
             "max_markers": ""
@@ -83,5 +83,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565359240
+    "modified": 1565428956
 }
