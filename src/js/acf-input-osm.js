@@ -250,17 +250,20 @@
 		initialize:function(conf) {
 
 			var self = this,
-				data = this.getMapData(),
-				editor_config = this.$el.data().editorConfig;
-console.log(data)
+				data = this.getMapData();
+
+			this.config		= this.$el.data().editorConfig;
+
 			this.map		= conf.map;
+
 			this.field		= conf.field;
 
 			this.model		= new osm.MapData(data);
 
 			this.init_acf();
 
-			if ( editor_config.allow_providers ) {
+			if ( this.config.allow_providers ) {
+				// prevent default layer creation
 				this.$el.on( 'acf-osm-map-create-layers', this.preventDefault );
 				this.initLayers();
 			}
@@ -358,13 +361,12 @@ console.log(data)
 		},
 		initMarkers:function(){
 
-			var self = this,
-				editor_config = this.$el.data().editorConfig;
+			var self = this;
 
 			this.initGeocode();
 
 			// no markers allowed!
-			if ( editor_config.max_markers === 0 ) {
+			if ( this.config.max_markers === 0 ) {
 				return;
 			}
 
@@ -385,7 +387,7 @@ console.log(data)
 				e.originalEvent.preventDefault();
 				e.originalEvent.stopPropagation();
 				// no more markers
-				if ( editor_config.max_markers !== false && count_markers >= editor_config.max_markers ) {
+				if ( self.config.max_markers !== false && count_markers >= self.config.max_markers ) {
 					return;
 				}
 				model = new osm.MarkerData({
@@ -409,7 +411,6 @@ console.log(data)
 		 initGeocode:function() {
 
  			var self = this,
- 				editor_config = this.$el.data().editorConfig,
 				$above = this.$el.prev();
 			if ( ! $above.is( '.acf-osm-above' ) ) {
 				$above = $('<div class="acf-osm-above"></div>').insertBefore( this.$el );
@@ -433,7 +434,6 @@ console.log(data)
  			.on('markgeocode',function(e){
  				// search result click
  				var latlng =  e.geocode.center,
- 					editor_config = self.$el.data().editorConfig,
  					count_markers = self.model.get('markers').length,
  					label = self.parseGeocodeResult( [ e.geocode ], latlng ),
  					marker_data = {
@@ -444,16 +444,16 @@ console.log(data)
  					}, 
  					model;
 
- 				if ( editor_config.max_markers === 0 ) {
+ 				if ( self.config.max_markers === 0 ) {
 
  					return self.map.fitBounds( e.geocode.bbox );
 
  				}
- 				if ( count_markers < editor_config.max_markers ) {
+ 				if ( count_markers < self.config.max_markers ) {
 
  					self.model.get('markers').add( marker_data );
 
- 				} else if ( editor_config.max_markers === 1 ) {
+ 				} else if ( self.config.max_markers === 1 ) {
  					self.model.get('markers').at(0).set( marker_data );
 
  				}
@@ -506,9 +506,8 @@ console.log(data)
 				baseLayers = {},
 				overlays = {},
 				mapLayers = {},
-				editor_config = this.$el.data().editorConfig,
 				is_omitted = function(key) {
-					return key === null || ( !! editor_config.restrict_providers && editor_config.restrict_providers.indexOf( key ) === -1 );
+					return key === null || ( !! self.config.restrict_providers && self.config.restrict_providers.indexOf( key ) === -1 );
 				},
 				setupMap = function( val, key ){
 					var layer, layer_config;
@@ -545,16 +544,16 @@ console.log(data)
  			selectedLayers = this.model.get('layers'); // should be layer store value
 
  			// filter avaialble layers in field value
- 			if ( editor_config.restrict_providers !== false && _.isArray( editor_config.restrict_providers ) ) {
+ 			if ( this.config.restrict_providers !== false && _.isArray( this.config.restrict_providers ) ) {
  				selectedLayers = selectedLayers.filter( function(el) {
- 					return editor_config.restrict_providers.indexOf( el ) !== -1;
+ 					return self.config.restrict_providers.indexOf( el ) !== -1;
  				});
  			}
 
  			// set default layer
  			if ( ! selectedLayers.length ) {
 
- 				selectedLayers = editor_config.restrict_providers.slice( 0, 1 );
+ 				selectedLayers = this.config.restrict_providers.slice( 0, 1 );
 
  			}
 
@@ -581,7 +580,7 @@ console.log(data)
 				self.model.set( 'layers', layers );
 			} );
 
- 			$.each( editor_config.restrict_providers, setupMap );
+ 			$.each( this.config.restrict_providers, setupMap );
 			
 			this.layersControl = L.control.layers( baseLayers, overlays, {
 				collapsed: true,

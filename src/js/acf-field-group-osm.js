@@ -26,20 +26,28 @@
 			return data;
 		},
 		initialize:function(conf) {
-			osmField.prototype.initialize.apply( this, arguments );
+
+			osmField.prototype.initialize.apply( this, [ conf ] );
 			this.bindMapListener();
 			this.bindListener();
 		},
 		updateInput: function() {
-			this.$lat().val( this.model.get('lat') );
-			this.$lng().val( this.model.get('lng') );
-			this.$zoom().val( this.model.get('zoom') );
+			this.$lat().val( this.model.get('lat') ).trigger('change');
+			this.$lng().val( this.model.get('lng') ).trigger('change');
+			this.$zoom().val( this.model.get('zoom') ).trigger('change');
 		},
 		initLayers:function() {
 			var layers = this.model.get('layers');
+
+			this.config.restrict_providers = this.$returnFormat().find(':checked').val() === 'osm' 
+				? Object.values( arg.options.osm_layers )
+				: Object.values( arg.options.leaflet_layers );
+
 			osmField.prototype.initLayers.apply(this,arguments);
+
 			var $layers = $( this.layersControl.getContainer() ).find('[type="radio"],[type="checkbox"]'),
 				name = this.$zoom().attr('name').replace('[zoom]','[layers][]');
+
 			$layers.each(function(i,el){
 				var $el = $(el);
 				$(el)
@@ -100,22 +108,12 @@
 			var self = this;
 
 			this.$returnFormat().on('change',function(e) {
-				var conf = self.$el.data('editor-config'),
-					layers = self.model.get('layers');
+				var layers = self.model.get('layers');
 				// map
 				self.resetLayers();
-				if ( $(e.target).val() === 'osm' ) {
-					// set provider restriction to osm providers
-					conf.restrict_providers = Object.values( arg.options.osm_layers );
-				} else {
-					// set provider restriction to osm providers
-					conf.restrict_providers = Object.values( arg.options.leaflet_layers );
-				}
-				self.$el.data( 'editor-config', conf );
 				self.model.set('layers',layers);
 				self.initLayers();
 			});
-
 
 		},
 		unbindInputListener: function() {
