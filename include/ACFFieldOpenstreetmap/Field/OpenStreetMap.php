@@ -69,9 +69,9 @@ class OpenStreetMap extends \acf_field {
 		 *  defaults (array) Array of default settings which are merged into the field object. These are used later in settings
 		 */
 		$this->defaults = array(
-			'lat'		=> $this->default_values['lat'],
-			'lng'		=> $this->default_values['lng'],
-			'zoom'		=> $this->default_values['zoom'],
+			'center_lat'		=> $this->default_values['lat'],
+			'center_lng'		=> $this->default_values['lng'],
+			'zoom'				=> $this->default_values['zoom'],
 
 			'height'			=> 400,
 			'return_format'		=> 'leaflet',
@@ -148,8 +148,8 @@ class OpenStreetMap extends \acf_field {
 				'data-map-layers'		=> $field['layers'],
 			),
 			'value'	=> array(
-				'lat'				=> $field['lat'],
-				'lng'				=> $field['lng'],
+				'lat'				=> $field['center_lat'],
+				'lng'				=> $field['center_lng'],
 				'zoom'				=> $field['zoom'],
 				'layers'			=> $field['layers'],
 				'markers'			=> array(),
@@ -162,7 +162,7 @@ class OpenStreetMap extends \acf_field {
 			'label'			=> __('Map Position','acf-openstreetmap-field'),
 			'instructions'	=> __('Center the initial map','acf-openstreetmap-field'),
 			'type'			=> 'number',
-			'name'			=> 'lat',
+			'name'			=> 'center_lat',
 			'prepend'		=> __('lat','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['lat']
 		));
@@ -173,10 +173,10 @@ class OpenStreetMap extends \acf_field {
 			'label'			=> __('Center','acf-openstreetmap-field'),
 			'instructions'	=> __('Center the initial map','acf-openstreetmap-field'),
 			'type'			=> 'number',
-			'name'			=> 'lng',
+			'name'			=> 'center_lng',
 			'prepend'		=> __('lng','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['lng'],
-			'_append' 		=> 'lat'
+			'_append' 		=> 'center_lat'
 		));
 
 
@@ -190,7 +190,7 @@ class OpenStreetMap extends \acf_field {
 			'max'			=> 22,
 			'prepend'		=> __('zoom','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['zoom'],
-			'_append' 		=> 'lat',
+			'_append' 		=> 'center_lat',
 		));
 
 		// allow_layer selection
@@ -246,7 +246,7 @@ class OpenStreetMap extends \acf_field {
 		$core = Core\Core::instance();
 	
 		if ( is_null( $field['value'] ) ) {
-			$field['value'] = $this->sanitize_value( array(), $field );
+			$field['value'] = $this->sanitize_value( array(), $field, 'display' );
 		}
 
 		// value
@@ -441,18 +441,18 @@ class OpenStreetMap extends \acf_field {
 	/**
 	 *	@param array $value	array( 'lat' => float, 'lng => float, 'zoom' => int, 'address' => string, 'markers' => array, 'layers' => array )
  	 *	@param array $field
- 	 *	@param string $context
+ 	 *	@param string $context edit|dispaly|update
  	 *	@return array Sanitized $value
  	 */
 	private function sanitize_value( $value, $field, $context = '' ) {
 
 		$value = (array) $value;
 		
-		$value = wp_parse_args( $value, $field );
-
-		$value = wp_parse_args( $value, $this->default_values );
-
 		$value = $this->sanitize_geodata( $value );
+
+		// $value = wp_parse_args( $value, $field );
+		// 
+		$value = wp_parse_args( $value, $this->default_values );
 
 		//
 		// Markers
@@ -461,25 +461,31 @@ class OpenStreetMap extends \acf_field {
 			$value['markers'] = array();
 		}
 
-		// remove artifacts from old versions
-		if ( isset( $value['markers']['__osm_marker_template__'] ) ) {
-			unset( $value['markers']['__osm_marker_template__'] );
-		}
 		// make sure its an indexed array
 		$value['markers'] = array_values( $value['markers'] );
 
 		// Maybe get marker from ACF GoogleMaps data
-		if ( $field['max_markers'] >= 1 && ! empty( $value[ 'address' ] ) && ! count( $value[ 'markers' ] ) ) {
+		if ( 'display' === $context ) { // display + edit
+			
+			if ( ! empty( $value[ 'address' ] ) ) {
 
-			// Sanitize HTML from address
-			$value[ 'address' ] = wp_kses_post( $value[ 'address' ] );
+				// create marker from GM field address
+				if ( $field['max_markers'] !== 0 && ! count( $value[ 'markers' ] ) ) {
 
-			$value['markers'][] = array(
-				'label'	=> $value['address'],
-				'default_label'	=> '',
-				'lat'	=> $value['lat'],
-				'lng'	=> $value['lng'],
-			);
+					$value['markers'][] = array(
+						'label'	=> wp_kses_post( $value['address'] ),
+						'default_label'	=> '',
+						'lat'	=> $value['lat'],
+						'lng'	=> $value['lng'],
+					);
+
+				}				
+			} else  {
+				if ( count( $value[ 'markers' ] ) ) {
+					// set address from first marker
+					$value['address'] = $value['markers'][0]['label'];
+				}
+			}
 		}
 
 		// typecast
@@ -490,6 +496,18 @@ class OpenStreetMap extends \acf_field {
 			$marker['label'] = wp_kses_post( $marker[ 'label' ], array(), $allowed_protocols = '' );
 			$marker['default_label'] = wp_kses_post( $marker[ 'default_label' ], array(), $allowed_protocols = '' );
 		}
+		// store data to be used by ACF GM Field
+		if ( 'update' === $context ) {
+			if ( count( $value['markers'] ) ) {
+				// update address from first marker
+				$value['address'] = $value['markers'][0]['label'];
+			} else {
+				$value['address'] = '';
+			}
+		}
+
+		// Sanitize HTML from address
+		$value[ 'address' ] = wp_kses_post( $value[ 'address' ] );
 
 		//
 		// Layers
@@ -542,7 +560,7 @@ class OpenStreetMap extends \acf_field {
 			$value = $this->defaults;
 		}
 
-		$value = $this->sanitize_value( $value, $field. 'update' );
+		$value = $this->sanitize_value( $value, $field, 'update' );
 
 
 
@@ -652,6 +670,7 @@ class OpenStreetMap extends \acf_field {
 			wp_enqueue_script( 'acf-osm-frontend' );
 			wp_enqueue_style('leaflet');
 		} else {
+			$value = $this->sanitize_value( $value, $field, 'display' );
 			// ensure backwards compatibility <= 1.0.1
 			$value['center_lat'] = $value['lat']; 
 			$value['center_lng'] = $value['lng']; 
@@ -744,6 +763,7 @@ class OpenStreetMap extends \acf_field {
 
 	}
 
+
 	/**
 	 *	@param array $field
 	 *	@param string $context
@@ -751,19 +771,17 @@ class OpenStreetMap extends \acf_field {
 	 */
 	private function sanitize_field( $field, $context = '' ) {
 
-		$field = $this->sanitize_geodata( $field );
+		$field = wp_parse_args( $field, array(
+			'center_lat'	=> $this->defaults['center_lat'],
+			'center_lng'	=> $this->defaults['center_lng'],
+			'zoom'			=> $this->defaults['zoom'],
+		) );
+		
+		// typecast values
+		$field['center_lat']	= floatval( $field['center_lat'] );
+		$field['center_lng']	= floatval( $field['center_lng'] );
+		$field['zoom'] 			= min( 22, max( 1, intval( $field['zoom'] ) ) );
 
-		// strip empty values
-		foreach ( array( 'lat', 'lng', 'zoom' ) as $prop ) {
-			if ( ! isset( $field[$prop] ) || empty( $field[$prop] ) ) {
-				$field[$prop] = $this->default_values[ $prop ];				
-			}
-		}
-
-		// typecast
-		$field['lat'] = floatval( $field['lat'] );
-		$field['lng'] = floatval( $field['lng'] );
-		$field['zoom'] = min( 22, max( 1, intval( $field['zoom'] ) ) );
 		return $field;
 	}
 

@@ -5,10 +5,10 @@
 	var osmField = osm.Field;
 	osm.Field = osmField.extend({
 		$lat: function() {
-			return this.$el.closest('.acf-field-settings').find('input[id$="-lat"]');
+			return this.$el.closest('.acf-field-settings').find('input[id$="-center_lat"]');
 		},
 		$lng: function() {
-			return this.$el.closest('.acf-field-settings').find('input[id$="-lng"]');
+			return this.$el.closest('.acf-field-settings').find('input[id$="-center_lng"]');
 		},
 		$zoom: function() {
 			return this.$el.closest('.acf-field-settings').find('input[id$="-zoom"]');
