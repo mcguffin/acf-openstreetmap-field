@@ -41,10 +41,11 @@ ACF OpenStreetMap Field ToDo
  
  1.2.0
  -----
- - [ ] Test:
+ - [ ] Tests:
      - [ ] ACF-Customizer
      - [ ] ACF WP-Objects
      - [ ] ACF Quick Edit Fields
+ - [ ] UI: btn fit markers in View
+ - [ ] UI: enter lat/lng/zoom for map and lat/lng for marker
+ - [ ] Data: Marker Meta: textarea, text, number, file, image, URL, email, ... 
  - [ ] Settings: individually disable map providers
- - [ ] Marker Meta: textarea, text, number, file, image, URL, email, ... 
- - [ ] Field Option: Allow entering lat/lng/zoom

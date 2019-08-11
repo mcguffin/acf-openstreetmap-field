@@ -402,7 +402,7 @@ class OpenStreetMap extends \acf_field {
 	 */
 	private function sanitize_geodata( $value ) {
 
-		// convert from <= 1.0.1 center_lat > lat
+		// convert settings from <= 1.0.1 or acf gm field
 		if ( isset( $value['center_lat'] ) ) {
 			if ( ( ! isset( $value['lat'] ) || empty( $value['lat'] ) ) && ! empty( $value['center_lat'] ) ) {
 				$value['lat'] = $value['center_lat'];
@@ -417,12 +417,13 @@ class OpenStreetMap extends \acf_field {
 			unset( $value['center_lng'] );
 		}
 
+		// apply defaults
 		$value = wp_parse_args( $value, array(
 			'lat'	=> $this->default_values['lat'],
 			'lng'	=> $this->default_values['lng'],
 		) );
 		
-		// typecasting
+		// typecast values
 		$value['lat'] = floatval( $value['lat'] );
 		$value['lng'] = floatval( $value['lng'] );
 
