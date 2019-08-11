@@ -312,8 +312,13 @@
 		updateValue:function() {
 			this.$value().val( JSON.stringify( this.model.toJSON() ) ).trigger('change');
 			//this.$el.trigger('change')
+			this.updateMarkerState();
 		},
-
+		updateMarkerState:function() {
+			var len = this.model.get('markers').length;
+			this.$el.attr('data-has-markers', !!len ? 'true' : 'false');
+			this.$el.attr('data-can-add-marker', ( false === this.config.max_markers || len < this.config.max_markers) ? 'true' : 'false');	
+		},
 		/**
 		 *	Markers
 		 */
@@ -358,18 +363,23 @@
 
 			marker.addTo( this.map );
 
+
 		},
 		initMarkers:function(){
 
-			var self = this;
+			var self = this, 
+				len;
 
 			this.initGeocode();
-
+			this.$el.attr('data-has-markers', 'false');
+			this.$el.attr('data-can-add-marker', 'false');
+			
 			// no markers allowed!
 			if ( this.config.max_markers === 0 ) {
 				return;
 			}
 
+			len = this.model.get('markers').length;
 			this.icon = new L.DivIcon({
 				html: '',
 				className:'osm-marker-icon'
@@ -381,13 +391,13 @@
 
 			this.map.on('dblclick', function(e){
 				var latlng = e.latlng,
-					count_markers = self.$markers().children().not('[data-id]').length,
+					collection = self.model.get('markers'),
 					model;
 				
 				e.originalEvent.preventDefault();
 				e.originalEvent.stopPropagation();
 				// no more markers
-				if ( self.config.max_markers !== false && count_markers >= self.config.max_markers ) {
+				if ( self.config.max_markers !== false && collection.length >= self.config.max_markers ) {
 					return;
 				}
 				model = new osm.MarkerData({
@@ -397,10 +407,13 @@
 					lng: latlng.lng,
 //					collection:self.model.get('markers')
 				})
-				self.model.get('markers').add( model );
+				collection.add( model );
 				self.reverseGeocode(model);
 			})
 			.doubleClickZoom.disable(); 
+
+			this.updateMarkerState();
+
 		},
 
 		/**

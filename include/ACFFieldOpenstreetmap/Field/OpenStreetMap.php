@@ -311,7 +311,10 @@ class OpenStreetMap extends \acf_field {
 		if ( $max_markers !== 0 ) {
 			?>
 				<div class="markers-instruction">
-					<p class="description"><?php _e('Double click to add Marker. Drag to move.', 'acf-openstreetmap-field' ); ?></p>
+					<p class="description">
+						<span class="can-add-marker"><?php _e('Double click to add Marker.', 'acf-openstreetmap-field' ); ?></span>
+						<span class="has-markers"><?php _e('Drag Marker to move.', 'acf-openstreetmap-field' ); ?></span>
+					</p>
 				</div>
 			<?php
 			
@@ -451,7 +454,7 @@ class OpenStreetMap extends \acf_field {
 		//
 		// Markers
 		//
-		if ( ! is_array( $value['markers'] ) ) {
+		if ( ! isset( $value['markers']) || ! is_array( $value['markers'] ) ) {
 			$value['markers'] = array();
 		}
 
@@ -480,9 +483,11 @@ class OpenStreetMap extends \acf_field {
 					);
 				}
 			} else  {
-				if ( count( $value[ 'markers' ] ) ) {
-					// set address from first marker
+				if ( count( $value['markers'] ) ) {
+					// update address from first marker
 					$value['address'] = $value['markers'][0]['label'];
+				} else {
+					$value['address'] = '';
 				}
 			}
 		}
@@ -516,7 +521,7 @@ class OpenStreetMap extends \acf_field {
 		//
 		// Layers
 		//
-		if ( ! is_array( $value['layers'] ) ) {
+		if ( ! isset( $value['layers'] ) || ! is_array( $value['layers'] ) ) {
 			$value['layers'] = array();
 		}
 

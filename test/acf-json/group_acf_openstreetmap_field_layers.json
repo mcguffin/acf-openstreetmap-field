@@ -3,8 +3,8 @@
     "title": "OpenStreetMap Field - Layers",
     "fields": [
         {
-            "lat": 53.5507112,
-            "lng": 10.0006485,
+            "center_lat": 53.5507112,
+            "center_lng": 10.0006485,
             "key": "field_5d4bc3655263c",
             "label": "Leaflet Map",
             "name": "leaflet_map",
@@ -28,8 +28,8 @@
             "max_markers": ""
         },
         {
-            "lat": 53.5817546,
-            "lng": 9.9884605,
+            "center_lat": 53.5817546,
+            "center_lng": 9.9884605,
             "key": "field_5d4bc36f5263d",
             "label": "iFrame Map",
             "name": "iframe_map",

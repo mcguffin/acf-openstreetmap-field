@@ -25,6 +25,12 @@
     /* .editor-block-toolbar: 101 */
     z-index: 80; }
 
+.leaflet-map[data-can-add-marker="false"] ~ .markers-instruction .can-add-marker {
+  display: none; }
+
+.leaflet-map[data-has-markers="false"] ~ .markers-instruction .has-markers {
+  display: none; }
+
 .acf-block-preview iframe {
   pointer-events: none; }
 

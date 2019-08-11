@@ -3,8 +3,8 @@
     "title": "OpenStreetMap Field - Block+Widget iFrame",
     "fields": [
         {
-            "lat": 53.5527509,
-            "lng": 9.9769592,
+            "center_lat": 53.5527509,
+            "center_lng": 9.9769592,
             "key": "field_5d4c28a9ffcb9",
             "label": "OSM Map",
             "name": "osm_map_block",

@@ -16,7 +16,17 @@
 			/* .editor-block-toolbar: 101 */
 			z-index:80;
 		}
-	}	
+	}
+	&[data-can-add-marker="false"] ~ .markers-instruction {
+		.can-add-marker {
+			display:none;
+		}
+	}
+	&[data-has-markers="false"] ~ .markers-instruction {
+		.has-markers {
+			display:none;
+		}
+	}
 }
 .acf-block-preview {
 	iframe {

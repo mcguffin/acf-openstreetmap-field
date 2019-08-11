@@ -15,10 +15,10 @@ ACF OpenStreetMap Field ToDo
      - [x] Field Group Admin: add map > map doesn't init
      - [x] Field Group Admin: Duplicate Field > 2 Search inputs
      - [x] Repeater > Map: Map doesn't init.
- - [ ] Test:
-     - [ ] Data generated in <= 1.0.1
+ - [x] Test:
+     - [x] Data generated in <= 1.0.1
          - [ ] iFrame: there used to be address, ... hmm... ACF Artifacts?
-     - [ ] Data conversion from ACF GoogleMap Field (and back?)
+     - [x] Data conversion from ACF GoogleMap Field (and back?)
          - Format: { lat: %f, lng: %f, address: %s }
      - [x] Greate Tester Fields
      - [x] ACF: Block Editor
@@ -36,7 +36,7 @@ ACF OpenStreetMap Field ToDo
      - [x] 3rd Party: 
         - [x] ACF Duplicate Repeater
  - [x] Hide JSON Data input
- - [ ] Marker Message: hide if max_markers exceeded
+ - [x] Marker Message: hide if max_markers exceeded
  - [x] Move Accuracy to script l10n
  
  1.2.0
