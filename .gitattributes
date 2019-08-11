@@ -9,3 +9,4 @@ package*.json export-ignore
 wp-plugin-boilerplate.json export-ignore
 .wporg export-ignore
 *.md export-ignore
+test export-ignore
