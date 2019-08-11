@@ -15,11 +15,6 @@ A configurable OpenStreetMap Field for ACF.
 
 Hazzle free OpenStreetMap with [ACF](https://www.advancedcustomfields.com/).
 
-## Features
- - Select map display from multiple providers
- - Multiple Map markers
- - Choose map output as either leaflet js or iframe
-
 ## Usage
 
 #### In the Fieldgroup editor:
