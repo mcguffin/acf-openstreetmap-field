@@ -1,7 +1,7 @@
 {
   "name": "acf-openstreetmap-field",
   "version": "1.0.1",
-  "description": "A configrable OpenStreetMap Field to ACF.",
+  "description": "A configurable OpenStreetMap Field to ACF.",
   "private": true,
   "scripts": {
     "dev": "gulp dev",
