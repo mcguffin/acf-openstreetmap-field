@@ -64,6 +64,7 @@ class OpenStreetMap extends \acf_field {
 			'markers'	=> array(),
 			// gm compatibility
 			'address'	=> '',
+			'version'	=> '',
 		);
 		/*
 		 *  defaults (array) Array of default settings which are merged into the field object. These are used later in settings
@@ -400,14 +401,14 @@ class OpenStreetMap extends \acf_field {
 	/**
 	 *	Sanitize lat, lng, convert legacy properties
 	 */
-	private function sanitize_geodata( $value ) {
+	private function sanitize_geodata( $value, $default_latlng = null ) {
 
-		// convert settings from <= 1.0.1 or acf gm field
+		// convert settings from <= 1.0.1 > display only?
 		if ( isset( $value['center_lat'] ) ) {
 			if ( ( ! isset( $value['lat'] ) || empty( $value['lat'] ) ) && ! empty( $value['center_lat'] ) ) {
 				$value['lat'] = $value['center_lat'];
 			}
-			unset( $value['center_lat'] );			
+			unset( $value['center_lat'] );
 		}
 		
 		if ( isset( $value['center_lng'] ) ) {
@@ -418,10 +419,9 @@ class OpenStreetMap extends \acf_field {
 		}
 
 		// apply defaults
-		$value = wp_parse_args( $value, array(
-			'lat'	=> $this->default_values['lat'],
-			'lng'	=> $this->default_values['lng'],
-		) );
+		if ( ! is_null( $default_latlng ) ) {
+			$value = wp_parse_args( $value, $default_latlng );			
+		}
 		
 		// typecast values
 		$value['lat'] = floatval( $value['lat'] );
@@ -447,12 +447,6 @@ class OpenStreetMap extends \acf_field {
 	private function sanitize_value( $value, $field, $context = '' ) {
 
 		$value = (array) $value;
-		
-		$value = $this->sanitize_geodata( $value );
-
-		// $value = wp_parse_args( $value, $field );
-		// 
-		$value = wp_parse_args( $value, $this->default_values );
 
 		//
 		// Markers
@@ -466,7 +460,13 @@ class OpenStreetMap extends \acf_field {
 
 		// Maybe get marker from ACF GoogleMaps data
 		if ( 'display' === $context ) { // display + edit
-			
+
+			$value = $this->sanitize_geodata( $value, array(
+				'lat'	=> $field['center_lat'],
+				'lng'	=> $field['center_lng'],
+				'zoom'	=> $field['zoom'],
+			) );
+
 			if ( ! empty( $value[ 'address' ] ) ) {
 
 				// create marker from GM field address
@@ -478,8 +478,7 @@ class OpenStreetMap extends \acf_field {
 						'lat'	=> $value['lat'],
 						'lng'	=> $value['lng'],
 					);
-
-				}				
+				}
 			} else  {
 				if ( count( $value[ 'markers' ] ) ) {
 					// set address from first marker
@@ -491,13 +490,18 @@ class OpenStreetMap extends \acf_field {
 		// typecast
 		foreach ( $value['markers'] as &$marker ) {
 
-			$marker = $this->sanitize_geodata( $marker );
+			// typecast values
+			$marker['lat'] = floatval( $marker['lat'] );
+			$marker['lng'] = floatval( $marker['lng'] );
 
 			$marker['label'] = wp_kses_post( $marker[ 'label' ], array(), $allowed_protocols = '' );
 			$marker['default_label'] = wp_kses_post( $marker[ 'default_label' ], array(), $allowed_protocols = '' );
 		}
+
 		// store data to be used by ACF GM Field
 		if ( 'update' === $context ) {
+			$value[ 'version' ]	= Core\Core::instance()->get_version();
+
 			if ( count( $value['markers'] ) ) {
 				// update address from first marker
 				$value['address'] = $value['markers'][0]['label'];
