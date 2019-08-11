@@ -59,6 +59,73 @@ class PluginTest {
 			register_widget( '\ACFFieldOpenstreetmap\OSM_Widget' );
 			register_widget( '\ACFFieldOpenstreetmap\Leaflet_Widget' );
 		});
+
+		add_action('admin_init',[$this, 'maybe_generate_test_post']);
+		add_filter('the_content',function($content){
+			if ( get_post_meta(get_the_ID(),'_osm_test',true)) {
+				$content .= get_field('leaflet_gm');
+				$content .= get_field('leaflet_018');
+				$content .= get_field('leaflet_101');
+			}
+			return $content;
+		});
+	}
+
+
+	public function maybe_generate_test_post() {
+		$posts = get_posts([
+			'post_type'			=> 'post',
+			'meta_key'			=> '_osm_test',
+			'meta_value'		=> 'true',
+			'post_status'		=> 'any',
+			'posts_per_page'	=> -1,
+		]);
+
+		if ( ! count( $posts ) ) {
+			$post_id = wp_insert_post([
+				'post_title'	=> 'OSM TEST',
+				'post_status'	=> 'publish',
+			]);
+			if ( $post_id ) {
+				update_post_meta( $post_id, '_osm_test', 'true' );
+				update_post_meta( $post_id, 'leaflet_gm', array(
+					'address' => 'Hamburg Germany',
+					'lat'	  => '54.55',
+					'lng'	  => '10.03',
+				) );
+				update_post_meta( $post_id, '_leaflet_gm', 'field_5d502df02b73d' );
+
+				update_post_meta( $post_id, 'leaflet_018', array(
+					'center_lat'	=> '54.55',
+					'center_lng'	=> '10.03',
+					'zoom'			=> '14',
+					'markers'		=> [
+						[
+							'label' => 'Hamburg Germany',
+							'default_label' => 'Hamburg Germany',
+							'lat'	  => '54.55',
+							'lng'	  => '10.03',
+						]
+					],
+				) );
+				update_post_meta( $post_id, '_leaflet_018', 'field_5d502dfd2b73e' );
+				
+				update_post_meta( $post_id, 'leaflet_101', array(
+					'center_lat'	=> '54.55',
+					'center_lng'	=> '10.03',
+					'zoom'			=> '14',
+					'markers'		=> [
+						[
+							'label' => 'Hamburg Germany',
+							'default_label' => 'Hamburg Germany',
+							'lat'	  => '54.55',
+							'lng'	  => '10.03',
+						]
+					],
+				) );
+				update_post_meta( $post_id, '_leaflet_101', 'field_5d502e072b73f' );
+			}
+		}
 	}
 
 	/**
