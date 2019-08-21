@@ -105,6 +105,9 @@ No.
 
 == Changelog ==
 
+= 1.1.1 =
+ - Fix: Required Field behaviour – "required" means now "must hava a marker"
+
 = 1.1.0 =
  - UI: Usability Improvements
  - Tested: Verfied Compatibility with Widgets, Block-Editor, Frontend Form
