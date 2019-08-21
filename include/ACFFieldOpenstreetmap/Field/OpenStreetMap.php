@@ -624,7 +624,7 @@ class OpenStreetMap extends \acf_field {
 			$iframe_atts = array(
 				'height'		=> $field['height'],
 				'width'			=> '425',
-				'frmaeborder'	=> 0,
+				'frameborder'	=> 0,
 				'scrolling'		=> 'no',
 				'marginheight'	=> 0,
 				'marginwidth'	=> 0,
