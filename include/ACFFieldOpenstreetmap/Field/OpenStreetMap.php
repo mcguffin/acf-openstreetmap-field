@@ -721,9 +721,11 @@ class OpenStreetMap extends \acf_field {
 
 		}
 
-		if ( empty($value) || empty($value['lat']) || empty($value['lng'] ) ) {
+		$value = json_decode( stripslashes( $value ), true );
 
-			return false;
+		if ( ! count( $value['markers'] ) ) {
+
+			return __('Please set a marker on the map.','acf-openstreetmap-field');
 
 		}
 

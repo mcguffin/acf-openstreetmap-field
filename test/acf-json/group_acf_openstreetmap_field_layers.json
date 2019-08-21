@@ -5,12 +5,13 @@
         {
             "center_lat": 53.5507112,
             "center_lng": 10.0006485,
+            "zoom": 12,
             "key": "field_5d4bc3655263c",
             "label": "Leaflet Map",
             "name": "leaflet_map",
             "type": "open_street_map",
             "instructions": "",
-            "required": 0,
+            "required": 1,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
@@ -22,7 +23,6 @@
                 "Wikimedia",
                 "SafeCast"
             ],
-            "zoom": 12,
             "allow_map_layers": 1,
             "height": 400,
             "max_markers": ""
@@ -30,12 +30,13 @@
         {
             "center_lat": 53.5817546,
             "center_lng": 9.9884605,
+            "zoom": 15,
             "key": "field_5d4bc36f5263d",
             "label": "iFrame Map",
             "name": "iframe_map",
             "type": "open_street_map",
             "instructions": "",
-            "required": 0,
+            "required": 1,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
@@ -46,7 +47,6 @@
             "layers": [
                 "OpenStreetMap.HOT"
             ],
-            "zoom": 15,
             "allow_map_layers": 1,
             "height": 400,
             "max_markers": ""
@@ -83,5 +83,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565428045
+    "modified": 1566384297
 }
