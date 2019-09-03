@@ -26,7 +26,7 @@ Just follow the [Automatic Plugin Installation](https://wordpress.org/support/ar
 
 #### WP-CLI
 ```shell
-$ wp plugin install --activate acf-openstreetmap-field
+wp plugin install --activate acf-openstreetmap-field
 ```
 
 ### Development
@@ -45,10 +45,10 @@ Development
 -----------
 npm scripts:
  - `npm run dev`: Watch css and js soure dirs
- - `npm run build`: build assets
- - `npm run release [ patch | minor | major ]`: Publish new release
+ - `npm run test`: load some test fields
+ - `npm run dev-test`: load some test fields and watch css and js soure dirs
+ - `npm run dashicons`: Generate dashicons scss variables from source
  - `npm run i18n`: generate `.pot` file
- - `npm run package:wporg`: create zip for plugin submission
  - `npm run rollback`: remove last commit (local and remote  – use with caution!)
 
 Thanks

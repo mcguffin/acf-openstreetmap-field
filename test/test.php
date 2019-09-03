@@ -69,6 +69,26 @@ class PluginTest {
 			}
 			return $content;
 		});
+
+		add_filter('acf_osm_marker_html', function( $html ){
+		    return '<div class="my-marker"></div>';
+		});
+		add_action('wp_head',function(){
+			?>
+			<style type="text/css">
+			.my-marker {
+			    display:block;
+			    width:20px;
+			    height:20px;
+			    border-radius:10px;
+			    border:2px solid #f00;
+				margin-top:-4px;
+				margin-left:-4px;
+			}
+			</style>
+			<?php
+		});
+
 	}
 
 
@@ -136,7 +156,7 @@ class PluginTest {
 		if ( ! function_exists('acf_register_block') ) {
 			return;
 		}
-		
+
 		// register a testimonial block
 		acf_register_block(array(
 			'name'				=> 'leaflet-map',
@@ -169,6 +189,28 @@ class PluginTest {
 			'keywords'			=> array( 'map' ),
 
 		));
+
+
+		// register a testimonial block
+		acf_register_block(array(
+			'name'				=> 'raw-map',
+			'title'				=> __('OpenStreetMap (Raw Data)'),
+			'description'		=> __('Am Open Street Map'),
+			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
+				?><pre><?php
+				$data = get_field( 'raw_map_block' );
+				echo json_encode( $data,  JSON_PRETTY_PRINT );
+				
+				?></pre><?php
+			},
+			'category'			=> 'embed',
+			'icon'				=> 'location-alt',
+			'mode'				=> 'preview', // auto|preview|edit
+			'align'				=> 'full',
+			'keywords'			=> array( 'map' ),
+
+		));
+
 	}
 
 

@@ -1,13 +1,13 @@
 {
-    "key": "group_acf_openstreetmap_field_block_osm",
-    "title": "OpenStreetMap Field - Block+Widget iFrame",
+    "key": "group_acf_openstreetmap_field_block_raw",
+    "title": "OpenStreetMap Field - Block Raw Data",
     "fields": [
         {
             "center_lat": 53.5527509,
             "center_lng": 9.9769592,
-            "key": "field_5d4c28a9ffcb9",
-            "label": "OSM Map",
-            "name": "osm_map_block",
+            "key": "field_5d4d28a9ffcb9",
+            "label": "Raw Map",
+            "name": "raw_map_block",
             "type": "open_street_map",
             "instructions": "",
             "required": 0,
@@ -17,7 +17,7 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "osm",
+            "return_format": "raw",
             "layers": [
                 "OpenStreetMap.HOT"
             ],
@@ -32,14 +32,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf\/osm-map"
-            }
-        ],
-        [
-            {
-                "param": "widget",
-                "operator": "==",
-                "value": "acf-osm-widget"
+                "value": "acf\/raw-map"
             }
         ]
     ],
