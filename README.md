@@ -29,6 +29,11 @@ Just follow the [Automatic Plugin Installation](https://wordpress.org/support/ar
 wp plugin install --activate acf-openstreetmap-field
 ```
 
+#### Using composer
+```
+composer require mcguffin/acf-openstreetmap-field
+```
+
 ### Development
 ```shell
 git clone git@github.com:mcguffin/acf-openstreetmap-field.git
