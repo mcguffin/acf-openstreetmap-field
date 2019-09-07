@@ -1,0 +1,16 @@
+{
+  "name": "mcguffin/acf-openstreetmap-field",
+  "description": "WordPress ACF Field for OpenStreetMap",
+  "keywords": [
+    "ACF",
+    "ACF Field",
+    "Map",
+    "OpenStreetMap",
+	"Lealet"
+  ],
+  "homepage": "https://github.com/mcguffin/acf-openstreetmap-field",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=5.6.0"
+  }
+}
