@@ -105,6 +105,9 @@ No.
 
 == Changelog ==
 
+= 1.1.2 =
+ - Fix: PHP Strict Standards message
+
 = 1.1.1 =
  - Fix: Required Field behaviour – "required" means now "must hava a marker"
 
