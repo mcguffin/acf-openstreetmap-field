@@ -163,7 +163,9 @@ class PluginTest {
 			'title'				=> __('Leaflet Map'),
 			'description'		=> __('A Leaflet Map'),
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
+				printf('<div class="align%s">',$block['align']);
 				the_field( 'leaflet_map_block' );
+				echo '</div>';
 				?><hr /><?php
 			},
 			'category'			=> 'embed',
@@ -179,7 +181,9 @@ class PluginTest {
 			'title'				=> __('OpenStreetMap (iFrame)'),
 			'description'		=> __('Am Open Street Map'),
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
+				printf('<div class="align%s">',$block['align']);
 				the_field( 'osm_map_block' );
+				echo '</div>';
 				?><hr /><?php
 			},
 			'category'			=> 'embed',
