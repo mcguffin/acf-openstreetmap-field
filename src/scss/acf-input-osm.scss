@@ -232,8 +232,9 @@ $leaflet-panes: (
 
 // block editor fixes
 .leaflet-pane {
+	.postbox &,
 	.wp-block & {
-//		z-index:auto;
+		z-index:30;
 	}
 }
 .leaflet-control-layers {

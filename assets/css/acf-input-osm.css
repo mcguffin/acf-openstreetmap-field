@@ -200,5 +200,9 @@
 .wp-block .leaflet-popup-pane {
   z-index: 70; }
 
+.postbox .leaflet-pane,
+.wp-block .leaflet-pane {
+  z-index: 30; }
+
 .wp-block .leaflet-control-layers {
   text-align: left; }
