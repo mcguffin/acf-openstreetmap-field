@@ -106,7 +106,9 @@ No.
 == Changelog ==
 
 = 1.1.3 =
+ - UI: Better formatting for automatic marker labels
  - Fix: Map controls zindex in Block-Editor
+ - Fix: Adding markers not working on mobile devices
 
 = 1.1.2 =
  - Fix: PHP Strict Standards message

@@ -567,7 +567,11 @@
 			} else {
 				$.each( results, function( i, result ) {
 					if ( !! result.html ) {
-						label = $('<p>'+result.html+'</p>').text().trim().replace(/(\s+)/g,' ');
+						var html = result.html.replace(/(\s+)</g,'<').replace(/<br\/>/g,'<br/>, ');
+						console.log(result.html)
+						console.log(html)
+						// add missing spaces
+						label = $('<p>'+html+'</p>').text().trim().replace(/(\s+)/g,' ');
 					} else {
 						label = result.name;
 					}
