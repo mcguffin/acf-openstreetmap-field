@@ -27,6 +27,27 @@
 			display:none;
 		}
 	}
+	&:after {
+		content:attr(class);
+		font-size:16px;
+		font-family:monospace;
+		padding-top:400px;
+		background: #fff;
+		position: absolute;
+		z-index: 1000;
+		top:100%;
+		left:0;
+		width:100%;
+	}
+	~ .markers-instruction .add-marker-instructions {
+		display:none;
+	}
+	&.add-marker-on-dblclick ~ .markers-instruction .marker-on-dblclick {
+		display:inline;
+	}
+	&.add-marker-on-taphold ~ .markers-instruction .marker-on-taphold {
+		display:inline;
+	}
 }
 .acf-block-preview {
 	iframe {
@@ -92,6 +113,13 @@
 	}
 }
 
+@keyframes pling {
+	0% { left:0;top:0;width:12px;height:12px; opacity:0; }
+	5% { opacity: 1 }
+	80% { opacity: 1 }
+	100% { left:-25px;top:-25px;width:62px;height:62px; opacity:0; }
+}
+
 .osm-marker-icon {
 	//border:1px solid $wp-red;
 	border-radius:50%;
@@ -149,9 +177,23 @@
 			z-index:2;
 		}
 	}
-
+	.pling {
+		// box-shadow: inset 0 0 2px $wp-blue, 
+		// 			0 0 2px $wp-blue;
+		position: absolute;
+		opacity:0;
+		border:4px solid $wp-blue;
+		@media screen and (min-width: 768px) {
+			border-width:2px;
+		}
+		border-radius:50%;
+		
+		animation-name: pling;
+		animation-duration: 0.75s;
+		animation-iteration-count: 1;
+		animation-timing-function:ease-in;
+	}
 }
-
 
 .acf-osm-above {
 	position:relative;
@@ -236,6 +278,18 @@ $leaflet-panes: (
 	.wp-block & {
 		z-index:30;
 	}
+	
+}
+.leaflet-control-container {
+	a {
+		-webkit-touch-callout: none; /* iOS Safari */
+	  -webkit-user-select: none; /* Safari */
+	   -khtml-user-select: none; /* Konqueror HTML */
+		 -moz-user-select: none; /* Old versions of Firefox */
+		  -ms-user-select: none; /* Internet Explorer/Edge */
+			  user-select: none; /* Non-prefixed version, currently
+									supported by Chrome, Opera and Firefox */		
+	}	
 }
 .leaflet-control-layers {
 	.wp-block & {

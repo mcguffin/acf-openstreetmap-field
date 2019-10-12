@@ -105,6 +105,9 @@ No.
 
 == Changelog ==
 
+= 1.1.3 =
+ - Fix: Map controls zindex in Block-Editor
+
 = 1.1.2 =
  - Fix: PHP Strict Standards message
 

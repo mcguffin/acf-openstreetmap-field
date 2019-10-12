@@ -223,6 +223,9 @@
 			e.preventDefault();
 			this.model.destroy(); // 
 			return this;
+		},
+		pling:function() {
+			$(this.marker._icon).html('').append('<span class="pling"></span>');
 		}
 	});
 
@@ -259,6 +262,8 @@
 			this.field		= conf.field;
 
 			this.model		= new osm.MapData(data);
+
+			this.plingMarker = false;
 
 			this.init_acf();
 
@@ -362,13 +367,14 @@
 			});
 
 			marker.addTo( this.map );
-
+			if ( this.plingMarker ) {
+				entry.pling();
+			}
 
 		},
 		initMarkers:function(){
 
-			var self = this, 
-				len;
+			var self = this;
 
 			this.initGeocode();
 			this.$el.attr('data-has-markers', 'false');
@@ -379,7 +385,6 @@
 				return;
 			}
 
-			len = this.model.get('markers').length;
 			this.icon = new L.DivIcon({
 				html: '',
 				className:'osm-marker-icon'
@@ -389,33 +394,98 @@
 				self.addMarker( model );
 			} );
 
-			this.map.on('dblclick', function(e){
-				var latlng = e.latlng,
-					collection = self.model.get('markers'),
-					model;
-				
-				e.originalEvent.preventDefault();
-				e.originalEvent.stopPropagation();
-				// no more markers
-				if ( self.config.max_markers !== false && collection.length >= self.config.max_markers ) {
-					return;
-				}
-				model = new osm.MarkerData({
-					label: '',
-					default_label: '',
-					lat: latlng.lat,
-					lng: latlng.lng,
-//					collection:self.model.get('markers')
-				})
-				collection.add( model );
-				self.reverseGeocode(model);
-			})
-			.doubleClickZoom.disable(); 
+			// dbltap is not firing on mobile
+			if ( L.Browser.touch && L.Browser.mobile ) {
+				this._add_marker_on_hold();
+			} else {
+				this._add_marker_on_dblclick();
+			}
 
 			this.updateMarkerState();
 
 		},
+		_add_marker_on_dblclick: function() {
+			var self = this;
+			this.map.on('dblclick', function(e){
+				var latlng = e.latlng;
+				
+				L.DomEvent.preventDefault(e);
+				L.DomEvent.stopPropagation(e);
+				
+				self.addMarkerByLatLng( latlng );
+			})
+			.doubleClickZoom.disable(); 
+			this.$el.addClass('add-marker-on-dblclick')
+		},
+		_add_marker_on_hold: function() {
+			if ( L.Browser.pointer ) {
+				// use pointer events
+				this._add_marker_on_hold_pointer();
+			} else {
+				// use touch events
+				this._add_marker_on_hold_touch();
+			}
+			this.$el.addClass('add-marker-on-taphold')
+		},
+		_add_marker_on_hold_pointer: function() {
+			var self = this,
+				_hold_timeout = 750,
+				_hold_wait_to = {};
+			L.DomEvent
+				.on(this.map.getContainer(),'pointerdown',function(e){
+					_hold_wait_to[ 'p'+e.pointerId ] = setTimeout(function(){
+						var cp = self.map.mouseEventToContainerPoint(e);
+						var lp = self.map.containerPointToLayerPoint(cp)
 
+						self.addMarkerByLatLng( self.map.layerPointToLatLng(lp) )
+
+						_hold_wait_to[ 'p'+e.pointerId ] = false;
+					}, _hold_timeout );
+				})
+				.on(this.map.getContainer(), 'pointerup pointermove', function(e){
+					!! _hold_wait_to[ 'p'+e.pointerId ] && clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] );
+				});
+		},
+		_add_marker_on_hold_touch:function() {
+			var self = this,
+				_hold_timeout = 750,
+				_hold_wait_to = false;
+			L.DomEvent
+				.on(this.map.getContainer(),'touchstart',function(e){
+					if ( e.touches.length !== 1 ) {
+						return;
+					}
+					_hold_wait_to = setTimeout(function(){
+
+						var cp = self.map.mouseEventToContainerPoint(e.touches[0]);
+						var lp = self.map.containerPointToLayerPoint(cp)
+
+						self.addMarkerByLatLng( self.map.layerPointToLatLng(lp) )
+
+						_hold_wait_to = false;
+					}, _hold_timeout );
+				})
+				.on(this.map.getContainer(), 'touchend touchmove', function(e){
+					!! _hold_wait_to && clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] );
+				});
+		},
+		addMarkerByLatLng:function(latlng) {
+			var collection = this.model.get('markers'),
+				model;
+			// no more markers
+			if ( this.config.max_markers !== false && collection.length >= this.config.max_markers ) {
+				return;
+			}
+			model = new osm.MarkerData({
+				label: '',
+				default_label: '',
+				lat: latlng.lat,
+				lng: latlng.lng,
+			});
+			this.plingMarker = true;
+			collection.add( model );
+			this.reverseGeocode( model );
+		},
 		/**
 		 *	Geocoding
 		 *

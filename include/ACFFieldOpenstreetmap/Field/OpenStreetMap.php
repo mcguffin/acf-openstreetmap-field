@@ -312,7 +312,12 @@ class OpenStreetMap extends \acf_field {
 			?>
 				<div class="markers-instruction">
 					<p class="description">
-						<span class="can-add-marker"><?php _e('Double click to add Marker.', 'acf-openstreetmap-field' ); ?></span>
+						<span class="add-marker-instructions marker-on-dblclick can-add-marker">
+							<?php _e('Double click to add Marker.', 'acf-openstreetmap-field' ); ?>
+						</span>
+						<span class="add-marker-instructions marker-on-taphold can-add-marker">
+							<?php _e('Tap and hold to add Marker.', 'acf-openstreetmap-field' ); ?>
+						</span>
 						<span class="has-markers"><?php _e('Drag Marker to move.', 'acf-openstreetmap-field' ); ?></span>
 					</p>
 				</div>

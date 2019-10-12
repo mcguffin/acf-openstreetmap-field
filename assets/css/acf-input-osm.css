@@ -31,6 +31,27 @@
 .leaflet-map[data-has-markers="false"] ~ .markers-instruction .has-markers {
   display: none; }
 
+.leaflet-map:after {
+  content: attr(class);
+  font-size: 16px;
+  font-family: monospace;
+  padding-top: 400px;
+  background: #fff;
+  position: absolute;
+  z-index: 1000;
+  top: 100%;
+  left: 0;
+  width: 100%; }
+
+.leaflet-map ~ .markers-instruction .add-marker-instructions {
+  display: none; }
+
+.leaflet-map.add-marker-on-dblclick ~ .markers-instruction .marker-on-dblclick {
+  display: inline; }
+
+.leaflet-map.add-marker-on-taphold ~ .markers-instruction .marker-on-taphold {
+  display: inline; }
+
 .acf-block-preview iframe {
   pointer-events: none; }
 
@@ -82,6 +103,42 @@
 .osm-markers [data-id="__osm_marker_template__"] {
   display: none; }
 
+@-webkit-keyframes pling {
+  0% {
+    left: 0;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    opacity: 0; }
+  5% {
+    opacity: 1; }
+  80% {
+    opacity: 1; }
+  100% {
+    left: -25px;
+    top: -25px;
+    width: 62px;
+    height: 62px;
+    opacity: 0; } }
+
+@keyframes pling {
+  0% {
+    left: 0;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    opacity: 0; }
+  5% {
+    opacity: 1; }
+  80% {
+    opacity: 1; }
+  100% {
+    left: -25px;
+    top: -25px;
+    width: 62px;
+    height: 62px;
+    opacity: 0; } }
+
 .osm-marker-icon {
   border-radius: 50%;
   position: relative; }
@@ -122,6 +179,22 @@
     background-color: #dc3232;
     border-width: 0;
     z-index: 2; }
+  .osm-marker-icon .pling {
+    position: absolute;
+    opacity: 0;
+    border: 4px solid #0085ba;
+    border-radius: 50%;
+    -webkit-animation-name: pling;
+            animation-name: pling;
+    -webkit-animation-duration: 0.75s;
+            animation-duration: 0.75s;
+    -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in; }
+    @media screen and (min-width: 768px) {
+      .osm-marker-icon .pling {
+        border-width: 2px; } }
 
 .acf-osm-above {
   position: relative;
@@ -203,6 +276,20 @@
 .postbox .leaflet-pane,
 .wp-block .leaflet-pane {
   z-index: 30; }
+
+.leaflet-control-container a {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+									supported by Chrome, Opera and Firefox */ }
 
 .wp-block .leaflet-control-layers {
   text-align: left; }
