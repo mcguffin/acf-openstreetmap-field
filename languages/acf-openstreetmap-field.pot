@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the ACF OpenStreetMap Field plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: ACF OpenStreetMap Field 1.1.2\n"
+"Project-Id-Version: ACF OpenStreetMap Field 1.1.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/acf-openstreetmap-field\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-09-11T11:16:56+00:00\n"
+"POT-Creation-Date: 2019-10-12T15:49:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.2.0\n"
 "X-Domain: acf-openstreetmap-field\n"
@@ -136,26 +136,30 @@ msgstr ""
 msgid "Leave empty for infinite markers"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:315
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:316
 msgid "Double click to add Marker."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:316
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:319
+msgid "Tap and hold to add Marker."
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:321
 msgid "Drag Marker to move."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:650
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:655
 msgid "View Larger Map"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:728
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:733
 msgid "Please set a marker on the map."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:816
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:821
 msgid "Locate Marker"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:822
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:827
 msgid "Remove Marker"
 msgstr ""
