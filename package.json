@@ -16,7 +16,7 @@
     "url": "git+https://github.com/mcguffin/acf-openstreetmap-field.git"
   },
   "author": "Jörn Lund",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/mcguffin/acf-openstreetmap-field/issues"
   },
