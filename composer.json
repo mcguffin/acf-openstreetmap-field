@@ -1,6 +1,7 @@
 {
   "name": "mcguffin/acf-openstreetmap-field",
   "description": "WordPress ACF Field for OpenStreetMap",
+  "license": "GPL-3.0-or-later",
   "keywords": [
     "ACF",
     "ACF Field",
