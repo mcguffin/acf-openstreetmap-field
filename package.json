@@ -34,12 +34,12 @@
     "gulp-uglify": "^3.0.2",
     "gulp-uglifycss": "^1.1.0",
     "leaflet": "^1.5.1",
-    "leaflet-control-geocoder": "^1.8.3",
-    "leaflet-providers": "^1.8.0",
-    "simple-git": "^1.124.0"
+    "leaflet-control-geocoder": "^1.10.0",
+    "leaflet-providers": "^1.9.0",
+    "simple-git": "^1.126.0"
   },
   "dependencies": {
-    "tar": ">=2.2.2"
+    "tar": "^5.0.5"
   },
   "wporg": {
     "steps": [

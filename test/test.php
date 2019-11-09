@@ -85,6 +85,12 @@ class PluginTest {
 				margin-top:-4px;
 				margin-left:-4px;
 			}
+			[type="checkbox"] + .leaflet-map {
+				display:none;
+			}
+			[type="checkbox"]:checked + .leaflet-map {
+				display:block;
+			}
 			</style>
 			<?php
 		});
@@ -160,10 +166,11 @@ class PluginTest {
 		// register a testimonial block
 		acf_register_block(array(
 			'name'				=> 'leaflet-map',
-			'title'				=> __('Leaflet Map'),
+			'title'				=> __('Leaflet Map Test'),
 			'description'		=> __('A Leaflet Map'),
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
 				printf('<div class="align%s">',$block['align']);
+				echo '<input type="checkbox" />';
 				the_field( 'leaflet_map_block' );
 				echo '</div>';
 				?><hr /><?php
@@ -178,7 +185,7 @@ class PluginTest {
 		// register a testimonial block
 		acf_register_block(array(
 			'name'				=> 'osm-map',
-			'title'				=> __('OpenStreetMap (iFrame)'),
+			'title'				=> __('OpenStreetMap Test (iFrame)'),
 			'description'		=> __('Am Open Street Map'),
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
 				printf('<div class="align%s">',$block['align']);
@@ -198,7 +205,7 @@ class PluginTest {
 		// register a testimonial block
 		acf_register_block(array(
 			'name'				=> 'raw-map',
-			'title'				=> __('OpenStreetMap (Raw Data)'),
+			'title'				=> __('OpenStreetMap Test (Raw Data)'),
 			'description'		=> __('Am Open Street Map'),
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
 				?><pre><?php
