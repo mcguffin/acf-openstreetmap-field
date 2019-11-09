@@ -128,6 +128,7 @@ gulp.task('js-admin', function() {
 
 gulp.task( 'js-frontend', function(){
 	return concat_js( [
+			'./node_modules/resize-observer-polyfill/dist/ResizeObserver.js',
 			'./node_modules/leaflet/dist/leaflet-src.js',
 			'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.js',
 			'./node_modules/leaflet-providers/leaflet-providers.js',

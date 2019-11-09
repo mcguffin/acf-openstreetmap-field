@@ -1,5 +1,14 @@
 (function( $, arg ){
 
+	var visibilityObserver = new ResizeObserver( function(entries,observer) {
+		entries.forEach(function(entry){
+			if ( $(entry.target).is(':visible') ) {
+				$(entry.target).trigger('acf-osm-show');
+				observer.unobserve(entry.target);
+			}
+		})
+	});
+
 	L.TileLayer.Provider.providers = arg.providers;
 
 	var options = arg.options;
@@ -98,7 +107,7 @@
 	$.fn.extend({
 		acf_leaflet:function() {
 
-			return this.each( function( i, el ){
+			return this.each( function( i, el ) {
 
 				if ( $(this).data( 'acf-osm-map' ) ) {
 					return;
@@ -136,12 +145,18 @@
 				if ( initEvt.isDefaultPrevented() ) {
 					return;
 				}
-
-
+	
 				createLayers.apply( this, [ data, map ] );
 
 				createMarkers.apply( this, [ data, map ] );
 
+				// reload hidden maps when they become visible
+				if ( ! $(this).is(':visible') ) {
+					visibilityObserver.observe(this);
+					$(this).one('acf-osm-show', function(e){
+						map.invalidateSize();
+					} );
+				}
 
 				// finished!
 				$(this).trigger('acf-osm-map-created', map );

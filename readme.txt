@@ -105,6 +105,11 @@ No.
 
 == Changelog ==
 
+= 1.1.4 =
+ - Upgrade Leaflet Providers to 1.9.0
+ - Upgrade Leaflet Control Geocode to 1.10.0
+ - Fix: Redraw maps when they become visible
+
 = 1.1.3 =
  - UI: Better formatting for automatic marker labels
  - Fix: Map controls zindex in Block-Editor
