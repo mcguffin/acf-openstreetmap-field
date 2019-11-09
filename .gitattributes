@@ -3,6 +3,7 @@
 .gitattributes export-ignore
 # gulp
 gulpfile.js export-ignore
+composer.json export-ignore
 package*.json export-ignore
 /src export-ignore
 /tests export-ignore
