@@ -5,6 +5,7 @@
         {
             "center_lat": 53.5507112,
             "center_lng": 10.0006485,
+            "zoom": 12,
             "key": "field_5d5bc3655263c",
             "label": "Leaflet Map",
             "name": "leaflet_map_nolay",
@@ -19,10 +20,10 @@
             },
             "return_format": "leaflet",
             "layers": [
-                "MapBox.Light",
-                "SafeCast"
+                "Wikimedia",
+                "SafeCast",
+                "OpenMapSurfer.AdminBounds"
             ],
-            "zoom": 12,
             "allow_map_layers": 0,
             "height": 400,
             "max_markers": ""
@@ -30,6 +31,7 @@
         {
             "center_lat": 53.55064,
             "center_lng": 10.00065,
+            "zoom": 12,
             "key": "field_5d5bc36f5263d",
             "label": "iFrame Map",
             "name": "iframe_map_nolay",
@@ -46,7 +48,6 @@
             "layers": [
                 "Thunderforest.Transport"
             ],
-            "zoom": 12,
             "allow_map_layers": 0,
             "height": 400,
             "max_markers": ""
@@ -69,9 +70,8 @@
         ],
         [
             {
-                "param": "options_page",
-                "operator": "==",
-                "value": "acf-options-acf-osm-test"
+                "param": "post_type",
+                "operator": "=="
             }
         ]
     ],
@@ -83,5 +83,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565428956
+    "modified": 1573465552
 }
