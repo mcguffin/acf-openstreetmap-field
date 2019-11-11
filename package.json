@@ -21,11 +21,13 @@
     "url": "https://github.com/mcguffin/acf-openstreetmap-field/issues"
   },
   "browserslist": [
-    "last 2 versions"
+    "last 3 versions",
+    "> 0.125%",
+    "IE 10"
   ],
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
-    "gulp": "^4.0.1",
+    "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-concat": "^2.6.1",
     "gulp-rename": "^1.4.0",
@@ -40,7 +42,8 @@
     "simple-git": "^1.126.0"
   },
   "dependencies": {
-    "tar": "^5.0.5"
+    "tar": "^5.0.5",
+    "jquery": "^1.12.4"
   },
   "wporg": {
     "steps": [
