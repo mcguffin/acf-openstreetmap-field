@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "tar": "^5.0.5",
-    "jquery": "^1.12.4"
+    "jquery": "^3.4.0"
   },
   "wporg": {
     "steps": [
