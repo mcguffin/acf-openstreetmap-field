@@ -107,6 +107,7 @@ No.
 
 = 1.1.5 =
  - JS: added event Listener for ajax-loaded maps. Use <code>$(my_map_div).trigger('acf-osm-map-added');</code> on each newly added map.
+ - Upgrade LeafletJS to 1.6.0
 
 = 1.1.4 =
  - Upgrade Leaflet Providers to 1.9.0
