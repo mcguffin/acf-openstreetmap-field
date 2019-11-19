@@ -27,18 +27,18 @@
 			display:none;
 		}
 	}
-	&:after {
-		content:attr(class);
-		font-size:16px;
-		font-family:monospace;
-		padding-top:400px;
-		background: #fff;
-		position: absolute;
-		z-index: 1000;
-		top:100%;
-		left:0;
-		width:100%;
-	}
+	// &:after {
+	// 	content:attr(class);
+	// 	font-size:16px;
+	// 	font-family:monospace;
+	// 	padding-top:400px;
+	// 	background: #fff;
+	// 	position: absolute;
+	// 	z-index: 1000;
+	// 	top:100%;
+	// 	left:0;
+	// 	width:100%;
+	// }
 	~ .markers-instruction .add-marker-instructions {
 		display:none;
 	}
