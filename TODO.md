@@ -1,6 +1,10 @@
 ACF OpenStreetMap Field ToDo
 ============================
 
+1.1.x
+-----
+ - [ ] Disable keyboard navigation in Backend
+
 1.2.0
 -----
  - [ ] Tests:
