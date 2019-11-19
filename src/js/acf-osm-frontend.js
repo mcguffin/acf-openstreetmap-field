@@ -167,11 +167,19 @@
 	// static mathod
 	$.extend({
 		acf_leaflet:function() {
-			$('[data-map="leaflet"]').acf_leaflet();
+			return $('[data-map="leaflet"]').acf_leaflet();
 		}
 	});
 	// init all maps
 	$(document).ready( $.acf_leaflet );
 
+	// listen to events
+	$(document).on( 'acf-osm-map-added', function(e) {
+		if ( $(e.target).is( '[data-map="leaflet"]') ) {
+			$(e.target).acf_leaflet();
+		} else {
+			$.acf_leaflet();
+		}
+	});
 
 })( jQuery, acf_osm );
