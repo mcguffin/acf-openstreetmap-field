@@ -69,9 +69,8 @@
         ],
         [
             {
-                "param": "options_page",
-                "operator": "==",
-                "value": "acf-options-acf-osm-test"
+                "param": "post_type",
+                "operator": "=="
             }
         ]
     ],
