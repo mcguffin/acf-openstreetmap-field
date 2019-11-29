@@ -9,6 +9,23 @@
 		})
 	});
 
+
+	// observe if new maps are being loaded into the dom
+	if ( !! MutationObserver ) {
+		var domObserver = new MutationObserver( function(entries,observer) {
+			entries.forEach(function(entry){
+				if ( $(entry.target).is('[data-map="leaflet"]') ) {
+					$(entry.target).acf_leaflet();
+				}
+				if ( $(entry.target).find('[data-map="leaflet"]') ) {
+					$(entry.target).find('[data-map="leaflet"]').acf_leaflet();
+				}
+			})
+		});
+		domObserver.observe(document.body, { subtree: true, childList: true } );		
+	}
+
+
 	L.TileLayer.Provider.providers = arg.providers;
 
 	var options = arg.options;
