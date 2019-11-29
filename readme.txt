@@ -5,7 +5,7 @@ Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
 Tested up to: 5.3
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -104,6 +104,11 @@ No.
 
 
 == Changelog ==
+
+= 1.1.6 =
+ - Feature: Observe DOM for newly added maps
+ - Feature: allow manipulation of laer config in JS
+ - Fix: JS event 'acf-osm-map-marker-create' not triggered
 
 = 1.1.5 =
  - JS: added event Listener for ajax-loaded maps. Use <code>$(my_map_div).trigger('acf-osm-map-added');</code> on each newly added map.
