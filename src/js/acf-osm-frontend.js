@@ -14,8 +14,9 @@
 	var options = arg.options;
 	
 	function createMarkers( data, map ) {
-		var createEvt = $.Event({
-				type: 'acf-osm-map-create-markers'
+		var self = this,
+			createEvt = $.Event({
+				type: 'acf-osm-map-create-markers',
 			}),
 			default_marker_config = {};
 
