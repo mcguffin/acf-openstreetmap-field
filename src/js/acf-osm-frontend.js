@@ -89,7 +89,8 @@
 
 	function createLayers( data, map ) {
 		var createEvt = $.Event({
-				type: 'acf-osm-map-create-layers'
+				type: 'acf-osm-map-create-layers',
+				data : data
 			}),
 			maxzoom;
 
