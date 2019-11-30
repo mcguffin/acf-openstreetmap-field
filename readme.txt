@@ -105,9 +105,13 @@ No.
 
 == Changelog ==
 
+= 1.1.7 =
+ - Fix: Geocoder search result still visible after marker added to map.
+ - Fix: Required field and max_markers = 0 never saved
+
 = 1.1.6 =
  - Feature: Observe DOM for newly added maps
- - Feature: allow manipulation of laer config in JS
+ - Feature: allow manipulation of layer config in JS
  - Fix: JS event 'acf-osm-map-marker-create' not triggered
 
 = 1.1.5 =
