@@ -720,7 +720,7 @@ class OpenStreetMap extends \acf_field {
 	function validate_value( $valid, $value, $field, $input ){
 
 		// bail early if not required
-		if( ! $field['required'] ) {
+		if( ! $field['required'] || $field['max_markers'] === 0 ) {
 
 			return $valid;
 
