@@ -300,6 +300,9 @@
 			this.update_map();
 
 
+			// kb navigation might interfere with other kb listeners
+			this.map.keyboard.disable();
+
 			acf.addAction('remount_field/type=open_street_map', function(field){
 				if ( self.field === field ) {
 					self.map.invalidateSize();
@@ -526,6 +529,9 @@
  						lng: latlng.lng
  					}, 
  					model;
+
+				// getting rid of the modal – #35
+				self.geocoder._clearResults();
 
  				if ( self.config.max_markers === 0 ) {
 
