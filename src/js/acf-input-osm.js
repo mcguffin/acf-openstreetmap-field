@@ -9,6 +9,8 @@
 	var osm = exports.osm = {
 	};
 	
+	var locatorAddControl = null;
+	
 	var fixedFloatGetter = function( prop, fix ) {
 		return function() {
 			return parseFloat( this.attributes[ prop ] );
@@ -234,6 +236,7 @@
 		map: null,
 		field: null,
 		geocoder: null,
+		locator: null,
 		visible: null,
 		$parent:function(){
 			return this.$el.closest('.acf-field-settings,.acf-field-open-street-map')
@@ -264,6 +267,8 @@
 			this.model		= new osm.MapData(data);
 
 			this.plingMarker = false;
+
+			this.init_locator();
 
 			this.init_acf();
 
@@ -309,6 +314,48 @@
 				}
 			})
 			return this;
+		},
+		init_locator:function() {
+			var self = this,
+				currentLocation = false;
+
+			
+			this.locatorAdd = new L.Control.AddLocationMarker({
+				position: 'bottomleft',
+				callback: function() {
+					currentLocation && self.addMarkerByLatLng( currentLocation );
+					self.locator.stop();
+				}
+			}).addTo(this.map);
+
+			this.locator = new L.control.locate({
+			    position: 'bottomleft',
+				icon: 'dashicons dashicons-location-alt',
+				iconLoading:'spinner is-active',
+				flyTo:true,
+			    strings: {
+			        title: i18n.my_location
+			    },
+				onLocationError:function(err) {}
+			}).addTo(this.map);
+
+
+			this.map.on('locationfound',function(e){
+
+				currentLocation = e.latlng;
+
+				setTimeout(function(){
+					self.locator.stopFollowing();
+					$(self.locator._icon).removeClass('dashicons-warning');
+					//self.locatorAdd.addTo(self.map)
+				},1);
+			})
+			this.map.on('locationerror',function(e){
+				currentLocation = false;
+				setTimeout(function(){
+					$(self.locator._icon).addClass('dashicons-warning');
+				},1);
+			})
 		},
 		getMapData:function() {
 			var data = JSON.parse( this.$value().val() );
@@ -757,7 +804,38 @@
 
 
 	$(document)
+		.ready(function(){
+		})
 		.on( 'acf-osm-map-create', function( e ) {
+			if ( ! L.Control.AddLocationMarker ) {
+				L.Control.AddLocationMarker = L.Control.extend({
+					onAdd:function() {
+
+						this._container = L.DomUtil.create('div',
+							'leaflet-control-add-location-marker leaflet-bar leaflet-control');
+
+						this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
+		                this._link.title = i18n.add_marker_at_location;
+		                this._icon = L.DomUtil.create('span', 'dashicons dashicons-location', this._link);
+						L.DomEvent
+							.on( this._link, 'click', L.DomEvent.stopPropagation)
+							.on( this._link, 'click', L.DomEvent.preventDefault)
+							.on( this._link, 'click', this.options.callback, this)
+							.on( this._link, 'dblclick', L.DomEvent.stopPropagation);
+
+						return this._container;
+					},
+					onRemove:function() {
+						L.DomEvent
+							.off(this._link, 'click', L.DomEvent.stopPropagation )
+							.off(this._link, 'click', L.DomEvent.preventDefault )
+							.off(this._link, 'click', this.options.callback, this )
+							.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
+					},
+				})				
+			}
+
+
 			// don't init in repeater templates
 			if ( $(e.target).closest('[data-id="acfcloneindex"]').length ) {
 				e.preventDefault();

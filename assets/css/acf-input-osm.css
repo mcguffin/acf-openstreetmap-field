@@ -15,6 +15,44 @@
 /* Alerts/Notifications/Flags */
 /* Social Icons */
 /* Misc/CPT */
+/* Compatible with Leaflet 0.7 */
+.leaflet-control-locate a {
+  font-size: 1.4em;
+  color: #444;
+  cursor: pointer; }
+
+.leaflet-control-locate.active a {
+  color: #2074B6; }
+
+.leaflet-control-locate.active.following a {
+  color: #FC8428; }
+
+.leaflet-control-locate-location circle {
+  -webkit-animation: leaflet-control-locate-throb 4s ease infinite;
+          animation: leaflet-control-locate-throb 4s ease infinite; }
+
+@-webkit-keyframes leaflet-control-locate-throb {
+  0% {
+    r: 9;
+    stroke-width: 1; }
+  50% {
+    r: 7;
+    stroke-width: 3; }
+  100% {
+    r: 9;
+    stroke-width: 1; } }
+
+@keyframes leaflet-control-locate-throb {
+  0% {
+    r: 9;
+    stroke-width: 1; }
+  50% {
+    r: 7;
+    stroke-width: 3; }
+  100% {
+    r: 9;
+    stroke-width: 1; } }
+
 [data-map="leaflet"] {
   width: 100%; }
 
@@ -281,3 +319,63 @@
 
 .wp-block .leaflet-control-layers {
   text-align: left; }
+
+@-webkit-keyframes following {
+  from {
+    color: #0085ba; }
+  to {
+    color: #73cbe6; } }
+
+@keyframes following {
+  from {
+    color: #0085ba; }
+  to {
+    color: #73cbe6; } }
+
+.leaflet-control-locate + .leaflet-control-add-location-marker {
+  display: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top-width: 0 !important; }
+
+.leaflet-control-locate.active {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0 !important; }
+  .leaflet-control-locate.active .dashicons-location-alt {
+    position: relative; }
+    .leaflet-control-locate.active .dashicons-location-alt::before {
+      content: ""; }
+  .leaflet-control-locate.active + .leaflet-control-add-location-marker {
+    display: block; }
+
+.leaflet-control-locate.following .dashicons {
+  color: #e5f5fa;
+  -webkit-animation-name: following;
+          animation-name: following;
+  -webkit-animation-duration: 2s;
+          animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-direction: alternate;
+          animation-direction: alternate; }
+
+.leaflet-control-locate a .dashicons {
+  line-height: 30px; }
+
+.leaflet-control-locate a .dashicons-warning {
+  color: #dc3232; }
+
+.leaflet-control-locate a .spinner {
+  float: none;
+  margin: -3px 0 0 0; }
+
+.leaflet-control-add-location-marker .dashicons::before {
+  line-height: 30px;
+  font-size: 18px; }
+
+.leaflet-control-add-location-marker .dashicons::after {
+  content: "";
+  font-size: 13px;
+  vertical-align: top;
+  margin-left: -8px; }

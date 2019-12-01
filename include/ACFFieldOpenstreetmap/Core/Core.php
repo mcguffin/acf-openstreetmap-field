@@ -101,8 +101,10 @@ class Core extends Plugin {
 				'accuracy'			=> 7,
 			),
 			'i18n'	=> array(
-				'search'		=> __('Search...','acf-openstreetmap-field'),
-				'nothing_found'	=> __('Nothing found...','acf-openstreetmap-field'),
+				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),
+				'nothing_found'	=> __( 'Nothing found...', 'acf-openstreetmap-field' ),
+				'my_location'		=> __( 'My location', 'acf-openstreetmap-field' ),
+				'add_marker_at_location' => __( 'Add Marker at location', 'acf-openstreetmap-field' )
 			),
 		));
 		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), array('acf-field-group','acf-input-osm'), $this->get_version(), true );

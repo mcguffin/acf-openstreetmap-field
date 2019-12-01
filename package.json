@@ -38,6 +38,7 @@
     "leaflet": "^1.6.0",
     "leaflet-control-geocoder": "^1.10.0",
     "leaflet-providers": "^1.9.0",
+    "leaflet.locatecontrol": "^0.68.0",
     "resize-observer-polyfill": "^1.5.1",
     "simple-git": "^1.126.0"
   },

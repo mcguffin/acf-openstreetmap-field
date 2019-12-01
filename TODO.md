@@ -3,7 +3,7 @@ ACF OpenStreetMap Field ToDo
 
 1.1.x
 -----
- - [ ] Disable keyboard navigation in Backend
+ - [x] Disable keyboard navigation in Backend
 
 1.2.0
 -----
@@ -15,8 +15,8 @@ ACF OpenStreetMap Field ToDo
  - [ ] Make Marker Data match as ACF Google-Map Data
  - [ ] Static map output (img)
  - [ ] Theme Override
- - [ ] Locate Me Button
- - [ ] Disable map layers
+ - [x] Locate Me Button (backend)
+ - [ ] Options: Disable map layers
  - [ ] Fit markers in view (backend)
  
 1.3.0

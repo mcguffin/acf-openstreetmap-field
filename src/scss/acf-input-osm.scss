@@ -3,6 +3,8 @@
 
 @import 'mixins/mixins';
 
+@import 'leaflet.locatecontrol/src/L.Control.Locate';
+
 
 [data-map="leaflet"] {
 	width:100%;
@@ -294,5 +296,79 @@ $leaflet-panes: (
 .leaflet-control-layers {
 	.wp-block & {
 		text-align:left;
+	}
+}
+
+@keyframes following {
+	from { color:$wp-blue }
+	to { color:mix($wp-blue-light,$wp-blue-lighter) }
+}
+.leaflet-control-locate {
+	& + .leaflet-control-add-location-marker {
+		display:none;
+		border-top-left-radius:0;
+		border-top-right-radius:0;
+		border-top-width:0 !important;
+	}
+	&.active {
+		.dashicons-location-alt {
+			position: relative;
+			&::before {
+				content:$dashicon-location;
+			}
+			// &::after {
+			// 	content:'';
+			// 	width:5px;
+			// 	height:2px;
+			// 	position: absolute;
+			// 	left:0;
+			// 	top:15px;
+			// 	background: currentColor;
+			// 	box-shadow: 13px 0 0 currentColor;
+			// }
+		}
+		border-bottom-left-radius:0;
+		border-bottom-right-radius:0;
+		margin-bottom:0 !important;
+		a {
+		}
+		& + .leaflet-control-add-location-marker {
+			display:block;
+		}
+	}
+	&.following {
+		.dashicons {
+			color:$wp-blue-lighter;
+			animation-name: following;
+			animation-duration: 2s;
+			animation-iteration-count: infinite;
+			animation-direction: alternate;
+		}
+	}
+	a {
+		.dashicons {
+			line-height:30px;
+		}
+		.dashicons-warning {
+			color:$wp-red;
+		}
+		.spinner {
+			float:none;
+			margin:-3px 0 0 0;
+		}
+	}
+}
+.leaflet-control-add-location-marker {
+	.dashicons {
+		&::before {
+			line-height:30px;
+			font-size:18px;
+		}
+		&::after {
+			content: $dashicon-plus;
+			font-size: 13px;
+			vertical-align: top;
+			margin-left: -8px;
+		}
 	}
 }

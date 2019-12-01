@@ -346,6 +346,8 @@ class OpenStreetMap extends \acf_field {
 	 */
 	function input_admin_enqueue_scripts() {
 
+		wp_enqueue_media();
+
 		wp_enqueue_script('acf-input-osm');
 
 		wp_enqueue_script('acf-osm-frontend');
@@ -370,6 +372,8 @@ class OpenStreetMap extends \acf_field {
 	*  @return	n/a
 	*/
 	function field_group_admin_enqueue_scripts() {
+
+		wp_enqueue_media();
 
 		wp_enqueue_script('acf-input-osm');
 

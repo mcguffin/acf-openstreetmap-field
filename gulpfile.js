@@ -9,16 +9,18 @@ var uglifycss = require('gulp-uglifycss');
 var fs = require('fs');
 
 
+
 function do_scss( src ) {
-	var dir = src.substring( 0, src.lastIndexOf('/') );
+	var dir = src.substring( 0, src.lastIndexOf('/') ),
+		includePaths = ['src/scss/','node_modules/'];
 	return gulp.src( './src/scss/' + src + '.scss' )
 		.pipe( sourcemaps.init() )
-		.pipe( sass( { outputStyle: 'nested' } ).on('error', sass.logError) )
+		.pipe( sass( { outputStyle: 'nested', includePaths } ).on('error', sass.logError) )
 		.pipe( autoprefixer({
 
 		}) )
 		.pipe( gulp.dest( './assets/css/' + dir ) )
-        .pipe( sass( { outputStyle: 'compressed' } ).on('error', sass.logError) )
+        .pipe( sass( { outputStyle: 'compressed', includePaths } ).on('error', sass.logError) )
 		.pipe( rename( { suffix: '.min' } ) )
         .pipe( sourcemaps.write() )
         .pipe( gulp.dest( './assets/css/' + dir ) );
@@ -132,6 +134,7 @@ gulp.task( 'js-frontend', function(){
 			'./node_modules/leaflet/dist/leaflet-src.js',
 			'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.js',
 			'./node_modules/leaflet-providers/leaflet-providers.js',
+			'./node_modules/leaflet.locatecontrol/src/L.Control.Locate.js',
 			'./src/js/acf-osm-frontend.js',
 
 		], 'acf-osm-frontend.js');
