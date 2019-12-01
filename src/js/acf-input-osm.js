@@ -532,17 +532,22 @@
 
 				// getting rid of the modal – #35
 				self.geocoder._clearResults();
+				self.geocoder._input.value = '';
 
+				// no markers - just adapt map view
  				if ( self.config.max_markers === 0 ) {
 
  					return self.map.fitBounds( e.geocode.bbox );
 
  				}
- 				if ( count_markers < self.config.max_markers ) {
 
+				
+ 				if ( self.config.max_markers === false || count_markers < self.config.max_markers ) {
+					// infinite markers or markers still in range
  					self.model.get('markers').add( marker_data );
 
  				} else if ( self.config.max_markers === 1 ) {
+					// one marker only
  					self.model.get('markers').at(0).set( marker_data );
 
  				}
