@@ -36,6 +36,7 @@
 			this.$lng().val( this.model.get('lng') ).trigger('change');
 			this.$zoom().val( this.model.get('zoom') ).trigger('change');
 		},
+		init_locator_add:function(){},
 		initLayers:function() {
 			var layers = this.model.get('layers');
 

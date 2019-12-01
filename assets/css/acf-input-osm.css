@@ -336,12 +336,12 @@
   display: none;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  border-top-width: 0 !important; }
+  border-top-width: 0 !important;
+  margin-top: -10px !important; }
 
 .leaflet-control-locate.active {
   border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  margin-bottom: 0 !important; }
+  border-bottom-right-radius: 0; }
   .leaflet-control-locate.active .dashicons-location-alt {
     position: relative; }
     .leaflet-control-locate.active .dashicons-location-alt::before {

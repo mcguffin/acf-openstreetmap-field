@@ -268,6 +268,8 @@
 
 			this.plingMarker = false;
 
+			this.init_locator_add();
+
 			this.init_locator();
 
 			this.init_acf();
@@ -315,18 +317,21 @@
 			})
 			return this;
 		},
-		init_locator:function() {
-			var self = this,
-				currentLocation = false;
-
+		init_locator_add:function() {
+			var self = this
 			
 			this.locatorAdd = new L.Control.AddLocationMarker({
 				position: 'bottomleft',
 				callback: function() {
-					currentLocation && self.addMarkerByLatLng( currentLocation );
+					self.currentLocation && self.addMarkerByLatLng( self.currentLocation );
 					self.locator.stop();
 				}
 			}).addTo(this.map);
+	
+		},
+		init_locator:function() {
+			var self = this;
+			this.currentLocation = false;
 
 			this.locator = new L.control.locate({
 			    position: 'bottomleft',
@@ -342,7 +347,7 @@
 
 			this.map.on('locationfound',function(e){
 
-				currentLocation = e.latlng;
+				self.currentLocation = e.latlng;
 
 				setTimeout(function(){
 					self.locator.stopFollowing();
@@ -351,7 +356,7 @@
 				},1);
 			})
 			this.map.on('locationerror',function(e){
-				currentLocation = false;
+				self.currentLocation = false;
 				setTimeout(function(){
 					$(self.locator._icon).addClass('dashicons-warning');
 				},1);
@@ -804,8 +809,6 @@
 
 
 	$(document)
-		.ready(function(){
-		})
 		.on( 'acf-osm-map-create', function( e ) {
 			if ( ! L.Control.AddLocationMarker ) {
 				L.Control.AddLocationMarker = L.Control.extend({

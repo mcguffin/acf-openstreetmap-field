@@ -18,11 +18,14 @@
 					$(entry.target).acf_leaflet();
 				}
 				if ( $(entry.target).find('[data-map="leaflet"]') ) {
+					console.log('There')
 					$(entry.target).find('[data-map="leaflet"]').acf_leaflet();
 				}
 			})
 		});
-		domObserver.observe(document.body, { subtree: true, childList: true } );		
+		$(document).ready( function(){
+			domObserver.observe(document.body, { subtree: true, childList: true } );
+		} );
 	}
 
 

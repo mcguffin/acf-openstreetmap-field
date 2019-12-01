@@ -309,6 +309,7 @@ $leaflet-panes: (
 		border-top-left-radius:0;
 		border-top-right-radius:0;
 		border-top-width:0 !important;
+		margin-top:-10px !important;
 	}
 	&.active {
 		.dashicons-location-alt {
@@ -329,7 +330,6 @@ $leaflet-panes: (
 		}
 		border-bottom-left-radius:0;
 		border-bottom-right-radius:0;
-		margin-bottom:0 !important;
 		a {
 		}
 		& + .leaflet-control-add-location-marker {
