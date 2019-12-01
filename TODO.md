@@ -7,6 +7,7 @@ ACF OpenStreetMap Field ToDo
 
 1.2.0
 -----
+ - [ ] Check mapbox variants
  - [ ] Tests:
      - [ ] ACF-Customizer
      - [ ] ACF WP-Objects
@@ -24,3 +25,4 @@ ACF OpenStreetMap Field ToDo
  - [ ] Support MapBox
  - [ ] Use Plugin Boilerplate
  - [ ] ESNext
+ - [ ] Remove jQuery dependency

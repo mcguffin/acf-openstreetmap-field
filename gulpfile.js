@@ -66,17 +66,81 @@ L = {
 // write providers data to ./etc
 gulp.task('providers', function(cb){
 	require('./node_modules/leaflet-providers/leaflet-providers.js');
-	var providers = L.TileLayer.Provider.providers;
+	let providers = L.TileLayer.Provider.providers;
+	
+	const isOverlay = ( name, opts ) => {
+		if ( 'string' !== typeof opts && opts.opacity && opts.opacity < 1 ) {
+			return true;
+		}
+		let overlayPattern = [
+			'^(OpenWeatherMap|OpenSeaMap)',
+			'OpenMapSurfer.(Hybrid|AdminBounds|ContourLines|Hillshade|ElementsAtRisk)',
+			'Stamen.Toner(Hybrid|Lines|Labels)',
+			'Hydda.RoadsAndLabels',
+			'^JusticeMap',
+			'OpenPtMap',
+			'OpenRailwayMap',
+			'OpenFireMap',
+			'SafeCast',
+			'OnlyLabels'
+		].join('|');
 
+		return name.match( overlayPattern ) !== null;
+	}
+
+	Object.keys(providers).map( key => {
+		let data = providers[key];
+		if ( isOverlay( key, data ) ) {
+			data.isOverlay = true;
+		} else if ( !! data.variants ) {
+			Object.keys(data.variants).map( vkey => {
+				let variant = data.variants[vkey];
+				if ( 'string' === typeof variant ) {
+					variant = {
+						options: {
+							variant: variant
+						}
+					}
+				}
+				if ( isOverlay( `${key}.${vkey}`, variant ) ) {
+					variant.isOverlay = true;
+				}
+				data.variants[vkey] = variant
+			});
+		}
+		// if ( data.options.opacity && data.options.opacity < 1 ) {
+		// 	data.isOverlay = true;
+		// } else if ( !! data.variants ) {
+		// 	Object.keys(data.variants).map( vkey => {
+		// 		let variant = data.variants[vkey];
+		// 		if ( 'string' === typeof variant ) {
+		// 			return;
+		// 		}
+		// 		if ( variant.options && variant.options.opacity && variant.options.opacity < 1 ) {
+		// 			data.variants[vkey].isOverlay = true;
+		// 		} else if ( `${key}.${vkey}`.match( overlayPattern ) !== null ) {
+		// 			data.variants[vkey].isOverlay = true;
+		// 		}
+		// 	} )
+		// } else if ( key.match( overlayPattern ) !== null ) {
+		// 	data.isOverlay = true;
+		// }
+		providers[key] = data;
+	} );
 	return fs.writeFile( './etc/leaflet-providers.json', JSON.stringify( providers, null, '\t' ), cb );
 });
 
 
 
-gulp.task('scss', function() {
+gulp.task('scss:edit', function() {
 	return do_scss('acf-input-osm');
 });
 
+
+gulp.task('scss:settings', function() {
+	return do_scss('acf-osm-settings');
+});
+gulp.task('scss', gulp.parallel('scss:edit','scss:settings'));
 
 gulp.task('leaflet-css', gulp.parallel(
 		function() {
@@ -139,7 +203,16 @@ gulp.task( 'js-frontend', function(){
 
 		], 'acf-osm-frontend.js');
 } );
-gulp.task('js', gulp.parallel('js-frontend','js-admin','js-field-group','js-compat') );
+
+
+gulp.task('js-settings', function() {
+    return concat_js( [
+			'./src/js/acf-osm-settings.js',
+		], 'acf-osm-settings.js');
+});
+
+
+gulp.task('js', gulp.parallel('js-frontend','js-admin','js-field-group','js-compat','js-settings') );
 
 
 gulp.task('pre-build', gulp.parallel('providers','leaflet-css') );

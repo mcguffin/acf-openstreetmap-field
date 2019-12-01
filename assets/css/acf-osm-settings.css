@@ -1,0 +1,69 @@
+/* Both Admin Menu and Post Formats */
+/* Post Format Icons */
+/* Welcome Screen Icons */
+/* Image Editing Icons */
+/* Both Image Editing and TinyMCE */
+/* TinyMCE Icons */
+/* Post Icons */
+/* Sorting */
+/* WPorg specific icons: Jobs, Profiles, WordCamps */
+/* Internal/Products */
+/* Taxonomies */
+/* Widget icons */
+/* Media icons */
+/* Alerts/Notifications/Flags */
+/* Social Icons */
+/* Misc/CPT */
+.acf-osm-settings {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+  .acf-osm-settings .acf-osm-layer-variants {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start; }
+    .acf-osm-settings .acf-osm-layer-variants .layer-variant {
+      -webkit-box-flex: 0;
+          -ms-flex: 0 1 250px;
+              flex: 0 1 250px;
+      padding: 0.5em 0.5em 0.5em 0; }
+    .acf-osm-settings .acf-osm-layer-variants .action-test {
+      margin-left: auto;
+      font-weight: normal; }
+  .acf-osm-settings .acf-osm-tag {
+    display: inline-block;
+    padding: 0.25em 0.5em;
+    background: #32373c;
+    font-size: 0.8em;
+    color: #fff;
+    border-radius: 1em;
+    line-height: 1em;
+    margin-left: 1em;
+    font-weight: normal;
+    white-space: nowrap; }
+  .acf-osm-settings .acf-osm-test-map-container {
+    position: relative;
+    margin-left: 5px;
+    background-color: #fff;
+    max-width: 300px;
+    min-width: 300px; }
+  .acf-osm-settings .acf-osm-test-map {
+    background: #0085ba;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 32px; }
+  .acf-osm-settings .leaflet-container {
+    min-height: 400px;
+    height: calc( 100vh - 32px); }
+
+.acf-osm-setting-provider {
+  background: #fff;
+  padding: 10px 20px;
+  margin-bottom: 5px; }
+  .acf-osm-setting-provider h4 {
+    margin-bottom: 0.33em; }

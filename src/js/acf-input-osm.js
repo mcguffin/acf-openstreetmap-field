@@ -546,7 +546,7 @@
 		 *
 		 *	@on map.layeradd, layer.dragend
 		 */
-		 initGeocode:function() {
+		initGeocode:function() {
 
  			var self = this,
 				$above = this.$el.prev();
@@ -736,6 +736,8 @@
 			}).addTo(this.map);
  		},
 		layer_is_overlay: function(  key, layer ) {
+			console.log(options,key)
+			return !! layer.isOverlay;
 			var patterns;
 
 			if ( layer.options.opacity && layer.options.opacity < 1 ) {

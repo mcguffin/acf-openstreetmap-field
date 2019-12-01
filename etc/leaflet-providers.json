@@ -64,14 +64,16 @@
 		"url": "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
 		"options": {
 			"attribution": "Map data: &copy; <a href=\"http://www.openseamap.org\">OpenSeaMap</a> contributors"
-		}
+		},
+		"isOverlay": true
 	},
 	"OpenPtMap": {
 		"url": "http://openptmap.org/tiles/{z}/{x}/{y}.png",
 		"options": {
 			"maxZoom": 17,
 			"attribution": "Map data: &copy; <a href=\"http://www.openptmap.org\">OpenPtMap</a> contributors"
-		}
+		},
+		"isOverlay": true
 	},
 	"OpenTopoMap": {
 		"url": "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
@@ -85,21 +87,24 @@
 		"options": {
 			"maxZoom": 19,
 			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"https://www.OpenRailwayMap.org\">OpenRailwayMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)"
-		}
+		},
+		"isOverlay": true
 	},
 	"OpenFireMap": {
 		"url": "http://openfiremap.org/hytiles/{z}/{x}/{y}.png",
 		"options": {
 			"maxZoom": 19,
 			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)"
-		}
+		},
+		"isOverlay": true
 	},
 	"SafeCast": {
 		"url": "https://s3.amazonaws.com/te512.safecast.org/{z}/{x}/{y}.png",
 		"options": {
 			"maxZoom": 16,
 			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"https://blog.safecast.org/about/\">SafeCast</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)"
-		}
+		},
+		"isOverlay": true
 	},
 	"Thunderforest": {
 		"url": "https://{s}.tile.thunderforest.com/{variant}/{z}/{x}/{y}.png?apikey={apikey}",
@@ -110,7 +115,11 @@
 			"maxZoom": 22
 		},
 		"variants": {
-			"OpenCycleMap": "cycle",
+			"OpenCycleMap": {
+				"options": {
+					"variant": "cycle"
+				}
+			},
 			"Transport": {
 				"options": {
 					"variant": "transport"
@@ -126,11 +135,31 @@
 					"variant": "spinal-map"
 				}
 			},
-			"Landscape": "landscape",
-			"Outdoors": "outdoors",
-			"Pioneer": "pioneer",
-			"MobileAtlas": "mobile-atlas",
-			"Neighbourhood": "neighbourhood"
+			"Landscape": {
+				"options": {
+					"variant": "landscape"
+				}
+			},
+			"Outdoors": {
+				"options": {
+					"variant": "outdoors"
+				}
+			},
+			"Pioneer": {
+				"options": {
+					"variant": "pioneer"
+				}
+			},
+			"MobileAtlas": {
+				"options": {
+					"variant": "mobile-atlas"
+				}
+			},
+			"Neighbourhood": {
+				"options": {
+					"variant": "neighbourhood"
+				}
+			}
 		}
 	},
 	"OpenMapSurfer": {
@@ -151,14 +180,16 @@
 				"options": {
 					"variant": "hybrid",
 					"attribution": "{attribution.OpenMapSurfer}{attribution.OpenStreetMap}"
-				}
+				},
+				"isOverlay": true
 			},
 			"AdminBounds": {
 				"options": {
 					"variant": "adminb",
 					"maxZoom": 18,
 					"attribution": "{attribution.OpenMapSurfer}{attribution.OpenStreetMap}"
-				}
+				},
+				"isOverlay": true
 			},
 			"ContourLines": {
 				"options": {
@@ -166,20 +197,23 @@
 					"maxZoom": 18,
 					"minZoom": 13,
 					"attribution": "{attribution.OpenMapSurfer} <a href=\"https://lpdaac.usgs.gov/products/aster_policies\">ASTER GDEM</a>"
-				}
+				},
+				"isOverlay": true
 			},
 			"Hillshade": {
 				"options": {
 					"variant": "asterh",
 					"maxZoom": 18,
 					"attribution": "{attribution.OpenMapSurfer} <a href=\"https://lpdaac.usgs.gov/products/aster_policies\">ASTER GDEM</a>, <a href=\"http://srtm.csi.cgiar.org/\">SRTM</a>"
-				}
+				},
+				"isOverlay": true
 			},
 			"ElementsAtRisk": {
 				"options": {
 					"variant": "elements_at_risk",
 					"attribution": "{attribution.OpenMapSurfer}{attribution.OpenStreetMap}"
-				}
+				},
+				"isOverlay": true
 			}
 		}
 	},
@@ -191,9 +225,22 @@
 			"attribution": "Tiles courtesy of <a href=\"http://openstreetmap.se/\" target=\"_blank\">OpenStreetMap Sweden</a> &mdash; Map data {attribution.OpenStreetMap}"
 		},
 		"variants": {
-			"Full": "full",
-			"Base": "base",
-			"RoadsAndLabels": "roads_and_labels"
+			"Full": {
+				"options": {
+					"variant": "full"
+				}
+			},
+			"Base": {
+				"options": {
+					"variant": "base"
+				}
+			},
+			"RoadsAndLabels": {
+				"options": {
+					"variant": "roads_and_labels"
+				},
+				"isOverlay": true
+			}
 		}
 	},
 	"MapBox": {
@@ -216,12 +263,39 @@
 			"ext": "png"
 		},
 		"variants": {
-			"Toner": "toner",
-			"TonerBackground": "toner-background",
-			"TonerHybrid": "toner-hybrid",
-			"TonerLines": "toner-lines",
-			"TonerLabels": "toner-labels",
-			"TonerLite": "toner-lite",
+			"Toner": {
+				"options": {
+					"variant": "toner"
+				}
+			},
+			"TonerBackground": {
+				"options": {
+					"variant": "toner-background"
+				}
+			},
+			"TonerHybrid": {
+				"options": {
+					"variant": "toner-hybrid"
+				},
+				"isOverlay": true
+			},
+			"TonerLines": {
+				"options": {
+					"variant": "toner-lines"
+				},
+				"isOverlay": true
+			},
+			"TonerLabels": {
+				"options": {
+					"variant": "toner-labels"
+				},
+				"isOverlay": true
+			},
+			"TonerLite": {
+				"options": {
+					"variant": "toner-lite"
+				}
+			},
 			"Watercolor": {
 				"url": "https://stamen-tiles-{s}.a.ssl.fastly.net/{variant}/{z}/{x}/{y}.{ext}",
 				"options": {
@@ -299,9 +373,21 @@
 			"apikey": "<insert your API key here>"
 		},
 		"variants": {
-			"Basic": "basic",
-			"Hybrid": "hybrid",
-			"Labels": "labels"
+			"Basic": {
+				"options": {
+					"variant": "basic"
+				}
+			},
+			"Hybrid": {
+				"options": {
+					"variant": "hybrid"
+				}
+			},
+			"Labels": {
+				"options": {
+					"variant": "labels"
+				}
+			}
 		}
 	},
 	"Esri": {
@@ -400,7 +486,8 @@
 			"Wind": "wind",
 			"Temperature": "temp",
 			"Snow": "snow"
-		}
+		},
+		"isOverlay": true
 	},
 	"HERE": {
 		"url": "https://{s}.{base}.maps.api.here.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?app_id={app_id}&app_code={app_code}&lg={language}",
@@ -419,13 +506,41 @@
 			"size": "256"
 		},
 		"variants": {
-			"normalDay": "normal.day",
-			"normalDayCustom": "normal.day.custom",
-			"normalDayGrey": "normal.day.grey",
-			"normalDayMobile": "normal.day.mobile",
-			"normalDayGreyMobile": "normal.day.grey.mobile",
-			"normalDayTransit": "normal.day.transit",
-			"normalDayTransitMobile": "normal.day.transit.mobile",
+			"normalDay": {
+				"options": {
+					"variant": "normal.day"
+				}
+			},
+			"normalDayCustom": {
+				"options": {
+					"variant": "normal.day.custom"
+				}
+			},
+			"normalDayGrey": {
+				"options": {
+					"variant": "normal.day.grey"
+				}
+			},
+			"normalDayMobile": {
+				"options": {
+					"variant": "normal.day.mobile"
+				}
+			},
+			"normalDayGreyMobile": {
+				"options": {
+					"variant": "normal.day.grey.mobile"
+				}
+			},
+			"normalDayTransit": {
+				"options": {
+					"variant": "normal.day.transit"
+				}
+			},
+			"normalDayTransitMobile": {
+				"options": {
+					"variant": "normal.day.transit.mobile"
+				}
+			},
 			"normalDayTraffic": {
 				"options": {
 					"variant": "normal.traffic.day",
@@ -433,14 +548,46 @@
 					"type": "traffictile"
 				}
 			},
-			"normalNight": "normal.night",
-			"normalNightMobile": "normal.night.mobile",
-			"normalNightGrey": "normal.night.grey",
-			"normalNightGreyMobile": "normal.night.grey.mobile",
-			"normalNightTransit": "normal.night.transit",
-			"normalNightTransitMobile": "normal.night.transit.mobile",
-			"reducedDay": "reduced.day",
-			"reducedNight": "reduced.night",
+			"normalNight": {
+				"options": {
+					"variant": "normal.night"
+				}
+			},
+			"normalNightMobile": {
+				"options": {
+					"variant": "normal.night.mobile"
+				}
+			},
+			"normalNightGrey": {
+				"options": {
+					"variant": "normal.night.grey"
+				}
+			},
+			"normalNightGreyMobile": {
+				"options": {
+					"variant": "normal.night.grey.mobile"
+				}
+			},
+			"normalNightTransit": {
+				"options": {
+					"variant": "normal.night.transit"
+				}
+			},
+			"normalNightTransitMobile": {
+				"options": {
+					"variant": "normal.night.transit.mobile"
+				}
+			},
+			"reducedDay": {
+				"options": {
+					"variant": "reduced.day"
+				}
+			},
+			"reducedNight": {
+				"options": {
+					"variant": "reduced.night"
+				}
+			},
 			"basicMap": {
 				"options": {
 					"type": "basetile"
@@ -458,7 +605,11 @@
 					"type": "flowtile"
 				}
 			},
-			"carnavDayGrey": "carnav.day.grey",
+			"carnavDayGrey": {
+				"options": {
+					"variant": "carnav.day.grey"
+				}
+			},
 			"hybridDay": {
 				"options": {
 					"base": "aerial",
@@ -490,8 +641,16 @@
 					"type": "traffictile"
 				}
 			},
-			"pedestrianDay": "pedestrian.day",
-			"pedestrianNight": "pedestrian.night",
+			"pedestrianDay": {
+				"options": {
+					"variant": "pedestrian.day"
+				}
+			},
+			"pedestrianNight": {
+				"options": {
+					"variant": "pedestrian.night"
+				}
+			},
 			"satelliteDay": {
 				"options": {
 					"base": "aerial",
@@ -546,16 +705,59 @@
 			"variant": "light_all"
 		},
 		"variants": {
-			"Positron": "light_all",
-			"PositronNoLabels": "light_nolabels",
-			"PositronOnlyLabels": "light_only_labels",
-			"DarkMatter": "dark_all",
-			"DarkMatterNoLabels": "dark_nolabels",
-			"DarkMatterOnlyLabels": "dark_only_labels",
-			"Voyager": "rastertiles/voyager",
-			"VoyagerNoLabels": "rastertiles/voyager_nolabels",
-			"VoyagerOnlyLabels": "rastertiles/voyager_only_labels",
-			"VoyagerLabelsUnder": "rastertiles/voyager_labels_under"
+			"Positron": {
+				"options": {
+					"variant": "light_all"
+				}
+			},
+			"PositronNoLabels": {
+				"options": {
+					"variant": "light_nolabels"
+				}
+			},
+			"PositronOnlyLabels": {
+				"options": {
+					"variant": "light_only_labels"
+				},
+				"isOverlay": true
+			},
+			"DarkMatter": {
+				"options": {
+					"variant": "dark_all"
+				}
+			},
+			"DarkMatterNoLabels": {
+				"options": {
+					"variant": "dark_nolabels"
+				}
+			},
+			"DarkMatterOnlyLabels": {
+				"options": {
+					"variant": "dark_only_labels"
+				},
+				"isOverlay": true
+			},
+			"Voyager": {
+				"options": {
+					"variant": "rastertiles/voyager"
+				}
+			},
+			"VoyagerNoLabels": {
+				"options": {
+					"variant": "rastertiles/voyager_nolabels"
+				}
+			},
+			"VoyagerOnlyLabels": {
+				"options": {
+					"variant": "rastertiles/voyager_only_labels"
+				},
+				"isOverlay": true
+			},
+			"VoyagerLabelsUnder": {
+				"options": {
+					"variant": "rastertiles/voyager_labels_under"
+				}
+			}
 		}
 	},
 	"HikeBike": {
@@ -607,8 +809,16 @@
 					"variant": "geolandbasemap"
 				}
 			},
-			"grau": "bmapgrau",
-			"overlay": "bmapoverlay",
+			"grau": {
+				"options": {
+					"variant": "bmapgrau"
+				}
+			},
+			"overlay": {
+				"options": {
+					"variant": "bmapoverlay"
+				}
+			},
 			"highdpi": {
 				"options": {
 					"variant": "bmaphidpi",
@@ -642,9 +852,21 @@
 			"attribution": "Kaartgegevens &copy; <a href=\"kadaster.nl\">Kadaster</a>"
 		},
 		"variants": {
-			"standaard": "brtachtergrondkaart",
-			"pastel": "brtachtergrondkaartpastel",
-			"grijs": "brtachtergrondkaartgrijs",
+			"standaard": {
+				"options": {
+					"variant": "brtachtergrondkaart"
+				}
+			},
+			"pastel": {
+				"options": {
+					"variant": "brtachtergrondkaartpastel"
+				}
+			},
+			"grijs": {
+				"options": {
+					"variant": "brtachtergrondkaartgrijs"
+				}
+			},
 			"luchtfoto": {
 				"url": "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wmts/1.0.0/2016_ortho25/EPSG:3857/{z}/{x}/{y}.png"
 			}
@@ -671,8 +893,16 @@
 			"tilematrixset": "GoogleMapsCompatible_Level"
 		},
 		"variants": {
-			"ModisTerraTrueColorCR": "MODIS_Terra_CorrectedReflectance_TrueColor",
-			"ModisTerraBands367CR": "MODIS_Terra_CorrectedReflectance_Bands367",
+			"ModisTerraTrueColorCR": {
+				"options": {
+					"variant": "MODIS_Terra_CorrectedReflectance_TrueColor"
+				}
+			},
+			"ModisTerraBands367CR": {
+				"options": {
+					"variant": "MODIS_Terra_CorrectedReflectance_Bands367"
+				}
+			},
 			"ViirsEarthAtNight2012": {
 				"options": {
 					"variant": "VIIRS_CityLights_2012",
@@ -758,7 +988,8 @@
 			"nonWhite": "nonwhite",
 			"white": "white",
 			"plurality": "plural"
-		}
+		},
+		"isOverlay": true
 	},
 	"Wikimedia": {
 		"url": "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png",
@@ -798,8 +1029,16 @@
 					"format": "image/png"
 				}
 			},
-			"ignMaps": "GEOGRAPHICALGRIDSYSTEMS.MAPS",
-			"maps": "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD",
+			"ignMaps": {
+				"options": {
+					"variant": "GEOGRAPHICALGRIDSYSTEMS.MAPS"
+				}
+			},
+			"maps": {
+				"options": {
+					"variant": "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD"
+				}
+			},
 			"orthos": {
 				"options": {
 					"maxZoom": 19,
@@ -827,11 +1066,31 @@
 			"attribution": "<img src=\"https://docs.onemap.sg/maps/images/oneMap64-01.png\" style=\"height:20px;width:20px;\"/> New OneMap | Map data &copy; contributors, <a href=\"http://SLA.gov.sg\">Singapore Land Authority</a>"
 		},
 		"variants": {
-			"Default": "Default",
-			"Night": "Night",
-			"Original": "Original",
-			"Grey": "Grey",
-			"LandLot": "LandLot"
+			"Default": {
+				"options": {
+					"variant": "Default"
+				}
+			},
+			"Night": {
+				"options": {
+					"variant": "Night"
+				}
+			},
+			"Original": {
+				"options": {
+					"variant": "Original"
+				}
+			},
+			"Grey": {
+				"options": {
+					"variant": "Grey"
+				}
+			},
+			"LandLot": {
+				"options": {
+					"variant": "LandLot"
+				}
+			}
 		}
 	}
 }
