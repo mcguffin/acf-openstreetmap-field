@@ -18,7 +18,6 @@
 					$(entry.target).acf_leaflet();
 				}
 				if ( $(entry.target).find('[data-map="leaflet"]') ) {
-					console.log('There')
 					$(entry.target).find('[data-map="leaflet"]').acf_leaflet();
 				}
 			})

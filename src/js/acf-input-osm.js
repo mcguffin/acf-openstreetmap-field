@@ -862,7 +862,7 @@
 				$(e.target).data( '_map_editor', editor );
 			}
 		});
-//	acf.addAction( 'new_field', function(field){console.log(field)} );
+
 	// init when fields get loaded ...
 	acf.addAction( 'append', function(){
 		$.acf_leaflet();
