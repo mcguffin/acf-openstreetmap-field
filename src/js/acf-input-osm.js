@@ -837,7 +837,7 @@
 							.off(this._link, 'click', this.options.callback, this )
 							.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
 					},
-				})				
+				})
 			}
 
 

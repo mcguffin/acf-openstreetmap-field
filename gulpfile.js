@@ -75,6 +75,7 @@ gulp.task('providers', function(cb){
 		let overlayPattern = [
 			'^(OpenWeatherMap|OpenSeaMap)',
 			'OpenMapSurfer.(Hybrid|AdminBounds|ContourLines|Hillshade|ElementsAtRisk)',
+			'HikeBike.HillShading',
 			'Stamen.Toner(Hybrid|Lines|Labels)',
 			'Hydda.RoadsAndLabels',
 			'^JusticeMap',

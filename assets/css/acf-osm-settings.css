@@ -14,6 +14,9 @@
 /* Alerts/Notifications/Flags */
 /* Social Icons */
 /* Misc/CPT */
+.leaflet-bar-part .dashicons {
+  margin-top: 4px; }
+
 .acf-osm-settings {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -38,14 +41,16 @@
   .acf-osm-settings .acf-osm-tag {
     display: inline-block;
     padding: 0.25em 0.5em;
-    background: #32373c;
     font-size: 0.8em;
     color: #fff;
     border-radius: 1em;
     line-height: 1em;
     margin-left: 1em;
     font-weight: normal;
-    white-space: nowrap; }
+    white-space: nowrap;
+    background-color: #32373c; }
+    .acf-osm-settings .acf-osm-tag.warn {
+      background-color: #dc3232; }
   .acf-osm-settings .acf-osm-test-map-container {
     position: relative;
     margin-left: 5px;

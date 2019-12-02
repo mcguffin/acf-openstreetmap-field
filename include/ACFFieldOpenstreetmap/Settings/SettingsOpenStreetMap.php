@@ -53,11 +53,13 @@ class SettingsOpenStreetMap extends Settings {
 
 		?>
 		<div class="wrap">
-			<h2><?php _e('ACF OpenStreetMap Field Settings', 'acf-openstreetmap-field') ?></h2>
+			<h2><?php _e('ACF OpenStreetMap', 'acf-openstreetmap-field') ?></h2>
+			<h3><?php _e('Map Tile Provider Settings', 'acf-openstreetmap-field') ?></h3>
 
 			<form action="options.php" method="post">
 				<?php
 				settings_fields( $this->optionset );
+				$this->providers_description();
 				?>
 				<div class="acf-osm-settings">
 					<div class="acf-osm-provider-settings">
@@ -75,7 +77,6 @@ class SettingsOpenStreetMap extends Settings {
 					</div>
 					<div class="acf-osm-test-map-container">
 						<div class="acf-osm-test-map">
-
 							<div 
 								data-map="leaflet"
 								data-map-lat="53.55064"
@@ -142,33 +143,44 @@ class SettingsOpenStreetMap extends Settings {
 	 */
 	private function print_tags( $options ) {
 
-		$tag = '<span title="%s" class="acf-osm-tag">%s</span>';
+		$tag = '<span title="%s" class="%s">%s</span>';
 
-		$is_overlay = isset( $options['isOverlay'] ) && $options['isOverlay'];
-
-		if ( $is_overlay ) {
+		if ( $this->is_insecure( $options ) ) {
+			$is_https = strpos( get_option('home'), 'https:' ) === 0;
+			printf( 
+				$tag, 
+				__( 'The map tile are loaded through an insecure http connection.', 'acf-openstreetmap-field' ),
+				'acf-osm-tag' . ( $is_https ? ' warn' : '' ),
+				__( 'Insecure', 'acf-openstreetmap-field' ) 
+			);
+		}
+		if ( $this->is_overlay( $options ) ) {
 			printf( 
 				$tag, 
 				__( 'This is an overlay to be displayed over a base map.', 'acf-openstreetmap-field' ),
+				'acf-osm-tag',
 				__( 'Overlay', 'acf-openstreetmap-field' ) 
 			);
 		}
-		if ( isset( $options['options']['bounds'] ) ) {
+		if ( $this->has_bounds( $options ) ) {
 			printf( 
 				$tag, 
 				__( 'Only available for a specific region.', 'acf-openstreetmap-field' ),
+				'acf-osm-tag',
 				__( 'Bounds', 'acf-openstreetmap-field' ) 
 			);
 		}
 		if ( isset( $options['options']['minZoom'] ) && isset( $options['options']['maxZoom'] ) ) {
 			printf( $tag, 
 				__( 'Zoom is restricted.', 'acf-openstreetmap-field' ),
+				'acf-osm-tag',
 				/* translators: 1: min zoom value, 2: max zoom value */
 				sprintf( __( 'Zoom: %1$d–%2$d', 'acf-openstreetmap-field' ), $options['options']['minZoom'], $options['options']['maxZoom'] )
 			);
 		} else if ( isset( $options['options']['minZoom'] ) ) {
 			printf( $tag, 
 				__( 'Zoom is restricted.', 'acf-openstreetmap-field' ),
+				'acf-osm-tag',
 				/* translators: min zoom value */
 				sprintf( __( 'Min Zoom: %d', 'acf-openstreetmap-field' ), $options['options']['minZoom'] )
 			);
@@ -176,12 +188,46 @@ class SettingsOpenStreetMap extends Settings {
 		} else if ( isset( $options['options']['maxZoom'] ) ) {
 			printf( $tag, 
 				__( 'Zoom is restricted.', 'acf-openstreetmap-field' ),
+				'acf-osm-tag',
 				/* translators: max zoom value */
 				sprintf( __( 'Max Zoom: %d', 'acf-openstreetmap-field' ), $options['options']['maxZoom'] )
 			);	
 		}
 	}
 	
+	/** 
+	 *	Whether a map tile provider is insecure.
+	 *
+	 *	@param array $options Map provider options
+	 *	@return boolean
+	 */
+	private function is_insecure( $options ) {
+		return is_array($options) && isset( $options['url'] ) && strpos( $options['url'], 'http:' ) === 0;
+	}
+
+	/** 
+	 *	Whether a map tile provider has bounds
+	 *
+	 *	@param array $options Map provider options
+	 *	@return boolean
+	 */
+	private function has_bounds( $options ) {
+		return is_array($options) && isset( $options['options']['bounds'] );
+	}
+
+	/** 
+	 *	Whether a map tile is overlay.
+	 *
+	 *	@param array $options Map provider options
+	 *	@return boolean
+	 */
+	private function is_overlay( $options ) {
+		return is_array($options) && isset( $options['isOverlay'] ) && $options['isOverlay'];;
+	}
+	
+	/**
+	 *	@param string $key Provider key
+	 */
 	private function print_test_link( $key ) {
 		?>
 		<a href="#" data-layer="<?php esc_attr_e( $key ) ?>" class="action-test">
@@ -190,8 +236,25 @@ class SettingsOpenStreetMap extends Settings {
 		<?php
 	}
 
+
+
+
 	/**
-	 *	@param array $args
+	 * Print some documentation for the optionset
+	 */
+	public function providers_description() {
+
+		?>
+		<div class="inside">
+			<p class="description"><?php _e( 'Configure which map tile providers you like to be present in the ACF Field.' , 'acf-openstreetmap-field' ); ?></p>
+			<p class="description"><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
+		</div>
+		<?php
+	}
+
+	/**
+	 *	@param string $provider_key
+	 *	@param array $provider_data
 	 */
 	public function print_provider_setting( $provider_key, $provider_data ) {
 
@@ -318,19 +381,6 @@ class SettingsOpenStreetMap extends Settings {
 		
 	}
 
-
-	/**
-	 * Print some documentation for the optionset
-	 */
-	public function tokens_description( $args ) {
-
-		?>
-		<div class="inside">
-			<p><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
-		</div>
-		<?php
-	}
-
 	/**
 	 * Output Theme selectbox
 	 */
@@ -404,17 +454,17 @@ class SettingsOpenStreetMap extends Settings {
 	private function get_default_option_providers() {
 
 		$core = Core\Core::instance();
-
+		$is_https = strpos( get_option('home'), 'https:' ) === 0;
 		$provider_settings = $core->get_layer_providers();
 		$default_option = array();
 		foreach ( $provider_settings as $provider_key => $provider_data ) {
-			if ( isset( $provider_data['options']['bounds'] ) ) {
+			if ( $this->has_bounds( $provider_data ) || ( $is_https && $this->is_insecure( $provider_data ) ) ) {
 				$default_option[ $provider_key ] = '0';
 				continue;
 			}
 			if ( isset( $provider_data['variants'] ) ) {
 				foreach ( $provider_data['variants'] as $variant_key => $variant_data ) {
-					if ( is_array( $variant_data ) && isset( $variant_data['options']['bounds'] ) ) {
+					if ( $this->has_bounds( $variant_data ) || ( $is_https && $this->is_insecure( $variant_data ) )) {
 						$default_option[ $provider_key ]['variants'][$variant_key] = '0';
 					}
 				}

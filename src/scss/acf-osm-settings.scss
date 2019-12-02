@@ -3,6 +3,12 @@
 
 @import 'mixins/mixins';
 
+.leaflet-bar-part {
+	.dashicons {
+		margin-top:4px;
+	}
+}
+
 .acf-osm-settings {
 	display: flex;
 	.acf-osm-layer-variants {
@@ -22,7 +28,6 @@
 	.acf-osm-tag {
 		display: inline-block;
 		padding:0.25em 0.5em;
-		background: $wp-gray-darker;
 		font-size:0.8em;
 		color:#fff;
 		border-radius:1em;
@@ -30,6 +35,10 @@
 		margin-left:1em;
 		font-weight:normal;
 		white-space: nowrap;
+		background-color: $wp-gray-darker;
+		&.warn {
+			background-color: $wp-red;
+		}
 	}
 	.acf-osm-test-map-container {
 		position: relative;

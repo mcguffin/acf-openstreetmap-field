@@ -773,7 +773,8 @@
 				"options": {
 					"maxZoom": 15,
 					"variant": "hillshading"
-				}
+				},
+				"isOverlay": true
 			}
 		}
 	},
@@ -889,7 +890,7 @@
 			"minZoom": 1,
 			"maxZoom": 9,
 			"format": "jpg",
-			"time": "",
+			"time": "2019-01-01",
 			"tilematrixset": "GoogleMapsCompatible_Level"
 		},
 		"variants": {
