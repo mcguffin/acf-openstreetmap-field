@@ -278,10 +278,10 @@ class Core extends Plugin {
 						if ( isset( $access_tokens[$provider_key]['options'][$option] ) && ! empty( $access_tokens[$provider_key]['options'][$option] ) ) {
 							// we know the access key
 							$provider_data['options'][ $option ] = $access_tokens[$provider_key]['options'][$option];
-							break;
+							
 						} else {
 							// remove provider
-							continue 2;
+							continue;
 						}
 					}
 				}

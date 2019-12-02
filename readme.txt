@@ -111,6 +111,7 @@ No.
  - Feature: Add locate me button to backend
  - Fix: Geocoder search result still visible after marker added to map.
  - Fix: Required field and max_markers = 0 never saved
+ - Fix: HERE app code not included in api requests
 
 = 1.1.6 =
  - Feature: Observe DOM for newly added maps
