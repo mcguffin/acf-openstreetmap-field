@@ -6,11 +6,13 @@ ACF OpenStreetMap Field ToDo
  - [x] Disable keyboard navigation in Backend
  - [x] Locate Me Button (backend)
  - [ ] Locate me: no add marker button if max_markers == 0
+ - [ ] Pass map init object along with `acf-osm-map-create` event (#37)
 
 1.2.0
 -----
  - [ ] Make Marker Data match as ACF Google-Map Data
  - […] Options: Disable map layers
+ - [ ] Options: allow `'api_key':'<enter key here>'` in filter `acf_osm_leaflet_providers` (#38)
  - [ ] Tests:
      - [ ] ACF-Customizer
      - [ ] ACF WP-Objects
