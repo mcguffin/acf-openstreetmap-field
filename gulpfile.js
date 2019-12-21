@@ -76,14 +76,17 @@ gulp.task('providers', function(cb){
 			'^(OpenWeatherMap|OpenSeaMap)',
 			'OpenMapSurfer.(Hybrid|AdminBounds|ContourLines|Hillshade|ElementsAtRisk)',
 			'HikeBike.HillShading',
-			'Stamen.Toner(Hybrid|Lines|Labels)',
+			'Stamen.(Toner|Terrain)(Hybrid|Lines|Labels)',
+			'TomTom.(Hybrid|Labels)',
 			'Hydda.RoadsAndLabels',
 			'^JusticeMap',
 			'OpenPtMap',
 			'OpenRailwayMap',
 			'OpenFireMap',
 			'SafeCast',
-			'OnlyLabels'
+			'OnlyLabels',
+			'HERE.trafficFlow',
+			'HERE.mapLabels'
 		].join('|');
 
 		return name.match( overlayPattern ) !== null;
