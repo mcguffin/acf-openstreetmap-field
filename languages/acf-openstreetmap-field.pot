@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-12-02T09:07:20+00:00\n"
+"POT-Creation-Date: 2019-12-21T14:30:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: acf-openstreetmap-field\n"
@@ -46,8 +46,23 @@ msgstr ""
 msgid "My location"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:107
+#: include/ACFFieldOpenstreetmap/Core/Core.php:108
 msgid "Add Marker at location"
+msgstr ""
+
+#. translators: address format for marker labels (street level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
+#: include/ACFFieldOpenstreetmap/Core/Core.php:111
+msgid "{building} {road} {house_number}"
+msgstr ""
+
+#. translators: address format for marker labels (city level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
+#: include/ACFFieldOpenstreetmap/Core/Core.php:113
+msgid "{postcode} {city} {town} {village} {hamlet}"
+msgstr ""
+
+#. translators: address format for marker labels (country level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
+#: include/ACFFieldOpenstreetmap/Core/Core.php:115
+msgid "{state} {country}"
 msgstr ""
 
 #: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:51
