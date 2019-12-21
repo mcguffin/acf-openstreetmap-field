@@ -107,6 +107,10 @@ No.
 
 == Changelog ==
 
+= 1.1.8 =
+ - Feature: make marker address formats localizable.
+
+
 = 1.1.7 =
  - Feature: Add locate me button to backend
  - Fix: Geocoder search result still visible after marker added to map.

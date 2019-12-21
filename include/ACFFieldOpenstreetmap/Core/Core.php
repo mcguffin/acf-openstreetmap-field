@@ -103,8 +103,17 @@ class Core extends Plugin {
 			'i18n'	=> array(
 				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),
 				'nothing_found'	=> __( 'Nothing found...', 'acf-openstreetmap-field' ),
-				'my_location'		=> __( 'My location', 'acf-openstreetmap-field' ),
-				'add_marker_at_location' => __( 'Add Marker at location', 'acf-openstreetmap-field' )
+				'my_location'	=> __( 'My location', 'acf-openstreetmap-field' ),
+				'add_marker_at_location'
+					=> __( 'Add Marker at location', 'acf-openstreetmap-field' ),
+				'address_format'	=> array(
+					/* translators: address format for marker labels (street level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
+					'street'	=> __( '{building} {road} {house_number}', 'acf-openstreetmap-field' ),
+					/* translators: address format for marker labels (city level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
+					'city'		=> __( '{postcode} {city} {town} {village} {hamlet}', 'acf-openstreetmap-field' ),
+					/* translators: address format for marker labels (country level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
+					'country'	=> __( '{state} {country}', 'acf-openstreetmap-field' ),
+				)
 			),
 		));
 		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), array('acf-field-group','acf-input-osm'), $this->get_version(), true );

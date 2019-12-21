@@ -7,6 +7,7 @@ ACF OpenStreetMap Field ToDo
  - [x] Locate Me Button (backend)
  - [ ] Locate me: no add marker button if max_markers == 0
  - [ ] Pass map init object along with `acf-osm-map-create` event (#37)
+ - [ ] Localizable address formats
 
 1.2.0
 -----
@@ -20,9 +21,7 @@ ACF OpenStreetMap Field ToDo
      - [ ] ACF-Customizer
      - [ ] ACF WP-Objects
      - [ ] ACF Quick Edit Fields
- - [ ] Data: Marker Meta: textarea, text, number, file, image, URL, email, ... via location rule...?
- - [ ] Static map output (img)
- - [ ] Fit markers in view (backend)
+ - [ ] Fit markers in view (backend) #30
  
 1.3.0
 -----
@@ -32,3 +31,8 @@ ACF OpenStreetMap Field ToDo
  - [ ] Refactor JS
  - [ ] Refactor Core
  - [ ] Theme Override
+ - [ ] Default Templates
+   - [ ] iFrame
+   - [ ] OSM-URL
+   - [ ] Leaflet Div
+   - [ ] Static image #31

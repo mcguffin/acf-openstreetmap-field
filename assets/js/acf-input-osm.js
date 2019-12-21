@@ -568,6 +568,39 @@
  				suggestTimeout:250,
  				queryMinLength:3,
  				defaultMarkGeocode:false,
+				geocoder:L.Control.Geocoder.nominatim({ 
+					htmlTemplate: function(result) {
+						var parts = [],
+							templateConfig = {
+								interpolate: /\{(.+?)\}/g
+							},
+							addr = _.defaults( result.address, {
+								building:'',
+								road:'',
+								house_number:'',
+								
+								postcode:'',
+								city:'',
+								town:'',
+								village:'',
+								hamlet:'',
+								
+								state:'',
+								country:'',
+							} );
+
+						parts.push( _.template( i18n.address_format.street, templateConfig )( addr ) );
+
+						parts.push( _.template( i18n.address_format.city, templateConfig )( addr ) );
+
+						parts.push( _.template( i18n.address_format.country, templateConfig )( addr ) );
+
+						return parts
+							.map( function(el) { return el.replace(/\s+/g,' ').trim() } )
+							.filter( function(el) { return el !== '' } )
+							.join(', ')
+					}
+				})
  			})
  			.on('markgeocode',function(e){
  				// search result click
@@ -629,14 +662,17 @@
 				label = latlng.lat + ', ' + latlng.lng;
 			} else {
 				$.each( results, function( i, result ) {
-					if ( !! result.html ) {
-						var html = result.html.replace(/(\s+)</g,'<').replace(/<br\/>/g,'<br/>, ');
-						// add missing spaces
-						label = $('<p>'+html+'</p>').text().trim().replace(/(\s+)/g,' ');
-					} else {
-						label = result.name;
-					}
-					return false;
+
+					label = result.html;
+
+					// if ( !! result.html ) {
+					// 	var html = result.html.replace(/(\s+)</g,'<').replace(/<br\/>/g,'<br/>, ');
+					// 	// add missing spaces
+					// 	label = $('<p>'+html+'</p>').text().trim().replace(/(\s+)/g,' ');
+					// } else {
+					// 	label = result.name;
+					// }
+					// return false;
 				});
 			}
 			// trim
