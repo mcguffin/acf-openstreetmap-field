@@ -158,7 +158,7 @@
 
 				$(this).height(data.height);
 
-				map = L.map( this, createEvt.data );
+				map = L.map( this, createEvt.originalEvent.data );
 
 				$(this).data( 'acf-osm-map', map );
 
