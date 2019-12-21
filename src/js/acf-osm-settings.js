@@ -92,7 +92,8 @@
 		.on('ready',function(){
 			var map = get_map();
 			map.on('layeradd', function (e) {
-				var layer = e.layer;
+				var layer = e.layer, 
+					currentZoom, newZoom;
 				if (!map.hasLayer(layer)) {
 					return;
 				}
@@ -104,9 +105,15 @@
 						paddingBottomRight: [0, 0]
 					});
 				}
-				if (layer.options.minZoom > 1 && map.getZoom() > layer.options.minZoom) {
-					map.setZoom(layer.options.minZoom);
-				}
+
+				// set zoom to current restrictions
+				currentZoom = map.getZoom();
+				newZoom = Math.max(
+					layer.options.minZoom,
+					Math.min( currentZoom, layer.options.maxZoom )
+				);
+				
+				( currentZoom !== newZoom ) && map.setZoom( newZoom );
 			});
 			new L.Control.ResetLayers({
 				position: 'topright'
@@ -115,6 +122,9 @@
 		.on('click','.acf-osm-settings [data-layer]',function(e){
 			e.preventDefault();
 			addLayer( $(this).data('layer') );
+		})
+		.on('change','.osm-disable[type="checkbox"]',function(e){
+			$(this).closest('.acf-osm-setting').toggleClass('disabled',$(this).prop('checked'))
 		})
 	// 
 	// self.map.eachLayer(function(layer) {

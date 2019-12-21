@@ -149,7 +149,7 @@ class SettingsOpenStreetMap extends Settings {
 			$is_https = strpos( get_option('home'), 'https:' ) === 0;
 			printf( 
 				$tag, 
-				__( 'The map tile are loaded through an insecure http connection.', 'acf-openstreetmap-field' ),
+				__( 'The map tiles are loaded through an insecure http connection.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag' . ( $is_https ? ' warn' : '' ),
 				__( 'Insecure', 'acf-openstreetmap-field' ) 
 			);
@@ -179,7 +179,7 @@ class SettingsOpenStreetMap extends Settings {
 			);
 		} else if ( isset( $options['options']['minZoom'] ) ) {
 			printf( $tag, 
-				__( 'Zoom is restricted.', 'acf-openstreetmap-field' ),
+				__( 'Zoom levels are restricted.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
 				/* translators: min zoom value */
 				sprintf( __( 'Min Zoom: %d', 'acf-openstreetmap-field' ), $options['options']['minZoom'] )
@@ -187,7 +187,7 @@ class SettingsOpenStreetMap extends Settings {
 			
 		} else if ( isset( $options['options']['maxZoom'] ) ) {
 			printf( $tag, 
-				__( 'Zoom is restricted.', 'acf-openstreetmap-field' ),
+				__( 'Zoom levels are restricted.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
 				/* translators: max zoom value */
 				sprintf( __( 'Max Zoom: %d', 'acf-openstreetmap-field' ), $options['options']['maxZoom'] )
@@ -246,8 +246,8 @@ class SettingsOpenStreetMap extends Settings {
 
 		?>
 		<div class="inside">
-			<p class="description"><?php _e( 'Configure which map tile providers you like to be present in the ACF Field.' , 'acf-openstreetmap-field' ); ?></p>
-			<p class="description"><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
+			<p class="description"><?php _e( 'Select which map tile providers you like to be selectable in the ACF Field.' , 'acf-openstreetmap-field' ); ?></p>
+			<p class="description"><?php _e( 'Configure Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
 		</div>
 		<?php
 	}
@@ -259,64 +259,38 @@ class SettingsOpenStreetMap extends Settings {
 	public function print_provider_setting( $provider_key, $provider_data ) {
 
 //		@list( $provider_key, $provider_data ) = array_values( $args );
-		$token_option = get_option( 'acf_osm_provider_tokens' );
 		$provider_option = get_option( 'acf_osm_providers' );
 
 		$needs_access_key = false;
+		$is_parent_disabled = isset( $provider_option[$provider_key] ) && $provider_option[$provider_key] === false;
+		$needs_access_key = $this->needs_access_token( $provider_key, $provider_data );
 		?>
-		<div class="acf-osm-setting acf-osm-setting-provider">
-			<?php
-			// access key - find in $provider_data['options']['<something>']
-			foreach ( $provider_data['options'] as $option => $value ) {
+		<div class="acf-osm-setting acf-osm-setting-provider <?php echo $is_parent_disabled ? 'disabled' : ''; ?>">
 
-				if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) ) {
-					$current_value = '';
-					$needs_access_key = true;
-					if ( isset( $token_option[ $provider_key ][ 'options' ][ $option ] ) ) {
-						$current_value = $token_option[ $provider_key ][ 'options' ][ $option ];
-						$needs_access_key = empty( trim( $current_value ) );
-					}
-					?>
-						<div class="acf-osm-setting acf-osm-setting-access-key">
-							<h4><?php printf( '%s %s', $provider_key, $option); ?></h4>
-							<label>
-								<?php
-							
-							printf('<input type="text" name="%s" value="%s" class="large-text code" placeholder="%s" />',
-								sprintf('acf_osm_provider_tokens[%s][options][%s]', 
-									esc_html($provider_key), 
-									esc_html($option) 
-								),
-								esc_attr($current_value),
-								esc_attr($value)
-							);
-							?></label>
-						</div>
-						<?php
-					//break;
+			<h3><?php
+
+				echo $provider_key;
+				if ( ! $needs_access_key ) {
+
+					$this->print_tags( $provider_data );
+					$this->print_test_link( $provider_key );
+
 				}
-			}
+			?></h3>
+			<?php
 
 			if ( ! $needs_access_key ) {
 					
 				?>
-				<div class="acf-osm-setting acf-osm-setting-base">
-
-					<h4><?php 
-						echo $provider_key;
-
-						$this->print_tags( $provider_data );
-						$this->print_test_link( $provider_key );
-
-					?></h4>
+				<div class="acf-osm-setting-base">
 					<label>
 					<?php
-
-					printf('<input type="checkbox" name="%s" value="0" %s />',
+					
+					printf('<input class="osm-disable" type="checkbox" name="%s" value="0" %s />',
 						sprintf('acf_osm_providers[%s]', 
 							esc_attr( $provider_key )
 						),
-						checked( isset( $provider_option[$provider_key] ) && $provider_option[$provider_key] === false, true, false )
+						checked( $is_parent_disabled, true, false )
 					);
 					/* trnaslators: %s map tile provider name */
 					printf( __('Disable %s', 'acf-openstreeetmap-field' ), $provider_key );
@@ -329,8 +303,8 @@ class SettingsOpenStreetMap extends Settings {
 				if ( isset( $provider_data['variants'] ) ) {
 
 					?>
-					<div class="acf-osm-setting acf-osm-setting-layer-variant">
-						<h4><?php _e('Disable Layer variants', 'acf-openstreetmap-field' ); ?></h4>
+					<div class="acf-osm-setting-layer-variant">
+						<h4><em><?php _e('Disable Layer variants', 'acf-openstreetmap-field' ); ?></em></h4>
 						<div class="acf-osm-layer-variants">
 						<?php
 						foreach ( $provider_data['variants'] as $variant_key => $variant ) {
@@ -339,17 +313,18 @@ class SettingsOpenStreetMap extends Settings {
 								continue;
 							}
 
+							$is_disabled = isset( $provider_option[ $provider_key ]['variants'][ $variant_key ] ) 
+											&& $provider_option[$provider_key]['variants'][$variant_key] === false;
+
 							?>
-							<div class="layer-variant">
+							<div class="acf-osm-setting layer-variant <?php echo $is_disabled ? 'disabled' : ''; ?>">
 								<label>
 									<?php
 
-									$is_disabled = isset( $provider_option[ $provider_key ]['variants'][ $variant_key ] ) 
-													&& $provider_option[$provider_key]['variants'][$variant_key] === false;
-									printf('<input type="checkbox" name="%s" value="0" %s />',
+									printf('<input class="osm-disable" type="checkbox" name="%s" value="0" %s />',
 										sprintf('acf_osm_providers[%s][variants][%s]', 
-											esc_attr($provider_key), 
-											esc_attr($variant_key)
+											$this->sanitize_key_case($provider_key), 
+											$this->sanitize_key_case($variant_key)
 										),
 										checked( $is_disabled, true, false)
 									);
@@ -375,10 +350,78 @@ class SettingsOpenStreetMap extends Settings {
 				}
 			}
 
+			$this->print_access_token_inputs( $provider_key, $provider_data );
+
+
 			?>
 		</div>
 		<?php
 		
+	}
+
+	/**
+	 *	Whether an access key needs to be entered to make this provider work.
+	 *
+	 *	@param string $provider_key
+	 *	@param Array $provider_data
+	 *	@return boolean Whether this map provider requires an access key and the access key is not configured yet
+	 */
+	private function needs_access_token( $provider_key, $provider_data ) {
+		$token_option = get_option( 'acf_osm_provider_tokens' );
+		foreach ( $provider_data['options'] as $option => $value ) {
+			if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) ) {
+				if ( 
+					! isset( $token_option[ $provider_key ][ 'options' ][ $option ] ) 
+					|| empty( $token_option[ $provider_key ][ 'options' ][ $option ] )
+				) {
+					return true;
+				}
+				
+			}
+		}
+		return false;		
+
+	}
+
+	/**
+	 *	Print access token input fields
+	 *
+	 *	@param string $provider_key
+	 *	@param Array $provider_data
+	 */
+	private function print_access_token_inputs( $provider_key, $provider_data ) {
+
+		$token_option = get_option( 'acf_osm_provider_tokens' );
+
+		// access key - find in $provider_data['options']['<something>']
+		foreach ( $provider_data['options'] as $option => $value ) {
+
+			if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) ) {
+				$current_value = '';
+				if ( isset( $token_option[ $provider_key ][ 'options' ][ $option ] ) ) {
+					$current_value = $token_option[ $provider_key ][ 'options' ][ $option ];
+					$current_value = str_repeat( '*', strlen( $current_value ) );
+				}
+				?>
+				<div class="acf-osm-setting acf-osm-setting-access-key">
+					<h4><?php printf( '%s %s', $provider_key, $option); ?></h4>
+					<label>
+						<?php
+					
+					printf('<input type="text" name="%s" value="%s" class="large-text code" placeholder="%s" />',
+						//empty($current_value) ? 'text' : 'password',
+						sprintf('acf_osm_provider_tokens[%s][options][%s]', 
+							$this->sanitize_key_case($provider_key), 
+							$this->sanitize_key_case($option) 
+						),
+						esc_attr($current_value),
+						esc_attr($value)
+					);
+					?></label>
+				</div>
+				<?php
+			}
+		}
 	}
 
 	/**
@@ -406,9 +449,10 @@ class SettingsOpenStreetMap extends Settings {
 	 *
 	 * @return string sanitized value
 	 */
-	public function sanitize_provider_tokens( $token_values ) {
+	public function sanitize_provider_tokens( $new_values ) {
 		$core = Core\Core::instance();
 		$token_options = $core->get_provider_token_options();
+		$prev_values = get_option('acf_osm_provider_tokens');
 		$values = array();
 
 		foreach ( $token_options as $provider => $provider_data ) {
@@ -416,17 +460,42 @@ class SettingsOpenStreetMap extends Settings {
 			foreach ( $provider_data as $section => $config ) {
 				$values[$provider][$section] = array();
 				foreach( $config as $key => $value ) {
-					if ( isset( $token_values[$provider][$section][$key] )) {
-						$values[$provider][$section][$key] = $token_values[$provider][$section][$key];
+					$prev_token = '';
+					if ( isset( $prev_values[$provider][$section][$key] ) ) {
+						$prev_token = $prev_values[$provider][$section][$key];
+					}
+
+					// 
+					if ( isset( $new_values[$provider][$section][$key] ) ) {
+						// '' or '*****' or 'a-z0-9.-_+...'
+						$access_token = trim( $new_values[$provider][$section][$key] );
+						if ( preg_match( '/^([\*]+)$/', $access_token ) !== 0 ) {
+							// use old token
+							$values[$provider][$section][$key] = $prev_token;
+						} else { // 
+							// new token OR token was deleted
+							$values[$provider][$section][$key] = $access_token;
+						}
+
 					} else {
-						$values[$provider][$section][$key] = '';
+						// no token entered
+						$values[$provider][$section][$key] = $prev_token;
+
 					}
 				}
 			}
 		}
+
 		return $values;
 	}
 	
+	/**
+	 *	@param string $key
+	 *	@return string
+	 */
+	private function sanitize_key_case( $key ) {
+		return preg_replace( '/[^A-Za-z0-9_\-]/', '', $key );
+	}
 	/**
 	 *
 	 */

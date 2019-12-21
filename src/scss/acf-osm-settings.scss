@@ -58,6 +58,16 @@
 	}
 }
 
+.acf-osm-setting {
+	transition:filter 0.3s;
+	&.disabled {
+		filter: grayscale(1) contrast(0.5) brightness(1.75);
+		.disabled {
+			filter: none;
+		}
+	}
+}
+
 .acf-osm-setting-provider {
 	background:#fff;
 	padding:10px 20px;
