@@ -29,18 +29,6 @@
 			display:none;
 		}
 	}
-	// &:after {
-	// 	content:attr(class);
-	// 	font-size:16px;
-	// 	font-family:monospace;
-	// 	padding-top:400px;
-	// 	background: #fff;
-	// 	position: absolute;
-	// 	z-index: 1000;
-	// 	top:100%;
-	// 	left:0;
-	// 	width:100%;
-	// }
 	~ .markers-instruction .add-marker-instructions {
 		display:none;
 	}
@@ -312,28 +300,18 @@ $leaflet-panes: (
 		margin-top:-10px !important;
 	}
 	&.active {
-		.dashicons-location-alt {
-			position: relative;
-			&::before {
-				content:$dashicon-location;
+		[data-can-add-marker="true"] & {
+			.dashicons-location-alt {
+				position: relative;
+				&::before {
+					content:$dashicon-location;
+				}
 			}
-			// &::after {
-			// 	content:'';
-			// 	width:5px;
-			// 	height:2px;
-			// 	position: absolute;
-			// 	left:0;
-			// 	top:15px;
-			// 	background: currentColor;
-			// 	box-shadow: 13px 0 0 currentColor;
-			// }
-		}
-		border-bottom-left-radius:0;
-		border-bottom-right-radius:0;
-		a {
-		}
-		& + .leaflet-control-add-location-marker {
-			display:block;
+			border-bottom-left-radius:0;
+			border-bottom-right-radius:0;
+			& + .leaflet-control-add-location-marker {
+				display:block;
+			}
 		}
 	}
 	&.following {

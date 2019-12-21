@@ -323,7 +323,9 @@
 			this.locatorAdd = new L.Control.AddLocationMarker({
 				position: 'bottomleft',
 				callback: function() {
-					self.currentLocation && self.addMarkerByLatLng( self.currentLocation );
+					if ( self.$el.attr('data-can-add-marker') === 'true' ) {
+						self.currentLocation && self.addMarkerByLatLng( self.currentLocation );						
+					}
 					self.locator.stop();
 				}
 			}).addTo(this.map);
@@ -905,7 +907,7 @@
 	acf.addAction( 'append', function(){
 		$.acf_leaflet();
 	});
-	// init when fields shw ...
+	// init when fields show ...
 	acf.addAction( 'show_field', function( field ) {
 
 		if ( 'open_street_map' !== field.type ) {
