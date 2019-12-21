@@ -136,8 +136,14 @@
 				var data = $(this).data(),
 					self = this,
 					map, maxzoom,
+					mapInit = {
+						scrollWheelZoom: false,
+						center: [ data.mapLat, data.mapLng ],
+						zoom: data.mapZoom
+					},
 					createEvt = $.Event({
-						type: 'acf-osm-map-create'
+						type: 'acf-osm-map-create',
+						data: mapInit
 					}),
 					initEvt = $.Event({
 						type: 'acf-osm-map-init'
@@ -152,11 +158,7 @@
 
 				$(this).height(data.height);
 
-				map = L.map( this, {
-					scrollWheelZoom: false,
-					center: [ data.mapLat, data.mapLng ],
-					zoom: data.mapZoom
-				} );
+				map = L.map( this, createEvt.data );
 
 				$(this).data( 'acf-osm-map', map );
 
