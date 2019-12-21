@@ -390,6 +390,7 @@
 			var marker = L.marker( { lat: model.get('lat'), lng: model.get('lng') }, {
 					title: model.get('label'),
 					icon: this.icon,
+					draggable: true
 				})
 				.bindTooltip( model.get('label') );
 
@@ -401,6 +402,7 @@
 			});
 
 			this.map.once('layeradd',function(e){
+				
 				marker
 					.on('click',function(e){
 						model.destroy();
@@ -413,7 +415,7 @@
 						self.reverseGeocode( model );
 						// geocode, get label, set model label...
 					})
-					.dragging.enable();
+				
 				entry.$el.appendTo( self.$markers() );
 			});
 
