@@ -10,8 +10,11 @@ ACF OpenStreetMap Field ToDo
 
 1.2.0
 -----
- - [ ] Make Marker Data match as ACF Google-Map Data
- - […] Options: Disable map layers
+ - [ ] Make Marker Data match as ACF Google-Map Data (#39)
+ - [ ] Options: Disable map layers
+   - [x] Craft UI
+   - [ ] Add layer type definition to map layers json https://github.com/leaflet-extras/leaflet-providers/issues/296
+   - [ ] Find out what to do with HERE v3 https://github.com/leaflet-extras/leaflet-providers/issues/342
  - [ ] Options: allow `'api_key':'<enter key here>'` in filter `acf_osm_leaflet_providers` (#38)
  - [ ] Tests:
      - [ ] ACF-Customizer

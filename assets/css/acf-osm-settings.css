@@ -66,6 +66,19 @@
     min-height: 400px;
     height: calc( 100vh - 32px); }
 
+.acf-osm-setting {
+  -webkit-transition: -webkit-filter 0.3s;
+  transition: -webkit-filter 0.3s;
+  -o-transition: filter 0.3s;
+  transition: filter 0.3s;
+  transition: filter 0.3s, -webkit-filter 0.3s; }
+  .acf-osm-setting.disabled {
+    -webkit-filter: grayscale(1) contrast(0.5) brightness(1.75);
+            filter: grayscale(1) contrast(0.5) brightness(1.75); }
+    .acf-osm-setting.disabled .disabled {
+      -webkit-filter: none;
+              filter: none; }
+
 .acf-osm-setting-provider {
   background: #fff;
   padding: 10px 20px;
