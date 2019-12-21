@@ -5,7 +5,7 @@ Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
 Tested up to: 5.3
-Stable tag: 1.1.6
+Stable tag: 1.1.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -45,12 +45,14 @@ You can choose from a long list of map styles and it supports multiple markers.
 ## Development
 
 Please head over to the source code [on Github](https://github.com/mcguffin/acf-openstreetmap-field).
+
 ## Credits
 - Eliott Condon's [ACF](https://www.advancedcustomfields.com/) for sure!
 - The [OpenStreetMap](https://www.openstreetmap.org/) project
 - [The Leaflet Project](https://leafletjs.com/)
 - The maintainers and [contributors](https://github.com/leaflet-extras/leaflet-providers/graphs/contributors) of [Leaflet providers](https://github.com/leaflet-extras/leaflet-providers)
 - The [very same](https://github.com/perliedman/leaflet-control-geocoder/graphs/contributors) for [Leaflet Control Geocode](https://github.com/perliedman/leaflet-control-geocoder)
+- [Dominik Moritz](https://www.domoritz.de/) who delighted us with [Leaflet locate control](https://github.com/domoritz/leaflet-locatecontrol)
 - Numerous individuals and organizations who provide wonderful Map related services free of charge. (You are credited in the map, I hope)
 
 == Installation ==
@@ -106,8 +108,10 @@ No.
 == Changelog ==
 
 = 1.1.7 =
+ - Feature: Add locate me button to backend
  - Fix: Geocoder search result still visible after marker added to map.
  - Fix: Required field and max_markers = 0 never saved
+ - Fix: HERE app code not included in api requests
 
 = 1.1.6 =
  - Feature: Observe DOM for newly added maps
