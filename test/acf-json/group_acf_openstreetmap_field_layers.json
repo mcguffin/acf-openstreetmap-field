@@ -3,12 +3,36 @@
     "title": "OpenStreetMap Field - Layers",
     "fields": [
         {
-            "center_lat": 53.5507112,
+            "center_lat": 53.5857799,
             "center_lng": 10.0006485,
             "zoom": 12,
             "key": "field_5d4bc3655263c",
             "label": "Leaflet Map",
             "name": "leaflet_map",
+            "type": "open_street_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "leaflet",
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": "",
+            "layers": [
+                "OpenStreetMap"
+            ]
+        },
+        {
+            "center_lat": 53.5507112,
+            "center_lng": 10.0006485,
+            "zoom": 12,
+            "key": "field_5dda735173919",
+            "label": "Leaflet Map No Markers",
+            "name": "leaflet_map_no_markers",
             "type": "open_street_map",
             "instructions": "",
             "required": 1,
@@ -25,7 +49,7 @@
             ],
             "allow_map_layers": 1,
             "height": 400,
-            "max_markers": ""
+            "max_markers": 0
         },
         {
             "center_lat": 53.5817546,
@@ -83,5 +107,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1566384297
+    "modified": 1576941560
 }

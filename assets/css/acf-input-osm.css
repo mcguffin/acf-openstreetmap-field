@@ -339,14 +339,14 @@
   border-top-width: 0 !important;
   margin-top: -10px !important; }
 
-.leaflet-control-locate.active {
+[data-can-add-marker="true"] .leaflet-control-locate.active {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0; }
-  .leaflet-control-locate.active .dashicons-location-alt {
+  [data-can-add-marker="true"] .leaflet-control-locate.active .dashicons-location-alt {
     position: relative; }
-    .leaflet-control-locate.active .dashicons-location-alt::before {
+    [data-can-add-marker="true"] .leaflet-control-locate.active .dashicons-location-alt::before {
       content: ""; }
-  .leaflet-control-locate.active + .leaflet-control-add-location-marker {
+  [data-can-add-marker="true"] .leaflet-control-locate.active + .leaflet-control-add-location-marker {
     display: block; }
 
 .leaflet-control-locate.following .dashicons {
