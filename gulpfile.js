@@ -85,12 +85,19 @@ gulp.task('providers', function(cb){
 			'OpenFireMap',
 			'SafeCast',
 			'OnlyLabels',
-			'HERE.trafficFlow',
-			'HERE.mapLabels'
+			'HERE(v3?).trafficFlow',
+			'HERE(v3?).mapLabels'
 		].join('|');
 
 		return name.match( overlayPattern ) !== null;
 	}
+
+	L.TileLayer.Provider.providers.HEREv3 = JSON.parse(JSON.stringify(L.TileLayer.Provider.providers.HERE))
+	L.TileLayer.Provider.providers.HEREv3.url = "https://{s}.{base}.maps.ls.hereapi.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?apiKey={apiKey}&lg={language}";
+	L.TileLayer.Provider.providers.HEREv3.options.apiKey = "<insert your apiKey here>";
+	delete( L.TileLayer.Provider.providers.HEREv3.options.app_code )
+	delete( L.TileLayer.Provider.providers.HEREv3.options.app_id )
+	
 
 	Object.keys(providers).map( key => {
 		let data = providers[key];
