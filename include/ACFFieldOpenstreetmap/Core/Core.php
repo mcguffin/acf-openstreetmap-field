@@ -284,19 +284,21 @@ class Core extends Plugin {
 
 					if ( is_string( $option_value) && preg_match( '/^<([^>]+)>$/', $option_value ) ) {
 						// option is an access key
+
 						if ( isset( $access_tokens[$provider_key]['options'][$option] ) && ! empty( $access_tokens[$provider_key]['options'][$option] ) ) {
 							// we know the access key
 							$provider_data['options'][ $option ] = $access_tokens[$provider_key]['options'][$option];
 							
 						} else {
 							// remove provider
+							$provider_data = false;
 							continue;
 						}
 					}
 				}
 				$new_providers[ $provider_key ] = $provider_data;
 			}
-
+			$provider_data = array_filter( $provider_data );
 			$this->leaflet_providers = apply_filters( 'acf_osm_leaflet_providers', $new_providers );
 		}
 

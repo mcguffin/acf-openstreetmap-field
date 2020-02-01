@@ -107,11 +107,14 @@ No.
 
 == Changelog ==
 
+= 1.1.9 =
+ - Add Settings link on plugins list table
+ - Security hardening
+
 = 1.1.8 =
  - Feature: make marker address formats localizable.
  - JS: pass map init object along with acf-os-map-create event
  - UI: hide add marker at my location button if markers cant be added
-
 
 = 1.1.7 =
  - Feature: Add locate me button to backend

@@ -18,14 +18,38 @@ class SettingsOpenStreetMap extends Settings {
 	 */
 	protected function __construct() {
 
+		$core = Core\Core::instance();
 
 //		add_option( 'acf-openstreetmap-field_setting_1' , 'Default Value' , '' , False );
 		add_option( 'acf_osm_provider_tokens' , array() , '' , False );
 
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 
+		add_filter( 'plugin_action_links_'.$core->get_wp_plugin(), [ $this, 'plugin_actions_links' ], 20, 4 );
+
 		parent::__construct();
 
+	}
+
+	/**
+	 *	@filter plugin_action_links_{$plugin_file}
+	 */
+	public function plugin_actions_links( $actions, $plugin_file, $plugin_data, $context ) {
+		if ( current_user_can( 'manage_options' ) ) {
+			$actions['settings'] = sprintf(
+				'<a href="%s" aria-label="%s">%s</a>',
+				esc_url( 
+					add_query_arg( 
+						[ 'page' => $this->optionset ], 
+						admin_url( 'options-general.php' )
+					) 
+				),
+				/* translators: %s: Plugin name. */
+				esc_attr( sprintf( _x( '%s Settings', 'plugin', 'acf-openstreetmap-field' ), $plugin_data['Name'] ) ),
+				__( 'Settings', 'acf-openstreetmap-field' )
+			);
+		}
+		return $actions;
 	}
 
 	/**
