@@ -1,6 +1,6 @@
 {
   "name": "acf-openstreetmap-field",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "A configurable OpenStreetMap Field to ACF.",
   "private": true,
   "scripts": {
@@ -39,9 +39,9 @@
     "gulp-uglify": "^3.0.2",
     "gulp-uglifycss": "^1.1.0",
     "leaflet": "^1.6.0",
-    "leaflet-control-geocoder": "^1.10.0",
+    "leaflet-control-geocoder": "^1.11.0",
     "leaflet-providers": "^1.9.0",
-    "leaflet.locatecontrol": "^0.68.0",
+    "leaflet.locatecontrol": "^0.70.0",
     "resize-observer-polyfill": "^1.5.1",
     "simple-git": "^1.126.0"
   },
@@ -58,6 +58,7 @@
     ],
     "type": "plugin",
     "build": {
+      "versionedFiles": null,
       "prebuild": [
         "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp"
       ],

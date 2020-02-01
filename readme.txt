@@ -5,7 +5,7 @@ Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
 Tested up to: 5.3
-Stable tag: 1.1.8
+Stable tag: 1.1.9
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -108,7 +108,9 @@ No.
 == Changelog ==
 
 = 1.1.9 =
- - Add Settings link on plugins list table
+ - UI: Add Settings link on plugins list table
+ - Fix: hide map provider with unconfigured api key from layer selection
+ - Upgrade: leaflet-control-geocoder, leaflet.locatecontrol, leaflet-providers
  - Security hardening
 
 = 1.1.8 =
