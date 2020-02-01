@@ -11,3 +11,5 @@ wp-plugin-boilerplate.json export-ignore
 .wporg export-ignore
 *.md export-ignore
 test export-ignore
+phpcs*.xml export-ignore
+phpunit.* export-ignore

@@ -43,12 +43,12 @@ class SettingsOpenStreetMap extends Settings {
 	public function settings_page() {
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.' ) );
 		}
 
 		?>
 		<div class="wrap">
-			<h2><?php _e('acf-openstreetmap-field Settings', 'acf-openstreetmap-field') ?></h2>
+			<h2><?php esc_html_e('ACF OpenStreetMap Settings', 'acf-openstreetmap-field') ?></h2>
 
 			<form action="options.php" method="post">
 				<?php
@@ -136,7 +136,7 @@ class SettingsOpenStreetMap extends Settings {
 
 		?>
 		<div class="inside">
-			<p><?php _e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
+			<p><?php esc_html_e( 'Enter Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
 		</div>
 		<?php
 	}
