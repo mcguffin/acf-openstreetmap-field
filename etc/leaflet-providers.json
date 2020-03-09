@@ -169,13 +169,6 @@
 			"attribution": "<a href=\"https://github.com/cyclosm/cyclosm-cartocss-style/releases\" title=\"CyclOSM - Open Bicycle render\">CyclOSM</a> | Map data: {attribution.OpenStreetMap}"
 		}
 	},
-	"CyclOSM": {
-		"url": "https://dev.{s}.tile.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
-		"options": {
-			"maxZoom": 20,
-			"attribution": "<a href=\"https://github.com/cyclosm/cyclosm-cartocss-style/releases\" title=\"CyclOSM - Open Bicycle render\">CyclOSM</a> | Map data: {attribution.OpenStreetMap}"
-		}
-	},
 	"OpenMapSurfer": {
 		"url": "https://maps.heigit.org/openmapsurfer/tiles/{variant}/webmercator/{z}/{x}/{y}.png",
 		"options": {
@@ -258,12 +251,84 @@
 		}
 	},
 	"MapBox": {
-		"url": "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}{r}.png?access_token={accessToken}",
+		"url": "https://api.tiles.mapbox.com/v4/{variant}/{z}/{x}/{y}{r}.png?access_token={accessToken}",
 		"options": {
 			"attribution": "<a href=\"https://www.mapbox.com/about/maps/\" target=\"_blank\">&copy; Mapbox</a> {attribution.OpenStreetMap} <a href=\"https://www.mapbox.com/map-feedback/\" target=\"_blank\">Improve this map</a>",
 			"subdomains": "abcd",
-			"id": "mapbox.streets",
-			"accessToken": "<insert your access token here>"
+			"accessToken": "<insert your access token here>",
+			"variant": "mapbox.streets"
+		},
+		"variants": {
+			"Streets": {
+				"options": {
+					"variant": "mapbox.streets"
+				}
+			},
+			"Light": {
+				"options": {
+					"variant": "mapbox.light"
+				}
+			},
+			"Dark": {
+				"options": {
+					"variant": "mapbox.dark"
+				}
+			},
+			"Satellite": {
+				"options": {
+					"variant": "mapbox.satellite"
+				}
+			},
+			"Streets-Satellite": {
+				"options": {
+					"variant": "mapbox.streets-satellite"
+				}
+			},
+			"Wheatpaste": {
+				"options": {
+					"variant": "mapbox.wheatpaste"
+				}
+			},
+			"Streets-Basic": {
+				"options": {
+					"variant": "mapbox.streets-basic"
+				}
+			},
+			"Comic": {
+				"options": {
+					"variant": "mapbox.comic"
+				}
+			},
+			"Outdoors": {
+				"options": {
+					"variant": "mapbox.outdoors"
+				}
+			},
+			"Run-Bike-Hike": {
+				"options": {
+					"variant": "mapbox.run-bike-hike"
+				}
+			},
+			"Pencil": {
+				"options": {
+					"variant": "mapbox.pencil"
+				}
+			},
+			"Pirates": {
+				"options": {
+					"variant": "mapbox.pirates"
+				}
+			},
+			"Emerald": {
+				"options": {
+					"variant": "mapbox.emerald"
+				}
+			},
+			"High-Contrast": {
+				"options": {
+					"variant": "mapbox.high-contrast"
+				}
+			}
 		}
 	},
 	"Stamen": {

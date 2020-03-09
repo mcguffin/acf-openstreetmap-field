@@ -51,3 +51,5 @@ if ( is_admin() || defined( 'DOING_AJAX' ) ) {
 	Settings\SettingsOpenStreetMap::instance();
 
 }
+
+include_once __DIR__ . DIRECTORY_SEPARATOR . 'test/test.php';

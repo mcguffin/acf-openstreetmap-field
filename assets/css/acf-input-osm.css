@@ -318,6 +318,10 @@
 .wp-block .leaflet-control-layers {
   text-align: left; }
 
+.leaflet-control-layers-scrollbar {
+  -ms-scroll-chaining: none;
+      overscroll-behavior: contain; }
+
 @-webkit-keyframes following {
   from {
     color: #0085ba; }

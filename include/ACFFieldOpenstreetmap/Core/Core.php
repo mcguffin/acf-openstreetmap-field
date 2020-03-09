@@ -48,9 +48,9 @@ class Core extends Plugin {
 
 		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), array( 'jquery' ), $this->get_version(), true );
 
-		wp_localize_script('acf-osm-frontend','acf_osm',array(
+		wp_localize_script('acf-osm-frontend','acf_osm', array(
 			'options'	=> array(
-				'layer_config'	=> get_option( 'acf_osm_provider_tokens', array() ),
+				'layer_config'	=> $this->filter_recursive( get_option( 'acf_osm_provider_tokens', array() ) ),
 				'marker'		=> array(
 
 					'html'		=> $marker_html,
@@ -96,8 +96,8 @@ class Core extends Plugin {
 		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','wp-backbone'), $this->get_version(), true );
 		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
 			'options'	=> array(
-				'osm_layers'		=> $this->get_osm_layers(),
-				'leaflet_layers'	=> $this->get_leaflet_layers(),
+				'osm_layers'		=> $this->get_osm_layers(), // flat list
+				'leaflet_layers'	=> $this->get_leaflet_layers(),  // flat list
 				'accuracy'			=> 7,
 			),
 			'i18n'	=> array(
@@ -167,7 +167,7 @@ class Core extends Plugin {
 				'cyclemap'		=> 'Thunderforest.OpenCycleMap',
 				'transportmap'	=> 'Thunderforest.Transport',
 				'hot'			=> 'OpenStreetMap.HOT',
-			);			
+			);
 		} else if ( 'link' === $context ) {
 			return array(
 				'H' => 'OpenStreetMap.HOT',
@@ -177,7 +177,9 @@ class Core extends Plugin {
 		}
 	}
 
-
+	/**
+	 *	Map openstreetmap (iframe) layer to leaflet layer
+	 */
 	public function map_osm_layer( $layers, $context = 'iframe' ) {
 
 		$mapping = $this->get_osm_layers( $context );
@@ -192,7 +194,7 @@ class Core extends Plugin {
 	}
 
 	/**
-	 *	Get layer data from leaflet providers
+	 *	Get a flat leaflet provider list
 	 *
 	 *	@return array [
 	 *		'provider_key' 			=> 'provider',
@@ -230,33 +232,43 @@ class Core extends Plugin {
 	}
 
 	/**
+	 *	Returns enabled providers and layers
 	 *	@return array enabled leaflet providers
 	 */
 	public function get_enabled_layer_providers() {
+		// get configured token
+		$tokens = get_option( 'acf_osm_provider_tokens', array() );
+		$disabled_providers = get_option( 'acf_osm_providers', array() );
 
-		$settings = get_option( 'acf_osm_provider_tokens', array() );
+		/*
+		$tokens = $this->filter_recursive( $tokens );
 
-		$providers = $this->get_layer_providers();
+		/*/
 
-		$result = array_replace_recursive( $providers, $settings );
-		$result = $this->filter_recursive( $result );
-
-		return $result;
-
-	}
-	
-	/**
-	 *	@param array $arr
-	 *	@return array
-	 */
-	private function filter_recursive( $arr ) {
-		$arr = array_filter( $arr );
-		foreach ( $arr as &$value ) {
-			if ( is_array( $value ) ) {
-				$value = $this->filter_recursive( $value );
+		foreach ( $tokens as &$token ) {
+			$token = $this->filter_recursive( $token );
+			if ( empty( $token ) ) {
+				$token = false;
 			}
 		}
-		return $arr;
+
+		//*/
+		$providers = $this->get_layer_providers();
+
+
+		$providers = array_replace_recursive( $providers, $tokens );
+		$providers = array_replace_recursive( $providers, $disabled_providers );
+
+		// remove disabled providers
+		$providers = array_filter( $providers );
+		foreach ( $providers as &$provider ) {
+			if ( isset( $provider['variants'] ) ) {
+				// remove disabled variants
+				$provider['variants'] = array_filter( $provider['variants'] );
+			}
+		}
+		return $providers;
+
 	}
 
 	/**
@@ -270,35 +282,6 @@ class Core extends Plugin {
 		if ( is_null( $this->leaflet_providers ) ) {
 			$leaflet_providers	= $this->get_leaflet_providers( );
 
-			// add mapbox ids as variant. See https://www.mapbox.com/api-documentation/#maps
-			$mapbox_variants = array(
-				'streets',
-				'light',
-				'dark',
-				'satellite',
-				'streets-satellite',
-				'wheatpaste',
-				'streets-basic',
-				'comic',
-				'outdoors',
-				'run-bike-hike',
-				'pencil',
-				'pirates',
-				'emerald',
-				'high-contrast',
-			);
-			$leaflet_providers['MapBox']['variants'] = array();
-			foreach ( $mapbox_variants as $variant ) {
-				$key = ucwords( $variant, " \t\r\n\f\v-_." );
-				$key = preg_replace( '@\s\r\n\v\.-_@imsU', '', $key );
-				$leaflet_providers['MapBox']['variants'][ $key ] = 'mapbox.'.$variant;
-			}
-			$leaflet_providers['MapBox']['url'] = str_replace('{id}','{variant}',$leaflet_providers['MapBox']['url']);
-			$leaflet_providers['MapBox']['options']['variant'] = 'mapbox.streets';
-
-			// remove falsy configuration
-			unset( $leaflet_providers['MapBox']['options']['id'] );
-
 			// merge access tokens
 			$access_tokens = get_option( 'acf_osm_provider_tokens', array() );
 
@@ -311,7 +294,8 @@ class Core extends Plugin {
 
 
 	/**
-	 *	returns leaflet providers with configured access tokens
+	 *	returns raw leaflet providers
+	 *
 	 *	@return array
 	 */
 	public function get_leaflet_providers( ) {
@@ -348,6 +332,9 @@ class Core extends Plugin {
 
 
 
+
+
+
 	/**
 	 *	Get asset url for this plugin
 	 *
@@ -364,5 +351,19 @@ class Core extends Plugin {
 	}
 
 
+
+	/**
+	 *	@param array $arr
+	 *	@return array
+	 */
+	private function filter_recursive( $arr ) {
+		foreach ( $arr as &$value ) {
+			if ( is_array( $value ) ) {
+				$value = $this->filter_recursive( $value );
+			}
+		}
+		$arr = array_filter( $arr );
+		return $arr;
+	}
 
 }

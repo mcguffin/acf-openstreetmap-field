@@ -13,7 +13,7 @@
 .leaflet-map {
 	.block-editor__container & {
 		width:100%;
-		.leaflet-top, 
+		.leaflet-top,
 		.leaflet-bottom {
 			/* .editor-block-toolbar: 101 */
 			z-index:80;
@@ -76,7 +76,7 @@
 				&,
 				&::before {
 					font-size:32px;
-					cursor:pointer;					
+					cursor:pointer;
 				}
 			}
 		}
@@ -168,7 +168,7 @@
 		}
 	}
 	.pling {
-		// box-shadow: inset 0 0 2px $wp-blue, 
+		// box-shadow: inset 0 0 2px $wp-blue,
 		// 			0 0 2px $wp-blue;
 		position: absolute;
 		opacity:0;
@@ -177,7 +177,7 @@
 			border-width:2px;
 		}
 		border-radius:50%;
-		
+
 		animation-name: pling;
 		animation-duration: 0.75s;
 		animation-iteration-count: 1;
@@ -243,7 +243,7 @@
 }
 
 $leaflet-panes: (
-	// original 
+	// original
 	leaflet-pane:400,
 	leaflet-tile-pane: 200,
 	leaflet-shadow-pane: 500,
@@ -255,7 +255,7 @@ $leaflet-panes: (
 
 .wp-block {
 	@each $pane,$zindex in $leaflet-panes {
-		
+
 		.#{$pane} {
 			z-index: $zindex / 10;
 		}
@@ -268,7 +268,7 @@ $leaflet-panes: (
 	.wp-block & {
 		z-index:30;
 	}
-	
+
 }
 .leaflet-control-container {
 	a {
@@ -278,13 +278,17 @@ $leaflet-panes: (
 		 -moz-user-select: none; /* Old versions of Firefox */
 		  -ms-user-select: none; /* Internet Explorer/Edge */
 			  user-select: none; /* Non-prefixed version, currently
-									supported by Chrome, Opera and Firefox */		
-	}	
+									supported by Chrome, Opera and Firefox */
+	}
 }
 .leaflet-control-layers {
 	.wp-block & {
 		text-align:left;
 	}
+}
+
+.leaflet-control-layers-scrollbar {
+	overscroll-behavior: contain;
 }
 
 @keyframes following {

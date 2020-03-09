@@ -67,7 +67,8 @@ L = {
 gulp.task('providers', function(cb){
 	require('./node_modules/leaflet-providers/leaflet-providers.js');
 	let providers = L.TileLayer.Provider.providers;
-	
+
+	// add overlay property to maps and layers
 	const isOverlay = ( name, opts ) => {
 		if ( 'string' !== typeof opts && opts.opacity && opts.opacity < 1 ) {
 			return true;
@@ -92,13 +93,50 @@ gulp.task('providers', function(cb){
 		return name.match( overlayPattern ) !== null;
 	}
 
+	// HEREv3 manual upgrade until https://github.com/leaflet-extras/leaflet-providers/pull/343 is released
 	L.TileLayer.Provider.providers.HEREv3 = JSON.parse(JSON.stringify(L.TileLayer.Provider.providers.HERE))
 	L.TileLayer.Provider.providers.HEREv3.url = "https://{s}.{base}.maps.ls.hereapi.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?apiKey={apiKey}&lg={language}";
 	L.TileLayer.Provider.providers.HEREv3.options.apiKey = "<insert your apiKey here>";
 	delete( L.TileLayer.Provider.providers.HEREv3.options.app_code )
 	delete( L.TileLayer.Provider.providers.HEREv3.options.app_id )
-	
 
+
+	// add mapbox ids as variant. See https://www.mapbox.com/api-documentation/#maps
+	let mapbox_variants = [
+		'streets',
+		'light',
+		'dark',
+		'satellite',
+		'streets-satellite',
+		'wheatpaste',
+		'streets-basic',
+		'comic',
+		'outdoors',
+		'run-bike-hike',
+		'pencil',
+		'pirates',
+		'emerald',
+		'high-contrast',
+	];
+	L.TileLayer.Provider.providers.MapBox.variants = {};
+	mapbox_variants.forEach( variant => {
+		var key;
+		key = variant.replace(/^(.)|[\s-_\.]+(.)/g, function ($1) {
+			return $1.toUpperCase()
+		})
+		key = key.replace( /\s\r\n\v\.-_/, '' );
+		L.TileLayer.Provider.providers.MapBox.variants[ key ] = 'mapbox.'+variant;
+	} )
+	L.TileLayer.Provider.providers.MapBox.url = L.TileLayer.Provider.providers.MapBox.url.
+		replace('{id}','{variant}');
+	L.TileLayer.Provider.providers.MapBox.options.variant = 'mapbox.streets';
+
+	// remove falsy configuration
+	delete( L.TileLayer.Provider.providers.MapBox.options.id );
+	// END mapbox
+
+
+	// add overlay property to maps and layers
 	Object.keys(providers).map( key => {
 		let data = providers[key];
 		if ( isOverlay( key, data ) ) {
