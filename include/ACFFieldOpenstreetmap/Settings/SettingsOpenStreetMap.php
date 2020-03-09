@@ -53,8 +53,8 @@ class SettingsOpenStreetMap extends Settings {
 
 		?>
 		<div class="wrap">
-			<h2><?php _e('ACF OpenStreetMap', 'acf-openstreetmap-field') ?></h2>
-			<h3><?php _e('Map Tile Provider Settings', 'acf-openstreetmap-field') ?></h3>
+			<h2><?php esc_html_e('ACF OpenStreetMap', 'acf-openstreetmap-field') ?></h2>
+			<h3><?php esc_html_e('Map Tile Provider Settings', 'acf-openstreetmap-field') ?></h3>
 
 			<form action="options.php" method="post">
 				<?php
@@ -148,7 +148,7 @@ class SettingsOpenStreetMap extends Settings {
 		if ( $this->is_insecure( $options ) ) {
 			$is_https = strpos( get_option('home'), 'https:' ) === 0;
 			printf(
-				$tag,
+				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'The map tiles are loaded through an insecure http connection.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag' . ( $is_https ? ' warn' : '' ),
 				esc_html__( 'Insecure', 'acf-openstreetmap-field' )
@@ -156,7 +156,7 @@ class SettingsOpenStreetMap extends Settings {
 		}
 		if ( $this->is_overlay( $options ) ) {
 			printf(
-				$tag,
+				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'This is an overlay to be displayed over a base map.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
 				esc_html__( 'Overlay', 'acf-openstreetmap-field' )
@@ -164,33 +164,45 @@ class SettingsOpenStreetMap extends Settings {
 		}
 		if ( $this->has_bounds( $options ) ) {
 			printf(
-				$tag,
+				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'Only available for a specific region.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
 				esc_html__( 'Bounds', 'acf-openstreetmap-field' )
 			);
 		}
 		if ( isset( $options['options']['minZoom'] ) && isset( $options['options']['maxZoom'] ) ) {
-			printf( $tag,
+			printf(
+				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'Zoom is restricted.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
 				/* translators: 1: min zoom value, 2: max zoom value */
-				sprintf( esc_html__( 'Zoom: %1$d–%2$d', 'acf-openstreetmap-field' ), $options['options']['minZoom'], $options['options']['maxZoom'] )
+				esc_html( sprintf(
+					__( 'Zoom: %1$d–%2$d', 'acf-openstreetmap-field' ),
+					$options['options']['minZoom'], $options['options']['maxZoom']
+				))
 			);
 		} else if ( isset( $options['options']['minZoom'] ) ) {
-			printf( $tag,
+			printf(
+				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'Zoom levels are restricted.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
 				/* translators: min zoom value */
-				sprintf( esc_html__( 'Min Zoom: %d', 'acf-openstreetmap-field' ), $options['options']['minZoom'] )
+				esc_html( sprintf(
+					__( 'Min Zoom: %d', 'acf-openstreetmap-field' ),
+					$options['options']['minZoom']
+				))
 			);
 
 		} else if ( isset( $options['options']['maxZoom'] ) ) {
-			printf( $tag,
+			printf(
+				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'Zoom levels are restricted.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
 				/* translators: max zoom value */
-				sprintf( esc_html__( 'Max Zoom: %d', 'acf-openstreetmap-field' ), $options['options']['maxZoom'] )
+				esc_html(sprintf(
+					__( 'Max Zoom: %d', 'acf-openstreetmap-field' ),
+					$options['options']['maxZoom'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				))
 			);
 		}
 	}
@@ -231,7 +243,7 @@ class SettingsOpenStreetMap extends Settings {
 	private function print_test_link( $key ) {
 		?>
 		<a href="#" data-layer="<?php esc_attr_e( $key ) ?>" class="action-test">
-			<?php _e('Test', 'acf-openstreetmap-field' ); ?>
+			<?php esc_html_e('Test', 'acf-openstreetmap-field' ); ?>
 		</a>
 		<?php
 	}
@@ -246,8 +258,8 @@ class SettingsOpenStreetMap extends Settings {
 
 		?>
 		<div class="inside">
-			<p class="description"><?php _e( 'Select which map tile providers you like to be selectable in the ACF Field.' , 'acf-openstreetmap-field' ); ?></p>
-			<p class="description"><?php _e( 'Configure Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Select which map tile providers you like to be selectable in the ACF Field.' , 'acf-openstreetmap-field' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Configure Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
 		</div>
 		<?php
 	}
@@ -269,7 +281,7 @@ class SettingsOpenStreetMap extends Settings {
 
 			<h3><?php
 
-				echo $provider_key;
+				esc_html_e( $provider_key );
 				if ( ! $needs_access_key ) {
 
 					$this->print_tags( $provider_data );
@@ -292,8 +304,8 @@ class SettingsOpenStreetMap extends Settings {
 						),
 						checked( $is_parent_disabled, true, false )
 					);
-					/* trnaslators: %s map tile provider name */
-					printf( esc_html__('Disable %s', 'acf-openstreeetmap-field' ), $provider_key );
+					/* translators: %s map tile provider name */
+					esc_html_e( sprintf( __('Disable %s', 'acf-openstreeetmap-field' ), $provider_key ) );
 					?>
 					</label>
 				</div>
@@ -304,7 +316,7 @@ class SettingsOpenStreetMap extends Settings {
 
 					?>
 					<div class="acf-osm-setting-layer-variant">
-						<h4><em><?php _e('Disable Layer variants', 'acf-openstreetmap-field' ); ?></em></h4>
+						<h4><em><?php esc_html_e('Disable Layer variants', 'acf-openstreetmap-field' ); ?></em></h4>
 						<div class="acf-osm-layer-variants">
 						<?php
 						foreach ( $provider_data['variants'] as $variant_key => $variant ) {
@@ -323,13 +335,13 @@ class SettingsOpenStreetMap extends Settings {
 
 									printf('<input class="osm-disable" type="checkbox" name="%s" value="0" %s />',
 										sprintf('acf_osm_providers[%s][variants][%s]',
-											$this->sanitize_key_case($provider_key),
-											$this->sanitize_key_case($variant_key)
+											$this->sanitize_key_case($provider_key), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											$this->sanitize_key_case($variant_key) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 										),
 										checked( $is_disabled, true, false)
 									);
 
-									echo $variant_key;
+									esc_html_e( $variant_key );
 									$this->print_test_link( "{$provider_key}.{$variant_key}" );
 
 									?>
@@ -404,15 +416,15 @@ class SettingsOpenStreetMap extends Settings {
 				}
 				?>
 				<div class="acf-osm-setting acf-osm-setting-access-key">
-					<h4><?php printf( '%s %s', $provider_key, $option); ?></h4>
+					<h4><?php printf( '%s %s', esc_html( $provider_key ), esc_html( $option ) ); ?></h4>
 					<label>
 						<?php
 
 					printf('<input type="text" name="%s" value="%s" class="large-text code" placeholder="%s" />',
 						//empty($current_value) ? 'text' : 'password',
 						sprintf('acf_osm_provider_tokens[%s][options][%s]',
-							$this->sanitize_key_case($provider_key),
-							$this->sanitize_key_case($option)
+							$this->sanitize_key_case($provider_key), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							$this->sanitize_key_case($option) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						),
 						esc_attr($current_value),
 						esc_attr($value)

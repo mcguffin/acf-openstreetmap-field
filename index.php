@@ -37,11 +37,11 @@ Command line args were: ``
 
 namespace ACFFieldOpenstreetmap;
 
-if ( ! defined('ABSPATH') ) {
-	die('FU!');
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'FU!' );
 }
 
-require_once dirname(__FILE__) . '/include/autoload.php';
+require_once dirname( __FILE__ ) . '/include/autoload.php';
 
 Core\Core::instance( __FILE__ );
 
@@ -51,5 +51,3 @@ if ( is_admin() || defined( 'DOING_AJAX' ) ) {
 	Settings\SettingsOpenStreetMap::instance();
 
 }
-
-include_once __DIR__ . DIRECTORY_SEPARATOR . 'test/test.php';

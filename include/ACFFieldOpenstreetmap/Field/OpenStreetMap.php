@@ -142,7 +142,7 @@ class OpenStreetMap extends \acf_field {
 			'attr'				=> array(
 				'data-editor-config'	=> array(
 					'allow_providers'		=> true,
-					'restrict_providers'	=> array(), 
+					'restrict_providers'	=> array(),
 					'max_markers'			=> 0, // no markers
 					'name_prefix'			=> $field['prefix'],
 				),
@@ -245,7 +245,7 @@ class OpenStreetMap extends \acf_field {
 	function render_field( $field ) {
 
 		$core = Core\Core::instance();
-	
+
 		if ( is_null( $field['value'] ) ) {
 			$field['value'] = $this->sanitize_value( array(), $field, 'display' );
 		}
@@ -324,7 +324,7 @@ class OpenStreetMap extends \acf_field {
 					</p>
 				</div>
 			<?php
-			
+
 		}
 		?>
 		<div class="osm-markers">
@@ -424,7 +424,7 @@ class OpenStreetMap extends \acf_field {
 			}
 			unset( $value['center_lat'] );
 		}
-		
+
 		if ( isset( $value['center_lng'] ) ) {
 			if ( ( ! isset( $value['lng'] ) || empty( $value['lng'] ) ) && ! empty( $value['center_lng'] ) ) {
 				$value['lng'] = $value['center_lng'];
@@ -434,9 +434,9 @@ class OpenStreetMap extends \acf_field {
 
 		// apply defaults
 		if ( ! is_null( $default_latlng ) ) {
-			$value = wp_parse_args( $value, $default_latlng );			
+			$value = wp_parse_args( $value, $default_latlng );
 		}
-		
+
 		// typecast values
 		$value['lat'] = floatval( $value['lat'] );
 		$value['lng'] = floatval( $value['lng'] );
@@ -570,7 +570,7 @@ class OpenStreetMap extends \acf_field {
 		// sanitize data from UI!
 
 		// normalize markers
-		
+
 
 		if ( is_string( $value ) ) {
 			$value = json_decode( stripslashes($value), true );
@@ -692,8 +692,8 @@ class OpenStreetMap extends \acf_field {
 		} else {
 			$value = $this->sanitize_value( $value, $field, 'display' );
 			// ensure backwards compatibility <= 1.0.1
-			$value['center_lat'] = $value['lat']; 
-			$value['center_lng'] = $value['lng']; 
+			$value['center_lat'] = $value['lat'];
+			$value['center_lng'] = $value['lng'];
 		}
 
 
@@ -798,7 +798,7 @@ class OpenStreetMap extends \acf_field {
 			'center_lng'	=> $this->defaults['center_lng'],
 			'zoom'			=> $this->defaults['zoom'],
 		) );
-		
+
 		// typecast values
 		$field['center_lat']	= floatval( $field['center_lat'] );
 		$field['center_lng']	= floatval( $field['center_lng'] );
@@ -815,7 +815,7 @@ class OpenStreetMap extends \acf_field {
 			$this->print_media_templates();
 		}
 	}
-	
+
 
 	/**
 	 *	@action print_media_templates
