@@ -22,10 +22,10 @@
   cursor: pointer; }
 
 .leaflet-control-locate.active a {
-  color: #2074B6; }
+  color: #2074b6; }
 
 .leaflet-control-locate.active.following a {
-  color: #FC8428; }
+  color: #fc8428; }
 
 .leaflet-control-locate-location circle {
   -webkit-animation: leaflet-control-locate-throb 4s ease infinite;
@@ -33,24 +33,22 @@
 
 @-webkit-keyframes leaflet-control-locate-throb {
   0% {
-    r: 9;
     stroke-width: 1; }
   50% {
-    r: 7;
-    stroke-width: 3; }
+    stroke-width: 3;
+    -webkit-transform: scale(0.8, 0.8);
+            transform: scale(0.8, 0.8); }
   100% {
-    r: 9;
     stroke-width: 1; } }
 
 @keyframes leaflet-control-locate-throb {
   0% {
-    r: 9;
     stroke-width: 1; }
   50% {
-    r: 7;
-    stroke-width: 3; }
+    stroke-width: 3;
+    -webkit-transform: scale(0.8, 0.8);
+            transform: scale(0.8, 0.8); }
   100% {
-    r: 9;
     stroke-width: 1; } }
 
 [data-map="leaflet"] {
