@@ -5,9 +5,9 @@ ACF OpenStreetMap Field ToDo
 -----
  - [x] Disable keyboard navigation in Backend
  - [x] Locate Me Button (backend)
- - [ ] Locate me: no add marker button if max_markers == 0
- - [ ] Pass map init object along with `acf-osm-map-create` event (#37)
- - [ ] Localizable address formats
+ - [x] Locate me: no add marker button if max_markers == 0
+ - [x] Pass map init object along with `acf-osm-map-create` event (#37)
+ - [x] Localizable address formats
 
 1.2.0
 -----

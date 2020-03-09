@@ -313,12 +313,14 @@ class OpenStreetMap extends \acf_field {
 				<div class="markers-instruction">
 					<p class="description">
 						<span class="add-marker-instructions marker-on-dblclick can-add-marker">
-							<?php _e('Double click to add Marker.', 'acf-openstreetmap-field' ); ?>
+							<?php esc_html_e('Double click to add Marker.', 'acf-openstreetmap-field' ); ?>
 						</span>
 						<span class="add-marker-instructions marker-on-taphold can-add-marker">
-							<?php _e('Tap and hold to add Marker.', 'acf-openstreetmap-field' ); ?>
+							<?php esc_html_e('Tap and hold to add Marker.', 'acf-openstreetmap-field' ); ?>
 						</span>
-						<span class="has-markers"><?php _e('Drag Marker to move.', 'acf-openstreetmap-field' ); ?></span>
+						<span class="has-markers">
+							<?php esc_html_e('Drag Marker to move.', 'acf-openstreetmap-field' ); ?>
+						</span>
 					</p>
 				</div>
 			<?php
@@ -822,13 +824,17 @@ class OpenStreetMap extends \acf_field {
 		?>
 		<script type="text/html" id="tmpl-osm-marker-input">
 			<div class="locate">
-				<a class="dashicons dashicons-location" data-name="locate-marker"><span class="screen-reader-text"><?php _e('Locate Marker','acf-openstreetmap-field'); ?></span></a>
+				<a class="dashicons dashicons-location" data-name="locate-marker">
+					<span class="screen-reader-text">
+						<?php esc_html_e('Locate Marker','acf-openstreetmap-field'); ?>
+					</span>
+				</a>
 			</div>
 			<div class="input">
 				<input type="text" data-name="label" />
 			</div>
 			<div class="tools">
-				<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php _e('Remove Marker', 'acf-openstreetmap-field'); ?>"></a>
+				<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php esc_attr_e('Remove Marker', 'acf-openstreetmap-field'); ?>"></a>
 			</div>
 		</script>
 		<?php
