@@ -65,7 +65,7 @@ class SettingsOpenStreetMap extends Settings {
 					<div class="acf-osm-provider-settings">
 					<?php
 
-					$provider_settings = $core->get_layer_providers();
+					$provider_settings = $core->get_leaflet_providers();
 
 					foreach ( $provider_settings as $provider_key => $provider_data ) {
 

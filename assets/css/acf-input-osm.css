@@ -334,6 +334,9 @@
   to {
     color: #73cbe6; } }
 
+.leaflet-control a .dashicons {
+  line-height: 30px; }
+
 .leaflet-control-locate + .leaflet-control-add-location-marker {
   display: none;
   border-top-left-radius: 0;
@@ -361,9 +364,6 @@
           animation-iteration-count: infinite;
   -webkit-animation-direction: alternate;
           animation-direction: alternate; }
-
-.leaflet-control-locate a .dashicons {
-  line-height: 30px; }
 
 .leaflet-control-locate a .dashicons-warning {
   color: #dc3232; }

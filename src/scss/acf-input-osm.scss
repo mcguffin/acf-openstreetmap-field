@@ -295,6 +295,15 @@ $leaflet-panes: (
 	from { color:$wp-blue }
 	to { color:mix($wp-blue-light,$wp-blue-lighter) }
 }
+
+.leaflet-control {
+	a {
+		.dashicons {
+			line-height:30px;
+		}
+	}
+}
+
 .leaflet-control-locate {
 	& + .leaflet-control-add-location-marker {
 		display:none;
@@ -328,9 +337,6 @@ $leaflet-panes: (
 		}
 	}
 	a {
-		.dashicons {
-			line-height:30px;
-		}
 		.dashicons-warning {
 			color:$wp-red;
 		}

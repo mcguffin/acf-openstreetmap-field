@@ -33,8 +33,14 @@ class Core extends Plugin {
 	 */
 	public function register_assets() {
 
+		$remove_disabled_providers = true;
+		$screen = get_current_screen();
+		if ( is_admin() && $screen->base === 'settings_page_acf_osm' ) {
+			$providers = $this->get_layer_providers();
+		} else {
+			$providers = $this->get_enabled_layer_providers();
+		}
 		/* frontend */
-
 		/**
 		 *	Marker Icon HTML. Return false to use image icon (either leaflet default or return value of filter `acf_osm_marker_icon`)
 		 *
@@ -85,7 +91,7 @@ class Core extends Plugin {
 				),
 
 			),
-			'providers'		=> $this->get_enabled_layer_providers(),
+			'providers'		=> $providers,
 		));
 
 		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), array(), $this->get_version() );
@@ -106,6 +112,8 @@ class Core extends Plugin {
 				'my_location'	=> __( 'My location', 'acf-openstreetmap-field' ),
 				'add_marker_at_location'
 					=> __( 'Add Marker at location', 'acf-openstreetmap-field' ),
+				'fit_markers_in_view'
+				 				=> __( 'Fit markers into view', 'acf-openstreetmap-field' ),
 				'address_format'	=> array(
 					/* translators: address format for marker labels (street level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
 					'street'	=> __( '{building} {road} {house_number}', 'acf-openstreetmap-field' ),
@@ -203,6 +211,7 @@ class Core extends Plugin {
 	 * ]
 	 */
 	public function get_leaflet_layers() {
+
 		$providers = array();
 
 		foreach ( $this->get_enabled_layer_providers() as $provider_key => $provider_data ) {
@@ -232,61 +241,65 @@ class Core extends Plugin {
 	}
 
 	/**
-	 *	Returns enabled providers and layers
+	 *	Returns leaflet providers with api-tokens merged,
+	 *	unconfigured and disabled are removed
+	 *
 	 *	@return array enabled leaflet providers
 	 */
 	public function get_enabled_layer_providers() {
-		// get configured token
-		$tokens = get_option( 'acf_osm_provider_tokens', array() );
-		$disabled_providers = get_option( 'acf_osm_providers', array() );
-
-		/*
-		$tokens = $this->filter_recursive( $tokens );
-
-		/*/
-
-		foreach ( $tokens as &$token ) {
-			$token = $this->filter_recursive( $token );
-			if ( empty( $token ) ) {
-				$token = false;
-			}
-		}
 
 		//*/
 		$providers = $this->get_layer_providers();
 
 
-		$providers = array_replace_recursive( $providers, $tokens );
-		$providers = array_replace_recursive( $providers, $disabled_providers );
-
 		// remove disabled providers
+		$disabled_providers = get_option( 'acf_osm_providers', array() );
+
+		$providers = array_replace_recursive( $providers, $disabled_providers );
 		$providers = array_filter( $providers );
+
 		foreach ( $providers as &$provider ) {
 			if ( isset( $provider['variants'] ) ) {
 				// remove disabled variants
 				$provider['variants'] = array_filter( $provider['variants'] );
 			}
 		}
+
 		return $providers;
 
 	}
 
 	/**
-	 *	Get providers and variants
-	 *	Omits proviers with unconfigured api credentials
+	 *	Returns leaflet providers with api-tokens merged
+	 *	Removes unonfigured providers from list
 	 *
 	 *	@return array
 	 */
 	public function get_layer_providers( ) {
 
 		if ( is_null( $this->leaflet_providers ) ) {
-			$leaflet_providers	= $this->get_leaflet_providers( );
 
-			// merge access tokens
-			$access_tokens = get_option( 'acf_osm_provider_tokens', array() );
+			$providers	= $this->get_leaflet_providers( );
 
-			$this->leaflet_providers = apply_filters( 'acf_osm_leaflet_providers', $leaflet_providers );
+			// get configured token
+			$tokens = get_option( 'acf_osm_provider_tokens', array() );
+
+			foreach ( $tokens as &$token ) {
+				$token = $this->filter_recursive( $token );
+				if ( empty( $token ) ) {
+					$token = false;
+				}
+			}
+
+			// merge tokens
+			$providers = array_replace_recursive( $providers, $tokens );
+
+			// remove providers with empty tokens
+			$providers = array_filter( $providers );
+
+			$this->leaflet_providers = apply_filters( 'acf_osm_leaflet_providers', $providers );
 		}
+
 
 		// configure mapbox styles as variants
 		return $this->leaflet_providers;
@@ -294,7 +307,7 @@ class Core extends Plugin {
 
 
 	/**
-	 *	returns raw leaflet providers
+	 *	Returns raw leaflet providers
 	 *
 	 *	@return array
 	 */
@@ -309,10 +322,12 @@ class Core extends Plugin {
 
 	/**
 	 *	Get places in provider config, where an access token should be entered.
+	 *
+	 *	@return array
 	 */
 	public function get_provider_token_options( ) {
 
-		$providers		= json_decode( file_get_contents( $this->get_plugin_dir() . '/etc/leaflet-providers.json'), true );
+		$providers		= $this->get_leaflet_providers();
 
 		$token_options	= array();
 
@@ -327,6 +342,7 @@ class Core extends Plugin {
 				}
 			}
 		}
+
 		return $token_options;
 	}
 

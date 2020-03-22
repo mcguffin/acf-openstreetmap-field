@@ -272,6 +272,11 @@
 
 			this.init_locator();
 
+			// !! only if a) in editor && b) markers allowed !!
+			if ( this.config.max_markers !== 0 ) {
+				this.init_fit_bounds();
+			}
+
 			this.init_acf();
 
 			if ( this.config.allow_providers ) {
@@ -316,6 +321,25 @@
 				}
 			})
 			return this;
+		},
+		init_fit_bounds:function() {
+			var self = this
+			// 2do: externalize L.Control.FitBoundsControl
+			this.fitBoundsControl = new L.Control.FitBoundsControl({
+				position: 'bottomright',
+				callback: function() {
+					var markers = self.model.get('markers')
+					var llb = L.latLngBounds();
+					if ( markers.length === 0 ) {
+						return;
+					}
+					markers.forEach( function(marker) {
+						llb.extend(L.latLng(marker.get('lat'),marker.get('lng')))
+					});
+					self.map.fitBounds(llb);
+				}
+			}).addTo(this.map);
+
 		},
 		init_locator_add:function() {
 			var self = this
@@ -864,6 +888,33 @@
 							.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
 					},
 				})
+			}
+			if ( ! L.Control.FitBoundsControl ) {
+				L.Control.FitBoundsControl = L.Control.extend({
+					onAdd:function() {
+
+						this._container = L.DomUtil.create('div',
+							'leaflet-control-fit-bounds leaflet-bar leaflet-control');
+
+						this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container );
+						this._link.title = i18n.fit_markers_in_view;
+						this._icon = L.DomUtil.create('span', 'dashicons dashicons-editor-expand', this._link );
+						L.DomEvent
+							.on( this._link, 'click', L.DomEvent.stopPropagation )
+							.on( this._link, 'click', L.DomEvent.preventDefault )
+							.on( this._link, 'click', this.options.callback, this )
+							.on( this._link, 'dblclick', L.DomEvent.stopPropagation );
+
+						return this._container;
+					},
+					onRemove:function() {
+						L.DomEvent
+							.off(this._link, 'click', L.DomEvent.stopPropagation )
+							.off(this._link, 'click', L.DomEvent.preventDefault )
+							.off(this._link, 'click', this.options.callback, this )
+							.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
+					},
+				});
 			}
 
 
