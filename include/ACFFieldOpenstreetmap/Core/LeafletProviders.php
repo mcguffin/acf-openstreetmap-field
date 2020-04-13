@@ -154,6 +154,9 @@ class LeafletProviders extends Singleton {
 		return $providers;
 	}
 
+	public function get_layer_config() {
+		return $this->filter_recursive( get_option( 'acf_osm_provider_tokens', [] ) );
+	}
 
 	/**
 	 *	@param array $arr

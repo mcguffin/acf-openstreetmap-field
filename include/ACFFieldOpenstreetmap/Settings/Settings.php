@@ -15,7 +15,7 @@ abstract class Settings extends Core\Singleton {
 	 */
 	protected function __construct(){
 
-		add_action( 'admin_init' , array( $this, 'register_settings' ) );
+		add_action( 'admin_init' , [ $this, 'register_settings' ] );
 
 		parent::__construct();
 

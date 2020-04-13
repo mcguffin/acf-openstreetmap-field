@@ -16,12 +16,12 @@ class Core extends Plugin {
 	 */
 	protected function __construct( $file ) {
 
-		add_action( 'acf/include_field_types' , array( '\ACFFieldOpenstreetmap\Compat\ACF' , 'instance' ), 0 );
+		add_action( 'acf/include_field_types', [ '\ACFFieldOpenstreetmap\Compat\ACF', 'instance'], 0 );
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
+		add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ] );
 
 		if ( is_admin() ) {
-			add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ) );
+			add_action( 'admin_enqueue_scripts', [ $this, 'register_assets' ] );
 		}
 
 		$args = func_get_args();
@@ -36,12 +36,11 @@ class Core extends Plugin {
 		$leaflet_providers = LeafletProviders::instance();
 		$osm_providers = OSMProviders::instance();
 		
-		$screen = get_current_screen();
 
 		$provider_filters = ['credentials'];
 
-		if ( ! is_admin() || $screen->base !== 'settings_page_acf_osm' ) {
-
+		if ( ! is_admin() || get_current_screen()->base !== 'settings_page_acf_osm' ) {
+ 			
 			$provider_filters[] = 'enabled';
 
 		}
@@ -58,12 +57,12 @@ class Core extends Plugin {
 			$marker_html = wp_kses_post( $marker_html );
 		}
 
-		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), array( 'jquery' ), $this->get_version(), true );
+		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), [ 'jquery' ], $this->get_version(), true );
 
-		wp_localize_script('acf-osm-frontend','acf_osm', array(
-			'options'	=> array(
-				'layer_config'	=> $this->filter_recursive( get_option( 'acf_osm_provider_tokens', array() ) ),
-				'marker'		=> array(
+		wp_localize_script('acf-osm-frontend','acf_osm', [
+			'options'	=> [
+				'layer_config'	=> $leaflet_providers->get_layer_config(),
+				'marker'		=> [
 
 					'html'		=> $marker_html,
 
@@ -94,25 +93,25 @@ class Core extends Plugin {
 				 	 *	)
 					 */
 					'icon'		=> apply_filters('acf_osm_marker_icon', false ),
-				),
+				],
 
-			),
+			],
 			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
-		));
+		]);
 
-		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), array(), $this->get_version() );
+		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), [], $this->get_version() );
 
 		/* backend */
 
 		// field js
-		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','wp-backbone'), $this->get_version(), true );
-		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
-			'options'	=> array(
+		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), ['acf-input','wp-backbone'], $this->get_version(), true );
+		wp_localize_script( 'acf-input-osm', 'acf_osm_admin',[
+			'options'	=> [
 				'osm_layers'		=> $osm_providers->get_layers(), // flat list
 				'leaflet_layers'	=> $leaflet_providers->get_layers(),  // flat list
 				'accuracy'			=> 7,
-			),
-			'i18n'	=> array(
+			],
+			'i18n'	=> [
 				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),
 				'nothing_found'	=> __( 'Nothing found...', 'acf-openstreetmap-field' ),
 				'my_location'	=> __( 'My location', 'acf-openstreetmap-field' ),
@@ -120,29 +119,29 @@ class Core extends Plugin {
 					=> __( 'Add Marker at location', 'acf-openstreetmap-field' ),
 				'fit_markers_in_view'
 				 				=> __( 'Fit markers into view', 'acf-openstreetmap-field' ),
-				'address_format'	=> array(
+				'address_format'	=> [
 					/* translators: address format for marker labels (street level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
 					'street'	=> __( '{building} {road} {house_number}', 'acf-openstreetmap-field' ),
 					/* translators: address format for marker labels (city level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
 					'city'		=> __( '{postcode} {city} {town} {village} {hamlet}', 'acf-openstreetmap-field' ),
 					/* translators: address format for marker labels (country level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
 					'country'	=> __( '{state} {country}', 'acf-openstreetmap-field' ),
-				)
-			),
-		));
-		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), array('acf-field-group','acf-input-osm'), $this->get_version(), true );
+				]
+			],
+		]);
+		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), [ 'acf-field-group', 'acf-input-osm' ], $this->get_version(), true );
 
 		// compat duplicate repeater
-		wp_register_script( 'acf-osm-compat-duplicate-repeater', $this->get_asset_url( 'assets/js/compat/acf-duplicate-repeater.js' ), array( 'acf-duplicate-repeater' ), $this->get_version() );
+		wp_register_script( 'acf-osm-compat-duplicate-repeater', $this->get_asset_url( 'assets/js/compat/acf-duplicate-repeater.js' ), [ 'acf-duplicate-repeater' ], $this->get_version() );
 
+		
+		// field css
+		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), ['acf-input','dashicons'], $this->get_version() );
 
 		// field css
-		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), array('acf-input','dashicons'), $this->get_version() );
 
-		// field css
-
-		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), array('leaflet'), $this->get_version() );
-		wp_register_script( 'acf-osm-settings', $this->get_asset_url( 'assets/js/acf-osm-settings.js' ), array('acf-osm-frontend'), $this->get_version() );
+		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), ['leaflet'], $this->get_version() );
+		wp_register_script( 'acf-osm-settings', $this->get_asset_url( 'assets/js/acf-osm-settings.js' ), ['acf-osm-frontend'], $this->get_version() );
 
 
 		/*
@@ -175,20 +174,5 @@ class Core extends Plugin {
 		return plugins_url( $asset, $this->get_plugin_file() );
 	}
 
-
-
-	/**
-	 *	@param array $arr
-	 *	@return array
-	 */
-	private function filter_recursive( $arr ) {
-		foreach ( $arr as &$value ) {
-			if ( is_array( $value ) ) {
-				$value = $this->filter_recursive( $value );
-			}
-		}
-		$arr = array_filter( $arr );
-		return $arr;
-	}
 
 }

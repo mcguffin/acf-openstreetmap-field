@@ -108,8 +108,8 @@ class OSMProviders extends Singleton {
 				break;
 			}
 		}
-		foreach ( $value['markers'] as $marker ) {
-			$args['marker'] = implode(',', array( $marker['lat'], $marker['lng'] ) );
+		foreach ( $config['markers'] as $marker ) {
+			$args['marker'] = implode(',', [ $marker['lat'], $marker['lng'] ] );
 			break;
 		}
 
@@ -147,18 +147,18 @@ class OSMProviders extends Singleton {
 			'layers' => [],
 		]);
 
-		$args = array();
+		$args = [];
 
-		foreach ( $value['markers'] as $marker ) {
+		foreach ( $config['markers'] as $marker ) {
 			$args['mlat'] = $marker['lat'];
 			$args['mlon'] = $marker['lng'];
 		}
 		
 		$map_link = add_query_arg( $args, 'https://www.openstreetmap.org/' );
 		$map_link .= '#map=' . implode( '/', [ 
-			intval( $value['zoom'] ), 
-			floatval( $value['lat'] ), 
-			floatval( $value['lng'] ) 
+			intval( $config['zoom'] ), 
+			floatval( $config['lat'] ), 
+			floatval( $config['lng'] ) 
 		] );
 
 

@@ -21,16 +21,14 @@ class ACF extends Core\Singleton {
 		if ( 'acf/include_field_types' === current_action() ) {
 			$this->include_field_types();
 		} else {
-			add_action('acf/include_field_types', 	array( $this, 'include_field_types')); // v5
+			add_action('acf/include_field_types', [ $this, 'include_field_types' ] ); // v5
 		}
-		add_action( 'acf/render_field/type=leaflet_map', array( $this, 'render_map_input' ) );
+		add_action( 'acf/render_field/type=leaflet_map', [ $this, 'render_map_input' ] );
 
 		// Compat with https://github.com/mcguffin/polylang-sync
-		add_filter( 'polylang_acf_sync_supported_fields', array( $this, 'add_pll_sync_field_type') );
+		add_filter( 'polylang_acf_sync_supported_fields', [ $this, 'add_pll_sync_field_type'] );
 
-		// Compat with https://wordpress.org/plugins/acf-openstreetmap-field/
-		add_action( 'acf/input/admin_enqueue_scripts', array( $this, 'acf_admin_enqueue_scripts' ) );
-		add_action( 'acf/field_group/admin_enqueue_scripts', array( $this, 'acf_field_group_dequeue_scripts' ) );
+		add_action( 'acf/input/admin_enqueue_scripts', [ $this, 'acf_admin_enqueue_scripts' ] );
 
 	}
 
@@ -40,13 +38,6 @@ class ACF extends Core\Singleton {
 	 */
 	public function acf_admin_enqueue_scripts() {
 		wp_enqueue_media();
-		wp_enqueue_script( 'acf-osm-compat-duplicate-repeater' );
-	}
-	/**
-	 *	@action acf/input/admin_enqueue_scripts
-	 */
-	public function acf_field_group_dequeue_scripts() {
-		wp_dequeue_script( 'acf-osm-compat-duplicate-repeater' );
 	}
 
 	/**
@@ -62,10 +53,10 @@ class ACF extends Core\Singleton {
 	 */
 	public function render_map_input( $field ) {
 
-		$inp_field = array(
+		$inp_field = [
 			'return_format'	=> 'leaflet',
 			'height'		=> 400,
-		);
+		];
 
 		if ( isset( $field['attr'] ) ) {
 			$inp_field['attr'] = $field['attr'];

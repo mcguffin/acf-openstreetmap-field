@@ -19,11 +19,11 @@ class SettingsOpenStreetMap extends Settings {
 	protected function __construct() {
 
 
-		add_option( 'acf_osm_provider_tokens', array(), '', false );
+		add_option( 'acf_osm_provider_tokens', [], '', false );
 		add_option( 'acf_osm_providers', $this->get_default_option_providers(), '', false );
 
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		add_action( "load-settings_page_acf_osm", array( $this, 'enqueue_assets' ) );
+		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
+		add_action( "load-settings_page_acf_osm", [ $this, 'enqueue_assets' ] );
 
 		parent::__construct();
 
@@ -35,7 +35,7 @@ class SettingsOpenStreetMap extends Settings {
 	 *	@action admin_menu
 	 */
 	public function admin_menu() {
-		$page_hook = add_options_page( __('OpenStreetMap Settings' , 'acf-openstreetmap-field' ),__('OpenStreetMap' , 'acf-openstreetmap-field'),'manage_options', $this->optionset, array( $this, 'settings_page' ) );
+		$page_hook = add_options_page( __('OpenStreetMap Settings' , 'acf-openstreetmap-field' ),__('OpenStreetMap' , 'acf-openstreetmap-field'),'manage_options', $this->optionset, [ $this, 'settings_page' ] );
 
 
 	}
@@ -130,12 +130,12 @@ class SettingsOpenStreetMap extends Settings {
 		add_settings_section(
 			$settings_section,
 			__( 'Map Layer Settings', 'acf-openstreetmap-field' ),
-			array( $this, 'tokens_description' ),
+			[ $this, 'tokens_description' ],
 			$this->optionset
 		);
 
-		register_setting( $this->optionset, 'acf_osm_provider_tokens', array( $this , 'sanitize_provider_tokens' ) );
-		register_setting( $this->optionset, 'acf_osm_providers', array( $this , 'sanitize_providers' ) );
+		register_setting( $this->optionset, 'acf_osm_provider_tokens', [ $this , 'sanitize_provider_tokens' ] );
+		register_setting( $this->optionset, 'acf_osm_providers', [ $this , 'sanitize_providers' ] );
 
 	}
 
@@ -463,13 +463,13 @@ class SettingsOpenStreetMap extends Settings {
 
 		$prev_values = get_option('acf_osm_provider_tokens');
 
-		$values = array();
+		$values = [];
 
 		foreach ( $token_options as $provider => $provider_data ) {
 
-			$values[$provider] = array();
+			$values[$provider] = [];
 			foreach ( $provider_data as $section => $config ) {
-				$values[$provider][$section] = array();
+				$values[$provider][$section] = [];
 				foreach( $config as $key => $value ) {
 					$prev_token = '';
 					if ( isset( $prev_values[$provider][$section][$key] ) ) {
@@ -512,9 +512,9 @@ class SettingsOpenStreetMap extends Settings {
 	 */
 	public function sanitize_providers( $values ) {
 		try {
-			$values = array_map( array( $this, 'boolval_recursive' ), (array) $values );
+			$values = array_map( [ $this, 'boolval_recursive' ], (array) $values );
 		} catch ( \Exception $err ) {
-			$values = array();
+			$values = [];
 		}
 		return $values;
 	}
@@ -523,7 +523,7 @@ class SettingsOpenStreetMap extends Settings {
 		if ( $val === '0' ) {
 			return false;
 		} else if ( is_array( $val ) ) {
-			return array_map( array( $this, 'boolval_recursive' ), $val );
+			return array_map( [ $this, 'boolval_recursive' ], $val );
 		}
 		throw( new \Exception('invalid value') );
 	}
@@ -536,7 +536,7 @@ class SettingsOpenStreetMap extends Settings {
 		$providers = Core\LeafletProviders::instance();
 		$is_https = strpos( get_option('home'), 'https:' ) === 0;
 		$provider_settings = $providers->get_providers(['credentials']);
-		$default_option = array();
+		$default_option = [];
 
 		foreach ( $provider_settings as $provider_key => $provider_data ) {
 			if ( $this->has_bounds( $provider_data ) || ( $is_https && $this->is_insecure( $provider_data ) ) ) {
