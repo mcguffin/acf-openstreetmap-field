@@ -39,9 +39,9 @@
     "gulp-uglify": "^3.0.2",
     "gulp-uglifycss": "^1.1.0",
     "leaflet": "^1.6.0",
-    "leaflet-control-geocoder": "^1.12.1",
+    "leaflet-control-geocoder": "^1.13.0",
     "leaflet-providers": "^1.9.1",
-    "leaflet.locatecontrol": "^0.70.0",
+    "leaflet.locatecontrol": "^0.71.1",
     "resize-observer-polyfill": "^1.5.1"
   },
   "dependencies": {
