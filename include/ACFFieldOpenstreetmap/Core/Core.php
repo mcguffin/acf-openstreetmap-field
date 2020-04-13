@@ -33,13 +33,19 @@ class Core extends Plugin {
 	 */
 	public function register_assets() {
 
-		$remove_disabled_providers = true;
+		$leaflet_providers = LeafletProviders::instance();
+		$osm_providers = OSMProviders::instance();
+		
 		$screen = get_current_screen();
-		if ( is_admin() && $screen->base === 'settings_page_acf_osm' ) {
-			$providers = $this->get_layer_providers();
-		} else {
-			$providers = $this->get_enabled_layer_providers();
+
+		$provider_filters = ['credentials'];
+
+		if ( ! is_admin() || $screen->base !== 'settings_page_acf_osm' ) {
+
+			$provider_filters[] = 'enabled';
+
 		}
+
 		/* frontend */
 		/**
 		 *	Marker Icon HTML. Return false to use image icon (either leaflet default or return value of filter `acf_osm_marker_icon`)
@@ -91,7 +97,7 @@ class Core extends Plugin {
 				),
 
 			),
-			'providers'		=> $providers,
+			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
 		));
 
 		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), array(), $this->get_version() );
@@ -102,8 +108,8 @@ class Core extends Plugin {
 		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), array('acf-input','wp-backbone'), $this->get_version(), true );
 		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', array(
 			'options'	=> array(
-				'osm_layers'		=> $this->get_osm_layers(), // flat list
-				'leaflet_layers'	=> $this->get_leaflet_layers(),  // flat list
+				'osm_layers'		=> $osm_providers->get_layers(), // flat list
+				'leaflet_layers'	=> $leaflet_providers->get_layers(),  // flat list
 				'accuracy'			=> 7,
 			),
 			'i18n'	=> array(
@@ -153,203 +159,6 @@ class Core extends Plugin {
 		*/
 
 	}
-
-	/**
-	 *	get default OpenStreetMap Layers
-	 *
-	 *	@return array(
-	 *		'layer_id' => 'Layer Label',
-	 *		...
-	 *	)
-	 */
-	public function get_osm_layers( $context = 'iframe' ) {
-		/*
-		mapnik
-		cyclemap C 	Cycle
-		transportmap T	Transport
-		hot H	Humantarian
-		*/
-		if ( 'iframe' === $context ) {
-			return array(
-				'mapnik'		=> 'OpenStreetMap',
-				'cyclemap'		=> 'Thunderforest.OpenCycleMap',
-				'transportmap'	=> 'Thunderforest.Transport',
-				'hot'			=> 'OpenStreetMap.HOT',
-			);
-		} else if ( 'link' === $context ) {
-			return array(
-				'H' => 'OpenStreetMap.HOT',
-				'T' => 'Thunderforest.Transport',
-				'C' => 'Thunderforest.OpenCycleMap',
-			);
-		}
-	}
-
-	/**
-	 *	Map openstreetmap (iframe) layer to leaflet layer
-	 */
-	public function map_osm_layer( $layers, $context = 'iframe' ) {
-
-		$mapping = $this->get_osm_layers( $context );
-
-		foreach ( (array) $layers as $layer ) {
-			$mapped = array_search( $layer, $mapping );
-			if ( $mapped !== false ) {
-				return $mapped;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 *	Get a flat leaflet provider list
-	 *
-	 *	@return array [
-	 *		'provider_key' 			=> 'provider',
-	 *		'provider_key.variant'	=> 'provider.variant',
-	 *		...
-	 * ]
-	 */
-	public function get_leaflet_layers() {
-
-		$providers = array();
-
-		foreach ( $this->get_enabled_layer_providers() as $provider_key => $provider_data ) {
-			//
-
-			if ( isset( $provider_data[ 'variants' ] ) ) {
-				foreach ( $provider_data[ 'variants' ] as $variant => $variant_data ) {
-					// bounded variants disabled through settings!
-					// if ( ! is_string( $variant_data ) && isset( $variant_data['options']['bounds'] ) ) {
-					// 	// no variants with bounds!
-					// 	continue;
-					// }
-
-					if ( is_string( $variant_data ) || isset( $variant_data['options'] ) ) {
-
-
-						$providers[ $provider_key . '.' . $variant ] = $provider_key . '.' . $variant;
-					} else {
-						$providers[ $provider_key ] = $provider_key;
-					}
-				}
-			} else {
-				$providers[ $provider_key ] = $provider_key;
-			}
-		}
-		return $providers;
-	}
-
-	/**
-	 *	Returns leaflet providers with api-tokens merged,
-	 *	unconfigured and disabled are removed
-	 *
-	 *	@return array enabled leaflet providers
-	 */
-	public function get_enabled_layer_providers() {
-
-		//*/
-		$providers = $this->get_layer_providers();
-
-
-		// remove disabled providers
-		$disabled_providers = get_option( 'acf_osm_providers', array() );
-
-		$providers = array_replace_recursive( $providers, $disabled_providers );
-		$providers = array_filter( $providers );
-
-		foreach ( $providers as &$provider ) {
-			if ( isset( $provider['variants'] ) ) {
-				// remove disabled variants
-				$provider['variants'] = array_filter( $provider['variants'] );
-			}
-		}
-
-		return $providers;
-
-	}
-
-	/**
-	 *	Returns leaflet providers with api-tokens merged
-	 *	Removes unonfigured providers from list
-	 *
-	 *	@return array
-	 */
-	public function get_layer_providers( ) {
-
-		if ( is_null( $this->leaflet_providers ) ) {
-
-			$providers	= $this->get_leaflet_providers( );
-
-			// get configured token
-			$tokens = get_option( 'acf_osm_provider_tokens', array() );
-
-			foreach ( $tokens as &$token ) {
-				$token = $this->filter_recursive( $token );
-				if ( empty( $token ) ) {
-					$token = false;
-				}
-			}
-
-			// merge tokens
-			$providers = array_replace_recursive( $providers, $tokens );
-
-			// remove providers with empty tokens
-			$providers = array_filter( $providers );
-
-			$this->leaflet_providers = apply_filters( 'acf_osm_leaflet_providers', $providers );
-		}
-
-
-		// configure mapbox styles as variants
-		return $this->leaflet_providers;
-	}
-
-
-	/**
-	 *	Returns raw leaflet providers
-	 *
-	 *	@return array
-	 */
-	public function get_leaflet_providers( ) {
-
-		$leaflet_providers	= json_decode( file_get_contents( $this->get_plugin_dir() . '/etc/leaflet-providers.json'), true );
-
-		return $leaflet_providers;
-
-	}
-
-
-	/**
-	 *	Get places in provider config, where an access token should be entered.
-	 *
-	 *	@return array
-	 */
-	public function get_provider_token_options( ) {
-
-		$providers		= $this->get_leaflet_providers();
-
-		$token_options	= array();
-
-		foreach ( $providers as $provider => $data ) {
-			foreach( $data['options'] as $option => $value ) {
-				if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) ) { // '<insert your [some token] here>'
-
-					if ( ! isset($token_options[ $provider ]['options'] ) ) {
-						$token_options[ $provider ] = array( 'options' => array() );
-					}
-					$token_options[ $provider ]['options'][ $option ] = '';
-				}
-			}
-		}
-
-		return $token_options;
-	}
-
-
-
-
-
 
 	/**
 	 *	Get asset url for this plugin

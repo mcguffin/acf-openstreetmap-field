@@ -265,9 +265,9 @@ class OpenStreetMap extends \acf_field {
 
 		if ( isset($field['return_format']) ) {
 			if ( $field['return_format'] === 'osm' ) {
-				$providers = $core->get_osm_layers();
+				$providers = Core\OSMProviders::instance()->get_layers();
 			} else {
-				$providers = $core->get_leaflet_layers();
+				$providers = Core\LeafletProviders::instance()->get_layers();
 			}
 		}
 
@@ -612,25 +612,9 @@ class OpenStreetMap extends \acf_field {
 
 		// apply setting
 		if ( $field['return_format'] === 'osm' ) {
-			// features: one marker. 4 maps to choose from
-			$core = Core\Core::instance();
-			$bbox = Helper\MapHelper::getBbox( $value['lat'], $value['lng'], $value['zoom'] );
-			$iframe_src_args = array(
-				'bbox'	=> implode( ',', $bbox ),
-			);
 
-			$map_link_args = array();
-
-			if ( $i_layer = $core->map_osm_layer( $value['layers'], 'iframe' ) ) {
-				$iframe_src_args['layer'] = $i_layer;
-			}
-
-			foreach ( $value['markers'] as $marker ) {
-				$iframe_src_args['marker'] = implode(',', array( $marker['lat'], $marker['lng'] ) );
-				$map_link_args['mlat'] = $marker['lat'];
-				$map_link_args['mlon'] = $marker['lng'];
-			}
-			$iframe_src = add_query_arg( $iframe_src_args, 'https://www.openstreetmap.org/export/embed.html' );
+			// features: one marker max. four maps to choose from
+			$osm_providers = Core\OSMProviders::instance();
 
 			$iframe_atts = array(
 				'height'		=> $field['height'],
@@ -639,28 +623,27 @@ class OpenStreetMap extends \acf_field {
 				'scrolling'		=> 'no',
 				'marginheight'	=> 0,
 				'marginwidth'	=> 0,
-				'src'			=> $iframe_src,
 			);
 
-			$map_link = add_query_arg( $map_link_args, 'https://www.openstreetmap.org/' );
-			$map_link .= '#map=' . implode( '/', array( $value['zoom'], $value['lat'], $value['lng'] ) );
-
-			if ( $l_layer = $core->map_osm_layer( $value['layers'], 'link' ) ) {
-				$map_link .= '&amp;layers='.$l_layer;
-			}
-
-			$html = '<iframe %1$s></iframe><br/><small><a target="_blank" href="%2$s">%3$s</a></small>';
+			$html = '<iframe src="%1$s" %2$s></iframe><br/><small><a target="_blank" href="%3$s">%4$s</a></small>';
 
 			/**
 			 *	Filter iframe HTML.
 			 *
-			 *	@param string $html Template String. Placeholders: $1$s: iFrame Source, $2%s: URL of bigger map, %3$s: Link-Text.
+			 *	@param string $html Template String. Placeholders: %1$s: iFrame Source, %2$s: iframe attributes, %3$s: URL to bigger map, %4$s: Link-Text.
 			 */
 			$html = apply_filters( 'osm_map_iframe_template', $html );
 
-			$value = sprintf( $html, acf_esc_attr( $iframe_atts ), esc_url($map_link), esc_html__( 'View Larger Map','acf-openstreetmap-field' ) );
+			$value = sprintf( 
+				$html, 
+				$osm_providers->get_iframe_url( $value ),
+				acf_esc_attr( $iframe_atts ), 
+				esc_url( $osm_providers->get_link_url( $value ) ), 
+				esc_html__( 'View Larger Map','acf-openstreetmap-field' ) 
+			);
 
 		} else if ( $field['return_format'] === 'leaflet' ) {
+
 			// features: multiple markers. lots of maps to choose from
 			$map_attr = array(
 				'class'				=> 'leaflet-map',
@@ -677,25 +660,19 @@ class OpenStreetMap extends \acf_field {
 				$map_attr = $field['attr'] + $map_attr;
 			}
 
-			// if ( ! empty( $value['address'] ) ) {
-			//
-			// 	$map_attr['data-marker-lng']	= $value['marker_lng'];
-			// 	$map_attr['data-marker-lat']	= $value['marker_lat'];
-			// 	$map_attr['data-marker-label']	= $value['address'];
-			//
-			// }
 
 			$html = sprintf('<div %s></div>', acf_esc_attr( $map_attr ) );
 			$value = $html;
+
 			wp_enqueue_script( 'acf-osm-frontend' );
-			wp_enqueue_style('leaflet');
+			wp_enqueue_style( 'leaflet' );
+
 		} else {
 			$value = $this->sanitize_value( $value, $field, 'display' );
 			// ensure backwards compatibility <= 1.0.1
 			$value['center_lat'] = $value['lat'];
 			$value['center_lng'] = $value['lng'];
 		}
-
 
 		// return
 		return $value;

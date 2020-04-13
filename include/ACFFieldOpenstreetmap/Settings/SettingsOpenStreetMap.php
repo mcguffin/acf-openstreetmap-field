@@ -50,6 +50,7 @@ class SettingsOpenStreetMap extends Settings {
 		}
 
 		$core = Core\Core::instance();
+		$providers = Core\LeafletProviders::instance();
 
 		?>
 		<div class="wrap">
@@ -65,7 +66,7 @@ class SettingsOpenStreetMap extends Settings {
 					<div class="acf-osm-provider-settings">
 					<?php
 
-					$provider_settings = $core->get_leaflet_providers();
+					$provider_settings = $providers->get_providers();
 
 					foreach ( $provider_settings as $provider_key => $provider_data ) {
 
@@ -248,17 +249,14 @@ class SettingsOpenStreetMap extends Settings {
 		<?php
 	}
 
-
-
-
 	/**
-	 * Print some documentation for the optionset
+	 *	Print some documentation for this optionset
 	 */
 	public function providers_description() {
 
 		?>
 		<div class="inside">
-			<p class="description"><?php esc_html_e( 'Select which map tile providers you like to be selectable in the ACF Field.' , 'acf-openstreetmap-field' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Select which map tile providers should be selectable in the ACF Field.' , 'acf-openstreetmap-field' ); ?></p>
 			<p class="description"><?php esc_html_e( 'Configure Access Tokens for various Map Tile providers.' , 'acf-openstreetmap-field' ); ?></p>
 		</div>
 		<?php
@@ -320,10 +318,6 @@ class SettingsOpenStreetMap extends Settings {
 						<div class="acf-osm-layer-variants">
 						<?php
 						foreach ( $provider_data['variants'] as $variant_key => $variant ) {
-
-							if ( is_array($variant) && ! count($variant)) {
-								continue;
-							}
 
 							$is_disabled = isset( $provider_option[ $provider_key ]['variants'][ $variant_key ] )
 											&& $provider_option[$provider_key]['variants'][$variant_key] === false;
@@ -449,9 +443,9 @@ class SettingsOpenStreetMap extends Settings {
 		}
 
 		printf('<input id="%1$s" type="text" name="%2$s" value="%3$s" class="large-text code" />',
-			esc_attr($field_id),
-			esc_attr($field_name),
-			esc_attr($value)
+			esc_attr( $field_id ),
+			esc_attr( $field_name ),
+			esc_attr( $value )
 		);
 
 	}
@@ -463,11 +457,16 @@ class SettingsOpenStreetMap extends Settings {
 	 */
 	public function sanitize_provider_tokens( $new_values ) {
 		$core = Core\Core::instance();
-		$token_options = $core->get_provider_token_options();
+		$providers = Core\LeafletProviders::instance();
+
+		$token_options = $providers->get_token_options();
+
 		$prev_values = get_option('acf_osm_provider_tokens');
+
 		$values = array();
 
 		foreach ( $token_options as $provider => $provider_data ) {
+
 			$values[$provider] = array();
 			foreach ( $provider_data as $section => $config ) {
 				$values[$provider][$section] = array();
@@ -534,10 +533,11 @@ class SettingsOpenStreetMap extends Settings {
 	 */
 	private function get_default_option_providers() {
 
-		$core = Core\Core::instance();
+		$providers = Core\LeafletProviders::instance();
 		$is_https = strpos( get_option('home'), 'https:' ) === 0;
-		$provider_settings = $core->get_layer_providers();
+		$provider_settings = $providers->get_providers(['credentials']);
 		$default_option = array();
+
 		foreach ( $provider_settings as $provider_key => $provider_data ) {
 			if ( $this->has_bounds( $provider_data ) || ( $is_https && $this->is_insecure( $provider_data ) ) ) {
 				$default_option[ $provider_key ] = '0';

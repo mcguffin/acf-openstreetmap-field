@@ -58,6 +58,35 @@ class Plugin extends PluginComponent {
 		return $this->plugin_file;
 	}
 
+
+	/**
+	 *	@param string $file Path within plugin directory
+	 *	@return boolean|string file contents, false on failure
+	 */
+	public function read_file( $file ) {
+
+		global $wp_filesystem;
+
+		if ( ! function_exists( 'WP_Filesystem' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+
+		$core = Core::instance();
+
+		if ( ! \WP_Filesystem() ) {
+			return false;
+		}
+
+		$path = wp_normalize_path( $core->get_plugin_dir() . '/' . $file );
+
+		if ( $wp_filesystem->exists( $path ) ) {
+			return $wp_filesystem->get_contents( $path );
+		}
+
+		return false;
+	}
+
+
 	/**
 	 *	@return string full plugin file path
 	 */
