@@ -658,7 +658,7 @@ class OpenStreetMap extends \acf_field {
 			 */
 			$html = apply_filters( 'osm_map_iframe_template', $html );
 
-			$value = sprintf( $html, acf_esc_attr( $iframe_atts ), $map_link, __( 'View Larger Map','acf-openstreetmap-field' ) );
+			$value = sprintf( $html, acf_esc_attr( $iframe_atts ), esc_url($map_link), esc_html__( 'View Larger Map','acf-openstreetmap-field' ) );
 
 		} else if ( $field['return_format'] === 'leaflet' ) {
 			// features: multiple markers. lots of maps to choose from
