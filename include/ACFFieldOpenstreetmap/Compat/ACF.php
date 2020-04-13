@@ -73,7 +73,8 @@ class ACF extends Core\Singleton {
 
 		$map_field = Field\OpenStreetMap::get_instance();
 
-		echo $map_field->format_value( $field['value'], null, $inp_field );
+		// format_value() returns sanitized HTML
+		echo $map_field->format_value( $field['value'], null, $inp_field ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
