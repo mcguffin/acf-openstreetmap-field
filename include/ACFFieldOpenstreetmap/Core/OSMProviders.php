@@ -88,7 +88,7 @@ class OSMProviders extends Singleton {
 	 */
 	public function get_iframe_url( $config ) {
 
-		$config = wp_parse_args([
+		$config = wp_parse_args( $config, [
 			'lat' => 0,
 			'lng' => 0,
 			'zoom' => 0,
@@ -139,7 +139,7 @@ class OSMProviders extends Singleton {
 	 */
 	public function get_link_url( $config ) {
 
-		$config = wp_parse_args([
+		$config = wp_parse_args( $config, [
 			'lat' => 0,
 			'lng' => 0,
 			'zoom' => 0,
