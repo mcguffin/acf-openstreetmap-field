@@ -170,7 +170,7 @@ class PluginTest {
 			'description'		=> __('A Leaflet Map'),
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
 				printf('<div class="align%s">',$block['align']);
-				echo '<input type="checkbox" />';
+				//echo '<input type="checkbox" />';
 				the_field( 'leaflet_map_block' );
 				echo '</div>';
 				?><hr /><?php
