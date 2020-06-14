@@ -2,6 +2,7 @@
 
 namespace ACFFieldOpenstreetmap;
 
+
 abstract class Test_Widget extends \WP_Widget {
 	public function form( $instance ) {
 	}
@@ -94,6 +95,12 @@ class PluginTest {
 			</style>
 			<?php
 		});
+//
+		add_filter('acf/fields/google_map/api', function($api) {
+			$api['key'] = exec('security find-generic-password -a maps.googleapis.com -s maps.googleapis.com -w');
+			return $api;
+		});
+		// 
 
 	}
 

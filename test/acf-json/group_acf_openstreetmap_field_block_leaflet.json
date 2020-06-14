@@ -5,6 +5,7 @@
         {
             "center_lat": 53.0000127,
             "center_lng": 11.0000181,
+            "zoom": 15,
             "key": "field_5d4c2962d6960",
             "label": "Leaflet Map",
             "name": "leaflet_map_block",
@@ -18,14 +19,31 @@
                 "id": ""
             },
             "return_format": "leaflet",
-            "zoom": 15,
+            "layers": [
+                "OpenStreetMap.Mapnik",
+                "Stamen.TonerLines"
+            ],
             "allow_map_layers": 1,
             "height": 400,
-            "max_markers": "",
-            "layers": [
-                "OpenMapSurfer.Roads",
-                "Stamen.TonerLines"
-            ]
+            "max_markers": ""
+        },
+        {
+            "key": "field_5ee5d68e55e70",
+            "label": "Google Map",
+            "name": "google_map",
+            "type": "google_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "center_lat": "",
+            "center_lng": "",
+            "zoom": "",
+            "height": ""
         }
     ],
     "location": [
@@ -52,5 +70,5 @@
     "hide_on_screen": "",
     "active": 1,
     "description": "",
-    "modified": 1565428834
+    "modified": 1592120995
 }
