@@ -41,7 +41,7 @@
     "leaflet": "^1.6.0",
     "leaflet-control-geocoder": "^1.13.0",
     "leaflet-providers": "^1.10.1",
-    "leaflet.locatecontrol": "^0.71.1",
+    "leaflet.locatecontrol": "^0.72.0",
     "resize-observer-polyfill": "^1.5.1"
   },
   "dependencies": {

@@ -107,6 +107,11 @@ No.
 
 == Changelog ==
 
+= 1.2.0 =
+ - Feature: Settings page allowing you to disable specific map tile providersw
+ - Feature: Fit markers in view (backend)
+ - Upgrade: leaflet-providers, leaflet-control-geocoder, leaflet.locatecontrol
+
 = 1.1.9 =
  - UI: Add Settings link on plugins list table
  - Fix: hide map provider with unconfigured api key from layer selection
