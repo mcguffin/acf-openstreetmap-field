@@ -94,14 +94,17 @@ gulp.task('providers', function(cb){
 	}
 
 	// HEREv3 manual upgrade until https://github.com/leaflet-extras/leaflet-providers/pull/343 is released
-	L.TileLayer.Provider.providers.HEREv3 = JSON.parse(JSON.stringify(L.TileLayer.Provider.providers.HERE))
-	L.TileLayer.Provider.providers.HEREv3.url = "https://{s}.{base}.maps.ls.hereapi.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?apiKey={apiKey}&lg={language}";
-	L.TileLayer.Provider.providers.HEREv3.options.apiKey = "<insert your apiKey here>";
-	delete( L.TileLayer.Provider.providers.HEREv3.options.app_code )
-	delete( L.TileLayer.Provider.providers.HEREv3.options.app_id )
+	// L.TileLayer.Provider.providers.HEREv3 = JSON.parse(JSON.stringify(L.TileLayer.Provider.providers.HERE))
+	// L.TileLayer.Provider.providers.HEREv3.url = "https://{s}.{base}.maps.ls.hereapi.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?apiKey={apiKey}&lg={language}";
+	// L.TileLayer.Provider.providers.HEREv3.options.apiKey = "<insert your apiKey here>";
+	// delete( L.TileLayer.Provider.providers.HEREv3.options.app_code )
+	// delete( L.TileLayer.Provider.providers.HEREv3.options.app_id )
+
+	 // 52d2aca6-c3b6-4c59-b9de-5df4f4d056bd
+	 
 
 
-	// add mapbox ids as variant. See https://www.mapbox.com/api-documentation/#maps
+	// add MAPBOX ids as variant. See https://www.mapbox.com/api-documentation/#maps
 	let mapbox_variants = [
 		'streets',
 		'light',
@@ -134,7 +137,6 @@ gulp.task('providers', function(cb){
 	// remove falsy configuration
 	delete( L.TileLayer.Provider.providers.MapBox.options.id );
 	// END mapbox
-
 
 	// add overlay property to maps and layers
 	Object.keys(providers).map( key => {
