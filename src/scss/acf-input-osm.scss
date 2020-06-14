@@ -355,8 +355,9 @@ $leaflet-panes: (
 		&::after {
 			content: $dashicon-plus;
 			font-size: 13px;
-			vertical-align: top;
-			margin-left: -8px;
+			position: absolute;
+			top:-6px;
+			right:0;
 		}
 	}
 }

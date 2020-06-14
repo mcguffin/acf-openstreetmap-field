@@ -642,7 +642,6 @@
  						lng: latlng.lng
  					},
  					model;
-
 				// getting rid of the modal – #35
 				self.geocoder._clearResults();
 				self.geocoder._input.value = '';
@@ -686,7 +685,6 @@
 			var label = false;
 
 			if ( ! results.length ) {
-				// https://xkcd.com/2170/
 				label = latlng.lat + ', ' + latlng.lng;
 			} else {
 				$.each( results, function( i, result ) {
