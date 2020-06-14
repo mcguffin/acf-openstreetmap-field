@@ -40,7 +40,7 @@
 		initLayers:function() {
 			var layers = this.model.get('layers');
 
-			this.config.restrict_providers = this.$returnFormat().find(':checked').val() === 'osm' 
+			this.config.restrict_providers = this.$returnFormat().find(':checked').val() === 'osm'
 				? Object.values( arg.options.osm_layers )
 				: Object.values( arg.options.leaflet_layers );
 
@@ -141,7 +141,7 @@
 	});
 	// acf.addAction('render_field_object', function(field){
 	// 	if ( 'open_street_map' === field.data.type ) {
-	// 
+	//
 	// 		//$.acf_leaflet();
 	// 	}
 	// });

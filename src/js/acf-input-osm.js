@@ -8,9 +8,9 @@
 
 	var osm = exports.osm = {
 	};
-	
+
 	var locatorAddControl = null;
-	
+
 	var fixedFloatGetter = function( prop, fix ) {
 		return function() {
 			return parseFloat( this.attributes[ prop ] );
@@ -91,8 +91,8 @@
 	osm.MarkerCollection = Backbone.Collection.extend({
 		model:osm.MarkerData
 	});
-	
-	
+
+
 	osm.MapData = GSModel.extend({
 		getters: {
 			lat:fixedFloatGetter( 'lat', options.accuracy ),
@@ -223,7 +223,7 @@
 		remove_marker:function(e) {
 			// click remove
 			e.preventDefault();
-			this.model.destroy(); // 
+			this.model.destroy(); //
 			return this;
 		},
 		pling:function() {
@@ -272,6 +272,11 @@
 
 			this.init_locator();
 
+			// !! only if a) in editor && b) markers allowed !!
+			if ( this.config.max_markers !== 0 ) {
+				this.init_fit_bounds();
+			}
+
 			this.init_acf();
 
 			if ( this.config.allow_providers ) {
@@ -297,7 +302,7 @@
 			});
 			this.map.on('moveend',function(){
 				var latlng = self.map.getCenter();
-				
+
 				self.model.set('lat',latlng.lat );
 				self.model.set('lng',latlng.lng );
 			});
@@ -317,19 +322,38 @@
 			})
 			return this;
 		},
+		init_fit_bounds:function() {
+			var self = this
+			// 2do: externalize L.Control.FitBoundsControl
+			this.fitBoundsControl = new L.Control.FitBoundsControl({
+				position: 'bottomright',
+				callback: function() {
+					var markers = self.model.get('markers')
+					var llb = L.latLngBounds();
+					if ( markers.length === 0 ) {
+						return;
+					}
+					markers.forEach( function(marker) {
+						llb.extend(L.latLng(marker.get('lat'),marker.get('lng')))
+					});
+					self.map.fitBounds(llb);
+				}
+			}).addTo(this.map);
+
+		},
 		init_locator_add:function() {
 			var self = this
-			
+
 			this.locatorAdd = new L.Control.AddLocationMarker({
 				position: 'bottomleft',
 				callback: function() {
 					if ( self.$el.attr('data-can-add-marker') === 'true' ) {
-						self.currentLocation && self.addMarkerByLatLng( self.currentLocation );						
+						self.currentLocation && self.addMarkerByLatLng( self.currentLocation );
 					}
 					self.locator.stop();
 				}
 			}).addTo(this.map);
-	
+
 		},
 		init_locator:function() {
 			var self = this;
@@ -379,7 +403,7 @@
 		updateMarkerState:function() {
 			var len = this.model.get('markers').length;
 			this.$el.attr('data-has-markers', !!len ? 'true' : 'false');
-			this.$el.attr('data-can-add-marker', ( false === this.config.max_markers || len < this.config.max_markers) ? 'true' : 'false');	
+			this.$el.attr('data-can-add-marker', ( false === this.config.max_markers || len < this.config.max_markers) ? 'true' : 'false');
 		},
 		/**
 		 *	Markers
@@ -396,7 +420,7 @@
 				})
 				.bindTooltip( model.get('label') );
 
-			// 
+			//
 			var entry = new osm.MarkerEntry({
 				controller: this,
 				marker: marker,
@@ -404,7 +428,7 @@
 			});
 
 			this.map.once('layeradd',function(e){
-				
+
 				marker
 					.on('click',function(e){
 						model.destroy();
@@ -417,7 +441,7 @@
 						self.reverseGeocode( model );
 						// geocode, get label, set model label...
 					})
-				
+
 				entry.$el.appendTo( self.$markers() );
 			});
 
@@ -438,7 +462,7 @@
 			this.initGeocode();
 			this.$el.attr('data-has-markers', 'false');
 			this.$el.attr('data-can-add-marker', 'false');
-			
+
 			// no markers allowed!
 			if ( this.config.max_markers === 0 ) {
 				return;
@@ -467,13 +491,13 @@
 			var self = this;
 			this.map.on('dblclick', function(e){
 				var latlng = e.latlng;
-				
+
 				L.DomEvent.preventDefault(e);
 				L.DomEvent.stopPropagation(e);
-				
+
 				self.addMarkerByLatLng( latlng );
 			})
-			.doubleClickZoom.disable(); 
+			.doubleClickZoom.disable();
 			this.$el.addClass('add-marker-on-dblclick')
 		},
 		_add_marker_on_hold: function() {
@@ -550,14 +574,14 @@
 		 *
 		 *	@on map.layeradd, layer.dragend
 		 */
-		 initGeocode:function() {
+		initGeocode:function() {
 
  			var self = this,
 				$above = this.$el.prev();
 			if ( ! $above.is( '.acf-osm-above' ) ) {
 				$above = $('<div class="acf-osm-above"></div>').insertBefore( this.$el );
 			} else {
-				$above.html('');				
+				$above.html('');
 			}
 			// add an extra control panel region for out search
  			this.map._controlCorners['above'] = $above.get(0);
@@ -572,7 +596,7 @@
  				suggestTimeout:250,
  				queryMinLength:3,
  				defaultMarkGeocode:false,
-				geocoder:L.Control.Geocoder.nominatim({ 
+				geocoder:L.Control.Geocoder.nominatim({
 					htmlTemplate: function(result) {
 						var parts = [],
 							templateConfig = {
@@ -582,13 +606,13 @@
 								building:'',
 								road:'',
 								house_number:'',
-								
+
 								postcode:'',
 								city:'',
 								town:'',
 								village:'',
 								hamlet:'',
-								
+
 								state:'',
 								country:'',
 							} );
@@ -616,7 +640,7 @@
  						default_label: label,
  						lat: latlng.lat,
  						lng: latlng.lng
- 					}, 
+ 					},
  					model;
 
 				// getting rid of the modal – #35
@@ -630,7 +654,7 @@
 
  				}
 
-				
+
  				if ( self.config.max_markers === false || count_markers < self.config.max_markers ) {
 					// infinite markers or markers still in range
  					self.model.get('markers').add( marker_data );
@@ -648,11 +672,11 @@
 
  		},
 		reverseGeocode:function( model ) {
-			var self = this, 
+			var self = this,
 				latlng = { lat: model.get('lat'), lng: model.get('lng') };
-			this.geocoder.options.geocoder.reverse( 
-				latlng, 
-				self.map.getZoom(), 
+			this.geocoder.options.geocoder.reverse(
+				latlng,
+				self.map.getZoom(),
 				function( results ) {
 					model.set('default_label', self.parseGeocodeResult( results, latlng ) );
 				}
@@ -669,14 +693,6 @@
 
 					label = result.html;
 
-					// if ( !! result.html ) {
-					// 	var html = result.html.replace(/(\s+)</g,'<').replace(/<br\/>/g,'<br/>, ');
-					// 	// add missing spaces
-					// 	label = $('<p>'+html+'</p>').text().trim().replace(/(\s+)/g,' ');
-					// } else {
-					// 	label = result.name;
-					// }
-					// return false;
 				});
 			}
 			// trim
@@ -693,12 +709,11 @@
 				selectedLayers = [],
 				baseLayers = {},
 				overlays = {},
-				mapLayers = {},
 				is_omitted = function(key) {
 					return key === null || ( !! self.config.restrict_providers && self.config.restrict_providers.indexOf( key ) === -1 );
 				},
 				setupMap = function( val, key ){
-					var layer, layer_config;
+					var layer;
 					if ( _.isObject(val) ) {
 						return $.each( val, setupMap );
 					}
@@ -706,17 +721,13 @@
 					if ( is_omitted(key) ) {
 						return;
 					}
-					if ( !! mapLayers[ key ] ) {
-						layer = mapLayers[ key ];
-						self.map.addLayer(layer)
-					} else {
-						try {
-							layer = L.tileLayer.provider( key /*, layer_config.options*/ );
-						} catch(ex) {
-							return;
-						}
-						layer.providerKey = key;
+
+					try {
+						layer = L.tileLayer.provider( key /*, layer_config.options*/ );
+					} catch(ex) {
+						return;
 					}
+					layer.providerKey = key;
 
 					if ( self.layer_is_overlay( key, layer ) ) {
 						overlays[key] = layer;
@@ -748,7 +759,7 @@
  			// editable layers!
 
 			this.map.on( 'baselayerchange layeradd layerremove', function(e){
-			
+
 				if ( ! e.layer.providerKey ) {
 					return;
 				}
@@ -769,34 +780,35 @@
 			} );
 
  			$.each( this.config.restrict_providers, setupMap );
-			
+
 			this.layersControl = L.control.layers( baseLayers, overlays, {
 				collapsed: true,
 				hideSingleBase: true,
 			}).addTo(this.map);
  		},
 		layer_is_overlay: function(  key, layer ) {
-			var patterns;
 
 			if ( layer.options.opacity && layer.options.opacity < 1 ) {
 				return true;
 			}
-			patterns = ['^(OpenWeatherMap|OpenSeaMap)',
-				'OpenMapSurfer.AdminBounds',
-				'Stamen.Toner(Hybrid|Lines|Labels)',
-				'Acetate.(foreground|labels|roads)',
-				'HillShading',
+
+			var patterns = [
+				'^(OpenWeatherMap|OpenSeaMap)',
+				'OpenMapSurfer.(Hybrid|AdminBounds|ContourLines|Hillshade|ElementsAtRisk)',
+				'HikeBike.HillShading',
+				'Stamen.(Toner|Terrain)(Hybrid|Lines|Labels)',
+				'TomTom.(Hybrid|Labels)',
 				'Hydda.RoadsAndLabels',
 				'^JusticeMap',
-				'OpenInfraMap.(Power|Telecom|Petroleum|Water)',
 				'OpenPtMap',
 				'OpenRailwayMap',
 				'OpenFireMap',
 				'SafeCast',
-				'CartoDB.DarkMatterOnlyLabels',
-				'CartoDB.PositronOnlyLabels'
-			];
-			return key.match('(' + patterns.join('|') + ')') !== null;
+				'OnlyLabels',
+				'HERE(v3?).trafficFlow',
+				'HERE(v3?).mapLabels'
+			].join('|');
+			return key.match('(' + patterns + ')') !== null;
 		},
 		resetLayers:function() {
 			// remove all map layers
@@ -840,9 +852,9 @@
 		},
 		update_map:function() {
 			var latlng = { lat: this.model.get('lat'), lng: this.model.get('lng') }
-			this.map.setView( 
+			this.map.setView(
 				latlng,
-				this.model.get('zoom') 
+				this.model.get('zoom')
 			);
 		}
 	});
@@ -875,7 +887,34 @@
 							.off(this._link, 'click', this.options.callback, this )
 							.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
 					},
-				})				
+				})
+			}
+			if ( ! L.Control.FitBoundsControl ) {
+				L.Control.FitBoundsControl = L.Control.extend({
+					onAdd:function() {
+
+						this._container = L.DomUtil.create('div',
+							'leaflet-control-fit-bounds leaflet-bar leaflet-control');
+
+						this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container );
+						this._link.title = i18n.fit_markers_in_view;
+						this._icon = L.DomUtil.create('span', 'dashicons dashicons-editor-expand', this._link );
+						L.DomEvent
+							.on( this._link, 'click', L.DomEvent.stopPropagation )
+							.on( this._link, 'click', L.DomEvent.preventDefault )
+							.on( this._link, 'click', this.options.callback, this )
+							.on( this._link, 'dblclick', L.DomEvent.stopPropagation );
+
+						return this._container;
+					},
+					onRemove:function() {
+						L.DomEvent
+							.off(this._link, 'click', L.DomEvent.stopPropagation )
+							.off(this._link, 'click', L.DomEvent.preventDefault )
+							.off(this._link, 'click', this.options.callback, this )
+							.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
+					},
+				});
 			}
 
 
@@ -917,6 +956,6 @@
 	    editor.update_visible();
 	});
 
-	
+
 
 })( jQuery, acf_osm_admin, window );

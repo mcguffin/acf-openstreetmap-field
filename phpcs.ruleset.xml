@@ -38,4 +38,11 @@
 		<exclude name="WordPress.WP.I18n.UnorderedPlaceholders"/>
 		<exclude name="WordPress.WP.I18n.NonSingularStringLiteralText"/>
 	</rule>
+	<rule ref="WordPress-Docs">
+		<exclude name="Generic.Commenting.DocComment.MissingShort"/>
+		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+		<exclude name="Squiz.Commenting.InlineComment.TabBefore"/>
+		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+		<exclude name="Squiz.Commenting.BlockComment.NoNewLine"/>
+	</rule>
 </ruleset>

@@ -11,8 +11,7 @@ ACF OpenStreetMap Field ToDo
 
 1.2.0
 -----
- - [ ] Store raw gecode result data in marker
- - […] Options: Disable map layers
+ - [ ] Make Marker Data match as ACF Google-Map Data (#39)
  - [ ] Options: allow `'api_key':'<enter key here>'` in filter `acf_osm_leaflet_providers` (#38)
  - [ ] Tests:
      - [ ] ACF-Customizer

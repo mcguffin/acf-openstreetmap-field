@@ -17,12 +17,12 @@ class MapHelper {
 
 		$offset = self::zoomToOffset( $zoom );
 
-		return array(
+		return [
 		    0 => self::getCoordOffset(1, $lat, $lon, -$offset),
 		    1 => self::getCoordOffset(0, $lat, $lon, -$offset),
 		    2 => self::getCoordOffset(1, $lat, $lon, $offset),
 		    3 => self::getCoordOffset(0, $lat, $lon, $offset),
-		); // 0 = minlon, 1 = minlat, 2 = maxlon, 3 = maxlat, 4,5 = original val (marker)
+		]; // 0 = minlon, 1 = minlat, 2 = maxlon, 3 = maxlat, 4,5 = original val (marker)
 	}
 
 	public static function zoomToOffset( $zoom ) {
