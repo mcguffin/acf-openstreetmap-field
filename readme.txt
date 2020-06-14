@@ -103,6 +103,7 @@ No.
 1. ACF Field Group Editor
 2. Editing the Field Value
 3. Display in the Frontend
+4. Settings page. Configure API access keys and disable specific tile layers.
 
 
 == Changelog ==
