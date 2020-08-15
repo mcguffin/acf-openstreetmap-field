@@ -184,7 +184,7 @@
 		}
 	},
 	"CyclOSM": {
-		"url": "https://dev.{s}.tile.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
+		"url": "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
 		"options": {
 			"maxZoom": 20,
 			"attribution": "<a href=\"https://github.com/cyclosm/cyclosm-cartocss-style/releases\" title=\"CyclOSM - Open Bicycle render\">CyclOSM</a> | Map data: {attribution.OpenStreetMap}"
@@ -995,11 +995,11 @@
 		}
 	},
 	"FreeMapSK": {
-		"url": "http://t{s}.freemap.sk/T/{z}/{x}/{y}.jpeg",
+		"url": "https://{s}.freemap.sk/T/{z}/{x}/{y}.jpeg",
 		"options": {
 			"minZoom": 8,
 			"maxZoom": 16,
-			"subdomains": "1234",
+			"subdomains": "abcd",
 			"bounds": [
 				[
 					47.204642,
