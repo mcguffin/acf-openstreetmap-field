@@ -223,12 +223,6 @@ gulp.task('leaflet-css', gulp.parallel(
 
 
 
-gulp.task('js-compat', function() {
-    return concat_js( [
-			'./src/js/compat/acf-duplicate-repeater.js',
-		], 'compat/acf-duplicate-repeater.js');
-});
-
 
 gulp.task('js-field-group', function() {
     return concat_js( [
@@ -263,7 +257,7 @@ gulp.task('js-settings', function() {
 });
 
 
-gulp.task('js', gulp.parallel('js-frontend','js-admin','js-field-group','js-compat','js-settings') );
+gulp.task('js', gulp.parallel('js-frontend','js-admin','js-field-group','js-settings') );
 
 
 gulp.task('pre-build', gulp.parallel('providers','leaflet-css') );

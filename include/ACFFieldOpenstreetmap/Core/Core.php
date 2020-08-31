@@ -130,32 +130,16 @@ class Core extends Plugin {
 			],
 		]);
 		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), [ 'acf-field-group', 'acf-input-osm' ], $this->get_version(), true );
-
-		// compat duplicate repeater
-		wp_register_script( 'acf-osm-compat-duplicate-repeater', $this->get_asset_url( 'assets/js/compat/acf-duplicate-repeater.js' ), [ 'acf-duplicate-repeater' ], $this->get_version() );
-
 		
 		// field css
 		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), ['acf-input','dashicons'], $this->get_version() );
 
-		// field css
-
+		// settings css
 		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), ['leaflet'], $this->get_version() );
+
+		// settings js
 		wp_register_script( 'acf-osm-settings', $this->get_asset_url( 'assets/js/acf-osm-settings.js' ), ['acf-osm-frontend'], $this->get_version() );
 
-
-		/*
-		Deps:
-			acf-osm-compat-duplicate-repeater
-				acf-duplicate-repeater (3rd party)
-			acf-field-group-osm
-				acf-field-group
-				acf-input-osm
-					acf-input
-					wp-backbone
-			acf-osm-frontend
-				jquery
-		*/
 
 	}
 
