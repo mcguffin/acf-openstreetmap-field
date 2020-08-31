@@ -286,7 +286,9 @@
 			}
 
 			this.$el.on( 'acf-osm-map-create-markers', this.preventDefault );
-
+			
+			// reset markers in case field was duplicated with a row
+			self.$markers().html('')
 			this.initMarkers();
 
 			this.listenTo( this.model, 'change', this.updateValue );
