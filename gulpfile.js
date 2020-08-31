@@ -259,11 +259,9 @@ gulp.task('js-settings', function() {
 
 gulp.task('js', gulp.parallel('js-frontend','js-admin','js-field-group','js-settings') );
 
-
 gulp.task('pre-build', gulp.parallel('providers','leaflet-css') );
 
 gulp.task('build', gulp.parallel('pre-build','scss','js') );
-
 
 
 gulp.task('watch', function() {
