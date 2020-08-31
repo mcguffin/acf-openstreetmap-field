@@ -5,7 +5,7 @@ Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
 Tested up to: 5.5
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -107,6 +107,9 @@ No.
 
 
 == Changelog ==
+
+= 1.2.2 =
+ - Fix: Duplicated Row (ACF 5.9+)
 
 = 1.2.1 =
  - Upgrade FreeMapSK, CyclOSM
