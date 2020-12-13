@@ -1,14 +1,6 @@
 ACF OpenStreetMap Field ToDo
 ============================
 
-1.1.x
------
- - [x] Disable keyboard navigation in Backend
- - [x] Locate Me Button (backend)
- - [x] Locate me: no add marker button if max_markers == 0
- - [x] Pass map init object along with `acf-osm-map-create` event (#37)
- - [x] Localizable address formats
-
 1.2.0
 -----
  - [x] Options: allow `'api_key':'<enter key here>'` in filter `acf_osm_leaflet_providers` (#38)
@@ -17,23 +9,42 @@ ACF OpenStreetMap Field ToDo
      - [ ] ACF WP-Objects
      - [ ] ACF Quick Edit Fields
  - [x] Fit markers in view (backend) #30
- 
-Future
+
+
+Remove dependencies
+-------------------
+ - [ ] Frontend jQuery
+   - [x] Use `CustomEvent` in frontend event triggers
+   - [ ] Replace `.trigger()` an `.on()` in favor of `addEventListener()` and `dispatchEvent()` entirely
+   - [ ] Work with DOM objects everywhere
+ - [ ] ACF
+   - [ ] Seperate Field-logic from map logic
+   - [ ] Introduce map widget
+   - [ ] Introduce map block
+
+ESNext
 ------
- - [ ] Make Marker Data match ACF Google-Map Data (#39, #44)
- - [ ] Support MapBox GL / Leaflet GL: https://github.com/mapbox/mapbox-gl-leaflet
- - [ ] Use Plugin Boilerplate
- - [ ] ESNext
- - [ ] Refactor JS
- - [ ] Refactor Core
- - [ ] Theme Override
+ - [ ] Use imports
+ - [ ] Frontend
+ - [ ] Backend
+
+Theme Overrides
+---------------
+ - [ ] Scan Template files
  - [ ] Default Templates
-   - [ ] iFrame
-   - [ ] OSM-URL
+   - [ ] OSM-iFrame
+   - [ ] OSM-Link
    - [ ] Leaflet Div
    - [ ] Static image #31
 
+Future
+------
+ - [ ] Support MapBox GL / Leaflet GL: https://github.com/mapbox/mapbox-gl-leaflet
 
+ACF Google-Map compatibility
+----------------------------
+ - [ ] Conversion from one field type to another #57
+ - [ ] Make Marker Data match ACF Google-Map Data (#39, #44)
 ```
 // marker data provided by nominatim geocoder:
 {

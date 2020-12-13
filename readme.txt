@@ -4,7 +4,7 @@ Donate link: https://donate.openstreetmap.org/
 Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
-Tested up to: 5.5
+Tested up to: 5.6
 Stable tag: 1.2.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -105,8 +105,33 @@ No.
 3. Display in the Frontend
 4. Settings page. Configure API access keys and disable specific tile layers.
 
+== Upgrade Notice ==
+
+**Attention:** Version 1.3.0 involves breaking changes. JS Events are no longer triggered by jQuery‘s `.trigger(event)` but natively using the [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) type. 
+
+As a consequence event Data is now stored in the [`details`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/detail) property. 
+
+This was necessary in order to keep compatibility with the jQuery update in WP 5.6.
+
+See the following wiki articles for more intel:
+
+ - [JS-Event: Map Create](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Create)
+ - [JS-Event: Map Created](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Created)
+ - [JS Event: Map Create Markers](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Create-Markers)
+ - [JS Event: Marker Create](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Marker-Create)
+ - [JS Event: Marker Created](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Marker-Created)
+ - [JS Event: Map Init](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Init)
 
 == Changelog ==
+
+= 1.3.0 =
+ - Breaking Change: Use native JS Events
+ - Fix: jQuery 3.x (WP 5.6) compatibility
+ - Fix: Map not showing on login form
+ - Fix: Providers not loaded if webroot owner is not www-user
+ - Upgrade: Leaflet 1.7.1
+ - Upgrade: Leaflet Providers 1.11.0
+ - Upgrade: Leaflet Control Geocoder 2.1.0
 
 = 1.2.2 =
  - Fix: Duplicated Row (ACF 5.9+)
