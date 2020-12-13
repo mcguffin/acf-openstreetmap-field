@@ -38,14 +38,14 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "gulp-uglifycss": "^1.1.0",
-    "leaflet": "^1.6.0",
-    "leaflet-control-geocoder": "^1.13.0",
-    "leaflet-providers": "^1.10.2",
+    "leaflet": "^1.7.1",
+    "leaflet-control-geocoder": "^2.1.0",
+    "leaflet-providers": "^1.11.0",
     "leaflet.locatecontrol": "^0.72.0",
     "resize-observer-polyfill": "^1.5.1"
   },
   "dependencies": {
-    "jquery": "^1.12.4",
+    "jquery": "^3.5.1",
     "sass": "^1.30.0"
   },
   "wporg": {
