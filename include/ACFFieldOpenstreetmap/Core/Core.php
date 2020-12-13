@@ -20,6 +20,8 @@ class Core extends Plugin {
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ] );
 
+		add_action( 'login_enqueue_scripts', [ $this, 'register_assets' ] );
+
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', [ $this, 'register_assets' ] );
 		}
