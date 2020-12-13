@@ -3,9 +3,9 @@
     "title": "OpenStreetMap Field - No Layers",
     "fields": [
         {
-            "center_lat": 53.5507112,
-            "center_lng": 10.0006485,
-            "zoom": 12,
+            "center_lat": 53.5182673,
+            "center_lng": 10.1070786,
+            "zoom": 11,
             "key": "field_5d5bc3655263c",
             "label": "Leaflet Map",
             "name": "leaflet_map_nolay",
@@ -19,17 +19,16 @@
                 "id": ""
             },
             "return_format": "leaflet",
-            "layers": [
-                "OpenMapSurfer.Roads",
-                "SafeCast"
-            ],
             "allow_map_layers": 0,
             "height": 400,
-            "max_markers": ""
+            "max_markers": "",
+            "layers": [
+                "OpenStreetMap"
+            ]
         },
         {
             "center_lat": 53.5507112,
-            "center_lng": 10.0006485,
+            "center_lng": 10.0004768,
             "zoom": 12,
             "key": "field_5d5bc36f5263d",
             "label": "iFrame Map",
@@ -44,12 +43,12 @@
                 "id": ""
             },
             "return_format": "osm",
-            "layers": [
-                "OpenStreetMap"
-            ],
             "allow_map_layers": 0,
             "height": 400,
-            "max_markers": ""
+            "max_markers": "",
+            "layers": [
+                "OpenStreetMap"
+            ]
         }
     ],
     "location": [
@@ -69,8 +68,23 @@
         ],
         [
             {
-                "param": "post_type",
-                "operator": "=="
+                "param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
+            }
+        ],
+        [
+            {
+                "param": "user_form",
+                "operator": "==",
+                "value": "register"
+            }
+        ],
+        [
+            {
+                "param": "user_form",
+                "operator": "==",
+                "value": "edit"
             }
         ]
     ],
@@ -80,7 +94,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 1,
+    "active": true,
     "description": "",
-    "modified": 1574154271
+    "modified": 1607868699
 }

@@ -371,7 +371,7 @@ class PluginTest {
 
 
 	/**
-	 *	@filter 'acf/settings/save_json'
+	 *	@filter 'acf/settings/load_json'
 	 */
 	public function load_json( $paths ) {
 		$paths[] = dirname(__FILE__).'/acf-json';
