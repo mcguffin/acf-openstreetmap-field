@@ -2,6 +2,7 @@
 
 	var visibilityObserver = new ResizeObserver( function(entries,observer) {
 		entries.forEach(function(entry){
+			// @ see https://github.com/jquery/jquery/blob/a503c691dc06c59acdafef6e54eca2613c6e4032/test/data/jquery-1.9.1.js#L7469-L7481
 			if ( $(entry.target).is(':visible') ) {
 				$(entry.target).trigger('acf-osm-show');
 				observer.unobserve(entry.target);
@@ -33,17 +34,27 @@
 	var options = arg.options;
 	
 	function createMarkers( data, map ) {
-		var self = this,
+		var self = this, // @var DIV element
+			/*
 			createEvt = $.Event({
 				type: 'acf-osm-map-create-markers',
 			}),
+			/*/
+			createEvt = new CustomEvent('acf-osm-map-create-markers', { 
+				bubbles: true,
+				cancelable: true,
+				detail: {
+					map: map,
+					mapData: data
+				}
+			} ),
+			//*/
 			default_marker_config = {};
 
-
-		$(this).trigger( createEvt );
+		this.dispatchEvent( createEvt )
 
 		// allow to skip map creation
-		if ( createEvt.isDefaultPrevented() ) {
+		if ( createEvt.defaultPrevented ) {
 			return;
 		}
 
@@ -62,6 +73,7 @@
 			// add markers
 			var marker, createEvt;
 
+			/*
 			// allow for skipping markers
 			createEvt = $.Event( 'acf-osm-map-marker-create' );
 			createEvt.map = map;
@@ -75,31 +87,58 @@
 			if ( createEvt.isDefaultPrevented() ) {
 				return;
 			}
+			/*/
+			createEvt = new CustomEvent( 'acf-osm-map-marker-create', {
+				bubbles: true,
+				cancelable: true,
+				detail: {
+					map: map,
+					markerData: markerData,
+					markerOptions: $.extend( default_marker_config, {
+						label: markerData.label
+					} ),
+				}
+			} );
+			self.dispatchEvent( createEvt )
 
+			if ( createEvt.defaultPrevented ) {
+				return;
+			}
+
+			//*/
 			marker = L.marker(
-					L.latLng( parseFloat( createEvt.markerData.lat ), parseFloat( createEvt.markerData.lng ) ),
+					L.latLng( parseFloat( createEvt.detail.markerData.lat ), parseFloat( createEvt.detail.markerData.lng ) ),
 					createEvt.markerOptions
 				)
-				.bindPopup( createEvt.markerOptions.label )
+				.bindPopup( createEvt.detail.markerOptions.label )
 				.addTo( map );
 
-			$(self).trigger('acf-osm-map-marker-created', marker );
+			self.dispatchEvent(new CustomEvent('acf-osm-map-marker-created',{
+				detail: {
+					marker: marker
+				}
+			}))
+
 		});
 
 
 	}
 
 	function createLayers( data, map ) {
-		var createEvt = $.Event({
-				type: 'acf-osm-map-create-layers',
-				data : data
+		var createEvt = new CustomEvent( 'acf-osm-map-create-layers', {
+				bubbles: true,
+				cancelable: true,
+				detail: {
+					map: map,
+					mapData: data,
+				}
 			}),
 			maxzoom;
 
-		$(this).trigger( createEvt );
+		this.dispatchEvent( createEvt );
 
 		// allow to skip map creation
-		if ( createEvt.isDefaultPrevented() ) {
+		if ( createEvt.defaultPrevented ) {
 			return;
 		}
 
@@ -141,31 +180,38 @@
 						center: [ data.mapLat, data.mapLng ],
 						zoom: data.mapZoom
 					},
-					createEvt = $.Event({
-						type: 'acf-osm-map-create',
-						data: mapInit
+					createEvt = new CustomEvent( 'acf-osm-map-create', {
+						bubbles: true,
+						cancelable: true,
+						detail: {
+							mapInit: mapInit
+						},
 					}),
-					initEvt = $.Event({
-						type: 'acf-osm-map-init'
-					});
-
-				$(this).trigger( createEvt );
+					initEvt;
+				this.dispatchEvent( createEvt )
 
 				// allow to skip map creation
-				if ( createEvt.isDefaultPrevented() ) {
+				if ( createEvt.defaultPrevented ) {
 					return;
 				}
 
 				$(this).height(data.height);
 
-				map = L.map( this, createEvt.originalEvent.data );
+				map = L.map( this, createEvt.detail.mapInit ); // map init might have been mutated by event listeners
 
 				$(this).data( 'acf-osm-map', map );
 
-				$(this).trigger( initEvt, map );
+				initEvt = new CustomEvent( 'acf-osm-map-init', {
+					detail: {
+						map: map
+					},
+					cancelable: true,
+					bubbles: true
+				})
+				this.dispatchEvent( initEvt )
 
 				// allow to skip initialization
-				if ( initEvt.isDefaultPrevented() ) {
+				if ( initEvt.defaultPrevented ) {
 					return;
 				}
 	
@@ -182,7 +228,12 @@
 				}
 
 				// finished!
-				$(this).trigger('acf-osm-map-created', map );
+				this.dispatchEvent( new CustomEvent( 'acf-osm-map-created', {
+					bubbles: true,
+					detail: {
+						map: map
+					}
+				 } ) )
 
 			});
 		}

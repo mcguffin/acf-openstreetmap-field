@@ -281,11 +281,12 @@
 
 			if ( this.config.allow_providers ) {
 				// prevent default layer creation
-				this.$el.on( 'acf-osm-map-create-layers', this.preventDefault );
+				this.el.addEventListener( 'acf-osm-map-create-layers', this.preventDefault )
+
 				this.initLayers();
 			}
 
-			this.$el.on( 'acf-osm-map-create-markers', this.preventDefault );
+			this.el.addEventListener( 'acf-osm-map-create-markers', this.preventDefault )
 			
 			// reset markers in case field was duplicated with a row
 			self.$markers().html('')
@@ -924,8 +925,9 @@
 				return;
 			}
 		})
-		.on( 'acf-osm-map-init', function( e, map ) {
-			var editor;
+		.on( 'acf-osm-map-init', function( e ) {
+			var editor,
+				map = e.detail.map;
 
 			// wrap osm.Field backbone view around editors
 			if ( $(e.target).is('[data-editor-config]') ) {
