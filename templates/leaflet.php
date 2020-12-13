@@ -7,15 +7,15 @@
 $map = $args['map'];
 $field = $args['field'];
 // features: multiple markers. lots of maps to choose from
-$map_attr = [
+$attr = [
 	'class'				=> 'leaflet-map',
 	'data-height'		=> $field['height'],
 	'data-map'			=> 'leaflet',
-	'data-map-lng'		=> $value['lng'],
-	'data-map-lat'		=> $value['lat'],
-	'data-map-zoom'		=> $value['zoom'],
-	'data-map-layers'	=> $value['layers'],
-	'data-map-markers'	=> $value['markers'],
+	'data-map-lng'		=> $map['lng'],
+	'data-map-lat'		=> $map['lat'],
+	'data-map-zoom'		=> $map['zoom'],
+	'data-map-layers'	=> $map['layers'],
+	'data-map-markers'	=> $map['markers'],
 ];
 
 
