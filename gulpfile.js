@@ -2,7 +2,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var concat = require('gulp-concat');
 var gulp = require('gulp');
 var rename = require('gulp-rename');
-var sass = require('gulp-sass');
+var sass = require('@selfisekai/gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 var uglifycss = require('gulp-uglifycss');
@@ -15,7 +15,7 @@ function do_scss( src ) {
 		includePaths = ['src/scss/','node_modules/'];
 	return gulp.src( './src/scss/' + src + '.scss' )
 		.pipe( sourcemaps.init() )
-		.pipe( sass( { outputStyle: 'nested', includePaths } ).on('error', sass.logError) )
+		.pipe( sass( { includePaths } ).on('error', sass.logError) )
 		.pipe( autoprefixer({
 
 		}) )
