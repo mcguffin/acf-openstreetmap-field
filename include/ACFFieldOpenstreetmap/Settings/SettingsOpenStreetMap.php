@@ -200,8 +200,8 @@ class SettingsOpenStreetMap extends Settings {
 				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'Zoom is restricted.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
-				/* translators: 1: min zoom value, 2: max zoom value */
 				esc_html( sprintf(
+					/* translators: 1: min zoom value, 2: max zoom value */
 					__( 'Zoom: %1$d–%2$d', 'acf-openstreetmap-field' ),
 					$options['options']['minZoom'], $options['options']['maxZoom']
 				))
@@ -211,8 +211,8 @@ class SettingsOpenStreetMap extends Settings {
 				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'Zoom levels are restricted.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
-				/* translators: min zoom value */
 				esc_html( sprintf(
+					/* translators: min zoom value */
 					__( 'Min Zoom: %d', 'acf-openstreetmap-field' ),
 					$options['options']['minZoom']
 				))
@@ -223,8 +223,8 @@ class SettingsOpenStreetMap extends Settings {
 				$tag, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				esc_html__( 'Zoom levels are restricted.', 'acf-openstreetmap-field' ),
 				'acf-osm-tag',
-				/* translators: max zoom value */
 				esc_html(sprintf(
+					/* translators: max zoom value */
 					__( 'Max Zoom: %d', 'acf-openstreetmap-field' ),
 					$options['options']['maxZoom'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				))
