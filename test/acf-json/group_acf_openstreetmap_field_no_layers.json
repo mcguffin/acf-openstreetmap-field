@@ -3,9 +3,9 @@
     "title": "OpenStreetMap Field - No Layers",
     "fields": [
         {
-            "center_lat": 53.5182673,
-            "center_lng": 10.1070786,
-            "zoom": 11,
+            "center_lat": 54.789601,
+            "center_lng": 10.1431274,
+            "zoom": 9,
             "key": "field_5d5bc3655263c",
             "label": "Leaflet Map",
             "name": "leaflet_map_nolay",
@@ -19,12 +19,12 @@
                 "id": ""
             },
             "return_format": "leaflet",
+            "layers": [
+                "Stadia.AlidadeSmooth"
+            ],
             "allow_map_layers": 0,
             "height": 400,
-            "max_markers": "",
-            "layers": [
-                "OpenStreetMap"
-            ]
+            "max_markers": ""
         },
         {
             "center_lat": 53.5507112,
@@ -96,5 +96,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1607868699
+    "modified": 1607879865
 }

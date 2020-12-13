@@ -54,8 +54,10 @@ class ACF extends Core\Singleton {
 	public function render_map_input( $field ) {
 
 		$inp_field = [
-			'return_format'	=> 'leaflet',
+			'return_format'	=> $field['return_format'],
+			'value'	=> $field['value'],
 			'height'		=> 400,
+			'attr'	=> $field['attr'],
 		];
 
 		if ( isset( $field['attr'] ) ) {

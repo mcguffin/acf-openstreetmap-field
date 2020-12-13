@@ -107,7 +107,9 @@ No.
 
 == Upgrade Notice ==
 
-**Attention:** Version 1.3.0 involves breaking changes. JS Events are no longer triggered by jQuery‘s `.trigger(event)` but natively using the [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) type. 
+**Attention:** Version 1.3.0 involves some breaking changes. 
+
+**JS Events** are no longer triggered by jQuery‘s `.trigger(event)` but natively using the [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) type. 
 
 As a consequence event Data is now stored in the [`details`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/detail) property. 
 
@@ -122,10 +124,16 @@ See the following wiki articles for more intel:
  - [JS Event: Marker Created](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Marker-Created)
  - [JS Event: Map Init](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Init)
 
+The *`osm_map_iframe_template` filter* has been removed in favour of theme overrides.
+
+Please refer to this wiki article for a [migration guide](https://github.com/mcguffin/acf-openstreetmap-field/wiki/The-abandoned-osm_map_iframe_template-filter).
+
 == Changelog ==
 
 = 1.3.0 =
+ - Theme Overrides: Override map output in your theme
  - Breaking Change: Use native JS Events
+ - Breaking Change: `osm_map_iframe_template` filter gone in WP 5.5
  - Fix: jQuery 3.x (WP 5.6) compatibility
  - Fix: Map not showing on login form
  - Fix: Providers not loaded if webroot owner is not www-user

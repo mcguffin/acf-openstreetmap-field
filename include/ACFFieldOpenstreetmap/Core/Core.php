@@ -18,6 +18,8 @@ class Core extends Plugin {
 
 		add_action( 'acf/include_field_types', [ '\ACFFieldOpenstreetmap\Compat\ACF', 'instance'], 0 );
 
+		add_action( 'init', [ '\ACFFieldOpenstreetmap\Core\Templates', 'instance'] );
+
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ] );
 
 		add_action( 'login_enqueue_scripts', [ $this, 'register_assets' ] );

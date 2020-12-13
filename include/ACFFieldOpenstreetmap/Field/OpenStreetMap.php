@@ -113,9 +113,14 @@ class OpenStreetMap extends \acf_field {
 	function render_field_settings( $field ) {
 
 		$core = Core\Core::instance();
-
+		$templates = Core\Templates::instance();
 
 		$field = $this->sanitize_field( $field );
+
+		$return_choices = $templates->get_templates();
+		$return_choices = array_map( function( $template ) {
+			return $template['name'];
+		}, $return_choices );
 
 		// return_format
 		acf_render_field_setting( $field, [
@@ -125,12 +130,9 @@ class OpenStreetMap extends \acf_field {
 			'name'			=> 'return_format',
 			'choices'		=> [
 				'raw'			=> __("Raw Data",'acf-openstreetmap-field'),
-				'leaflet'		=> __("Leaflet JS",'acf-openstreetmap-field'),
-				'osm'			=> __("iFrame (OpenStreetMap.org)",'acf-openstreetmap-field'),
-			],
+			] + $return_choices,
 			'layout'	=>	'horizontal',
 		]);
-
 
 		acf_render_field_setting( $field, [
 			'label'				=> __( 'Map Appearance', 'acf-openstreetmap-field' ),
@@ -138,7 +140,7 @@ class OpenStreetMap extends \acf_field {
 			'type'				=> 'leaflet_map',
 			'name'				=> 'leaflet_map',
 
-			'return_format'		=> 'leaflet',
+			'return_format'		=> 'admin',
 			'attr'				=> [
 				'data-editor-config'	=> [
 					'allow_providers'		=> true,
@@ -155,7 +157,6 @@ class OpenStreetMap extends \acf_field {
 				'layers'			=> $field['layers'],
 				'markers'			=> [],
 			],
-//			'placeholder'		=> $this->default_values,
 		] );
 
 		// lat
@@ -280,29 +281,21 @@ class OpenStreetMap extends \acf_field {
 			// oly one marker max
 			$max_markers = min( $max_markers, 1 );
 		}
-
-		// the map
-		acf_render_field( [
-			'type'				=> 'leaflet_map',
-			'name'				=> $field['name'],
-			'value'				=> $field['value'],
-			'return_format'		=> 'leaflet',
-			'attr'				=> [
-				'data-editor-config'	=> [
-//					'return-format'			=> $field['return_format'],
-					'allow_providers'		=> $field['allow_map_layers'],
-					'restrict_providers'	=> array_values( $providers ),
-					'max_markers'			=> $max_markers,
-					'name_prefix'			=> $field['name'],
-				],
-				'data-map-lat'	=> $field['value']['lat'],
-				'data-map-lng'	=> $field['value']['lng'],
-				'data-map-zoom'	=> $field['value']['zoom'],
+		get_template_part( 'osm-maps/admin', null, [
+			'field' => $field + [
+				'attr'	=> [
+					'data-editor-config'	=> [
+						'allow_providers'		=> $field['allow_map_layers'],
+						'restrict_providers'	=> array_values( $providers ),
+						'max_markers'			=> $max_markers,
+						'name_prefix'			=> $field['name'],
+					],
+				],				
 			],
+			'map' => $field['value'],
 		] );
 
-		?>
-		<?php
+		// add this to admin template?
 
 		// markers
 		$markers = []; // $field['value']['markers'];
@@ -610,12 +603,34 @@ class OpenStreetMap extends \acf_field {
 			return $value;
 		}
 
-		// apply setting
-		if ( $field['return_format'] === 'osm' ) {
+		if ( 'raw' === $field['return_format'] ) {
+
+			$value = $this->sanitize_value( $value, $field, 'display' );
+
+			// ensure backwards compatibility <= 1.0.1
+			$value['center_lat'] = $value['lat'];
+			$value['center_lng'] = $value['lng'];
+
+		} else if ( Core\Templates::is_supported() ) {
+
+			if ( 'osm' === $field['return_format'] && has_filter( 'osm_map_iframe_template' ) ) {
+				_deprecated_hook( 'osm_map_iframe_template', '1.3.0', 'theme overrides', 'The filter is no longer in effect.' );
+			}
+
+			ob_start();
+
+			get_template_part( 'osm-maps/' . $field['return_format'], '', [
+				'field' => $field,
+				'map' => $value,
+			] );
+
+			$value = ob_get_clean();
+			
+		} else if ( $field['return_format'] === 'osm' ) { // wp < 5.5
 
 			// features: one marker max. four maps to choose from
 			$osm_providers = Core\OSMProviders::instance();
-
+			
 			$iframe_atts = [
 				'height'		=> $field['height'],
 				'width'			=> '425',
@@ -624,16 +639,16 @@ class OpenStreetMap extends \acf_field {
 				'marginheight'	=> 0,
 				'marginwidth'	=> 0,
 			];
-
+			
 			$html = '<iframe src="%1$s" %2$s></iframe><br/><small><a target="_blank" href="%3$s">%4$s</a></small>';
-
+			
 			/**
 			 *	Filter iframe HTML.
 			 *
 			 *	@param string $html Template String. Placeholders: %1$s: iFrame Source, %2$s: iframe attributes, %3$s: URL to bigger map, %4$s: Link-Text.
 			 */
 			$html = apply_filters( 'osm_map_iframe_template', $html );
-
+			
 			$value = sprintf( 
 				$html, 
 				$osm_providers->get_iframe_url( $value ),
@@ -643,7 +658,7 @@ class OpenStreetMap extends \acf_field {
 			);
 
 		} else if ( $field['return_format'] === 'leaflet' ) {
-
+			
 			// features: multiple markers. lots of maps to choose from
 			$map_attr = [
 				'class'				=> 'leaflet-map',
@@ -655,23 +670,18 @@ class OpenStreetMap extends \acf_field {
 				'data-map-layers'	=> $value['layers'],
 				'data-map-markers'	=> $value['markers'],
 			];
-
+			
 			if ( isset( $field['attr'] ) ) {
 				$map_attr = $field['attr'] + $map_attr;
 			}
-
-
+			
+			
 			$html = sprintf('<div %s></div>', acf_esc_attr( $map_attr ) );
 			$value = $html;
-
+			
 			wp_enqueue_script( 'acf-osm-frontend' );
 			wp_enqueue_style( 'leaflet' );
 
-		} else {
-			$value = $this->sanitize_value( $value, $field, 'display' );
-			// ensure backwards compatibility <= 1.0.1
-			$value['center_lat'] = $value['lat'];
-			$value['center_lng'] = $value['lng'];
 		}
 
 		// return

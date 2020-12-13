@@ -42,6 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once dirname( __FILE__ ) . '/include/autoload.php';
+require_once dirname( __FILE__ ) . '/include/api.php';
 
 Core\Core::instance( __FILE__ );
 
