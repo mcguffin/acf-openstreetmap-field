@@ -260,86 +260,14 @@
 		}
 	},
 	"MapBox": {
-		"url": "https://api.mapbox.com/styles/v1/{variant}/tiles/{z}/{x}/{y}{r}?access_token={accessToken}",
+		"url": "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}{r}?access_token={accessToken}",
 		"options": {
 			"attribution": "&copy; <a href=\"https://www.mapbox.com/about/maps/\" target=\"_blank\">Mapbox</a> {attribution.OpenStreetMap} <a href=\"https://www.mapbox.com/map-feedback/\" target=\"_blank\">Improve this map</a>",
 			"tileSize": 512,
 			"maxZoom": 18,
 			"zoomOffset": -1,
-			"accessToken": "<insert your access token here>",
-			"variant": "mapbox.streets"
-		},
-		"variants": {
-			"Streets": {
-				"options": {
-					"variant": "mapbox.streets"
-				}
-			},
-			"Light": {
-				"options": {
-					"variant": "mapbox.light"
-				}
-			},
-			"Dark": {
-				"options": {
-					"variant": "mapbox.dark"
-				}
-			},
-			"Satellite": {
-				"options": {
-					"variant": "mapbox.satellite"
-				}
-			},
-			"Streets-Satellite": {
-				"options": {
-					"variant": "mapbox.streets-satellite"
-				}
-			},
-			"Wheatpaste": {
-				"options": {
-					"variant": "mapbox.wheatpaste"
-				}
-			},
-			"Streets-Basic": {
-				"options": {
-					"variant": "mapbox.streets-basic"
-				}
-			},
-			"Comic": {
-				"options": {
-					"variant": "mapbox.comic"
-				}
-			},
-			"Outdoors": {
-				"options": {
-					"variant": "mapbox.outdoors"
-				}
-			},
-			"Run-Bike-Hike": {
-				"options": {
-					"variant": "mapbox.run-bike-hike"
-				}
-			},
-			"Pencil": {
-				"options": {
-					"variant": "mapbox.pencil"
-				}
-			},
-			"Pirates": {
-				"options": {
-					"variant": "mapbox.pirates"
-				}
-			},
-			"Emerald": {
-				"options": {
-					"variant": "mapbox.emerald"
-				}
-			},
-			"High-Contrast": {
-				"options": {
-					"variant": "mapbox.high-contrast"
-				}
-			}
+			"id": "mapbox/streets-v11",
+			"accessToken": "<insert your access token here>"
 		}
 	},
 	"MapTiler": {
@@ -477,39 +405,6 @@
 					"maxZoom": 18
 				},
 				"isOverlay": true
-			},
-			"TopOSMRelief": {
-				"url": "https://stamen-tiles-{s}.a.ssl.fastly.net/{variant}/{z}/{x}/{y}.{ext}",
-				"options": {
-					"variant": "toposm-color-relief",
-					"ext": "jpg",
-					"bounds": [
-						[
-							22,
-							-132
-						],
-						[
-							51,
-							-56
-						]
-					]
-				}
-			},
-			"TopOSMFeatures": {
-				"options": {
-					"variant": "toposm-features",
-					"bounds": [
-						[
-							22,
-							-132
-						],
-						[
-							51,
-							-56
-						]
-					],
-					"opacity": 0.9
-				}
 			}
 		}
 	},
@@ -1188,7 +1083,8 @@
 					7.6
 				]
 			],
-			"attribution": "Kaartgegevens &copy; <a href=\"kadaster.nl\">Kadaster</a>"
+			"attribution": "Kaartgegevens &copy; <a href=\"kadaster.nl\">Kadaster</a>",
+			"variant": "brtachtergrondkaart"
 		},
 		"variants": {
 			"standaard": {
@@ -1229,7 +1125,8 @@
 			"maxZoom": 9,
 			"format": "jpg",
 			"time": "",
-			"tilematrixset": "GoogleMapsCompatible_Level"
+			"tilematrixset": "GoogleMapsCompatible_Level",
+			"variant": "MODIS_Terra_CorrectedReflectance_TrueColor"
 		},
 		"variants": {
 			"ModisTerraTrueColorCR": {
@@ -1315,7 +1212,8 @@
 					72,
 					-56
 				]
-			]
+			],
+			"variant": "income"
 		},
 		"variants": {
 			"income": "income",
@@ -1431,5 +1329,22 @@
 				}
 			}
 		}
+	},
+	"WaymarkedTrails": {
+		"url": "https://tile.waymarkedtrails.org/{variant}/{z}/{x}/{y}.png",
+		"options": {
+			"maxZoom": 18,
+			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"https://waymarkedtrails.org\">waymarkedtrails.org</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)",
+			"variant": "hiking"
+		},
+		"variants": {
+			"hiking": "hiking",
+			"cycling": "cycling",
+			"mtb": "mtb",
+			"slopes": "slopes",
+			"riding": "riding",
+			"skating": "skating"
+		},
+		"isOverlay": true
 	}
 }

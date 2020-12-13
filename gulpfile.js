@@ -87,7 +87,8 @@ gulp.task('providers', function(cb){
 			'SafeCast',
 			'OnlyLabels',
 			'HERE(v3?).trafficFlow',
-			'HERE(v3?).mapLabels'
+			'HERE(v3?).mapLabels',
+			'WaymarkedTrails'
 		].join('|');
 
 		return name.match( overlayPattern ) !== null;
@@ -102,8 +103,20 @@ gulp.task('providers', function(cb){
 
 	 // 52d2aca6-c3b6-4c59-b9de-5df4f4d056bd
 	 
+	 delete( L.TileLayer.Provider.providers.USGS ) // Remove, lots of 404s
+	 
+	 // missing default variants, will break JS
+	 L.TileLayer.Provider.providers.JusticeMap.options.variant = 'income'
+	 L.TileLayer.Provider.providers.WaymarkedTrails.options.variant = 'hiking'
+	 L.TileLayer.Provider.providers.NASAGIBS.options.variant = 'MODIS_Terra_CorrectedReflectance_TrueColor'
+	 L.TileLayer.Provider.providers.nlmaps.options.variant = 'brtachtergrondkaart'
+	 
+	 // delete seemingly broken stamen variants
+	 delete( L.TileLayer.Provider.providers.Stamen.variants.TopOSMRelief);
+	 delete( L.TileLayer.Provider.providers.Stamen.variants.TopOSMFeatures);
 
 
+/*
 	// add MAPBOX ids as variant. See https://www.mapbox.com/api-documentation/#maps
 	let mapbox_variants = [
 		'streets',
@@ -137,7 +150,7 @@ gulp.task('providers', function(cb){
 	// remove falsy configuration
 	delete( L.TileLayer.Provider.providers.MapBox.options.id );
 	// END mapbox
-
+*/
 	// add overlay property to maps and layers
 	Object.keys(providers).map( key => {
 		let data = providers[key];
