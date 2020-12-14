@@ -73,21 +73,6 @@
 			// add markers
 			var marker, createEvt;
 
-			/*
-			// allow for skipping markers
-			createEvt = $.Event( 'acf-osm-map-marker-create' );
-			createEvt.map = map;
-			createEvt.markerData = markerData;
-			createEvt.markerOptions = $.extend( default_marker_config, {
-				label: markerData.label
-			} );
-
-			$(self).trigger(createEvt)
-
-			if ( createEvt.isDefaultPrevented() ) {
-				return;
-			}
-			/*/
 			createEvt = new CustomEvent( 'acf-osm-map-marker-create', {
 				bubbles: true,
 				cancelable: true,
@@ -105,10 +90,9 @@
 				return;
 			}
 
-			//*/
 			marker = L.marker(
 					L.latLng( parseFloat( createEvt.detail.markerData.lat ), parseFloat( createEvt.detail.markerData.lng ) ),
-					createEvt.markerOptions
+					createEvt.detail.markerOptions
 				)
 				.bindPopup( createEvt.detail.markerOptions.label )
 				.addTo( map );
