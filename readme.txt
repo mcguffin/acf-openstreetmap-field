@@ -130,6 +130,9 @@ Please refer to this wiki article for a [migration guide](https://github.com/mcg
 
 == Changelog ==
 
+= 1.3.1 =
+ - Fix: JS Event acf-osm-map-marker-create not applying marker options
+
 = 1.3.0 =
  - Theme Overrides: Override map output in your theme
  - Breaking Change: Use native JS Events
