@@ -10,6 +10,8 @@ class Templates extends Singleton {
 
 	private $templates = null;
 
+	private $template_dirname = 'osm-maps';
+
 	/** 
 	 *	@return Boolean
 	 */
@@ -36,7 +38,11 @@ class Templates extends Singleton {
 	 */
 	public function get_template_part( $slug, $name, $templates, $args ) {
 
-		$template = str_replace( 'osm-maps/', '', $slug );
+		if ( false === strpos( $slug, $this->template_dirname ) ) {
+			return;
+		}
+
+		$template = str_replace( $this->template_dirname . '/', '', $slug );
 
 		$locate = [ "{$slug}.php" ];
 		if ( ! is_null( $name ) ) {
@@ -50,7 +56,7 @@ class Templates extends Singleton {
 
 		// we'll have to handle it
 		$core = Core::instance();
-		$file = $core->get_plugin_dir() . 'templates/' . str_replace('osm-maps/','',$slug) . '.php';
+		$file = $core->get_plugin_dir() . 'templates/' . str_replace( $this->template_dirname . '/','',$slug) . '.php';
 
 		if ( file_exists( $file ) ) {
 			load_template( $file, false, $args );
