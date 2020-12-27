@@ -281,7 +281,7 @@ class OpenStreetMap extends \acf_field {
 			// oly one marker max
 			$max_markers = min( $max_markers, 1 );
 		}
-		get_template_part( 'osm-maps/admin', null, [
+		$map_args = [
 			'field' => $field + [
 				'attr'	=> [
 					'data-editor-config'	=> [
@@ -293,7 +293,35 @@ class OpenStreetMap extends \acf_field {
 				],				
 			],
 			'map' => $field['value'],
-		] );
+		];
+		if ( Core\Templates::is_supported() ) {
+			get_template_part( 'osm-maps/admin', null, $map_args );
+		} else {
+			// legacy
+			$attr = [
+				'data-editor-config'	=> json_encode([
+					'allow_providers'		=> $field['allow_map_layers'],
+					'restrict_providers'	=> array_values( $providers ),
+					'max_markers'			=> $max_markers,
+					'name_prefix'			=> $field['name'],
+				]),
+				'class'				=> 'leaflet-map',
+				'data-height'		=> $field['height'],
+				'data-map'			=> 'leaflet',
+				'data-map-lng'		=> $field['value']['lng'],
+				'data-map-lat'		=> $field['value']['lat'],
+				'data-map-zoom'		=> $field['value']['zoom'],
+				'data-map-layers'	=> $field['value']['layers'],
+				'data-map-markers'	=> $field['value']['markers'],
+			];
+
+			?>
+			<div <?php echo acf_esc_attr( $attr ) ?>></div>
+			<?php
+
+			
+			
+		}
 
 		// add this to admin template?
 
@@ -626,6 +654,23 @@ class OpenStreetMap extends \acf_field {
 
 			$value = ob_get_clean();
 			
+		} else if ( $field['return_format'] === 'admin' ) { // wp < 5.5
+			
+			$attr = $field['attr'] + [
+				'class'				=> 'leaflet-map',
+				'data-height'		=> $field['height'],
+				'data-map'			=> 'leaflet',
+				'data-map-lng'		=> $value['lng'],
+				'data-map-lat'		=> $value['lat'],
+				'data-map-zoom'		=> $value['zoom'],
+				'data-map-layers'	=> $value['layers'],
+				'data-map-markers'	=> $value['markers'],
+			];
+			$value = sprintf(
+				'<div %s></div>',
+				acf_esc_attr( $attr )
+			);
+
 		} else if ( $field['return_format'] === 'osm' ) { // wp < 5.5
 
 			// features: one marker max. four maps to choose from
