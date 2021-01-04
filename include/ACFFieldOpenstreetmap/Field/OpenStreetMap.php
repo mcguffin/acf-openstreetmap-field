@@ -4,6 +4,7 @@ namespace ACFFieldOpenstreetmap\Field;
 
 use ACFFieldOpenstreetmap\Core;
 use ACFFieldOpenstreetmap\Helper;
+use ACFFieldOpenstreetmap\Model;
 
 // exit if accessed directly
 if( ! defined( 'ABSPATH' ) ) exit;
@@ -34,6 +35,7 @@ class OpenStreetMap extends \acf_field {
 	*/
 
 	function __construct() {
+
 		if ( ! is_null( self::$_instance ) ) {
 			throw new Exception('Not more than one Field\OpenStreetMap!');
 		}
@@ -48,7 +50,7 @@ class OpenStreetMap extends \acf_field {
 		/*
 		*  label (string) Multiple words, can include spaces, visible when selecting a field type
 		*/
-		$this->label = __("OpenStreetMap",'acf-openstreetmap-field');
+		$this->label = __( 'OpenStreetMap', 'acf-openstreetmap-field' );
 
 		/*
 		 *  category (string) basic | content | choice | relational | jquery | layout | CUSTOM GROUP NAME
@@ -60,10 +62,10 @@ class OpenStreetMap extends \acf_field {
 			'lat'		=> 53.55064,
 			'lng'		=> 10.00065,
 			'zoom'		=> 12,
-			'layers'	=> [ 'OpenStreetMap' ],
-			'markers'	=> [],
+			'layers'	=> [ 'OpenStreetMap.Mapnik' ],
+			// 'markers'	=> [],
 			// gm compatibility
-			'address'	=> '',
+			// 'address'	=> '',
 			'version'	=> '',
 		];
 		/*
@@ -86,10 +88,6 @@ class OpenStreetMap extends \acf_field {
 		 *  var message = acf._e('FIELD_NAME', 'error');
 		 */
 		$this->l10n = [];
-
-		add_action( 'print_media_templates', [ $this, 'print_media_templates' ] );
-
-		add_action( 'wp_footer', [ $this, 'maybe_print_media_templates' ], 11 );
 
 		// do not delete!
     	parent::__construct();
@@ -137,16 +135,17 @@ class OpenStreetMap extends \acf_field {
 		acf_render_field_setting( $field, [
 			'label'				=> __( 'Map Appearance', 'acf-openstreetmap-field' ),
 			'instructions'		=> __( 'Set zoom, center and select layers being displayed.', 'acf-openstreetmap-field' ),
-			'type'				=> 'leaflet_map',
+			'type'				=> 'open_street_map',
 			'name'				=> 'leaflet_map',
 
-			'return_format'		=> 'admin',
+			'return_format'		=> 'field-group',
+			'max_markers'		=> 0,
 			'attr'				=> [
 				'data-editor-config'	=> [
-					'allow_providers'		=> true,
-					'restrict_providers'	=> [],
-					'max_markers'			=> 0, // no markers
-					'name_prefix'			=> $field['prefix'],
+					// 'allow_providers'		=> true,
+					// 'restrict_providers'	=> [],
+					// 'max_markers'			=> 0, // no markers
+					// 'name_prefix'			=> $field['prefix'],
 				],
 				'data-map-layers'		=> $field['layers'],
 			],
@@ -155,7 +154,6 @@ class OpenStreetMap extends \acf_field {
 				'lng'				=> $field['center_lng'],
 				'zoom'				=> $field['zoom'],
 				'layers'			=> $field['layers'],
-				'markers'			=> [],
 			],
 		] );
 
@@ -246,111 +244,62 @@ class OpenStreetMap extends \acf_field {
 	function render_field( $field ) {
 
 		$core = Core\Core::instance();
+		$templates = Core\Templates::instance();
 
 		if ( is_null( $field['value'] ) ) {
 			$field['value'] = $this->sanitize_value( [], $field, 'display' );
 		}
-
+		$map = Model\Map::fromArray( $field['value'] );
 		// value
 		//$field['value'] = wp_parse_args( $field['value'], $this->default_values );
 
 		// json_encoded value
-		acf_hidden_input([
-			'id'		=> $field['id'],
-			'name'		=> $field['name'],
-			'value'		=> json_encode( $field['value'] ),
-			'class'		=> 'osm-json',
-		]);
+		// acf_text_input([
+		// 	'id'		=> $field['id'],
+		// 	'name'		=> $field['name'],
+		// 	'value'		=> json_encode($map->toArray()),//json_encode( $field['value'] ),
+		// 	'class'		=> 'osm-json',
+		// ]);
 
 		$providers = false;
 
-		if ( isset($field['return_format']) ) {
-			if ( $field['return_format'] === 'osm' ) {
-				$providers = Core\OSMProviders::instance()->get_layers();
-			} else {
-				$providers = Core\LeafletProviders::instance()->get_layers();
-			}
-		}
+		$map_args = [
+			'input_id'		=> $field['id'],
+			'input_name'	=> $field['name'],
+			'map'			=> $map->toArray(),
+			'controls'		=> [],
+			'field'			=> $field,
+		];
 
 		$max_markers = $field['max_markers'] === '' ? false : intval( $field['max_markers'] );
 
 		if ( 'osm' === $field['return_format'] ) {
-			if ( $max_markers === false ) { // no restrictin > max one marker
+			if ( $max_markers === false ) { // no restriction > max one marker
 				$max_markers = 1;
 			}
-			// oly one marker max
+			// only one marker max
 			$max_markers = min( $max_markers, 1 );
 		}
-		$map_args = [
-			'field' => $field + [
-				'attr'	=> [
-					'data-editor-config'	=> [
-						'allow_providers'		=> $field['allow_map_layers'],
-						'restrict_providers'	=> array_values( $providers ),
-						'max_markers'			=> $max_markers,
-						'name_prefix'			=> $field['name'],
-					],
-				],				
-			],
-			'map' => $field['value'],
-		];
-		if ( Core\Templates::is_supported() ) {
-			get_template_part( 'osm-maps/admin', null, $map_args );
-		} else {
-			// legacy
-			$attr = [
-				'data-editor-config'	=> json_encode([
-					'allow_providers'		=> $field['allow_map_layers'],
-					'restrict_providers'	=> array_values( $providers ),
-					'max_markers'			=> $max_markers,
-					'name_prefix'			=> $field['name'],
-				]),
-				'class'				=> 'leaflet-map',
-				'data-height'		=> $field['height'],
-				'data-map'			=> 'leaflet',
-				'data-map-lng'		=> $field['value']['lng'],
-				'data-map-lat'		=> $field['value']['lat'],
-				'data-map-zoom'		=> $field['value']['zoom'],
-				'data-map-layers'	=> $field['value']['layers'],
-				'data-map-markers'	=> $field['value']['markers'],
+		
+		$map_args['controls'] = [ ['type' => 'zoompan' ] ];
+
+		if ( $field['allow_map_layers'] ) {
+			$map_args['controls'][] = [ 
+				'type' => 'providers', 
 			];
-
-			?>
-			<div <?php echo acf_esc_attr( $attr ) ?>></div>
-			<?php
-
-			
-			
+			//$map_args['map'] = wp_parse_args( $map_args['map'], ['layers' => [] ] );
 		}
-
-		// add this to admin template?
-
-		// markers
-		$markers = []; // $field['value']['markers'];
-
-
 		if ( $max_markers !== 0 ) {
-			?>
-				<div class="markers-instruction">
-					<p class="description">
-						<span class="add-marker-instructions marker-on-dblclick can-add-marker">
-							<?php esc_html_e('Double click to add Marker.', 'acf-openstreetmap-field' ); ?>
-						</span>
-						<span class="add-marker-instructions marker-on-taphold can-add-marker">
-							<?php esc_html_e('Tap and hold to add Marker.', 'acf-openstreetmap-field' ); ?>
-						</span>
-						<span class="has-markers">
-							<?php esc_html_e('Drag Marker to move.', 'acf-openstreetmap-field' ); ?>
-						</span>
-					</p>
-				</div>
-			<?php
-
+			$map_args['controls'][] = [ 
+				'type' => 'markers', 
+				'config' => [ 
+					'max_markers' => $max_markers
+				] 
+			];
 		}
-		?>
-		<div class="osm-markers">
-		</div>
-		<?php
+		$map_args['controls'][] =  [ 'type' => 'locator' ];
+
+		$templates->render_template( 'osm-map/admin', $field['return_format'], $map_args );
 
 	}
 
@@ -369,13 +318,9 @@ class OpenStreetMap extends \acf_field {
 	 */
 	function input_admin_enqueue_scripts() {
 
-		wp_enqueue_media();
+		wp_enqueue_script('acf-osm-admin');
 
-		wp_enqueue_script('acf-input-osm');
-
-		wp_enqueue_script('acf-osm-frontend');
-
-		wp_enqueue_style('acf-input-osm');
+		wp_enqueue_style('acf-osm-admin');
 
 		wp_enqueue_style('leaflet');
 
@@ -396,15 +341,11 @@ class OpenStreetMap extends \acf_field {
 	*/
 	function field_group_admin_enqueue_scripts() {
 
-		wp_enqueue_media();
+		wp_enqueue_script('acf-osm-field-group');
 
-		wp_enqueue_script('acf-input-osm');
+		wp_enqueue_script('acf-osm-admin');
 
-		wp_enqueue_script('acf-field-group-osm');
-
-		wp_enqueue_script('acf-osm-frontend');
-
-		wp_enqueue_style('acf-input-osm');
+		wp_enqueue_style('acf-osm-admin');
 
 		wp_enqueue_style('leaflet');
 
@@ -433,138 +374,25 @@ class OpenStreetMap extends \acf_field {
 		return $value;
 	}
 
-	/**
-	 *	Sanitize lat, lng, convert legacy properties
-	 */
-	private function sanitize_geodata( $value, $default_latlng = null ) {
-
-		// convert settings from <= 1.0.1 > display only?
-		if ( isset( $value['center_lat'] ) ) {
-			if ( ( ! isset( $value['lat'] ) || empty( $value['lat'] ) ) && ! empty( $value['center_lat'] ) ) {
-				$value['lat'] = $value['center_lat'];
-			}
-			unset( $value['center_lat'] );
-		}
-
-		if ( isset( $value['center_lng'] ) ) {
-			if ( ( ! isset( $value['lng'] ) || empty( $value['lng'] ) ) && ! empty( $value['center_lng'] ) ) {
-				$value['lng'] = $value['center_lng'];
-			}
-			unset( $value['center_lng'] );
-		}
-
-		// apply defaults
-		if ( ! is_null( $default_latlng ) ) {
-			$value = wp_parse_args( $value, $default_latlng );
-		}
-
-		// typecast values
-		$value['lat'] = floatval( $value['lat'] );
-		$value['lng'] = floatval( $value['lng'] );
-
-		// maybe sanitize zoom
-		if ( isset( $value['zoom'] )) {
-			// boundaries
-			$value['zoom'] = min( 22, max( 0, intval( $value['zoom'] ) ) );
-
-		}
-
-		return $value;
-	}
-
 
 	/**
 	 *	@param array $value	array( 'lat' => float, 'lng => float, 'zoom' => int, 'address' => string, 'markers' => array, 'layers' => array )
  	 *	@param array $field
- 	 *	@param string $context edit|dispaly|update
+ 	 *	@param string $context edit|display|update
  	 *	@return array Sanitized $value
  	 */
 	private function sanitize_value( $value, $field, $context = '' ) {
 
-		$value = (array) $value;
+		$map = Model\Map::fromArray( $value );
 
-		//
-		// Markers
-		//
-		if ( ! isset( $value['markers']) || ! is_array( $value['markers'] ) ) {
-			$value['markers'] = [];
-		}
+		$value = $map->toArray();
 
-		// make sure its an indexed array
-		$value['markers'] = array_values( $value['markers'] );
-
-		// Maybe get marker from ACF GoogleMaps data
 		if ( 'display' === $context ) { // display + edit
-
-			$value = $this->sanitize_geodata( $value, [
+			$value = wp_parse_args( $value, [
 				'lat'	=> $field['center_lat'],
 				'lng'	=> $field['center_lng'],
 				'zoom'	=> $field['zoom'],
-			] );
-
-			if ( ! empty( $value[ 'address' ] ) ) {
-
-				// create marker from GM field address
-				if ( $field['max_markers'] !== 0 && ! count( $value[ 'markers' ] ) ) {
-
-					$value['markers'][] = [
-						'label'	=> wp_kses_post( $value['address'] ),
-						'default_label'	=> '',
-						'lat'	=> $value['lat'],
-						'lng'	=> $value['lng'],
-					];
-				}
-			} else  {
-				if ( count( $value['markers'] ) ) {
-					// update address from first marker
-					$value['address'] = $value['markers'][0]['label'];
-				} else {
-					$value['address'] = '';
-				}
-			}
-		}
-
-		// typecast
-		foreach ( $value['markers'] as &$marker ) {
-
-			// typecast values
-			$marker['lat'] = floatval( $marker['lat'] );
-			$marker['lng'] = floatval( $marker['lng'] );
-
-			$marker['label'] = wp_kses_post( $marker[ 'label' ], [], $allowed_protocols = '' );
-			$marker['default_label'] = wp_kses_post( $marker[ 'default_label' ], [], $allowed_protocols = '' );
-		}
-
-		// store data to be used by ACF GM Field
-		if ( 'update' === $context ) {
-			$value[ 'version' ]	= Core\Core::instance()->get_version();
-
-			if ( count( $value['markers'] ) ) {
-				// update address from first marker
-				$value['address'] = $value['markers'][0]['label'];
-			} else {
-				$value['address'] = '';
-			}
-		}
-
-		// Sanitize HTML from address
-		$value[ 'address' ] = wp_kses_post( $value[ 'address' ] );
-
-		//
-		// Layers
-		//
-		if ( ! isset( $value['layers'] ) || ! is_array( $value['layers'] ) ) {
-			$value['layers'] = [];
-		}
-
-		// set default layers if layer selection is empty or prohibited
-		if ( ! count( $value['layers'] ) || ! $field['allow_map_layers'] ) {
-			$value['layers'] = $field['layers'];
-		} else {
-			// normalize layers
-			$value['layers'] = array_filter( $value['layers'] );
-			$value['layers'] = array_unique( $value['layers'] );
-			$value['layers'] = array_values( $value['layers'] );
+			]);
 		}
 
 		return array_intersect_key( $value, $this->default_values );
@@ -588,11 +416,6 @@ class OpenStreetMap extends \acf_field {
 	 */
 	function update_value( $value, $post_id, $field ) {
 
-		// sanitize data from UI!
-
-		// normalize markers
-
-
 		if ( is_string( $value ) ) {
 			$value = json_decode( stripslashes($value), true );
 		}
@@ -602,8 +425,6 @@ class OpenStreetMap extends \acf_field {
 		}
 
 		$value = $this->sanitize_value( $value, $field, 'update' );
-
-
 
 		return $value;
 	}
@@ -638,94 +459,32 @@ class OpenStreetMap extends \acf_field {
 			// ensure backwards compatibility <= 1.0.1
 			$value['center_lat'] = $value['lat'];
 			$value['center_lng'] = $value['lng'];
-
-		} else if ( Core\Templates::is_supported() ) {
-
-			if ( 'osm' === $field['return_format'] && has_filter( 'osm_map_iframe_template' ) ) {
-				_deprecated_hook( 'osm_map_iframe_template', '1.3.0', 'theme overrides', 'The filter is no longer in effect.' );
-			}
+		} else if ( 'admin' === $field['return_format'] ) {
+			$templates = Core\Templates::instance();
+			$map = Model\Map::fromArray( $value );
+			$map_args = [
+				'field' => $field,
+				'map' => $map->toArray(),
+				'controls' => [
+					['type' => 'zoompan', ],
+					[ 'type' => 'providers', ],
+					[ 'type' => 'locator' ]
+				]
+			];
 
 			ob_start();
-
-			get_template_part( 'osm-maps/' . $field['return_format'], '', [
-				'field' => $field,
-				'map' => $value,
-			] );
-
+			$templates->render_template( 'osm-maps/admin', null, $map_args );
 			$value = ob_get_clean();
-			
-		} else if ( $field['return_format'] === 'admin' ) { // wp < 5.5
-			
-			$attr = $field['attr'] + [
-				'class'				=> 'leaflet-map',
-				'data-height'		=> $field['height'],
-				'data-map'			=> 'leaflet',
-				'data-map-lng'		=> $value['lng'],
-				'data-map-lat'		=> $value['lat'],
-				'data-map-zoom'		=> $value['zoom'],
-				'data-map-layers'	=> $value['layers'],
-				'data-map-markers'	=> $value['markers'],
+		} else {
+			$templates = Core\Templates::instance();
+			$map = Model\Map::fromArray( $value );
+			$map_args = [
+				'field' => $field,
+				'map' => $map->toArray(),
 			];
-			$value = sprintf(
-				'<div %s></div>',
-				acf_esc_attr( $attr )
-			);
-
-		} else if ( $field['return_format'] === 'osm' ) { // wp < 5.5
-
-			// features: one marker max. four maps to choose from
-			$osm_providers = Core\OSMProviders::instance();
-			
-			$iframe_atts = [
-				'height'		=> $field['height'],
-				'width'			=> '425',
-				'frameborder'	=> 0,
-				'scrolling'		=> 'no',
-				'marginheight'	=> 0,
-				'marginwidth'	=> 0,
-			];
-			
-			$html = '<iframe src="%1$s" %2$s></iframe><br/><small><a target="_blank" href="%3$s">%4$s</a></small>';
-			
-			/**
-			 *	Filter iframe HTML.
-			 *
-			 *	@param string $html Template String. Placeholders: %1$s: iFrame Source, %2$s: iframe attributes, %3$s: URL to bigger map, %4$s: Link-Text.
-			 */
-			$html = apply_filters( 'osm_map_iframe_template', $html );
-			
-			$value = sprintf( 
-				$html, 
-				$osm_providers->get_iframe_url( $value ),
-				acf_esc_attr( $iframe_atts ), 
-				esc_url( $osm_providers->get_link_url( $value ) ), 
-				esc_html__( 'View Larger Map','acf-openstreetmap-field' ) 
-			);
-
-		} else if ( $field['return_format'] === 'leaflet' ) {
-			
-			// features: multiple markers. lots of maps to choose from
-			$map_attr = [
-				'class'				=> 'leaflet-map',
-				'data-height'		=> $field['height'],
-				'data-map'			=> 'leaflet',
-				'data-map-lng'		=> $value['lng'],
-				'data-map-lat'		=> $value['lat'],
-				'data-map-zoom'		=> $value['zoom'],
-				'data-map-layers'	=> $value['layers'],
-				'data-map-markers'	=> $value['markers'],
-			];
-			
-			if ( isset( $field['attr'] ) ) {
-				$map_attr = $field['attr'] + $map_attr;
-			}
-			
-			
-			$html = sprintf('<div %s></div>', acf_esc_attr( $map_attr ) );
-			$value = $html;
-			
-			wp_enqueue_script( 'acf-osm-frontend' );
-			wp_enqueue_style( 'leaflet' );
+			ob_start();
+			$templates->render_template( 'osm-maps/' . $field['return_format'], null, $map_args );
+			$value = ob_get_clean();
 
 		}
 
@@ -838,38 +597,4 @@ class OpenStreetMap extends \acf_field {
 
 		return $field;
 	}
-
-	/**
-	 *	@action wp_footer
-	 */
-	public function maybe_print_media_templates() {
-		if ( ! did_action( 'print_media_templates' ) ) {
-			$this->print_media_templates();
-		}
-	}
-
-
-	/**
-	 *	@action print_media_templates
-	 */
-	public function print_media_templates() {
-		?>
-		<script type="text/html" id="tmpl-osm-marker-input">
-			<div class="locate">
-				<a class="dashicons dashicons-location" data-name="locate-marker">
-					<span class="screen-reader-text">
-						<?php esc_html_e('Locate Marker','acf-openstreetmap-field'); ?>
-					</span>
-				</a>
-			</div>
-			<div class="input">
-				<input type="text" data-name="label" />
-			</div>
-			<div class="tools">
-				<a class="acf-icon -minus small light acf-js-tooltip" href="#" data-name="remove-marker" title="<?php esc_attr_e('Remove Marker', 'acf-openstreetmap-field'); ?>"></a>
-			</div>
-		</script>
-		<?php
-	}
-
 }

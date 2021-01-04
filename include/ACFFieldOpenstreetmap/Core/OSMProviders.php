@@ -7,6 +7,7 @@ if ( ! defined('ABSPATH') ) {
 }
 
 use ACFFieldOpenstreetmap\Helper;
+use ACFFieldOpenstreetmap\Model;
 
 class OSMProviders extends Singleton {
 	/** @var array mapping of OSM link layers to leaflet layers */
@@ -18,7 +19,7 @@ class OSMProviders extends Singleton {
 	
 	/** @var array mapping of OSM iframe layers to leaflet layers */
 	private $iframe_layers = [
-		'mapnik'		=> 'OpenStreetMap',
+		'mapnik'		=> 'OpenStreetMap.Mapnik',
 		'cyclemap'		=> 'Thunderforest.OpenCycleMap',
 		'transportmap'	=> 'Thunderforest.Transport',
 		'hot'			=> 'OpenStreetMap.HOT',
@@ -87,7 +88,9 @@ class OSMProviders extends Singleton {
 	 *	@return string URL
 	 */
 	public function get_iframe_url( $config ) {
-
+		//*
+		$config = Model\Map::fromArray( $config )->toLegacyArray();
+		/*/
 		$config = wp_parse_args( $config, [
 			'lat' => 0,
 			'lng' => 0,
@@ -95,19 +98,22 @@ class OSMProviders extends Singleton {
 			'markers' => [],
 			'layers' => [],
 		]);
-		
+		//*/
 		$bbox = Helper\MapHelper::getBbox( $config['lat'], $config['lng'], $config['zoom'] );
 		$args = [
 			'bbox'	=> implode( ',', $bbox ),
 		];
 
 		foreach ( $config['layers'] as $layer ) {
+
 			$i_layer = array_search( $layer, $this->iframe_layers );
+
 			if ( false !== $i_layer ) {
 				$args['layer'] = $i_layer;
 				break;
 			}
 		}
+
 		foreach ( $config['markers'] as $marker ) {
 			$args['marker'] = implode(',', [ $marker['lat'], $marker['lng'] ] );
 			break;

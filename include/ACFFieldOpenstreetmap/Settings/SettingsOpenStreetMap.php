@@ -107,7 +107,7 @@ class SettingsOpenStreetMap extends Settings {
 								data-map-lat="53.55064"
 								data-map-lng="10.00065"
 								data-map-zoom="12"
-								data-map-layers="<?php esc_attr_e( json_encode(['OpenStreetMap']) ); ?>"
+								data-map-layers="<?php esc_attr_e( json_encode([['type' => 'provider', 'config'=>'OpenStreetMap.Mapnik']]) ); ?>"
 								>
 							</div>
 						</div>
