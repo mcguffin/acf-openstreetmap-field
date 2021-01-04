@@ -29,16 +29,24 @@ $has_providers = (boolean) count( array_filter( $controls, function( $control ) 
 	return 'providers' === $control['type'];
 } ) );
 
-if ( $has_providers ) {
-	$controls = array_map( function( $control ) {
-		if ( 'providers' === $control['type'] ) {
-			$control = wp_parse_args( $control, [
-				'config' => array_values( acf_osm_get_leaflet_providers() ),
-			]);
+$controls = array_map( function( $control ) {
+	if ( 'providers' === $control['type'] ) {
+		$control = wp_parse_args( $control, [
+			'config' => array_values( acf_osm_get_osm_providers() ),
+		]);
+	} else if ( 'markers' === $control['type'] ) {
+		$control = wp_parse_args( $control, [
+			'config' => [],
+		]);
+		$control['config'] = wp_parse_args( $control['config'], [
+			'max_markers' => false
+		]);
+		if ( $control['config']['max_markers'] !== 0 ) {
+			$control['config']['max_markers'] = 1;
 		}
-		return $control;
-	}, $controls );
-}
+	}
+	return $control;
+}, $controls );
 
 $attr = [
 	'class'				=> 'leaflet-map',

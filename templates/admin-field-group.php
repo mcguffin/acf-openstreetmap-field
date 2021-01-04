@@ -21,24 +21,18 @@ $map = $args['map'];
 $controls = $args['controls'];
 $field = $args['field'];
 
-$has_markers = (boolean) count( array_filter( $controls, function( $control ) {
-	return 'markers' === $control['type'];
-} ) );
-
 $has_providers = (boolean) count( array_filter( $controls, function( $control ) {
 	return 'providers' === $control['type'];
 } ) );
 
-if ( $has_providers ) {
-	$controls = array_map( function( $control ) {
-		if ( 'providers' === $control['type'] ) {
-			$control = wp_parse_args( $control, [
-				'config' => array_values( acf_osm_get_leaflet_providers() ),
-			]);
-		}
-		return $control;
-	}, $controls );
-}
+$controls = array_map( function( $control ) {
+	if ( 'providers' === $control['type'] ) {
+		$control = wp_parse_args( $control, [
+			'config' => array_values( acf_osm_get_leaflet_providers() ),
+		]);
+	}
+	return $control;
+}, $controls );
 
 $attr = [
 	'class'				=> 'leaflet-map',
@@ -53,6 +47,7 @@ $attr = [
 ];
 
 ?>
+
 <div class="leaflet-parent">
 	<input <?php echo acf_osm_esc_attr( [
 		'id'	=> $args['input_id'],
@@ -63,3 +58,4 @@ $attr = [
 	] ) ?> />
 	<div data-map-admin <?php echo acf_osm_esc_attr( $attr ) ?>></div>
 </div>
+<?php

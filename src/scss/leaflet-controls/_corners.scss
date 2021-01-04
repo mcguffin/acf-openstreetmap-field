@@ -1,0 +1,99 @@
+// .acf-osm-above {
+// 	position:relative;
+// 	z-index:2;
+// 	& + .leaflet-map {
+// 		z-index:1;
+// 	}
+// }
+
+.leaflet-parent {
+	display:flex;
+	flex-direction:row;
+	flex-wrap:wrap;
+}
+
+.leaflet-outside {
+	position:relative;
+	z-index:2;
+	//background-color:$wp-blue;
+	
+	.leaflet-control {
+		margin-left:0;
+	}
+	
+	& ~ .leaflet-container {
+		z-index:1;
+		order:3;
+		flex:1 1 0%;
+	}
+
+	&.leaflet-left,
+	&.leaflet-top,
+	&.leaflet-right,
+	&.leaflet-bottom {
+		position:relative;		
+	}
+	&.leaflet-left,
+	&.leaflet-top {
+	}
+	&.leaflet-top,
+	&.leaflet-bottom {
+		flex:1 0 100%;
+		.leaflet-control {
+			&:not(:last-of-type) {
+				clear:none;
+				margin-right:10px;
+			}
+		}
+	}
+	&.leaflet-left,
+	&.leaflet-right {
+		.leaflet-control {
+			margin-top:10px;
+		}
+		&:not(:empty) {
+			flex:0 0 0%;
+			// min-width:200px;
+			// & ~ .leaflet-container {
+			// 	flex:1 1 0%;
+			// }
+		}
+		& ~ .leaflet-container {
+			flex:1 1 0%;
+		}
+	}
+	
+	&.leaflet-top {
+		order:1;
+		break-after: always;
+		.leaflet-control {
+			margin-bottom:10px;
+		}
+	}
+	&.leaflet-left {
+		order:2;
+		break-before: always;
+		.leaflet-control {
+			margin-right:10px;
+		}
+	}
+	&.leaflet-bottom {
+		order:5;
+		break-before: always;
+		.leaflet-control {
+			margin-top:10px;
+		}
+	}
+	&.leaflet-right {
+		order:4;
+		break-after: always;
+		.leaflet-control {
+			margin-left:10px;
+		}
+	}
+	& ~ :not(.leaflet-outside):not(.leaflet-container) {
+		order:6;
+		flex-basis:100%; // get back to normal width
+	}
+
+}

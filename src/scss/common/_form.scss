@@ -1,0 +1,44 @@
+.acf-osm-input-row {
+	display: flex;
+	& > * {
+		height:auto;
+		margin:0;
+		&:not(.acf-osm-suffix) {
+			flex:1;			
+		}
+	}
+	.acf-osm-prefix,
+	.acf-osm-suffix {
+		flex:0;
+		display: inline-flex;
+		border-radius:4px;
+		background:$wp-gray;
+		border:1px solid $wp-input-border;
+		align-items: center;
+	}
+	:not(a).acf-osm-prefix,
+	:not(a).acf-osm-suffix {
+		color:$wp-input-border;
+	}
+	a.acf-osm-prefix,
+	a.acf-osm-suffix {
+		&:hover, &:focus {
+			background-color:$wp-gray-dark;
+		}		
+	}
+	.acf-osm-prefix {
+		padding:0 4px 0 6px;
+	}
+	.acf-osm-suffix {
+		padding:0 6px 0 4px;
+	}
+	& > :not(:first-child) {
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+	& > :not(:last-child) {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		border-right-style:none;
+	}
+}

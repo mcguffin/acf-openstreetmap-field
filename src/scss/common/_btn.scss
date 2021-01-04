@@ -1,0 +1,19 @@
+.acf-osm-icon-btn {
+	text-decoration: none;
+	&:hover {
+		color:$wp-gray-darker;
+	}
+	:not(.acf-osm-input-row) > & {
+		.dashicons {
+			border: 1px solid $wp-gray-dark;
+			border-radius:50%;		
+			background-color: $wp-gray;
+		}
+		&:hover {
+			color:$wp-gray-darker;
+			.dashicons {
+				border: 1px solid $wp-gray-darker;
+			}			
+		}
+	}
+}

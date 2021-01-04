@@ -1,0 +1,63 @@
+.leaflet-outside.leaflet-top,
+.leaflet-outside.leaflet-bottom {
+	.leaflet-control-geocoder {
+		margin-bottom:5px;
+		display:flex;
+		width:100%;
+		box-shadow:none;
+		& > .leaflet-control-geocoder-icon,
+		& > .leaflet-control-geocoder-form {
+			border-radius:none;
+		}
+
+		& > .leaflet-control-geocoder-icon {
+			flex:0;
+			width:auto;
+			height:auto;
+			order:2;
+			background-color:$wp-blue;
+			background-image:none;
+			border-radius: 0 4px 4px 0;
+			padding:0.25em 1em;
+			display: inline-flex;
+			align-items: center;
+			&:before {
+				content:$dashicon-search;
+				font-family:'dashicons';
+				color:#fff;
+				font-size:20px;
+			}
+		}
+		& > .leaflet-control-geocoder-form {
+			flex:1;
+			order:1;
+			input {
+				padding:0.25em 1em;
+				font-size:20px;
+				font-weight:300;
+				border:1px solid $wp-gray;
+				border-radius: 4px 0 0 4px ;
+				height:100%;
+				width:100%;
+				&:focus {
+					box-shadow: none;
+					border-color:$wp-blue;
+				}
+			}
+		}
+		& > .leaflet-control-geocoder-error,
+		& > .leaflet-control-geocoder-alternatives {
+			margin:0;
+			position:absolute;
+			left:1em;
+			top:100%;
+			background:#fff;
+		}
+		& > .leaflet-control-geocoder-error {
+			padding:0.5em 1em;
+		}
+		& > .leaflet-control-geocoder-alternatives {
+			margin-top: 1em;
+		}
+	}	
+}

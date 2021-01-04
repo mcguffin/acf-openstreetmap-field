@@ -1,0 +1,123 @@
+
+.osm-markers {
+	a[data-name="locate-marker"] {
+		color:$wp-blue;
+	}
+	a[data-name="remove-marker"] {
+		color:$wp-black;
+	}
+	.osm-marker {
+		position: relative;
+		display:flex;
+		flex-direction: column;
+		// align-items: center;
+		// padding:0.25em 0;
+		border-bottom:1px solid $wp-gray;
+		padding:6px 8px 2px 8px;
+		&:nth-of-type(2n) {
+			background-color:$wp-gray-lightest;
+		}
+		&.focus {
+			background-color:rgba($wp-yellow,0.5);
+		}
+		input[type="text"] {
+			width:100%;
+			font-size:20px;
+			font-weight:300;
+		}
+		.latlng {
+			margin:auto;
+		}
+		[data-label="lat"] {
+			&::after {
+				content:' / ';
+			}
+		}
+		[data-label="lat"],[data-label="lng"] {
+			color: $wp-gray-dark;
+			font-size:11px;
+		}
+	}
+}
+
+@keyframes pling {
+	0% { left:0;top:0;width:12px;height:12px; opacity:0; }
+	5% { opacity: 1 }
+	80% { opacity: 1 }
+	100% { left:-25px;top:-25px;width:62px;height:62px; opacity:0; }
+}
+
+.osm-marker-icon {
+	//border:1px solid $wp-red;
+	border-radius:50%;
+	position:relative;
+	// triangle
+	&:before {
+		content:'';
+		border-style:solid;
+		border-color:$wp-blue transparent transparent transparent;
+		border-width:20px 12px 0 12px;
+		position:absolute;
+		left:-6px; // -12
+		top:-14px; // -20
+		z-index:1;
+	}
+	$size:26px;
+	// circle
+	&:after {
+		content:'';
+		clip:rect(0,0,100%,100%);
+		width:$size;
+		height:$size;
+		border-radius:$size / 2;
+		background-color:#fff;
+		border:8px solid $wp-blue;
+		box-sizing:border-box;
+		position:absolute;
+		bottom:18px; // 24
+		left:-$size / 2 + 6px;
+	}
+	&.focus,
+	&:focus {
+		&:before {
+			// border-top-color:$wp-blue-light;
+		}
+		&:after {
+			// border-color:$wp-blue-light;
+			// background-color:$wp-blue-lighter;
+			box-shadow: 0 0 6px 12px rgba( $wp-yellow, 0.75 );
+		}
+	}
+	&:hover {
+		&:before {
+			border-top-color:$wp-red;
+		}
+		&:after {
+			content:$dashicon-no;
+			font-family:'dashicons';
+			color:#fff;
+			font-size:$size;
+			line-height:$size + 1;
+			border-color:$wp-red;
+			background-color:$wp-red;
+			border-width:0;
+			z-index:2;
+		}
+	}
+	.pling {
+		// box-shadow: inset 0 0 2px $wp-blue,
+		// 			0 0 2px $wp-blue;
+		position: absolute;
+		opacity:0;
+		border:4px solid $wp-blue;
+		@media screen and (min-width: 768px) {
+			border-width:2px;
+		}
+		border-radius:50%;
+
+		animation-name: pling;
+		animation-duration: 0.75s;
+		animation-iteration-count: 1;
+		animation-timing-function:ease-in;
+	}
+}

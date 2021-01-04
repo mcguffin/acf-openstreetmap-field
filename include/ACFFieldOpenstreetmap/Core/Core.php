@@ -61,9 +61,9 @@ class Core extends Plugin {
 			$marker_html = wp_kses_post( $marker_html );
 		}
 
-		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), [ 'jquery' ], $this->get_version(), true );
+		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/main.js' ), [], $this->get_version(), true );
 
-		wp_localize_script('acf-osm-frontend','acf_osm', [
+		$osm_options = [
 			'options'	=> [
 				'layer_config'	=> $leaflet_providers->get_layer_config(),
 				'marker'		=> [
@@ -101,15 +101,16 @@ class Core extends Plugin {
 
 			],
 			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
-		]);
+		];
+		wp_localize_script('acf-osm-frontend','acf_osm', $osm_options );
 
 		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), [], $this->get_version() );
 
 		/* backend */
 
 		// field js
-		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), ['acf-input','wp-backbone'], $this->get_version(), true );
-		wp_localize_script( 'acf-input-osm', 'acf_osm_admin',[
+		wp_register_script( 'acf-osm-admin', $this->get_asset_url('assets/js/admin.js'), [ /*'acf-input','wp-backbone'*/], $this->get_version(), true );
+		wp_localize_script( 'acf-osm-admin', 'acf_osm_admin',[
 			'options'	=> [
 				'osm_layers'		=> $osm_providers->get_layers(), // flat list
 				'leaflet_layers'	=> $leaflet_providers->get_layers(),  // flat list
@@ -119,6 +120,8 @@ class Core extends Plugin {
 				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),
 				'nothing_found'	=> __( 'Nothing found...', 'acf-openstreetmap-field' ),
 				'my_location'	=> __( 'My location', 'acf-openstreetmap-field' ),
+				'locate_marker'	=> __( 'Locate Marker', 'acf-openstreetmap-field' ),
+				'remove_marker'	=> __( 'Remove Marker', 'acf-openstreetmap-field' ),
 				'add_marker_at_location'
 					=> __( 'Add Marker at location', 'acf-openstreetmap-field' ),
 				'fit_markers_in_view'
@@ -130,13 +133,22 @@ class Core extends Plugin {
 					'city'		=> __( '{postcode} {city} {town} {village} {hamlet}', 'acf-openstreetmap-field' ),
 					/* translators: address format for marker labels (country level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country} */
 					'country'	=> __( '{state} {country}', 'acf-openstreetmap-field' ),
-				]
+				],
+				
+				'dbl_click_to_add_marker'
+								=> __('Double click to add Marker.', 'acf-openstreetmap-field' ),
+				'tap_hold_to_add_marker'
+								=> __('Tap and hold to add Marker.', 'acf-openstreetmap-field' ),
+				'drag_marker_to_move'
+								=> __('Drag Marker to move.', 'acf-openstreetmap-field' ),
 			],
 		]);
-		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), [ 'acf-field-group', 'acf-input-osm' ], $this->get_version(), true );
+
+		wp_localize_script( 'acf-osm-admin', 'acf_osm', $osm_options );
+		wp_register_script( 'acf-osm-field-group', $this->get_asset_url('assets/js/acf-field-group.js'), [ 'acf-field-group' ], $this->get_version(), true );
 		
 		// field css
-		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), ['acf-input','dashicons'], $this->get_version() );
+		wp_register_style( 'acf-osm-admin', $this->get_asset_url( 'assets/css/acf-osm-admin.css' ), ['acf-input','dashicons'], $this->get_version() );
 
 		// settings css
 		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), ['leaflet'], $this->get_version() );
@@ -154,11 +166,6 @@ class Core extends Plugin {
 	 *	@return wp_enqueue_editor
 	 */
 	public function get_asset_url( $asset ) {
-
-		if ( ! defined('SCRIPT_DEBUG') || ! SCRIPT_DEBUG ) {
-			$pi = pathinfo($asset);
-			$asset = $pi['dirname'] . DIRECTORY_SEPARATOR . $pi['filename'] . '.min.' . $pi['extension'];
-		}
 		return plugins_url( $asset, $this->get_plugin_file() );
 	}
 

@@ -1,0 +1,44 @@
+.leaflet-control-marker-list {
+	width:100%;
+	a[data-name="locate-marker"] {
+		color:$wp-blue;
+	}
+	a[data-name="remove-marker"] {
+		color:$wp-black;
+	}
+}
+.leaflet-marker-entry {
+	position: relative;
+	display:flex;
+	flex-direction: column;
+	// align-items: center;
+	// padding:0.25em 0;
+	border-bottom:1px solid $wp-gray;
+	padding:6px 8px 2px 8px;
+	margin-left: -10px;
+	margin-right: -10px;
+	&:nth-of-type(2n) {
+		background-color:$wp-gray-lightest;
+	}
+	&.focus {
+		background-color:rgba($wp-yellow,0.5);
+	}
+	input[type="text"] {
+		width:100%;
+		font-size:20px;
+		font-weight:300;
+		min-width:190px
+	}
+	.latlng {
+		margin:auto;
+	}
+	[data-label="lat"] {
+		&::after {
+			content:' / ';
+		}
+	}
+	[data-label="lat"],[data-label="lng"] {
+		color: $wp-gray-dark;
+		font-size:11px;
+	}
+}

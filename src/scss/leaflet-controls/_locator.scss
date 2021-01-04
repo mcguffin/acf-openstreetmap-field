@@ -1,0 +1,92 @@
+@keyframes rotate-world {
+	0%, 100% { content: $dashicon-admin-site; }
+	33% { content: $dashicon-admin-site-alt; }
+	66% { content: $dashicon-admin-site-alt2; }
+}
+@keyframes blink {
+	0%, 50%, 100% { background-color: $wp-blue; }
+	25% { background-color: lighten( $wp-blue, 10% ); }
+	75% { background-color: darken( $wp-blue, 5% ); }
+}
+
+.leaflet-control-locator {
+	&[data-status="idle"],
+	&[data-status="waiting"],
+	&[data-status="error"] {
+		& + .leaflet-control-add-located {
+			display: none;
+		}
+	}
+	&[data-status="fetching"],
+	&[data-status="active"] {
+		.leaflet-bottom & {
+			margin-bottom:-2px;
+		}
+	}
+	
+	&[data-status="idle"] {
+	}
+	&[data-status="fetching"],
+	&[data-status="waiting"] {
+		a {
+			// color:$wp-gray-dark;
+		}
+		.dashicons::before {
+			content: $dashicon-admin-site-alt; // we'd like to see africa as a default
+			animation: rotate-world 2s linear infinite;
+		}			
+	}
+	&[data-status="fetching"] {
+		a {
+			background-color: $wp-blue;
+			color:#fff;
+		}
+	}
+	&[data-status="error"] {
+		a {
+			background-color: $wp-red;
+			color:#fff;
+		}
+		.dashicons::before {
+			content:$dashicon-warning;
+		}
+	}
+	&[data-status="active"] {
+		a {
+			background-color: $wp-blue;
+			color:#fff;
+			animation: blink 4s linear infinite;
+		}
+		.dashicons::before {
+			content:$dashicon-location;
+		}		
+	}
+}
+
+.leaflet-control-locator-location {
+	background-color: rgba( $wp-blue, 0.7 );
+	border-radius: 50%;
+	box-sizing: border-box;
+	border:1px solid #ffffff;
+	animation: blink 4s linear infinite;
+}
+
+
+
+
+
+.leaflet-control-add-located {
+	.dashicons {
+		&::before {
+			line-height:30px;
+			font-size:18px;
+		}
+		&::after {
+			content: $dashicon-plus;
+			font-size: 13px;
+			position: absolute;
+			top:-6px;
+			right:0;
+		}
+	}
+}

@@ -1,0 +1,80 @@
+.acf-osm-tooltip[title]:not([title=""]) {
+	$arrow-w: 14px;
+	$arrow-h: 10px;
+	$margin-bottom: 5px;
+	$bg-color:rgba($wp-black,0.9);
+	position:relative;
+	&::before,
+	&::after {
+		pointer-events: none;
+	}
+	&::before {
+		content: attr(title);
+		position:absolute;
+
+		bottom:100%;
+		margin-bottom:$margin-bottom + $arrow-h;
+	    
+	    /* move to top */
+	    left:50%;
+		transform:translateX(-50%);
+
+	    
+	    /* basic styles */
+	    max-width:250px;
+		width:max-content;
+	    padding:5px 10px;
+	    border-radius:4px;
+	    background-color:$bg-color;
+	    color: #fff;
+	    text-align:center;
+	    display:none;
+		z-index:1000;
+		font-size:12px;
+		line-height:1.2;
+	}
+	&::after {
+		content: '';
+		width: $arrow-w;
+		height: $arrow-h;
+		border-color:$bg-color transparent transparent transparent;
+		border-width: $arrow-h $arrow-w / 2 0 $arrow-w / 2;
+		border-style:solid;
+		box-sizing:border-box;
+		display:none;
+
+		position:absolute;
+		bottom:100%;
+		margin-bottom:$margin-bottom;
+		left:50%;
+		margin-left: $arrow-w / -2;
+	}
+	&.acf-osm-tooltip-left,
+	.leaflet-left & {
+		&::before {
+			left:0;
+			transform:none;
+		}
+		&::after {
+			left:$arrow-w / 2;
+			margin-left:0;
+		}
+	}
+	&.acf-osm-tooltip-right,
+	.leaflet-right & {
+		&::before {
+			right:0;
+			left:auto;
+			transform:none;
+		}
+		&::after {
+			left:auto;
+			right:$arrow-w / 2;
+			margin-left:0;
+		}
+	}
+	&:hover::before,
+	&:hover::after {
+		display:block;
+	}
+}
