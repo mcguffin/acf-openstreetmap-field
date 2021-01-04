@@ -56,7 +56,7 @@ class Templates extends Singleton {
 
 		// we'll have to handle it
 		$core = Core::instance();
-		$file = $core->get_plugin_dir() . 'templates/' . str_replace( $this->template_dirname . '/','',$slug) . '.php';
+		$file = $core->get_plugin_dir() . 'templates/' . str_replace( $this->template_dirname . '/', '', $slug ) . '.php';
 
 		if ( file_exists( $file ) ) {
 			load_template( $file, false, $args );
@@ -64,7 +64,63 @@ class Templates extends Singleton {
 
 	}
 
-	
+	public function render_template( $slug, $name = null, $args = [] ) {
+		
+		if ( false /* self::is_supported() || ! count( $args )*/ ) {
+			get_template_part( $slug, $name, $args );
+		} else {
+			// legacy
+			$core = Core::instance();
+			$slug = str_replace( 'osm-map/', '', $slug );
+			$search_names = [ $slug ];
+			$search_paths = [ STYLESHEETPATH . '/osm-map', TEMPLATEPATH. '/osm-map', $core->get_plugin_dir() . 'templates' ];
+			if ( ! is_null( $name ) ) {
+				array_unshift( $search_names, sprintf( '%s-%s', $slug, $name ) );
+			}
+
+			foreach ( $search_names as $name ) {
+				foreach ( array_unique( $search_paths ) as $path ) {
+					$file = sprintf( '%1$s/%2$s.php', $path, $name );
+					if ( file_exists( $file ) ) {
+
+						return $this->render_template_file( $file, $args );
+					}
+				}
+			}
+			//Core\Templates::render_template( 'osm-maps/admin', $field['return_format'], $map_args );
+			// legacy
+			/*$attr = [
+				'data-editor-config'	=> json_encode([
+					'allow_providers'		=> $field['allow_map_layers'],
+					'restrict_providers'	=> array_values( $providers ),
+					'max_markers'			=> $max_markers,
+					'name_prefix'			=> $field['name'],
+				]),
+				'class'				=> 'leaflet-map',
+				'data-height'		=> $field['height'],
+				'data-map'			=> 'leaflet',
+				'data-map-lng'		=> $field['value']['lng'],
+				'data-map-lat'		=> $field['value']['lat'],
+				'data-map-zoom'		=> $field['value']['zoom'],
+				'data-map-layers'	=> $field['value']['layers'],
+				'data-map-markers'	=> $field['value']['markers'],
+			];
+
+			?>
+			<div <?php echo acf_esc_attr( $attr ) ?>></div>
+			<?php
+			*/
+		}		// workaround get_template_part for WP < 5.5
+	}
+
+	private function render_template_file( $_template_file, $args ) {
+		// setup env like wp > 5.5
+		// @see https://developer.wordpress.org/reference/functions/load_template/
+		global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+		$require_once = false;
+
+		require $_template_file;
+	}
 
 	/**
 	 *	@return Array template slug
