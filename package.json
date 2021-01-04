@@ -12,7 +12,8 @@
     "rollback": "git reset --hard HEAD~ && git push origin +master",
     "postinstall": "composer install",
     "audit": "./vendor/squizlabs/php_codesniffer/bin/phpcs . --report=code --standard=./phpcs-security.ruleset.xml -n -s > ./phpcs-report.txt || exit 0",
-    "ver": "echo \"<?php return $(jq .version < ./package.json);\" > include/version.php"
+    "ver": "echo \"<?php return $(jq .version < ./package.json);\" > include/version.php",
+    "providers": "node ./src/run/providers.js"
   },
   "repository": {
     "type": "git",
@@ -30,23 +31,35 @@
   ],
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
     "@selfisekai/gulp-sass": "^4.2.0",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "browserify-shim": "^3.8.14",
+    "event-stream": "^4.0.1",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-rename": "^2.0.0",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "^3.0.2",
-    "gulp-uglifycss": "^1.1.0",
+    "gulp-sourcemaps": "^3.0.0",
     "leaflet": "^1.7.1",
     "leaflet-control-geocoder": "^2.1.0",
     "leaflet-providers": "^1.11.0",
-    "leaflet.locatecontrol": "^0.72.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "resize-observer-polyfill": "^1.5.1",
+    "tinyify": "^3.0.0",
+    "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
     "jquery": "^3.5.1",
     "sass": "^1.30.0"
+  },
+  "browserify-shim": {
+    "pluginOptions": "global:acf_osm",
+    "pluginAdminOptions": "global:acf_osm_admin",
+    "jquery": "global:jQuery",
+    "backbone": "global:Backbone"
   },
   "wporg": {
     "steps": [
