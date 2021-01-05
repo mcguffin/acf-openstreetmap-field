@@ -3,17 +3,21 @@ Contributors: podpirate
 Donate link: https://donate.openstreetmap.org/
 Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
-Requires PHP: 5.6
+Requires PHP: 7.0
 Tested up to: 5.6
 Stable tag: 1.3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-A configurable OpenStreetMap Field for ACF.
+OpenStreetMap Widget, Block and ACF Field.
 
 == Description ==
 
-Hazzle free OpenStreetMap with [ACF](https://www.advancedcustomfields.com/).
+Hazzle free OpenStreetMap integration. 
+
+
+
+[ACF-Field](https://www.advancedcustomfields.com/).
 
 ## Usage
 
@@ -52,7 +56,6 @@ Please head over to the source code [on Github](https://github.com/mcguffin/acf-
 - [The Leaflet Project](https://leafletjs.com/)
 - The maintainers and [contributors](https://github.com/leaflet-extras/leaflet-providers/graphs/contributors) of [Leaflet providers](https://github.com/leaflet-extras/leaflet-providers)
 - The [very same](https://github.com/perliedman/leaflet-control-geocoder/graphs/contributors) for [Leaflet Control Geocode](https://github.com/perliedman/leaflet-control-geocoder)
-- [Dominik Moritz](https://www.domoritz.de/) who delighted us with [Leaflet locate control](https://github.com/domoritz/leaflet-locatecontrol)
 - Numerous individuals and organizations who provide wonderful Map related services free of charge. (You are credited in the map, I hope)
 
 == Installation ==
@@ -129,6 +132,16 @@ The *`osm_map_iframe_template` filter* has been removed in favour of theme overr
 Please refer to this wiki article for a [migration guide](https://github.com/mcguffin/acf-openstreetmap-field/wiki/The-abandoned-osm_map_iframe_template-filter).
 
 == Changelog ==
+
+= 1.4.0 =
+ - Feature: Map Widgets
+ - Feature: Map Blocks
+ - Feature: ACF is no longer a dependecy
+ - UI: Neat locator button animation
+ - JS: ESNext Refactoring
+ - JS: Remove jQuery dependency (in frontend) and Backbone (in Backend)
+ - JS: Remove Backbone and jQuery as a dependency
+ - JS: Replace leaflet.locatecontrol with own implementation
 
 = 1.3.1 =
  - Fix: JS Event acf-osm-map-marker-create not applying marker options

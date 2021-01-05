@@ -1,45 +1,52 @@
 ACF OpenStreetMap Field ToDo
 ============================
 
-1.2.0
+Tests
 -----
- - [x] Options: allow `'api_key':'<enter key here>'` in filter `acf_osm_leaflet_providers` (#38)
- - [ ] Tests:
-     - [ ] ACF-Customizer
-     - [ ] ACF WP-Objects
-     - [ ] ACF Quick Edit Fields
- - [x] Fit markers in view (backend) #30
+Other Plugins 
+ - [ ] ACF-Customizer
+ - [ ] ACF WP-Objects
+ - [ ] ACF Quick Edit Fields
 
+Tools
+-----
+ - [ ] Migration Helper GMaps > OSM
 
 Remove dependencies
 -------------------
- - [ ] Frontend jQuery
+ - [x] Frontend jQuery
    - [x] Use `CustomEvent` in frontend event triggers
-   - [ ] Replace `.trigger()` an `.on()` in favor of `addEventListener()` and `dispatchEvent()` entirely
-   - [ ] Work with DOM objects everywhere
+   - [x] Replace `.trigger()` an `.on()` with `addEventListener()` and `dispatchEvent()` entirely
+   - [x] Use DOM objects everywhere
  - [ ] ACF
-   - [ ] Seperate Field-logic from map logic
-   - [ ] Introduce map widget
+   - [x] Seperate Field-logic from map logic (PHP)
+   - [x] Introduce map widget
    - [ ] Introduce map block
+
+Settings
+--------
+ - [ ] Default Layer, Position, Zoom
 
 ESNext
 ------
- - [ ] Use imports
- - [ ] Frontend
- - [ ] Backend
+ - [x] Use imports
+ - [x] Frontend
+ - [x] Backend
+ - [ ] Browserify sucks. Use Webpack...?
 
 Theme Overrides
 ---------------
- - [ ] Scan Template files
- - [ ] Default Templates
-   - [ ] OSM-iFrame
-   - [ ] OSM-Link
-   - [ ] Leaflet Div
+ - [x] Scan Template files
+ - [x] Default Templates
+   - [x] OSM-iFrame
+   - [x] OSM-Link
+   - [x] Leaflet Div
    - [ ] Static image #31
 
 Future
 ------
  - [ ] Support MapBox GL / Leaflet GL: https://github.com/mapbox/mapbox-gl-leaflet
+ - [ ] GeoTag Posts, display as Layer
 
 ACF Google-Map compatibility
 ----------------------------
@@ -76,13 +83,20 @@ ACF Google-Map compatibility
     // and so much more ...
 }
 
-// ACF marker data
+// ACF map data
 {
-   street_number : '',
-   street_name : '',
-   city : '',
-   state : '',
-   post_code : '',
-   country : '',
+  address : '',
+  lat : 12.34,
+  lng : 12.34,
+  zoom : 12,
+  place_id : '',
+  street_number : '',
+  street_name : '',
+  city : '',
+  state : '',
+  state_short : '',
+  post_code : '',
+  country : '',
+  country_short : '',
 }
 ```

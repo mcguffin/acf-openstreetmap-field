@@ -1,18 +1,18 @@
 {
-  "src/js/main/index.js": [
-    "js/main.js"
-  ],
   "src/js/acf-input/index.js": [
     "js/acf-input.js"
   ],
-  "src/js/admin/index.js": [
-    "js/admin.js"
+  "src/js/main/index.js": [
+    "js/main.js"
+  ],
+  "src/js/acf-field-group/index.js": [
+    "js/acf-field-group.js"
   ],
   "src/js/acf-osm-settings/index.js": [
     "js/acf-osm-settings.js"
   ],
-  "src/js/acf-field-group/index.js": [
-    "js/acf-field-group.js"
+  "src/js/admin/index.js": [
+    "js/admin.js"
   ],
   "src/js/lib/controls/index.js": [
     "js/admin.js"
@@ -24,13 +24,13 @@
   "src/js/lib/leaflet/control-corner.js": [
     "js/admin.js"
   ],
+  "src/js/lib/controls/control-type.js": [
+    "js/admin.js"
+  ],
   "src/js/lib/controls/control-type-zoompan.js": [
     "js/admin.js"
   ],
   "src/js/lib/controls/control-type-providers.js": [
-    "js/admin.js"
-  ],
-  "src/js/lib/controls/control-type.js": [
     "js/admin.js"
   ],
   "src/js/lib/controls/control-type-markers.js": [
@@ -50,13 +50,6 @@
   "src/js/lib/misc/geocoder.js": [
     "js/admin.js"
   ],
-  "src/js/lib/views/marker-entry.js": [
-    "js/admin.js"
-  ],
-  "src/js/lib/layers/layer-type-markers.js": [
-    "js/admin.js",
-    "js/main.js"
-  ],
   "src/js/lib/layers/layer-type.js": [
     "js/admin.js",
     "js/main.js"
@@ -65,13 +58,17 @@
     "js/admin.js",
     "js/main.js"
   ],
-  "src/js/lib/leaflet/control/marker-list.js": [
-    "js/admin.js"
+  "src/js/lib/layers/layer-type-markers.js": [
+    "js/admin.js",
+    "js/main.js"
   ],
   "src/js/lib/leaflet/control/wp-button.js": [
     "js/admin.js"
   ],
   "src/js/lib/leaflet/control/message.js": [
+    "js/admin.js"
+  ],
+  "src/js/lib/leaflet/control/marker-list.js": [
     "js/admin.js"
   ]
 }
