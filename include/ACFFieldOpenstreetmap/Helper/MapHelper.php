@@ -3,7 +3,8 @@
 namespace ACFFieldOpenstreetmap\Helper;
 
 class MapHelper {
-	/** @const Int planet radius in meters */
+
+	/** @const Integer planet radius in meters. Lets hope this won't become a var some day. */
 	const EARTH_RADIUS = 6378137;
 
 	/**
