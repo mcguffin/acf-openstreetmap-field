@@ -1,0 +1,226 @@
+{
+    "key": "group_acf_osm_migrate_1_0_1",
+    "title": "ACF OSM 1.0.1",
+    "fields": [
+        {
+            "key": "field_5ff3fab279390",
+            "label": "OSM Layer Marker",
+            "name": "osm_layer_marker",
+            "type": "open_street_map",
+            "instructions": "Show Layer OpenStreetMap.HOT, Markers allowed",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "osm",
+            "layers": [
+                "OpenStreetMap.HOT"
+            ],
+            "center_lat": "44.914249368747086",
+            "center_lng": "14.900199744926574",
+            "zoom": 8,
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": 1,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        },
+        {
+            "key": "field_5ff3fba810831",
+            "label": "OSM Layer",
+            "name": "osm_layer",
+            "type": "open_street_map",
+            "instructions": "Show Layer OpenStreetMap.Mapnik",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "osm",
+            "layers": [
+                "OpenStreetMap"
+            ],
+            "center_lat": "43.723474896114794",
+            "center_lng": "17.123481487302374",
+            "zoom": 6,
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": 0,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        },
+        {
+            "key": "field_5ff3fcc16cca6",
+            "label": "OSM",
+            "name": "osm",
+            "type": "open_street_map",
+            "instructions": "Show Layer OpenStreetMap.HOT",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "osm",
+            "layers": [
+                "OpenStreetMap.HOT"
+            ],
+            "center_lat": "48.122101028190805",
+            "center_lng": "11.6363013922144",
+            "zoom": 8,
+            "allow_map_layers": 0,
+            "height": 400,
+            "max_markers": 0,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        },
+        {
+            "key": "field_5ff3fcd5a04b7",
+            "label": "Leaflet Layer Marker",
+            "name": "leaflet_layer_marker",
+            "type": "open_street_map",
+            "instructions": "Layers CartoDB.Positron + Stamen.TonerHybrid, 5 Markers max",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "leaflet",
+            "layers": [
+                "CartoDB.Positron",
+                "Stamen.TonerHybrid"
+            ],
+            "center_lat": "",
+            "center_lng": "",
+            "zoom": "",
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": 5,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        },
+        {
+            "key": "field_5ff3fcffa04b8",
+            "label": "Leaflet Layer",
+            "name": "leaflet_layer",
+            "type": "open_street_map",
+            "instructions": "Layers Stamen.Watercolor + Stamen.TonerLines",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "leaflet",
+            "layers": [
+                "Stamen.Watercolor",
+                "Stamen.TonerLines"
+            ],
+            "center_lat": "",
+            "center_lng": "",
+            "zoom": "",
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": 0,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        },
+        {
+            "key": "field_5ff3fd13a04b9",
+            "label": "Leaflet",
+            "name": "leaflet",
+            "type": "open_street_map",
+            "instructions": "Layers CartoDB.DarkMatterNoLabels + Stamen.TonerHybrid\r\nTheres a bug in 1.0.1 where map layers are not corrent when they were not selectable and have been changed priorly.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "leaflet",
+            "layers": [
+                "CartoDB.DarkMatterNoLabels",
+                "Stamen.TonerHybrid"
+            ],
+            "center_lat": 50,
+            "center_lng": 20,
+            "zoom": 10,
+            "allow_map_layers": 0,
+            "height": 400,
+            "max_markers": 0,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "CartoDB.DarkMatterNoLabels",
+                    "Stamen.TonerHybrid"
+                ],
+                "markers": []
+            }
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "post"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1609825573
+}

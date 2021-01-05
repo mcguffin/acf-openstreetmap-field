@@ -1,8 +1,27 @@
 <?php
 
-namespace ACFFieldOpenstreetmap;
+namespace ACFFieldOpenstreetmap\Test;
 
-
+// $s='a:5:{s:3:"lng";d:9.965543746948244;s:3:"lat";d:53.5421690512609;s:4:"zoom";i:15;s:6:"layers";a:3:{i:0;a:2:{s:4:"type";s:8:"provider";s:6:"config";s:24:"Stadia.AlidadeSmoothDark";}i:1;a:2:{s:4:"type";s:8:"provider";s:6:"config";s:10:"OpenSeaMap";}i:2;a:2:{s:4:"type";s:8:"provider";s:6:"config";s:20:"Hydda.RoadsAndLabels";}}s:7:"version";s:5:"1.3.2";}';
+// $d=unserialize($s);
+// $d['layers'][] = [
+// 	'type' => 'markers',
+// 	'config' => [
+// 		[
+// 			'lng'=>9.965543746948244,
+// 			'lat'=>53.5421690512609,
+// 			'label'=>'FooBarQuux',
+// 			'default_label'=>'FooBarQuux',
+// 		],
+// 		[
+// 			'lng'=>9.165543746948244,
+// 			'lat'=>53.5421690512609,
+// 			'label'=>'Baz',
+// 			'default_label'=>'BazBoo',
+// 		],
+// 	],
+// ];
+// echo serialize($d);exit();
 abstract class Test_Widget extends \WP_Widget {
 	public function form( $instance ) {
 	}
@@ -56,24 +75,25 @@ class PluginTest {
 		add_action( 'acf/init', [ $this, 'register_options_page' ] );
 
 
-		add_action( 'widgets_init', function(){
-			register_widget( '\ACFFieldOpenstreetmap\OSM_Widget' );
-			register_widget( '\ACFFieldOpenstreetmap\Leaflet_Widget' );
-		});
+		// add_action( 'widgets_init', function(){
+		// 	register_widget( '\ACFFieldOpenstreetmap\Test\OSM_Widget' );
+		// 	register_widget( '\ACFFieldOpenstreetmap\Test\Leaflet_Widget' );
+		// });
 
-		add_action('admin_init',[$this, 'maybe_generate_test_post']);
-		add_filter('the_content',function($content){
-			if ( get_post_meta(get_the_ID(),'_osm_test',true)) {
-				$content .= get_field('leaflet_gm');
-				$content .= get_field('leaflet_018');
-				$content .= get_field('leaflet_101');
-			}
-			return $content;
-		});
+		//add_action('admin_init',[$this, 'maybe_generate_test_post']);
+		// add_filter('the_content',function($content){
+		// 	if ( get_post_meta(get_the_ID(),'_osm_test',true)) {
+		// 		$content .= get_field('leaflet_gm');
+		// 		$content .= get_field('leaflet_018');
+		// 		$content .= get_field('leaflet_101');
+		// 	}
+		// 	return $content;
+		// });
 
-		add_filter('acf_osm_marker_html', function( $html ){
-		    return '<div class="my-marker"></div>';
-		});
+		// add_filter('acf_osm_marker_html', function( $html ){
+		//     return '<div class="my-marker"></div>';
+		// });
+		/*
 		add_action('wp_head',function(){
 			?>
 			<style type="text/css">
@@ -95,12 +115,24 @@ class PluginTest {
 			</style>
 			<?php
 		});
+		*/
 //
 		add_filter('acf/fields/google_map/api', function($api) {
 			$api['key'] = exec('security find-generic-password -a maps.googleapis.com -s maps.googleapis.com -w');
 			return $api;
 		});
 		// 
+
+
+
+		add_filter('do_shortcode_tag',function($output,$tag,$attr){
+			if ( $tag === 'acf' && in_array($attr['field'],['osm_layer_marker','osm_layer','osm','leaflet_layer_marker','leaflet_layer','leaflet' ] ) ) {
+				$output .= sprintf('<pre>get_post_meta() %s</pre>',var_export( get_post_meta(get_the_ID(), $attr['field'], true ),true ));
+				$output .= sprintf('<pre>get_field() %s</pre>',var_export( get_field($attr['field'], null, false),true ));
+			}
+			return $output;
+		},10,4);
+
 
 	}
 
