@@ -1,6 +1,10 @@
 <?php
 /**
  *	Map Template Name: Leaflet JS
+ *
+ *	Changelog:
+ *	- 1.3.0: introduced
+ *	- 1.4.0: removed markers attribute. use acf_osm_esc_attr() instead of acf_esc_attr().
  */
 
 // need $field & $value
@@ -15,7 +19,6 @@ $attr = [
 	'data-map-lat'		=> $map['lat'],
 	'data-map-zoom'		=> $map['zoom'],
 	'data-map-layers'	=> $map['layers'],
-	'data-map-markers'	=> $map['markers'],
 ];
 
 

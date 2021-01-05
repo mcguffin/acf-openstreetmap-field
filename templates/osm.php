@@ -1,6 +1,10 @@
 <?php
 /**
  *	Map Template Name: iFrame (OpenStreetMap.org)
+ *
+ *	Changelog:
+ *	- 1.3.0: introduced
+ *	- 1.4.0: use acf_osm_esc_attr() instead of acf_esc_attr()
  */
 
 // need $field & $value

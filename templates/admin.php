@@ -2,6 +2,10 @@
 /**
  *	Map Template Name: Admin
  *	Private: 1
+ *
+ *	Changelog:
+ *	- 1.3.0: introduced
+ *	- 1.4.0: user layers and controls data model
  */
 
 /** @var Array $args [

@@ -1,7 +1,10 @@
 <?php
 /**
- *	Map Template Name: Admin
+ *	Map Template Name: Field Group Admin
  *	Private: 1
+ *
+ *	Changelog:
+ *	- 1.4.0: introduced
  */
 
 /** @var Array $args [
