@@ -1,44 +1,4 @@
 
-.osm-markers {
-	a[data-name="locate-marker"] {
-		color:$wp-blue;
-	}
-	a[data-name="remove-marker"] {
-		color:$wp-black;
-	}
-	.osm-marker {
-		position: relative;
-		display:flex;
-		flex-direction: column;
-		// align-items: center;
-		// padding:0.25em 0;
-		border-bottom:1px solid $wp-gray;
-		padding:6px 8px 2px 8px;
-		&:nth-of-type(2n) {
-			background-color:$wp-gray-lightest;
-		}
-		&.focus {
-			background-color:rgba($wp-yellow,0.5);
-		}
-		input[type="text"] {
-			width:100%;
-			font-size:20px;
-			font-weight:300;
-		}
-		.latlng {
-			margin:auto;
-		}
-		[data-label="lat"] {
-			&::after {
-				content:' / ';
-			}
-		}
-		[data-label="lat"],[data-label="lng"] {
-			color: $wp-gray-dark;
-			font-size:11px;
-		}
-	}
-}
 
 @keyframes pling {
 	0% { left:0;top:0;width:12px;height:12px; opacity:0; }

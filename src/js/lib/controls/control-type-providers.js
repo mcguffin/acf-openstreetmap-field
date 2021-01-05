@@ -88,6 +88,10 @@ class ControlTypeProviders extends ControlType {
 			}
 
 		} )
+		// layer alias for default OpenStreetMap
+		if ( ! layers['OpenStreetMap'] && !! layers['OpenStreetMap.Mapnik'] ) {
+			layers['OpenStreetMap'] = layers['OpenStreetMap.Mapnik']
+		}
 		// expose this function
 		this.setLayer = (pkey) => {
 			layers[pkey].addTo( this.map )
