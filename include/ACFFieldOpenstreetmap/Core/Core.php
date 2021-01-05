@@ -27,6 +27,11 @@ class Core extends Plugin {
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', [ $this, 'register_assets' ] );
 		}
+		add_action( 'admin_head', function(){
+			//echo '<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\' \'unsafe-inline\'">';
+		} );
+
+		
 
 		$args = func_get_args();
 		parent::__construct( ...$args );

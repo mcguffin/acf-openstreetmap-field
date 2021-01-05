@@ -42,7 +42,6 @@ class Templates extends Singleton {
 			return;
 		}
 
-		$template = str_replace( $this->template_dirname . '/', '', $slug );
 
 		$locate = [ "{$slug}.php" ];
 		if ( ! is_null( $name ) ) {
@@ -54,26 +53,29 @@ class Templates extends Singleton {
 			return;
 		}
 
-		// we'll have to handle it
 		$core = Core::instance();
-		$file = $core->get_plugin_dir() . 'templates/' . str_replace( $this->template_dirname . '/', '', $slug ) . '.php';
-
-		if ( file_exists( $file ) ) {
-			load_template( $file, false, $args );
+		$slug = str_replace( $this->template_dirname . '/', '', $slug );
+		foreach ( [ "{$slug}-{$name}.php", "{$slug}.php" ] as $filename ) {
+			$file = $core->get_plugin_dir() . 'templates/' . $filename;
+			if ( file_exists( $file ) ) {
+				load_template( $file, false, $args );
+				return;
+			}
 		}
+		// we'll have to handle it
+		$file = $core->get_plugin_dir() . 'templates/' . str_replace( $this->template_dirname . '/', '', $slug ) . '.php';
 
 	}
 
 	public function render_template( $slug, $name = null, $args = [] ) {
 		
-		if ( false /* self::is_supported() || ! count( $args )*/ ) {
-			get_template_part( $slug, $name, $args );
+		if ( self::is_supported() || ! count( $args ) ) {
+			get_template_part( $this->template_dirname . '/' . $slug, $name, $args );
 		} else {
 			// legacy
 			$core = Core::instance();
-			$slug = str_replace( 'osm-map/', '', $slug );
 			$search_names = [ $slug ];
-			$search_paths = [ STYLESHEETPATH . '/osm-map', TEMPLATEPATH. '/osm-map', $core->get_plugin_dir() . 'templates' ];
+			$search_paths = [ STYLESHEETPATH . '/' . $this->template_dirname, TEMPLATEPATH. '/' . $this->template_dirname, $core->get_plugin_dir() . 'templates' ];
 			if ( ! is_null( $name ) ) {
 				array_unshift( $search_names, sprintf( '%s-%s', $slug, $name ) );
 			}
@@ -81,6 +83,7 @@ class Templates extends Singleton {
 			foreach ( $search_names as $name ) {
 				foreach ( array_unique( $search_paths ) as $path ) {
 					$file = sprintf( '%1$s/%2$s.php', $path, $name );
+
 					if ( file_exists( $file ) ) {
 
 						return $this->render_template_file( $file, $args );

@@ -27,7 +27,7 @@ class AbstractMapWidget extends \WP_Widget {
 		
 		$map = Model\Map::fromArray( $instance['map'] );
 		
-		$templates->render_template( 'osm-map/'. $this->map_type, null, [
+		$templates->render_template( $this->map_type, null, [
 			'input_id'		=> $this->get_field_id( 'map' ),
 			'input_name'	=> $this->get_field_name( 'map' ),
 			'map'			=> $map->toArray(),
@@ -88,7 +88,7 @@ class AbstractMapWidget extends \WP_Widget {
 		<div>
 			<?php 
 
-			$templates->render_template( 'osm-map/admin', $this->map_type, [
+			$templates->render_template( 'admin', $this->map_type, [
 				'input_id'		=> $this->get_field_id( 'map' ),
 				'input_name'	=> $this->get_field_name( 'map' ),
 				'map'			=> $map->toArray(),

@@ -299,7 +299,7 @@ class OpenStreetMap extends \acf_field {
 		}
 		$map_args['controls'][] =  [ 'type' => 'locator' ];
 
-		$templates->render_template( 'osm-map/admin', $field['return_format'], $map_args );
+		$templates->render_template( 'admin', $field['return_format'], $map_args );
 
 	}
 
@@ -473,7 +473,7 @@ class OpenStreetMap extends \acf_field {
 			];
 
 			ob_start();
-			$templates->render_template( 'osm-maps/admin', null, $map_args );
+			$templates->render_template( 'admin', null, $map_args );
 			$value = ob_get_clean();
 		} else {
 			$templates = Core\Templates::instance();
@@ -483,7 +483,7 @@ class OpenStreetMap extends \acf_field {
 				'map' => $map->toArray(),
 			];
 			ob_start();
-			$templates->render_template( 'osm-maps/' . $field['return_format'], null, $map_args );
+			$templates->render_template( $field['return_format'], null, $map_args );
 			$value = ob_get_clean();
 
 		}
