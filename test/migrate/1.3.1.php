@@ -27,7 +27,7 @@ $postdata = [
 <h3>Leaflet Layers</h3>
 [acf field="leaflet_layer"]
 
-<h3>Leaflet Layers</h3>
+<h3>Leaflet</h3>
 [acf field="leaflet"]
 
 <h3>Leaflet Legacy Theme Override</h3>
@@ -61,7 +61,7 @@ VALUES
 	({$post_id}, '_osm', 'field_5ff40a8162e11'),
 	({$post_id}, 'osm_layer_marker_legacy', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:17:\"OpenStreetMap.HOT\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_osm_layer_marker_legacy', 'field_5ff5c5a1d9d28'),
-	({$post_id}, 'leaflet_layer_marker', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:18:\"Stamen.TonerHybrid\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, 'leaflet_layer_marker', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:2:{i:0;s:17:\"OpenStreetMap.HOT\";i:1;s:18:\"Stamen.TonerHybrid\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_leaflet_layer_marker', 'field_5ff40aa862e12'),
 	({$post_id}, 'leaflet_layer', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:2:{i:0;s:17:\"OpenStreetMap.HOT\";i:1;s:18:\"Stamen.TonerHybrid\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_leaflet_layer', 'field_5ff40ae462e13'),
