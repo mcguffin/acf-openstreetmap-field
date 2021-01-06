@@ -72,7 +72,7 @@ class Templates extends Singleton {
 		if ( self::is_supported() || ! count( $args ) ) {
 			get_template_part( $this->template_dirname . '/' . $slug, $name, $args );
 		} else {
-			// legacy
+			// workaround get_template_part in legacy WP < 5.5
 			$core = Core::instance();
 			$search_names = [ $slug ];
 			$search_paths = [ STYLESHEETPATH . '/' . $this->template_dirname, TEMPLATEPATH. '/' . $this->template_dirname, $core->get_plugin_dir() . 'templates' ];
@@ -90,30 +90,7 @@ class Templates extends Singleton {
 					}
 				}
 			}
-			//Core\Templates::render_template( 'osm-maps/admin', $field['return_format'], $map_args );
-			// legacy
-			/*$attr = [
-				'data-editor-config'	=> json_encode([
-					'allow_providers'		=> $field['allow_map_layers'],
-					'restrict_providers'	=> array_values( $providers ),
-					'max_markers'			=> $max_markers,
-					'name_prefix'			=> $field['name'],
-				]),
-				'class'				=> 'leaflet-map',
-				'data-height'		=> $field['height'],
-				'data-map'			=> 'leaflet',
-				'data-map-lng'		=> $field['value']['lng'],
-				'data-map-lat'		=> $field['value']['lat'],
-				'data-map-zoom'		=> $field['value']['zoom'],
-				'data-map-layers'	=> $field['value']['layers'],
-				'data-map-markers'	=> $field['value']['markers'],
-			];
-
-			?>
-			<div <?php echo acf_esc_attr( $attr ) ?>></div>
-			<?php
-			*/
-		}		// workaround get_template_part for WP < 5.5
+		}
 	}
 
 	private function render_template_file( $_template_file, $args ) {
@@ -151,7 +128,7 @@ class Templates extends Singleton {
 						'name' => $file_data['name'],
 						'private' => boolval( $file_data['private'] ),
 					];
-				}			
+				}
 			}
 		}
 		return array_filter( $this->templates, function( $template ) {

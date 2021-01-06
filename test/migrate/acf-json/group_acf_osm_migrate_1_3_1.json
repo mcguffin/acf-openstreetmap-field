@@ -24,7 +24,16 @@
             ],
             "allow_map_layers": 1,
             "height": 400,
-            "max_markers": 1
+            "max_markers": 1,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
         },
         {
             "center_lat": 53.55064,
@@ -48,7 +57,16 @@
             ],
             "allow_map_layers": 1,
             "height": 400,
-            "max_markers": 0
+            "max_markers": 0,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
         },
         {
             "center_lat": 53.55064,
@@ -72,7 +90,40 @@
             ],
             "allow_map_layers": 0,
             "height": 400,
-            "max_markers": 0
+            "max_markers": 0,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
+        },
+        {
+            "center_lat": 53.5507112,
+            "center_lng": 10.0006485,
+            "zoom": 12,
+            "key": "field_5ff5c5a1d9d28",
+            "label": "OSM Layer Marker Theme Legacy",
+            "name": "osm_layer_marker_legacy",
+            "type": "open_street_map",
+            "instructions": "Show Layer OpenStreetMap.HOT, Markers allowed",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "osm_legacy",
+            "layers": [
+                "OpenStreetMap.HOT"
+            ],
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": 1
         },
         {
             "center_lat": 53.55064,
@@ -97,7 +148,16 @@
             ],
             "allow_map_layers": 1,
             "height": 400,
-            "max_markers": ""
+            "max_markers": "",
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
         },
         {
             "center_lat": 53.55064,
@@ -122,11 +182,20 @@
             ],
             "allow_map_layers": 1,
             "height": 400,
-            "max_markers": 0
+            "max_markers": 0,
+            "leaflet_map": {
+                "center_lat": "-37.81411",
+                "center_lng": "144.96328",
+                "zoom": "14",
+                "layers": [
+                    "OpenStreetMap"
+                ],
+                "markers": []
+            }
         },
         {
             "center_lat": 53.5660064,
-            "center_lng": 9.7817802,
+            "center_lng": 9.7816086,
             "zoom": 12,
             "key": "field_5ff40afe62e14",
             "label": "Leaflet",
@@ -142,13 +211,38 @@
             },
             "return_format": "leaflet",
             "layers": [
-                "Stamen.TonerHybrid",
                 "OpenStreetMap.Mapnik",
                 "Stamen.TonerHybrid"
             ],
             "allow_map_layers": 0,
             "height": 400,
             "max_markers": 0
+        },
+        {
+            "center_lat": 53.5507112,
+            "center_lng": 10.0006485,
+            "zoom": 12,
+            "key": "field_5ff5c4d35538c",
+            "label": "Leaflet Layer Marker Theme Legacy",
+            "name": "leaflet_layer_marker_legacy",
+            "type": "open_street_map",
+            "instructions": "Layers: Stadia.OSMBright + OpenFireMap + HEREv3.trafficFlow",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "leaflet_legacy",
+            "layers": [
+                "Stadia.OSMBright",
+                "OpenFireMap",
+                "HEREv3.trafficFlow"
+            ],
+            "allow_map_layers": 1,
+            "height": 400,
+            "max_markers": ""
         }
     ],
     "location": [

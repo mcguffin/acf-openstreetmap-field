@@ -3,14 +3,15 @@
  *	Map Template Name: Field Group Admin
  *	Private: 1
  *
- *	Changelog:
- *	- 1.4.0: introduced
+ *	## Changelog:
+ *	### 1.4.0
+ *	 - introduce field group admin template 
  */
 
 /** @var Array $args [
  *		'input_id'		=> String,
  *		'input_name'	=> String,
- *		'map' 			=> Array @see Model\Map::toArray(),
+ *		'map_object'	=> (object \ACFFieldOpenstreetmap\Model\Map)
  *		'controls' 		=> Array [
  *			[ 'type' => String, 'config' => Mixed ],
  *			...
@@ -20,7 +21,7 @@
  *		]
  *	]
  */
-$map = $args['map'];
+$map = $args['map_object']->toArray();
 $controls = $args['controls'];
 $field = $args['field'];
 
@@ -46,7 +47,7 @@ $attr = [
 	'data-map-zoom'		=> $map['zoom'],
 	'data-map-layers'	=> $map['layers'],
 	'data-map-controls'	=> $controls,
-//	'data-map-markers'	=> $map['markers'],
+	'data-map-version'	=> $map['version'],
 ];
 
 ?>

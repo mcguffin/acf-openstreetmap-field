@@ -3,15 +3,18 @@
  *	Map Template Name: Admin
  *	Private: 1
  *
- *	Changelog:
- *	- 1.3.0: introduced
- *	- 1.4.0: user layers and controls data model
+ *	## Changelog:
+ *	### 1.3.0
+ *	 - introduce admin template
+ *
+ *	## 1.4.0
+ *	 - use 1.4.0 map model
  */
 
 /** @var Array $args [
  *		'input_id'		=> String,
  *		'input_name'	=> String,
- *		'map' 			=> Array @see Model\Map::toArray(),
+ *		'map_object'	=> (object \ACFFieldOpenstreetmap\Model\Map)
  *		'controls' 		=> Array [
  *			[ 'type' => String, 'config' => Mixed ],
  *			...
@@ -21,9 +24,8 @@
  *		]
  *	]
  */
-$map = $args['map'];
+$map = $args['map_object']->toArray();
 $controls = $args['controls'];
-$field = $args['field'];
 
 $has_markers = (boolean) count( array_filter( $controls, function( $control ) {
 	return 'markers' === $control['type'];
@@ -46,14 +48,14 @@ if ( $has_providers ) {
 
 $attr = [
 	'class'				=> 'leaflet-map',
-	'data-height'		=> $field['height'],
+	'data-height'		=> $map['height'],
 	'data-map'			=> 'leaflet',
 	'data-map-lng'		=> $map['lng'],
 	'data-map-lat'		=> $map['lat'],
 	'data-map-zoom'		=> $map['zoom'],
 	'data-map-layers'	=> $map['layers'],
 	'data-map-controls'	=> $controls,
-//	'data-map-markers'	=> $map['markers'],
+	'data-map-version'	=> $map['version'],
 ];
 
 ?>

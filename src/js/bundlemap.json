@@ -18,10 +18,13 @@
     "js/admin.js"
   ],
   "src/js/lib/maps.js": [
-    "js/admin.js",
-    "js/main.js"
+    "js/main.js",
+    "js/admin.js"
   ],
   "src/js/lib/leaflet/control-corner.js": [
+    "js/admin.js"
+  ],
+  "src/js/lib/controls/control-type-providers.js": [
     "js/admin.js"
   ],
   "src/js/lib/controls/control-type.js": [
@@ -30,45 +33,42 @@
   "src/js/lib/controls/control-type-zoompan.js": [
     "js/admin.js"
   ],
-  "src/js/lib/controls/control-type-providers.js": [
-    "js/admin.js"
-  ],
   "src/js/lib/controls/control-type-markers.js": [
     "js/admin.js"
   ],
   "src/js/lib/controls/control-type-locator.js": [
     "js/admin.js"
   ],
-  "src/js/lib/layers/index.js": [
-    "js/admin.js",
-    "js/main.js"
-  ],
   "src/js/lib/dom/is-visible.js": [
-    "js/admin.js",
-    "js/main.js"
+    "js/main.js",
+    "js/admin.js"
+  ],
+  "src/js/lib/layers/index.js": [
+    "js/main.js",
+    "js/admin.js"
   ],
   "src/js/lib/misc/geocoder.js": [
     "js/admin.js"
-  ],
-  "src/js/lib/layers/layer-type.js": [
-    "js/admin.js",
-    "js/main.js"
   ],
   "src/js/lib/layers/layer-type-provider.js": [
     "js/admin.js",
     "js/main.js"
   ],
+  "src/js/lib/layers/layer-type.js": [
+    "js/main.js",
+    "js/admin.js"
+  ],
   "src/js/lib/layers/layer-type-markers.js": [
-    "js/admin.js",
-    "js/main.js"
+    "js/main.js",
+    "js/admin.js"
   ],
   "src/js/lib/leaflet/control/wp-button.js": [
     "js/admin.js"
   ],
-  "src/js/lib/leaflet/control/message.js": [
+  "src/js/lib/leaflet/control/marker-list.js": [
     "js/admin.js"
   ],
-  "src/js/lib/leaflet/control/marker-list.js": [
+  "src/js/lib/leaflet/control/message.js": [
     "js/admin.js"
   ]
 }

@@ -9,9 +9,11 @@ import { options, providers } from 'pluginOptions'
 import { isVisible } from 'dom/is-visible'
 
 const L = leaflet
-
+console.log(options)
+console.log(providers)
 let domObserver
 
+const mapSelector = '[data-map="leaflet"][data-map-version]'
 const visibilityObserver = new ResizeObserver( function(entries,observer) {
 	entries.forEach( entry => {
 		// @see https://github.com/jquery/jquery/blob/a503c691dc06c59acdafef6e54eca2613c6e4032/test/data/jquery-1.9.1.js#L7469-L7481
@@ -25,7 +27,8 @@ const visibilityObserver = new ResizeObserver( function(entries,observer) {
 	})
 });
 
-
+console.log(L.TileLayer)
+console.log(L.TileLayer.Provider)
 // setup configured providers
 L.TileLayer.Provider.providers = providers;
 
@@ -34,11 +37,11 @@ L.TileLayer.Provider.providers = providers;
 if ( !! MutationObserver ) {
 	domObserver = new MutationObserver( function(entries,observer) {
 		entries.forEach(function(entry){
-			if ( entry.target.matches('[data-map="leaflet"]') ) {
+			if ( entry.target.matches(mapSelector) ) {
 				setupMap(entry.target)
 			}
-			if ( entry.target.querySelectorAll('[data-map="leaflet"]').length ) {
-				entry.target.querySelectorAll('[data-map="leaflet"]').forEach( setupMap )
+			if ( entry.target.querySelectorAll(mapSelector).length ) {
+				entry.target.querySelectorAll(mapSelector).forEach( setupMap )
 			}
 		})
 	});
@@ -121,7 +124,7 @@ const setupMap = el => {
 }
 
 const setupMaps = () => {
-	document.querySelectorAll('[data-map="leaflet"]').forEach( setupMap )
+	document.querySelectorAll(mapSelector).forEach( setupMap )
 	!!domObserver && domObserver.observe( document.body, { subtree: true, childList: true } );
 }
 

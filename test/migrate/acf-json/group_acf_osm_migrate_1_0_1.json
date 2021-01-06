@@ -174,7 +174,7 @@
             "label": "Leaflet",
             "name": "leaflet",
             "type": "open_street_map",
-            "instructions": "Layers CartoDB.DarkMatterNoLabels + Stamen.TonerHybrid\r\nTheres a bug in 1.0.1 where map layers are not corrent when they were not selectable and have been changed priorly.",
+            "instructions": "Show Layer CartoDB.DarkMatterNoLabels + Stamen.TonerHybrid\r\nBug in 1.0.1: Allow Layers = false => Edit post => Change layers in Field Group => Result: layers are displayed falsly",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -220,7 +220,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": true,
+    "active": false,
     "description": "",
     "modified": 1609825573
 }

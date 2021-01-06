@@ -87,39 +87,54 @@ class OSMProviders extends Singleton {
  	 *	]
 	 *	@return string URL
 	 */
-	public function get_iframe_url( $config ) {
-		//*
-		$config = Model\Map::fromArray( $config )->toLegacyArray();
-		/*/
-		$config = wp_parse_args( $config, [
-			'lat' => 0,
-			'lng' => 0,
-			'zoom' => 0,
-			'markers' => [],
-			'layers' => [],
-		]);
-		//*/
+	public function get_iframe_url( $map ) {
+
+		// convert to 1.4.0 model
+		$config = Model\Map::fromArray( $map )->toArray();
+
 		$bbox = Helper\MapHelper::getBbox( $config['lat'], $config['lng'], $config['zoom'] );
 		$args = [
 			'bbox'	=> implode( ',', $bbox ),
 		];
 
 		foreach ( $config['layers'] as $layer ) {
+			$layer = wp_parse_args( $layer, [ 'type' => false ] );
 
-			$i_layer = array_search( $layer, $this->iframe_layers );
+			if ( 'provider' === $layer['type'] ) {
+				if ( $i_layer = $this->find_map_layer_code( $layer ) ) {
+					$args['layer'] = $i_layer;
+				}
+			// 
+			}
+			if ( 'markers' === $layer['type'] ) {
 
-			if ( false !== $i_layer ) {
-				$args['layer'] = $i_layer;
-				break;
+				foreach ( $layer['config'] as $marker ) {
+			
+					$args['marker'] = implode(',', [ $marker['lat'], $marker['lng'] ] );
+					break;
+
+				}
 			}
 		}
 
-		foreach ( $config['markers'] as $marker ) {
-			$args['marker'] = implode(',', [ $marker['lat'], $marker['lng'] ] );
-			break;
-		}
-
 		return add_query_arg( $args, 'https://www.openstreetmap.org/export/embed.html' );
+
+	}
+
+	private function find_map_layer_code( $map_layer ) {
+		$map_layer = wp_parse_args( $map_layer, [
+			'config' => false,
+		] );
+
+		return array_search( $map_layer['config'], $this->iframe_layers );		
+	}
+
+	private function find_link_layer_code( $map_layer ) {
+		$map_layer = wp_parse_args( $map_layer, [
+			'config' => false,
+		] );
+
+		return array_search( $map_layer['config'], $this->link_layers );
 
 	}
 
@@ -143,40 +158,52 @@ class OSMProviders extends Singleton {
  	 *	]
 	 *	@return string URL
 	 */
-	public function get_link_url( $config ) {
+	public function get_link_url( $map ) {
 
-		$config = wp_parse_args( $config, [
-			'lat' => 0,
-			'lng' => 0,
-			'zoom' => 0,
-			'markers' => [],
-			'layers' => [],
-		]);
+		// convert to 1.4.0 model
+		$config = Model\Map::fromArray( $map )->toArray();
 
 		$args = [];
 
-		foreach ( $config['markers'] as $marker ) {
-			$args['mlat'] = $marker['lat'];
-			$args['mlon'] = $marker['lng'];
-		}
-		
-		$map_link = add_query_arg( $args, 'https://www.openstreetmap.org/' );
-		$map_link .= '#map=' . implode( '/', [ 
+		$link = 'https://www.openstreetmap.org/';
+		$hash = 'map=' . implode( '/', [ 
 			intval( $config['zoom'] ), 
 			floatval( $config['lat'] ), 
 			floatval( $config['lng'] ) 
 		] );
 
+		foreach ( $config['layers'] as $layer ) {
+			$layer = wp_parse_args( $layer, [ 'type' => false ] );
+
+			if ( 'provider' === $layer['type'] ) {
+				
+				if ( $l_layer = $this->find_link_layer_code( $layer ) ) {
+					$hash .= '&layers='.$l_layer;
+				}
+			// 
+			}
+			if ( 'markers' === $layer['type'] ) {
+
+				foreach ( $layer['config'] as $marker ) {
+					$args['mlat'] = $marker['lat'];
+					$args['mlon'] = $marker['lng'];
+					break;
+
+				}
+			}
+		}
+
+		$link = add_query_arg( $args, $link );
 
 		foreach ( $config['layers'] as $layer ) {
 			$l_layer = array_search( $layer, $this->link_layers );
 			if ( false !== $l_layer ) {
-				$map_link .= '&layers='.$l_layer;
+				
 				break;
 			}
 		}
 
-		return $map_link;
+		return $link . '#' . $hash;
 	}
 
 }

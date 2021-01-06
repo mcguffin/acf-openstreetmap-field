@@ -137,6 +137,7 @@ Please refer to this wiki article for a [migration guide](https://github.com/mcg
  - Feature: Map Widgets
  - Feature: Map Blocks
  - Feature: ACF is no longer a dependecy
+ - Feature: Make Theme overides work in WP < 5.5
  - UI: Neat locator button animation
  - JS: ESNext Refactoring
  - JS: Remove jQuery dependency (in frontend) and Backbone (in Backend)

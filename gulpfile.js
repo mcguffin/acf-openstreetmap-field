@@ -16,6 +16,7 @@ const child_process	= require( 'child_process' );
 
 const package = require( './package.json' );
 
+const uglify = require('uglify-js');
 
 let bundlemap = {};
 
@@ -143,6 +144,32 @@ function scss_task(debug) {
 }
 
 
+
+
+gulp.task( 'js-legacy:frontend', function(cb) {
+	let js = [
+		'./node_modules/resize-observer-polyfill/dist/ResizeObserver.js',
+		'./node_modules/leaflet/dist/leaflet-src.js',
+		'./node_modules/leaflet-control-geocoder/dist/Control.Geocoder.js',
+		'./node_modules/leaflet-providers/leaflet-providers.js',
+		'./node_modules/leaflet.locatecontrol/src/L.Control.Locate.js',
+		'./src/js-legacy/acf-osm-frontend.js',
+	].map( function(file) {
+		return fs.readFileSync( file, { encoding: 'utf-8' } )
+	} ).join("\n");
+
+	let output = 'assets/legacy/js/acf-osm-frontend'
+
+	fs.writeFileSync( output + '.js', js, { encoding: 'utf-8' } )
+	js = uglify.minify(js).code
+	fs.writeFileSync( output + '.min.js', js, { encoding: 'utf-8' } )
+	cb();
+
+} );
+
+
+
+
 gulp.task('build:js', js_task( false ) );
 gulp.task('build:scss', scss_task( false ) );
 
@@ -153,6 +180,7 @@ gulp.task('dev:scss', scss_task( true ) );
 gulp.task('watch', cb => {
 	gulp.watch( config.sass.watchPaths,gulp.parallel('dev:scss'));
 	gulp.watch('./src/js/**/*.js',gulp.parallel('dev:js'));
+	gulp.watch('./src/js-legacy/**/*.js',gulp.parallel('js-legacy:frontend'));
 	gulp.watch('./languages/*.pot',gulp.parallel('i18n:fix-pot'));
 	gulp.watch('./languages/*.po',gulp.parallel('i18n:make-json'));
 });
@@ -161,19 +189,9 @@ gulp.task('dev',gulp.series('dev:scss','dev:js','watch'));
 
 gulp.task('i18n', gulp.series( 'i18n:make-pot','i18n:fix-pot','i18n:make-json'));
 
-gulp.task('build', gulp.series('build:js','build:scss', 'i18n'));
+gulp.task('build', gulp.series('build:js','build:scss', 'i18n', 'js-legacy:frontend' ));
 
 gulp.task('default',cb => {
 	console.log('run either `gulp build` or `gulp dev`');
 	cb();
 });
-
-
-if ( process.argv.length > 3 && parseInt( process.argv[3] ) ) {
-	gulp.task( process.argv[3], gulp.series('dev'));
-}
-
-
-module.exports = {
-	build:gulp.series('build')
-}

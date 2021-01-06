@@ -18,6 +18,9 @@ $postdata = [
 <h3>OSM Layers</h3>
 [acf field="osm"]
 
+<h3>OSM Legacy Theme Override</h3>
+[acf field="osm_layer_marker_legacy"]
+
 <h3>Leaflet Layers Marker</h3>
 [acf field="leaflet_layer_marker"]
 
@@ -26,6 +29,9 @@ $postdata = [
 
 <h3>Leaflet Layers</h3>
 [acf field="leaflet"]
+
+<h3>Leaflet Legacy Theme Override</h3>
+[acf field="leaflet_layer_marker_legacy"]
 ',
 	'post_type' => 'post',
 ];
@@ -47,20 +53,22 @@ $post_id = wp_insert_post($postdata);
 
 $sql = "INSERT INTO `{$table_prefix}postmeta` ( `post_id`, `meta_key`, `meta_value`)
 VALUES
-	({$post_id}, 'osm_layer_marker', 'a:7:{s:3:\"lat\";d:44.9142494;s:3:\"lng\";d:14.8974609;s:4:\"zoom\";i:8;s:7:\"markers\";a:1:{i:0;a:4:{s:5:\"label\";s:17:\"Jadovno, Kroatien\";s:13:\"default_label\";s:17:\"Jadovno, Kroatien\";s:3:\"lat\";d:44.52001;s:3:\"lng\";d:15.2325439;}}s:7:\"address\";s:17:\"Jadovno, Kroatien\";s:6:\"layers\";a:1:{i:0;s:13:\"OpenStreetMap\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, 'osm_layer_marker', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:17:\"OpenStreetMap.HOT\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_osm_layer_marker', 'field_5ff40a3d62e0f'),
-	({$post_id}, 'osm_layer', 'a:7:{s:3:\"lat\";d:53.5534527;s:3:\"lng\";d:9.9578842;s:4:\"zoom\";i:18;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:13:\"OpenStreetMap\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, 'osm_layer', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:17:\"OpenStreetMap.HOT\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_osm_layer', 'field_5ff40a7062e10'),
-	({$post_id}, 'osm', 'a:7:{s:3:\"lat\";d:53.5534244;s:3:\"lng\";d:9.9579739;s:4:\"zoom\";i:18;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:17:\"OpenStreetMap.HOT\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, 'osm', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:17:\"OpenStreetMap.HOT\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_osm', 'field_5ff40a8162e11'),
-	({$post_id}, 'leaflet_layer_marker', 'a:7:{s:3:\"lat\";d:53.5653947;s:3:\"lng\";d:9.9560165;s:4:\"zoom\";i:12;s:7:\"markers\";a:5:{i:0;a:4:{s:5:\"label\";s:43:\"Am Brunnenhof 1, 22767, Hamburg Deutschland\";s:13:\"default_label\";s:43:\"Am Brunnenhof 1, 22767, Hamburg Deutschland\";s:3:\"lat\";d:53.5534388;s:3:\"lng\";d:9.9578585;}i:1;a:4:{s:5:\"label\";s:43:\"Ohnhorststraße, 22609, Hamburg Deutschland\";s:13:\"default_label\";s:43:\"Ohnhorststraße, 22609, Hamburg Deutschland\";s:3:\"lat\";d:53.5591072;s:3:\"lng\";d:9.8643494;}i:2;a:4:{s:5:\"label\";s:48:\"Großmannstraße 185, 20539, Hamburg Deutschland\";s:13:\"default_label\";s:48:\"Großmannstraße 185, 20539, Hamburg Deutschland\";s:3:\"lat\";d:53.5360567;s:3:\"lng\";d:10.0638199;}i:3;a:4:{s:5:\"label\";s:46:\"Bramfelder Straße, 22305, Hamburg Deutschland\";s:13:\"default_label\";s:46:\"Bramfelder Straße, 22305, Hamburg Deutschland\";s:3:\"lat\";d:53.58561;s:3:\"lng\";d:10.0494003;}i:4;a:4:{s:5:\"label\";s:55:\"Haus 4 Gazellenkamp, 22529 Hamburg, Hamburg Deutschland\";s:13:\"default_label\";s:55:\"Haus 4 Gazellenkamp, 22529 Hamburg, Hamburg Deutschland\";s:3:\"lat\";d:53.5992627;s:3:\"lng\";d:9.9494934;}}s:7:\"address\";s:43:\"Am Brunnenhof 1, 22767, Hamburg Deutschland\";s:6:\"layers\";a:3:{i:0;s:16:\"CartoDB.Positron\";i:1;s:18:\"Stamen.TonerHybrid\";i:2;s:18:\"HEREv3.trafficFlow\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, 'osm_layer_marker_legacy', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:17:\"OpenStreetMap.HOT\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, '_osm_layer_marker_legacy', 'field_5ff5c5a1d9d28'),
+	({$post_id}, 'leaflet_layer_marker', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:18:\"Stamen.TonerHybrid\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_leaflet_layer_marker', 'field_5ff40aa862e12'),
-	({$post_id}, 'leaflet_layer', 'a:7:{s:3:\"lat\";d:52.4903066;s:3:\"lng\";d:13.4321594;s:4:\"zoom\";i:10;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:3:{i:0;s:20:\"Stadia.AlidadeSmooth\";i:1;s:17:\"Stamen.TonerLines\";i:2;s:18:\"HEREv3.trafficFlow\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, 'leaflet_layer', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:2:{i:0;s:17:\"OpenStreetMap.HOT\";i:1;s:18:\"Stamen.TonerHybrid\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_leaflet_layer', 'field_5ff40ae462e13'),
-	({$post_id}, 'leaflet', 'a:7:{s:3:\"lat\";d:50.06904;s:3:\"lng\";d:19.9734879;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:3:{i:0;s:18:\"Stamen.TonerHybrid\";i:1;s:20:\"OpenStreetMap.Mapnik\";i:2;s:18:\"Stamen.TonerHybrid\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, 'leaflet', 'a:7:{s:3:\"lat\";d:53.5660064;s:3:\"lng\";d:9.7816086;s:4:\"zoom\";i:12;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:2:{i:0;s:20:\"OpenStreetMap.Mapnik\";i:1;s:18:\"Stamen.TonerHybrid\";}s:7:\"version\";s:5:\"1.3.1\";}'),
 	({$post_id}, '_leaflet', 'field_5ff40afe62e14'),
-	({$post_id}, 'map', 'a:7:{s:3:\"lat\";d:43.8820573;s:3:\"lng\";d:17.7264404;s:4:\"zoom\";i:8;s:7:\"markers\";a:0:{}s:7:\"address\";s:0:\"\";s:6:\"layers\";a:1:{i:0;s:17:\"OpenStreetMap.HOT\";}s:7:\"version\";s:5:\"1.3.1\";}'),
-({$post_id}, '_map', 'field_5fe884aa95558');";
+	({$post_id}, 'leaflet_layer_marker_legacy', 'a:7:{s:3:\"lat\";d:53.5507112;s:3:\"lng\";d:10.0006485;s:4:\"zoom\";i:12;s:7:\"markers\";a:2:{i:0;a:4:{s:5:\"label\";s:42:\"Parkstraße 35, 22605, Hamburg Deutschland\";s:13:\"default_label\";s:42:\"Parkstraße 35, 22605, Hamburg Deutschland\";s:3:\"lat\";d:53.5529481;s:3:\"lng\";d:9.8808289;}i:1;a:4:{s:5:\"label\";s:40:\"Maukestieg 2, 22119, Hamburg Deutschland\";s:13:\"default_label\";s:40:\"Maukestieg 2, 22119, Hamburg Deutschland\";s:3:\"lat\";d:53.5425448;s:3:\"lng\";d:10.1094818;}}s:7:\"address\";s:42:\"Parkstraße 35, 22605, Hamburg Deutschland\";s:6:\"layers\";a:3:{i:0;s:16:\"Stadia.OSMBright\";i:1;s:11:\"OpenFireMap\";i:2;s:18:\"HEREv3.trafficFlow\";}s:7:\"version\";s:5:\"1.3.1\";}'),
+	({$post_id}, '_leaflet_layer_marker_legacy', 'field_5ff5c4d35538c');";
 
 $GLOBALS['wpdb']->query("DELETE FROM `{$table_prefix}postmeta` WHERE post_id = {$post_id}");
 $GLOBALS['wpdb']->query($sql);

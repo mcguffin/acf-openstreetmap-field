@@ -19,6 +19,9 @@ class Map implements MapItemInterface {
 	/** @var Int zoom 0..22 */
 	private $zoom;
 
+	/** @var Int */
+	private $height;
+
 	/** @var MapLayers[] */
 	private $layers = [];
 
@@ -42,11 +45,12 @@ class Map implements MapItemInterface {
 			'lat' => 0,
 			'lng' => 0,
 			'zoom' => 0,
+			'height' => 400,
 			'layers' => [],
 			'version' => '0.0.0',
 		] );
 
-		if ( version_compare( $array['version'], '1.3.2', '<' ) ) {
+		if ( version_compare( $array['version'], '1.4.0', '<' ) ) {
 			return self::fromLegacyArray( $array );
 		} else if ( isset( $array['place_id'] ) ) {
 			return self::fromACFGoogleMapsField( $array );
@@ -55,7 +59,7 @@ class Map implements MapItemInterface {
 		$array['layers'] = array_map( [ 'ACFFieldOpenstreetmap\Model\MapLayer', 'fromArray' ], $array['layers'] );
 		$array['version'] = Core\Core::instance()->get_version();
 
-		return new Map( $array['lat'], $array['lng'], $array['zoom'], $array['layers'], $array['version'] );
+		return new Map( $array['lat'], $array['lng'], $array['zoom'], $array['height'], $array['layers'], $array['version'] );
 	}
 
 	/**
@@ -66,7 +70,7 @@ class Map implements MapItemInterface {
 	 *		'lng' => 0,
 	 *		'zoom' => 0,
 	 *		'layers' => [ 0 => 'MapProvider.mapVariant' ],
-	 *		'markers' => [ [ 'lat' => ..., 'lng' => ..., ...] ],
+	 *		'markers' => [ [ 'lat' => ..., 'lng' => ..., 'label' => ..., ...] ],
 	 * ]
 	 *	@return Map Instance
 	 */
@@ -147,10 +151,11 @@ class Map implements MapItemInterface {
 	 *	@param Int $zoom
 	 *	@param Array $layers
 	 */
-	protected function __construct( $lat, $lng, $zoom, $layers, $version ) {
+	protected function __construct( $lat, $lng, $zoom, $height, $layers, $version ) {
 		$this->lat = (float) $lat;
 		$this->lng = (float) $lng;
 		$this->zoom = (int) $zoom;
+		$this->height = (int) $height;
 		$this->layers = (array) $layers;
 		$this->version = $version;
 		
@@ -177,9 +182,59 @@ class Map implements MapItemInterface {
 			'lng' => $this->lng,
 			'lat' => $this->lat,
 			'zoom' => $this->zoom,
+			'height' => $this->height,
 			'layers' => array_map( [ $this, 'toArrayCallback' ], $this->layers ),
 			'version' => $this->version,
 		];
+	}
+
+	/**
+	 *	@return Array [ 'Provider.variant', 'AnotherProvider.variant', ... ]
+	 */
+	public function getProviders() {
+		$providers = [];
+		foreach ( $this->layers as $layer ) {
+			if ( 'provider' === $layer->type ) {
+				$providers[] = $layer->config;
+			}
+		}
+		return $providers;
+	}
+
+	/**
+	 *	@param Array [ 'Provider.variant', 'AnotherProvider.variant', ... ]
+	 *	@return Map $this
+	 */
+	public function setProviders( $providers ) {
+		// remove providers
+		$provider_layers = array_map( function($provider) {
+			return MapLayer::fromArray( ['type' => 'provider', 'config' => $provider, ] );
+		}, $providers );
+
+		$this->layers = array_merge(
+			$provider_layers,
+
+			array_filter( $this->layers, function($layer) {
+				return $layer->type !== 'provider';
+			} )			
+		);
+	}
+
+	/**
+	 *	@return Array [
+ 	 *			[ 'lng' => (float), 'lng' => (float) ... ], 
+	 *			...
+ 	 *	]
+	 */
+	public function getMarkers() {
+		$markers = [];
+
+		foreach ( $this->layers as $layer ) {
+			if ( 'markers' === $layer->type ) {
+				$markers = array_merge( $markers, $layer->toArray()['config'] );
+			}
+		}
+		return $markers;
 	}
 
 	/**
@@ -200,18 +255,6 @@ class Map implements MapItemInterface {
 	 */
 	public function toLegacyArray() {
 
-		$layers = [];
-		$markers = [];
-
-		foreach ( $this->layers as $layer ) {
-			if ( 'provider' === $layer->type ) {
-				$layers[] = $layer->config;
-			} else if ( 'markers' === $layer->type ) {
-				$layer->toArray()['config'];
-				$markers = array_merge( $markers, $layer->toArray()['config'] );
-			}
-		}
-
 		/*
 		add center_lng, center_lat, address!
 		*/
@@ -219,8 +262,8 @@ class Map implements MapItemInterface {
 			'lng' => $this->lng,
 			'lat' => $this->lat,
 			'zoom' => $this->zoom,
-			'layers' => $layers,
-			'markers' => $markers,
+			'layers' => $this->getProviders(),
+			'markers' => $this->getMarkers(),
 		];
 	}
 

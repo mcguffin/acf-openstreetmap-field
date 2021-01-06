@@ -24,18 +24,19 @@ class AbstractMapWidget extends \WP_Widget {
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
-		
-		$map = Model\Map::fromArray( $instance['map'] );
-		
-		$templates->render_template( $this->map_type, null, [
+
+		$map = Model\Map::fromArray( $instance['map'] + [ 'height' => $instance['height'] ] );
+
+		$templates->render_template( $this->map_type, 'widget', [
 			'input_id'		=> $this->get_field_id( 'map' ),
 			'input_name'	=> $this->get_field_name( 'map' ),
-			'map'			=> $map->toArray(),
+			'map_object'	=> $map,
+			'map'			=> $map->toLegacyArray(),
 			'field'			=> [
 				'height'	=> $instance['height'],
 			],
 		] );
-		
+
 		echo $args['after_widget'];
 	}
 
@@ -91,15 +92,12 @@ class AbstractMapWidget extends \WP_Widget {
 			$templates->render_template( 'admin', $this->map_type, [
 				'input_id'		=> $this->get_field_id( 'map' ),
 				'input_name'	=> $this->get_field_name( 'map' ),
-				'map'			=> $map->toArray(),
+				'map_object'	=> $map,
 				'controls'		=> [
 					[ 'type' => 'zoompan' ],
 					[ 'type' => 'providers', ],
 					[ 'type' => 'markers', 'config' => [ 'max_markers' => false ] ],
 					[ 'type' => 'locator' ],
-				],
-				'field'			=> [
-					'height'	=> 400,
 				],
 			] );
 			?>
@@ -127,7 +125,7 @@ class AbstractMapWidget extends \WP_Widget {
 
 		return $new_instance;
 	}
-	
+
 	/**
 	 *	Setup default map
 	 */

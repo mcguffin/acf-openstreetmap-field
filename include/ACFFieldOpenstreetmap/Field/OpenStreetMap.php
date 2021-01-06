@@ -122,12 +122,13 @@ class OpenStreetMap extends \acf_field {
 
 		// return_format
 		acf_render_field_setting( $field, [
-			'label'			=> __('Return Format','acf'),
+			'label'			=> __( 'Return Format', 'acf' ),
 			'instructions'	=> '',
 			'type'			=> 'radio',
 			'name'			=> 'return_format',
 			'choices'		=> [
-				'raw'			=> __("Raw Data",'acf-openstreetmap-field'),
+				'raw'			=> __( 'Raw Data', 'acf-openstreetmap-field' ),
+				'object'		=> __( 'Map Object', 'acf-openstreetmap-field' ),
 			] + $return_choices,
 			'layout'	=>	'horizontal',
 		]);
@@ -141,12 +142,6 @@ class OpenStreetMap extends \acf_field {
 			'return_format'		=> 'field-group',
 			'max_markers'		=> 0,
 			'attr'				=> [
-				'data-editor-config'	=> [
-					// 'allow_providers'		=> true,
-					// 'restrict_providers'	=> [],
-					// 'max_markers'			=> 0, // no markers
-					// 'name_prefix'			=> $field['prefix'],
-				],
 				'data-map-layers'		=> $field['layers'],
 			],
 			'value'	=> [
@@ -249,7 +244,9 @@ class OpenStreetMap extends \acf_field {
 		if ( is_null( $field['value'] ) ) {
 			$field['value'] = $this->sanitize_value( [], $field, 'display' );
 		}
+
 		$map = Model\Map::fromArray( $field['value'] );
+		// $map->setDefaultLayers($field['layers']);
 		// value
 		//$field['value'] = wp_parse_args( $field['value'], $this->default_values );
 
@@ -266,7 +263,7 @@ class OpenStreetMap extends \acf_field {
 		$map_args = [
 			'input_id'		=> $field['id'],
 			'input_name'	=> $field['name'],
-			'map'			=> $map->toArray(),
+			'map_object'	=> $map,
 			'controls'		=> [],
 			'field'			=> $field,
 		];
@@ -383,17 +380,17 @@ class OpenStreetMap extends \acf_field {
  	 */
 	private function sanitize_value( $value, $field, $context = '' ) {
 
-		$map = Model\Map::fromArray( $value );
-
-		$value = $map->toArray();
-
-		if ( 'display' === $context ) { // display + edit
-			$value = wp_parse_args( $value, [
-				'lat'	=> $field['center_lat'],
-				'lng'	=> $field['center_lng'],
-				'zoom'	=> $field['zoom'],
-			]);
+		$map = Model\Map::fromArray( wp_parse_args( $value, [
+			'lat'	=> $field['center_lat'],
+			'lng'	=> $field['center_lng'],
+			'zoom'	=> $field['zoom'],
+		]) );
+		
+		/// set map layers
+		if ( ! count( $map->getProviders() ) ) {
+			$map->setProviders( $field['layers' ] );
 		}
+		$value = $map->toArray();
 
 		return array_intersect_key( $value, $this->default_values );
 
@@ -452,19 +449,28 @@ class OpenStreetMap extends \acf_field {
 			return $value;
 		}
 
+
 		if ( 'raw' === $field['return_format'] ) {
 
-			$value = $this->sanitize_value( $value, $field, 'display' );
+			$map = Model\Map::fromArray( $value );
+
+			// ensure
+			$value = $map->toLegacyArray(); //$this->sanitize_value( $value, $field, 'display' );
 
 			// ensure backwards compatibility <= 1.0.1
 			$value['center_lat'] = $value['lat'];
 			$value['center_lng'] = $value['lng'];
+
+		} else if ( 'object' === $field['return_format'] ) {
+			$value = Model\Map::fromArray( $value );
+
 		} else if ( 'admin' === $field['return_format'] ) {
-			$templates = Core\Templates::instance();
+			// render map admin
 			$map = Model\Map::fromArray( $value );
+			$templates = Core\Templates::instance();
 			$map_args = [
 				'field' => $field,
-				'map' => $map->toArray(),
+				'map_object' => $map,
 				'controls' => [
 					['type' => 'zoompan', ],
 					[ 'type' => 'providers', ],
@@ -475,12 +481,15 @@ class OpenStreetMap extends \acf_field {
 			ob_start();
 			$templates->render_template( 'admin', null, $map_args );
 			$value = ob_get_clean();
+
 		} else {
+			// regular output
 			$templates = Core\Templates::instance();
-			$map = Model\Map::fromArray( $value );
+			$map = Model\Map::fromArray( $value + [ 'height' => $field['height'] ] );
 			$map_args = [
 				'field' => $field,
-				'map' => $map->toArray(),
+				'map_object' => $map,
+				'map' => $map->toLegacyArray(), // legacy compatibility
 			];
 			ob_start();
 			$templates->render_template( $field['return_format'], null, $map_args );

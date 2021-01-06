@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-01-05T11:44:42+00:00\n"
+"POT-Creation-Date: 2021-01-06T15:31:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: acf-openstreetmap-field\n"
@@ -34,58 +34,58 @@ msgstr ""
 msgid "https://github.com/mcguffin"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:125
+#: include/ACFFieldOpenstreetmap/Core/Core.php:129
 msgid "Search..."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:126
+#: include/ACFFieldOpenstreetmap/Core/Core.php:130
 msgid "Nothing found..."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:127
+#: include/ACFFieldOpenstreetmap/Core/Core.php:131
 msgid "My location"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:128
+#: include/ACFFieldOpenstreetmap/Core/Core.php:132
 msgid "Locate Marker"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:129
+#: include/ACFFieldOpenstreetmap/Core/Core.php:133
 msgid "Remove Marker"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:131
+#: include/ACFFieldOpenstreetmap/Core/Core.php:135
 msgid "Add Marker at location"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:133
+#: include/ACFFieldOpenstreetmap/Core/Core.php:137
 msgid "Fit markers into view"
 msgstr ""
 
 #. translators: address format for marker labels (street level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
-#: include/ACFFieldOpenstreetmap/Core/Core.php:136
+#: include/ACFFieldOpenstreetmap/Core/Core.php:140
 msgid "{building} {road} {house_number}"
 msgstr ""
 
 #. translators: address format for marker labels (city level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
-#: include/ACFFieldOpenstreetmap/Core/Core.php:138
+#: include/ACFFieldOpenstreetmap/Core/Core.php:142
 msgid "{postcode} {city} {town} {village} {hamlet}"
 msgstr ""
 
 #. translators: address format for marker labels (country level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
-#: include/ACFFieldOpenstreetmap/Core/Core.php:140
+#: include/ACFFieldOpenstreetmap/Core/Core.php:144
 msgid "{state} {country}"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:144
+#: include/ACFFieldOpenstreetmap/Core/Core.php:148
 msgid "Double click to add Marker."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:146
+#: include/ACFFieldOpenstreetmap/Core/Core.php:150
 msgid "Tap and hold to add Marker."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:148
+#: include/ACFFieldOpenstreetmap/Core/Core.php:152
 msgid "Drag Marker to move."
 msgstr ""
 
@@ -99,64 +99,68 @@ msgstr ""
 msgid "Raw Data"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:136
-msgid "Map Appearance"
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:131
+msgid "Map Object"
 msgstr ""
 
 #: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:137
+msgid "Map Appearance"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:138
 msgid "Set zoom, center and select layers being displayed."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:162
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:157
 msgid "Map Position"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:163
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:174
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:158
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:169
 msgid "Center the initial map"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:166
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:161
 msgid "lat"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:173
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:168
 msgid "Center"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:177
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:172
 msgid "lng"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:185
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:180
 msgid "Zoom"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:186
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:181
 msgid "Set the initial zoom level"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:191
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:186
 msgid "zoom"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:198
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:193
 msgid "Allow layer selection"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:208
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:203
 msgid "Customize the map height"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:217
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:212
 msgid "Max. number of Markers"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:218
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:213
 msgid "Leave empty for infinite markers"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:530
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:539
 msgid "Please set a marker on the map."
 msgstr ""
 
@@ -254,15 +258,15 @@ msgstr ""
 msgid "Disable Layer variants"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Widget/AbstractMapWidget.php:60
+#: include/ACFFieldOpenstreetmap/Widget/AbstractMapWidget.php:61
 msgid "Title:"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Widget/AbstractMapWidget.php:73
+#: include/ACFFieldOpenstreetmap/Widget/AbstractMapWidget.php:74
 msgid "Height:"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Widget/AbstractMapWidget.php:84
+#: include/ACFFieldOpenstreetmap/Widget/AbstractMapWidget.php:85
 msgid "px"
 msgstr ""
 
@@ -278,6 +282,6 @@ msgstr ""
 msgid "An OpenStreetMap iFrame"
 msgstr ""
 
-#: templates/osm.php:25
+#: templates/osm.php:62
 msgid "View Larger Map"
 msgstr ""

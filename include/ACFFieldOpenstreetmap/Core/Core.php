@@ -55,6 +55,7 @@ class Core extends Plugin {
 		}
 
 		/* frontend */
+		// SCRIPTS
 		/**
 		 *	Marker Icon HTML. Return false to use image icon (either leaflet default or return value of filter `acf_osm_marker_icon`)
 		 *
@@ -65,8 +66,9 @@ class Core extends Plugin {
 		if ( $marker_html !== false ) {
 			$marker_html = wp_kses_post( $marker_html );
 		}
-
-		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/main.js' ), [], $this->get_version(), true );
+		
+		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/legacy/js/acf-osm-frontend.js' ), ['jquery'], $this->get_version(), true );
+		wp_register_script( 'acf-osm-main', $this->get_asset_url( 'assets/js/main.js' ), [], $this->get_version(), true );
 
 		$osm_options = [
 			'options'	=> [
@@ -107,12 +109,14 @@ class Core extends Plugin {
 			],
 			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
 		];
+		wp_localize_script('acf-osm-main','acf_osm', $osm_options );
 		wp_localize_script('acf-osm-frontend','acf_osm', $osm_options );
 
+		// STYLES
 		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), [], $this->get_version() );
 
 		/* backend */
-
+		// SCRIPTS
 		// field js
 		wp_register_script( 'acf-osm-admin', $this->get_asset_url('assets/js/admin.js'), [ /*'acf-input','wp-backbone'*/], $this->get_version(), true );
 		wp_localize_script( 'acf-osm-admin', 'acf_osm_admin',[
@@ -148,18 +152,20 @@ class Core extends Plugin {
 								=> __('Drag Marker to move.', 'acf-openstreetmap-field' ),
 			],
 		]);
-
 		wp_localize_script( 'acf-osm-admin', 'acf_osm', $osm_options );
+
+		// acf field group js
 		wp_register_script( 'acf-osm-field-group', $this->get_asset_url('assets/js/acf-field-group.js'), [ 'acf-field-group' ], $this->get_version(), true );
-		
+
+		// settings js
+		wp_register_script( 'acf-osm-settings', $this->get_asset_url( 'assets/js/acf-osm-settings.js' ), ['acf-osm-frontend'], $this->get_version() );
+
+		// STYLES
 		// field css
 		wp_register_style( 'acf-osm-admin', $this->get_asset_url( 'assets/css/acf-osm-admin.css' ), ['acf-input','dashicons'], $this->get_version() );
 
 		// settings css
 		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), ['leaflet'], $this->get_version() );
-
-		// settings js
-		wp_register_script( 'acf-osm-settings', $this->get_asset_url( 'assets/js/acf-osm-settings.js' ), ['acf-osm-frontend'], $this->get_version() );
 
 
 	}

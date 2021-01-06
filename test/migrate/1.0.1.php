@@ -24,7 +24,7 @@ $postdata = [
 <h3>Leaflet Layers</h3>
 [acf field="leaflet_layer"]
 
-<h3>Leaflet Layers</h3>
+<h3>Leaflet</h3>
 [acf field="leaflet"]
 ',
 	'post_type' => 'post',
@@ -57,8 +57,9 @@ VALUES
 	({$post_id}, '_leaflet_layer_marker', 'field_5ff40aa862e12'),
 	({$post_id}, 'leaflet_layer', 'a:5:{s:10:\"center_lat\";s:17:\"49.61070993807422\";s:10:\"center_lng\";s:18:\"16.358642578125004\";s:4:\"zoom\";s:1:\"7\";s:6:\"layers\";a:3:{i:0;s:16:\"CartoDB.Positron\";i:1;s:10:\"OpenSeaMap\";i:2;s:18:\"Stamen.TonerHybrid\";}s:7:\"markers\";a:0:{}}'),
 	({$post_id}, '_leaflet_layer', 'field_5ff40ae462e13'),
-	({$post_id}, 'leaflet', 'a:5:{s:10:\"center_lat\";s:17:\"28.98892237190413\";s:10:\"center_lng\";s:13:\"-13.623046875\";s:4:\"zoom\";s:1:\"7\";s:6:\"layers\";a:3:{i:0;s:18:\"Stamen.TonerHybrid\";i:1;s:20:\"OpenStreetMap.Mapnik\";i:2;s:18:\"Stamen.TonerHybrid\";}s:7:\"markers\";a:0:{}}'),
+	({$post_id}, 'leaflet', 'a:5:{s:10:\"center_lat\";s:18:\"49.999795027127405\";s:10:\"center_lng\";s:18:\"20.000610351562504\";s:4:\"zoom\";s:1:\"6\";s:6:\"layers\";a:2:{i:0;s:26:\"CartoDB.DarkMatterNoLabels\";i:1;s:18:\"Stamen.TonerHybrid\";}s:7:\"markers\";a:0:{}}'),
 	({$post_id}, '_leaflet', 'field_5ff40afe62e14');";
+
 
 $GLOBALS['wpdb']->query("DELETE FROM `{$table_prefix}postmeta` WHERE post_id = {$post_id}");
 $GLOBALS['wpdb']->query($sql);

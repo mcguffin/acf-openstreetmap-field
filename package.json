@@ -47,15 +47,18 @@
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-sourcemaps": "^3.0.0",
+    "gulp-uglify": "^3.0.2",
     "leaflet": "^1.7.1",
     "leaflet-control-geocoder": "^2.1.0",
     "leaflet-providers": "^1.11.0",
     "resize-observer-polyfill": "^1.5.1",
     "tinyify": "^3.0.0",
+    "uglify-js": "^3.12.4",
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
     "jquery": "^3.5.1",
+    "leaflet.locatecontrol": "^0.72.0",
     "sass": "^1.30.0"
   },
   "browserify-shim": {
