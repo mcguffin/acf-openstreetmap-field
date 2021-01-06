@@ -108,7 +108,7 @@ class OSMProviders extends Singleton {
 			}
 			if ( 'markers' === $layer['type'] ) {
 
-				foreach ( $layer['config'] as $marker ) {
+				foreach ( $layer['markers'] as $marker ) {
 			
 					$args['marker'] = implode(',', [ $marker['lat'], $marker['lng'] ] );
 					break;
@@ -123,18 +123,18 @@ class OSMProviders extends Singleton {
 
 	private function find_map_layer_code( $map_layer ) {
 		$map_layer = wp_parse_args( $map_layer, [
-			'config' => false,
+			'provider' => false,
 		] );
 
-		return array_search( $map_layer['config'], $this->iframe_layers );		
+		return array_search( $map_layer['provider'], $this->iframe_layers );		
 	}
 
 	private function find_link_layer_code( $map_layer ) {
 		$map_layer = wp_parse_args( $map_layer, [
-			'config' => false,
+			'provider' => false,
 		] );
 
-		return array_search( $map_layer['config'], $this->link_layers );
+		return array_search( $map_layer['provider'], $this->link_layers );
 
 	}
 
@@ -184,7 +184,7 @@ class OSMProviders extends Singleton {
 			}
 			if ( 'markers' === $layer['type'] ) {
 
-				foreach ( $layer['config'] as $marker ) {
+				foreach ( $layer['markers'] as $marker ) {
 					$args['mlat'] = $marker['lat'];
 					$args['mlon'] = $marker['lng'];
 					break;

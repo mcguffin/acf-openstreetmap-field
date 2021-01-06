@@ -16,16 +16,12 @@
  *		'controls' 		=> Array [
  *			[ 'type' => String, 'config' => Mixed ],
  *			...
- *		],
- *		'field'			=> [
- *			'height' => Integer,
  *		]
  *	]
  */
 
 $map = $args['map_object']->toArray();
 $controls = $args['controls'];
-$field = $args['field'];
 
 $has_markers = (boolean) count( array_filter( $controls, function( $control ) {
 	return 'markers' === $control['type'];
@@ -56,7 +52,7 @@ $controls = array_map( function( $control ) {
 
 $attr = [
 	'class'				=> 'leaflet-map',
-	'data-height'		=> $field['height'],
+	'data-height'		=> $map['height'],
 	'data-map'			=> 'leaflet',
 	'data-map-lng'		=> $map['lng'],
 	'data-map-lat'		=> $map['lat'],

@@ -20,12 +20,22 @@ Remove dependencies
    - [x] Use DOM objects everywhere
  - [ ] ACF
    - [x] Seperate Field-logic from map logic (PHP)
-   - [x] Introduce map widget
-   - [ ] Introduce map block
+
+Integrations
+------------
+ - [x] Introduce map widget
+ - [ ] Introduce map block
+ - [ ] Test with Elementor
+ - [ ] Test with Divi
 
 Settings
 --------
- - [ ] Default Layer, Position, Zoom
+ - [ ] Default Map Appearance
+ - [ ] ...
+
+Model
+-----
+ - [ ] Layer-Config: { type: '<type>', type_specific_prop: ..., ... }
 
 ESNext
 ------

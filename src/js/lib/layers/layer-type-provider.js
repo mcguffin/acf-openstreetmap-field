@@ -48,6 +48,9 @@ const createLayers = ( data, map ) => {
 
 
 class LayerTypeProvider extends LayerType {
+	default = {
+		provider: 'OpenStreetMap.Mapnik'
+	}
 
 	setupMap() {
 		let maxzoom = 100;
@@ -56,7 +59,7 @@ class LayerTypeProvider extends LayerType {
 				cancelable: true,
 				detail: {
 					map: this.map,
-					mapData: [ this.config ], // TODO
+					mapData: [ this.provider ], // TODO
 					leaflet: L,
 				}
 			}),
@@ -70,10 +73,10 @@ class LayerTypeProvider extends LayerType {
 		}
 
 
-		const layer_config = options.layer_config[ this.config.split('.')[0] ] || { options: {} },
-			layer = L.tileLayer.provider( this.config, layer_config.options ).addTo( this.map );
+		const layer_config = options.layer_config[ this.provider.split('.')[0] ] || { options: {} },
+			layer = L.tileLayer.provider( this.provider, layer_config.options ).addTo( this.map );
 
-		layer.providerKey = this.config;
+		layer.providerKey = this.provider;
 
 		if ( !! layer.options.maxZoom ) {
 			maxzoom = Math.min( layer.options.maxZoom, maxzoom )

@@ -13,17 +13,13 @@
  *		'input_name'	=> String,
  *		'map_object'	=> (object \ACFFieldOpenstreetmap\Model\Map)
  *		'controls' 		=> Array [
- *			[ 'type' => String, 'config' => Mixed ],
+ *			[ 'type' => String, 'prop' => Mixed, ... ],
  *			...
- *		],
- *		'field'			=> [
- *			'height' => Integer,
  *		]
  *	]
  */
 $map = $args['map_object']->toArray();
 $controls = $args['controls'];
-$field = $args['field'];
 
 $has_providers = (boolean) count( array_filter( $controls, function( $control ) {
 	return 'providers' === $control['type'];
@@ -40,7 +36,7 @@ $controls = array_map( function( $control ) {
 
 $attr = [
 	'class'				=> 'leaflet-map',
-	'data-height'		=> $field['height'],
+	'data-height'		=> $map['height'],
 	'data-map'			=> 'leaflet',
 	'data-map-lng'		=> $map['lng'],
 	'data-map-lat'		=> $map['lat'],

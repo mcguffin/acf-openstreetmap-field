@@ -6,13 +6,17 @@ const L = leaflet
 
 class LayerTypeMarkers extends LayerType {
 
+	default = {
+		markers: []
+	}
+
 	setupMap() {
 		const createEvt = new CustomEvent('acf-osm-map-create-markers', { 
 				bubbles: true,
 				cancelable: true,
 				detail: {
 					map: this.map,
-					mapData: this.config
+					mapData: this.markers
 				}
 			} ),
 			el = this.map.getContainer(),
@@ -34,7 +38,7 @@ class LayerTypeMarkers extends LayerType {
 			defaultMarkerConfig.icon = new L.icon( options.marker.icon );
 		}
 
-		this.config.forEach( markerData => {
+		this.markers.forEach( markerData => {
 			let marker;
 
 			const createEvt = new CustomEvent( 'acf-osm-map-marker-create', {

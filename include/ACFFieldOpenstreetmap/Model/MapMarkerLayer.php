@@ -14,10 +14,12 @@ class MapMarkerLayer extends MapLayer {
 	/**
 	 *	@inheritdoc
 	 */
-	public function __construct( $type, $config ) {
+	public function __construct( $type, array $config ) {
 		// make 
-		$config = (array) $config;
-		$config = array_map( [ 'ACFFieldOpenstreetmap\Model\MapMarker', 'fromArray' ], $config )
+		$config = wp_parse_args($config, [
+			'markers' => [],
+		]);
+		$config['markers'] = array_map( [ 'ACFFieldOpenstreetmap\Model\MapMarker', 'fromArray' ], $config['markers'] );
 
 		parent::__construct( $type, $config );		
 	}
@@ -29,9 +31,9 @@ class MapMarkerLayer extends MapLayer {
 		
 		$array = parent::toArray();
 
-		$array['config'] = array_map( function( $marker ) {
+		$array['markers'] = array_map( function( $marker ) {
 			return $marker->toArray();
-		}, $array['config'] );
+		}, $array['markers'] );
 		
 		return $array;
 	}

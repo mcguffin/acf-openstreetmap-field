@@ -9,8 +9,6 @@ import { options, providers } from 'pluginOptions'
 import { isVisible } from 'dom/is-visible'
 
 const L = leaflet
-console.log(options)
-console.log(providers)
 let domObserver
 
 const mapSelector = '[data-map="leaflet"][data-map-version]'
@@ -27,8 +25,6 @@ const visibilityObserver = new ResizeObserver( function(entries,observer) {
 	})
 });
 
-console.log(L.TileLayer)
-console.log(L.TileLayer.Provider)
 // setup configured providers
 L.TileLayer.Provider.providers = providers;
 

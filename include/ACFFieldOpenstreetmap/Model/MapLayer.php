@@ -15,7 +15,7 @@ class MapLayer implements MapItemInterface {
 	/** @var String 'leaflet', 'markers' */
 	private $type;
 	
-	/** @var Mixed Layer configuration */
+	/** @var Array Layer configuration */
 	private $config;
 	
 	public static function registerType( $class ) {
@@ -33,7 +33,6 @@ class MapLayer implements MapItemInterface {
 
 		$array = wp_parse_args($array,[
 			'type' => '',
-			'config' => null,
 		]);
 
 		if ( isset( MapLayer::$types[ $array['type'] ] ) ) {
@@ -42,7 +41,7 @@ class MapLayer implements MapItemInterface {
 			$class = get_called_class();
 		}
 
-		$inst = new $class( $array['type'], $array['config'] );
+		$inst = new $class( $array['type'], array_diff_key( $array, [ 'type' => '' ] ) );
 		return $inst;
 	}
 
@@ -50,7 +49,7 @@ class MapLayer implements MapItemInterface {
 	 *	@param String $type
 	 *	@param Mixed $config
 	 */
-	public function __construct( $type, $config ) {
+	public function __construct( $type, array $config ) {
 		$this->type = $type;
 		$this->config = $config;
 	}
@@ -66,21 +65,23 @@ class MapLayer implements MapItemInterface {
 			return $this->type;
 		} else if ( 'config' === $what ) {
 			return $this->config;
+		} else if ( isset( $this->config[$what] ) ) {
+			return $this->config[$what];
 		}
 	}
 
 	/**
 	 *	@return Array [
 	 *		'type' => String,
-	 *		'config' => Mixed,
+	 *		'prop1' => Mixed,
+	 *		'prop2' => ...,
+	 *		...
 	 * ]
 	 */
 	public function toArray() {
 		return [
 			'type' => $this->type,
-			'config' => $this->config,
-		];
+		] + $this->config;
 	}
-
 
 }

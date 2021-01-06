@@ -37,7 +37,7 @@ class ControlTypeProviders extends ControlType {
 		return Object.assign( mapData, {
 			layers: [].concat(
 				this.value.map( pkey => {
-					return { type: 'provider', config: pkey }
+					return { type: 'provider', provider: pkey }
 				} ), // regenerate provider layers
 				mapData.layers.filter( layer => 'provider' !== layer.type ) // keep non-provider layers
 			)
@@ -93,8 +93,12 @@ class ControlTypeProviders extends ControlType {
 			layers['OpenStreetMap'] = layers['OpenStreetMap.Mapnik']
 		}
 		// expose this function
-		this.setLayer = (pkey) => {
-			layers[pkey].addTo( this.map )
+		this.setLayer = pkey => {
+			if ( !! layers[pkey] ) {
+				layers[pkey].addTo( this.map )				
+			} else {
+				console.trace(`[ACF OpenStreetMap] layer ${pkey} does not exist.`)
+			}
 		}
 
 		this.map.getContainer().addEventListener('acf-osm-map-create-layers', e => {

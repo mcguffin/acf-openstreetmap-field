@@ -101,14 +101,16 @@ class Map implements MapItemInterface {
 		}
 
 		// convert markers
-		$marker_layer = new MapLayer( 'markers', $array['markers'] );
+		$marker_layer = new MapLayer( 'markers', [ 'markers' => $array['markers']] );
 		unset( $array['markers'] );
 
 		// generate layers
 		$array['layers'] = array_map( function( $layer_config ) {
 			if ( is_string( $layer_config ) ) {
-				$layer = MapLayer::fromArray( ['type' => 'provider', 'config' => $layer_config, ] );
+				// add provider layer
+				$layer = MapLayer::fromArray( ['type' => 'provider', 'provider' => $layer_config, ] );
 			} else if ( is_array( $layer_config ) && isset( $layer_config['type'] ) ) {
+				// 
 				$layer = MapLayer::fromArray( $layer_config );
 			} else {
 				return null;
@@ -131,8 +133,8 @@ class Map implements MapItemInterface {
 			'address' => '',
 		] );
 		$array['layers'] = [
-			[ 'type' => 'provider', 'config' => 'OpenStreetMap.Mapnik' ],
-			[ 'type' => 'markers', 'config' => [
+			[ 'type' => 'provider', 'provider' => 'OpenStreetMap.Mapnik' ],
+			[ 'type' => 'markers', 'markers' => [
 				[ 
 					'lat' => $gm_array['lat'], 
 					'lng' => $gm_array['lng'], 
@@ -172,7 +174,7 @@ class Map implements MapItemInterface {
 	 *		'lat' => Float,
 	 *		'zoom' => Integer,
 	 *		'layers' => [
-	 *			[ 'type' => String, 'config' => Mixed ],
+	 *			[ 'type' => String, 'prop1' => Mixed, 'prop2' => Mixed, ... ],
 	 *			...
  	 *		],
 	 *	]
@@ -195,7 +197,7 @@ class Map implements MapItemInterface {
 		$providers = [];
 		foreach ( $this->layers as $layer ) {
 			if ( 'provider' === $layer->type ) {
-				$providers[] = $layer->config;
+				$providers[] = $layer->provider;
 			}
 		}
 		return $providers;
@@ -208,7 +210,7 @@ class Map implements MapItemInterface {
 	public function setProviders( $providers ) {
 		// remove providers
 		$provider_layers = array_map( function($provider) {
-			return MapLayer::fromArray( ['type' => 'provider', 'config' => $provider, ] );
+			return MapLayer::fromArray( ['type' => 'provider', 'provider' => $provider, ] );
 		}, $providers );
 
 		$this->layers = array_merge(
@@ -231,7 +233,7 @@ class Map implements MapItemInterface {
 
 		foreach ( $this->layers as $layer ) {
 			if ( 'markers' === $layer->type ) {
-				$markers = array_merge( $markers, $layer->toArray()['config'] );
+				$markers = array_merge( $markers, $layer->toArray()['markers'] );
 			}
 		}
 		return $markers;

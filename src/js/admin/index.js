@@ -28,11 +28,12 @@ class MapAdmin {
 	}
 	set input(input) {
 		this.#input = input
+		console.log('set input',JSON.parse( input.value ))
 		try {
-			this.#value = JSON.parse( input.value )			
+			this.#value = JSON.parse( input.value )
 		} catch(err) {
 			this.#value = {}
-			console.log('ERR',input.value)
+			console.error('[ACF OpenStreetMap]',input.value)
 		}
 	}
 
@@ -89,7 +90,7 @@ class MapAdmin {
 
 	setupControls( controls ) {
 		return controls.map( 
-			control => controlFactory( { ...control, map: this.#map, cb: ctrl => { 
+			control => controlFactory( { ...control, map: this.#map, cb: ctrl => {
 				this.value = ctrl.mutateMap( Object.assign( {}, this.value ) ); 
 			} } ) 
 		)

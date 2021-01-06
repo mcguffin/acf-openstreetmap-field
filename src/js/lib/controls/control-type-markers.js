@@ -82,17 +82,17 @@ class ControlTypeMarkers extends ControlType {
 	}
 	
 	mutateMap( mapData ) {
-
+console.log('mutateMap',this.markers )
 		return Object.assign( mapData, {
 			layers: [].concat(
 				mapData.layers.filter( layer => 'markers' !== layer.type ),
-				[ { type: 'markers', config: this.value } ]
+				[ { type: 'markers', markers: this.markers } ]
 			)
 		} )
 	}
 
 	setupControl() {
-
+		this.ready = false
 		// this.markerList = this.map.getContainer().parentNode.querySelector('.osm-markers')
 
 		// setup geocoder
@@ -197,13 +197,13 @@ class ControlTypeMarkers extends ControlType {
 				.on( 'add', e => {
 					if ( doGeocode ) {
 						this.geocoder.reverse( marker.getLatLng(), this.map.getZoom(), reverseGeocodeCb )						
-					} else {
+					} else if ( this.ready ) {
 						this.cb( this )
 					}
 
 				})
 				.on( 'remove', e => {
-					this.cb( this )
+					this.cb( this )						
 				} )
 				.on( 'moveend', e => {
 					const latlng = marker.getLatLng()
@@ -270,13 +270,13 @@ class ControlTypeMarkers extends ControlType {
 
 		this.onCreateMarkers = e => {
 			e.preventDefault()
-
 			// add markers
 			e.detail.mapData.forEach( markerData => {
 				// add marker list entry
 				this.addMarker( markerData, false, false )
+				console.log('addMarker',markerData)
 			} )
-
+			this.ready = true
 		}
 
 		this.map.on('locationfound', this.onLocationFound )
@@ -284,7 +284,7 @@ class ControlTypeMarkers extends ControlType {
 
 
 		this.map.getContainer().addEventListener('acf-osm-map-create-markers', this.onCreateMarkers )
-
+		
 	}
 	
 	

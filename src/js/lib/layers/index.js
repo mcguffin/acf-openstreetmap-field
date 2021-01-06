@@ -7,7 +7,8 @@ import LayerTypeMarkers from 'layers/layer-type-markers';
 
 
 module.exports = { 
-	factory: ( { type, config } ) => {
+	factory: ( config ) => {
+		const { type } = config
 		const constr = !! layerTypes[type] ? layerTypes[type] : LayerType
 		return new constr( config )
 	}

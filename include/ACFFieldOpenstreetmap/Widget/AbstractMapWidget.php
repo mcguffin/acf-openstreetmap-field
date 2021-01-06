@@ -118,10 +118,10 @@ class AbstractMapWidget extends \WP_Widget {
 		if ( is_string( $new_instance['map'] ) ) {
 			$new_instance['map'] = json_decode( $new_instance['map'], true );			
 		}
-
+		$map = Model\Map::fromArray( $new_instance['map'] );
 		$new_instance['title'] = sanitize_text_field( $new_instance['title'] );
 		$new_instance['height'] = max( $this->min_height, intval( $new_instance['height'] ) );
-		$new_instance['map'] = Model\Map::fromArray( $new_instance['map'] )->toArray();
+		$new_instance['map'] = $map->toArray();
 
 		return $new_instance;
 	}
@@ -140,8 +140,8 @@ class AbstractMapWidget extends \WP_Widget {
 			'lng'		=> 10.00065,
 			'zoom'		=> 12,
 			'layers'	=> [
-				[ 'type' => 'provider', 'config' => 'OpenStreetMap.Mapnik' ],				
-				[ 'type' => 'markers', 'config' => [] ], 
+				[ 'type' => 'provider', 'provider' => 'OpenStreetMap.Mapnik' ],				
+				[ 'type' => 'markers', 'markers' => [] ], 
 			],
 		]);
 		return $instance;

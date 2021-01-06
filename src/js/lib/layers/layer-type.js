@@ -5,7 +5,8 @@ const registerLayerType = ( type, constructor ) => {
 }
 
 class LayerType {
-	#config;
+	default = {}
+	#config = {};
 	#map;
 
 	get map() {
@@ -22,7 +23,13 @@ class LayerType {
 
 
 	constructor(config) {
-		this.#config = config
+		this.#config = Object.assign( this.default, config )
+		// like php magic getter
+		Object.keys(this.#config).forEach( k => Object.defineProperty( this, k, {
+    		get : function () {
+        		return this.#config[k];
+    		}
+		}) );
 	}
 	
 	/**
