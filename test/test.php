@@ -124,14 +124,7 @@ class PluginTest {
 		// 
 
 
-
-		add_filter('do_shortcode_tag',function($output,$tag,$attr){
-			if ( $tag === 'acf' && in_array($attr['field'],['osm_layer_marker','osm_layer','osm','leaflet_layer_marker','leaflet_layer_marker_legacy','leaflet_layer','leaflet' ] ) ) {
-				$output .= sprintf('<pre>get_post_meta() %s</pre>',var_export( get_post_meta(get_the_ID(), $attr['field'], true ),true ));
-				$output .= sprintf('<pre>get_field() %s</pre>',var_export( get_field($attr['field'], null, false),true ));
-			}
-			return $output;
-		},10,4);
+		require_once __DIR__ . '/migrate/main.php';
 
 
 	}

@@ -1,0 +1,61 @@
+{
+    "key": "group_acf_osm_migrate_gm",
+    "title": "ACF OSM GM",
+    "fields": [
+        {
+            "key": "field_5ff6fa19acf55",
+            "label": "GM",
+            "name": "acf-gm",
+            "type": "google_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "center_lat": 53,
+            "center_lng": 10,
+            "zoom": 14,
+            "height": 400
+        },
+        {
+            "key": "field_5ff6fc0ec0b02",
+            "label": "GM Migrated",
+            "name": "acf-gm-migrated",
+            "type": "open_street_map",
+            "instructions": "Same as GM with just field type changed",
+            "required": 0,
+            "conditional_logic": 0,
+            "return_format": "leaflet",
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "center_lat": 53,
+            "center_lng": 10,
+            "zoom": 14,
+            "height": 400
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "post"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1610021486
+}

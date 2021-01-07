@@ -28,10 +28,11 @@ class MapMarker implements MapItemInterface {
 		$array = wp_parse_args( $array, [
 			'lat' => 0,
 			'lng' => 0,
-			'zoom' => 0,
-			'layers' => [],
-			'markers' => [],
+			'label' => '',
+			'default_label' => '',
+			'data' => [], // keys: geocode, location, acf_googlemaps
 		] );
+		
 	}
 
 	/**

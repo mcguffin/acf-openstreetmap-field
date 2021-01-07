@@ -67,7 +67,7 @@ $GLOBALS['wpdb']->query($sql);
 $group_key = 'group_acf_osm_migrate_1_0_1';
 
 if ( $field_group_post = acf_get_field_group_post($group_key) ) {
-	wp_delete_post($field_group_post->ID,true);
+	acf_delete_field_group( $field_group_post->ID );
 }
 
 $json = file_get_contents( __DIR__ . '/acf-json/'.$group_key.'.json' );

@@ -25,6 +25,18 @@ class Map implements MapItemInterface {
 	/** @var MapLayers[] */
 	private $layers = [];
 
+	/*
+	// ToDo:
+	/** @var Array global map bounds * /
+	private $bounds;
+
+	/** @var Int * /
+	private $min_zoom;
+
+	/** @var Int * /
+	private $max_zoom;
+	*/
+
 	/**
 	 *	@param MapItemInterface $item
 	 *	@return Array representation of item
@@ -139,11 +151,21 @@ class Map implements MapItemInterface {
 					'lat' => $gm_array['lat'], 
 					'lng' => $gm_array['lng'], 
 					'label' => $gm_array['address'], 
-					'default_label' => $gm_array['address'] ],
-					'data' => array_diff_key( $gm_array, [ 'lat' => '', 'lng' => '', 'zoom' => '', 'address' => '' ] ),
+					'default_label' => $gm_array['address'],
+					'data' => [ 'acf_google_map' => $gm_array ],
+				],					
 			] ]
 		];
 		$array['version'] = Core\Core::instance()->get_version();
+		$array = array_intersect_key( $array, [
+			'lng' => '',
+			'lat' => '',
+			'zoom' => '',
+			'height' => '',
+			'layers' => [],
+			'version' => '',
+		] );
+
 		return Map::fromArray( $array );
 	}
 
@@ -151,7 +173,9 @@ class Map implements MapItemInterface {
 	 *	@param Float $lng
 	 *	@param Float $lat
 	 *	@param Int $zoom
+	 *	@param Int $height
 	 *	@param Array $layers
+	 *	@param String $version
 	 */
 	protected function __construct( $lat, $lng, $zoom, $height, $layers, $version ) {
 		$this->lat = (float) $lat;
@@ -159,7 +183,7 @@ class Map implements MapItemInterface {
 		$this->zoom = (int) $zoom;
 		$this->height = (int) $height;
 		$this->layers = (array) $layers;
-		$this->version = $version;
+		$this->version = (string) $version;
 		
 		// sanitation
 		$this->zoom = min( 22, max( 0, intval( $this->zoom ) ) );
@@ -194,13 +218,21 @@ class Map implements MapItemInterface {
 	 *	@return Array [ 'Provider.variant', 'AnotherProvider.variant', ... ]
 	 */
 	public function getProviders() {
-		$providers = [];
-		foreach ( $this->layers as $layer ) {
-			if ( 'provider' === $layer->type ) {
-				$providers[] = $layer->provider;
-			}
-		}
-		return $providers;
+		$providers = array_filter( $this->layers, function($layer) {
+			return 'provider' === $layer->type;
+		} );
+		return array_map( function($layer) {
+			return $layer->provider;
+		}, $providers );
+	}
+
+	/**
+	 *	@return Array [ 'Provider.variant', 'AnotherProvider.variant', ... ]
+	 */
+	public function hasProviders() {
+		count( array_filter( $this->layers, function($layer) {
+			return 'provider' === $layer->type;
+		} ) ) > 0;
 	}
 
 	/**
