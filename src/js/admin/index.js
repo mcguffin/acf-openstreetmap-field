@@ -36,10 +36,25 @@ class MapAdmin {
 			console.error('[ACF OpenStreetMap]',input.value)
 		}
 	}
+	
+	get value() {
+		return this.#value
+	}
+
+	set value( value ) {
+		let prevValue = JSON.stringify(this.#value)
+
+		this.#value = value
+		this.input.value = JSON.stringify( value )
+
+		// required in widget editor
+		if ( this.input.value !== prevValue ) {
+			this.input.dispatchEvent( new Event( 'change', { bubbles: true } ) )			
+		}
+	}
 
 	constructor( map ) {
 		this.#map = map
-		//this.#controls = this.setupControls( controls )
 	}
 
 	addControl( controlConfig ) {
@@ -70,30 +85,6 @@ class MapAdmin {
 		}
 		this.#controls[ controlType ].resetControl()
 		delete( this.#controls[ controlType ] )
-	}
-
-	get value() {
-		return this.#value
-	}
-
-	set value( value ) {
-		let prevValue = JSON.stringify(this.#value)
-
-		this.#value = value
-		this.input.value = JSON.stringify( value )
-
-		// required in widget editor
-		if ( this.input.value !== prevValue ) {
-			this.input.dispatchEvent( new Event( 'change', { bubbles: true } ) )			
-		}
-	}
-
-	setupControls( controls ) {
-		return controls.map( 
-			control => controlFactory( { ...control, map: this.#map, cb: ctrl => {
-				this.value = ctrl.mutateMap( Object.assign( {}, this.value ) ); 
-			} } ) 
-		)
 	}
 
 }

@@ -131,6 +131,7 @@ class Core extends Plugin {
 				'my_location'	=> __( 'My location', 'acf-openstreetmap-field' ),
 				'locate_marker'	=> __( 'Locate Marker', 'acf-openstreetmap-field' ),
 				'remove_marker'	=> __( 'Remove Marker', 'acf-openstreetmap-field' ),
+				'new_marker'	=> __( 'New Marker', 'acf-openstreetmap-field' ),
 				'add_marker_at_location'
 					=> __( 'Add Marker at location', 'acf-openstreetmap-field' ),
 				'fit_markers_in_view'

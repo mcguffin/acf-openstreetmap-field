@@ -180,7 +180,7 @@ L.Control.MarkerList = L.Control.extend({
 		this._container.append()
 	},
 	onAddMarker: function(e) {
-		if ( e.layer.constructor === L.Marker ) {
+		if ( e.layer.constructor === L.Marker && e.layer.options.interactive ) {
 			this._layerGroup.addLayer( e.layer )
 			const latlng = e.layer.getLatLng()
 			const markerData = Object.assign( {

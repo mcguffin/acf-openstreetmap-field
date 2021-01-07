@@ -9,6 +9,7 @@ import { L } from 'maps';
 
 const LocatorControl = L.Control.extend({
 	initialize: function(options) {
+		
 		L.Util.setOptions(this, options);
 
 		this._accuracyMarker = L.circle( L.latLng(0,0), {
@@ -33,9 +34,13 @@ const LocatorControl = L.Control.extend({
 		});
 
 		this._drawsMarkers = false;
-		
 	},
 	onAdd:function() {
+		if ( ! ( 'geolocation' in navigator ) ) {
+			return; // needs testing!
+		}
+		
+		const self = this
 
 		this._container = L.DomUtil.create('div',
 			'leaflet-control-locator leaflet-bar leaflet-control');
@@ -54,6 +59,13 @@ const LocatorControl = L.Control.extend({
 			.on( this._map, 'locationerror', this.errorHandler, this );
 			L.DomEvent.stopPropagation
 		
+		this.__orig_stopLocate = this._map.stopLocate;
+		this._map.stopLocate = function() {
+			self._container.setAttribute( 'data-status', 'idle' )
+			self.__orig_stopLocate.apply( self._map, arguments )
+			self._drawMarkers(false)
+		}
+
 		return this._container;
 	},
 	onRemove:function() {
@@ -65,6 +77,9 @@ const LocatorControl = L.Control.extend({
 			.off(this._link, 'dblclick', L.DomEvent.stopPropagation )
 			.off( this._map, 'locationfound', this.foundHandler, this )
 			.off( this._map, 'locationerror', this.errorHandler, this );
+
+		this._map.stopLocate = this.__orig_stopLocate;
+
 	},
 	clickHandler: function() {
 		const status = this._container.getAttribute( 'data-status' )
@@ -109,7 +124,7 @@ const LocatorControl = L.Control.extend({
 	},
 	stop: function() {
 		this._container.setAttribute( 'data-status', 'idle' )
-		this._map.stopLocate()
+		this.__orig_stopLocate.apply( this._map )
 		this._drawMarkers(false)
 	},
 	_drawMarkers:function( state ) {

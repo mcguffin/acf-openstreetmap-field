@@ -38,8 +38,8 @@ class ControlTypeMarkers extends ControlType {
 
 		this.addOrSetMarker({
 			...e.latlng,
-			label:'New Marker',
-			default_label:'New Marker',
+			label: i18n.new_marker,
+			default_label:i18n.new_marker,
 		})
 	}
 	holdTouchDownHandler(e) {
@@ -54,8 +54,8 @@ class ControlTypeMarkers extends ControlType {
 			self.addMarkerByLatLng( self.map.layerPointToLatLng(lp) )
 			this.addOrSetMarker({
 				...this.map.layerPointToLatLng(lp),
-				label:'New Marker',
-				default_label:'New Marker',
+				label: i18n.new_marker,
+				default_label:i18n.new_marker,
 			})
 
 			this.#holdWaitTo = false;
@@ -71,8 +71,8 @@ class ControlTypeMarkers extends ControlType {
 
 			this.addOrSetMarker({
 				...this.map.layerPointToLatLng(lp),
-				label:'New Marker',
-				default_label:'New Marker',
+				label: i18n.new_marker,
+				default_label:i18n.new_marker,
 			})
 			this.#holdWaitToPointer[ 'p'+e.pointerId ] = false;
 		}, this.#holdTimeout );
@@ -82,7 +82,6 @@ class ControlTypeMarkers extends ControlType {
 	}
 	
 	mutateMap( mapData ) {
-console.log('mutateMap',this.markers )
 		return Object.assign( mapData, {
 			layers: [].concat(
 				mapData.layers.filter( layer => 'markers' !== layer.type ),
@@ -103,7 +102,7 @@ console.log('mutateMap',this.markers )
 				lng: geocode.center.lng,
 				label: geocode.html,
 				default_label: geocode.html,
-				data: geocode.properties
+				data: { geocode: geocode.properties }
 			}, false )
 			
 			this.map.panTo(geocode.center)
@@ -166,6 +165,9 @@ console.log('mutateMap',this.markers )
 		}
 		// add marker function
 		this.addMarker = ( markerData, doGeocode = true, pling = true ) => {
+			
+			markerData = Object.assign( { data: {} }, markerData ) 
+			
 			const icon = new L.DivIcon({
 				html: pling 
 					? '<span class="pling"></span>' 
@@ -180,12 +182,13 @@ console.log('mutateMap',this.markers )
 				}),
 //				markerEntry = getMarkerEntry( markerData, marker ),
 				reverseGeocodeCb = geocode => {
+					const data = marker._markerEntry.getValue( 'data' )
 					// update marker entry
 					if ( marker._markerEntry.getValue('label') === marker._markerEntry.getValue('default_label') ) {
 						marker._markerEntry.setValue( 'label', geocode.html )
 					}
 					marker._markerEntry.setValue( 'default_label', geocode.html )
-					marker._markerEntry.setValue( 'data', geocode.properties )
+					marker._markerEntry.setValue( 'data', Object.assign( data, { geocode: geocode.properties } ) )
 
 					marker.getTooltip().setContent( marker._markerEntry.getValue( 'label' ) )
 
@@ -245,7 +248,7 @@ console.log('mutateMap',this.markers )
 			}
 		}).addTo(this.map);
 
-		let currentLocation = false
+		let currentLocationMarker = false
 
 		this.addLocatedControl = L.control.wpButton({
 			position: 'bottomleft',
@@ -253,18 +256,42 @@ console.log('mutateMap',this.markers )
 			className: 'leaflet-control-add-located',
 			title: i18n.add_marker_at_location,
 			clickHandler: e => {
-				this.addOrSetMarker( currentLocation, true, true )
+				this.addOrSetMarker( currentLocationMarker, true, true )
+				this.map.stopLocate()
 			}
 		}).addTo(this.map);
 		
 		this.onLocationFound = e => {
 			// show addMarkerButton
-			currentLocation = e.latlng
+			const { latlng, bounds, accuracy, altitude, altitudeAccuracy, heading, speed, timestamp } = e;
+			
+			currentLocationMarker = {
+				label: i18n.new_marker,
+				default_label:i18n.new_marker,
+				lat: latlng.lat,
+				lng: latlng.lng,
+				data: {
+					location: {
+						lat: latlng.lat,
+						lng: latlng.lng,
+						bounds: {
+							northEast: bounds._northEast,
+							southWest: bounds._southWest,
+						},
+						accuracy, 
+						altitude, 
+						altitudeAccuracy, 
+						heading, 
+						speed, 
+						timestamp
+					}
+				}
+			}
 		}
 		this.onLocationError = e => {
 			// add 
 			if ( e.code === 1 ) {
-				currentLocation = false				
+				currentLocationMarker = false				
 			}
 		}
 
@@ -274,7 +301,6 @@ console.log('mutateMap',this.markers )
 			e.detail.mapData.forEach( markerData => {
 				// add marker list entry
 				this.addMarker( markerData, false, false )
-				console.log('addMarker',markerData)
 			} )
 			this.ready = true
 		}
@@ -314,8 +340,7 @@ console.log('mutateMap',this.markers )
 		this.map.off('locationerror', this.onLocationError )
 
 		this.map.getContainer().removeEventListener('acf-osm-map-create-markers', this.onCreateMarkers )
-		
-		
+
 	}
 
 }
