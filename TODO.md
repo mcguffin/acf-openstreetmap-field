@@ -1,41 +1,20 @@
 ACF OpenStreetMap Field ToDo
 ============================
 
-Tests
------
-Other Plugins 
+Tests / Compatibility
+---------------------
+3rd Party
+ - [ ] Elementor
+ - [ ] Divi
+ - [ ] Beaver Builder
  - [ ] ACF-Customizer
  - [ ] ACF WP-Objects
  - [ ] ACF Quick Edit Fields
-
-Tools
------
- - [ ] Migration Helper GMaps > OSM
-
-Remove dependencies
--------------------
- - [x] Frontend jQuery
-   - [x] Use `CustomEvent` in frontend event triggers
-   - [x] Replace `.trigger()` an `.on()` with `addEventListener()` and `dispatchEvent()` entirely
-   - [x] Use DOM objects everywhere
- - [ ] ACF
-   - [x] Seperate Field-logic from map logic (PHP)
 
 Integrations
 ------------
  - [x] Introduce map widget
  - [ ] Introduce map block
- - [ ] Test with Elementor
- - [ ] Test with Divi
-
-Settings
---------
- - [ ] Default Map Appearance
- - [ ] ...
-
-Model
------
- - [ ] Layer-Config: { type: '<type>', type_specific_prop: ..., ... }
 
 ESNext
 ------
@@ -57,6 +36,7 @@ Future
 ------
  - [ ] Support MapBox GL / Leaflet GL: https://github.com/mapbox/mapbox-gl-leaflet
  - [ ] GeoTag Posts, display as Layer
+ - [ ] Save map Screenshot (canvas to png)
 
 ACF Google-Map compatibility
 ----------------------------
