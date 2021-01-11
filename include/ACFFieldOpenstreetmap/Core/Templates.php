@@ -67,6 +67,14 @@ class Templates extends Singleton {
 
 	}
 
+	/**
+	 *	Render a Template
+	 *	Basically a Wrapper around WP's get_template_part() which supports $args
+	 *
+	 *	@param String $slug
+	 *	@param String $namespace
+	 *	@param Array $args
+	 */
 	public function render_template( $slug, $name = null, $args = [] ) {
 		
 		if ( self::is_supported() || ! count( $args ) ) {

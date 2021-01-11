@@ -4,7 +4,8 @@ import ControlTypeZoompan from 'controls/control-type-zoompan';
 import ControlTypeProviders from 'controls/control-type-providers';
 import ControlTypeMarkers from 'controls/control-type-markers';
 import ControlTypeLocator from 'controls/control-type-locator';
-	
+import ControlTypeResetLayers from 'controls/control-type-reset-layers';
+
 
 
 

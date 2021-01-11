@@ -7,6 +7,7 @@ if ( ! defined('ABSPATH') ) {
 }
 
 use ACFFieldOpenstreetmap\Core;
+use ACFFieldOpenstreetmap\Model;
 
 class SettingsOpenStreetMap extends Settings {
 
@@ -75,6 +76,16 @@ class SettingsOpenStreetMap extends Settings {
 
 		$core = Core\Core::instance();
 		$providers = Core\LeafletProviders::instance();
+		$templates = Core\Templates::instance();
+		$map = Model\Map::fromArray( [
+			'lat'		=> 53.55064,
+			'lng'		=> 10.00065,
+			'zoom'		=> 12,
+			'height'	=> false,
+			'layers'	=> [
+				[ 'type' => 'provider', 'provider' => 'OpenStreetMap.Mapnik' ] ,
+			],
+		] );
 
 		?>
 		<div class="wrap">
@@ -97,19 +108,19 @@ class SettingsOpenStreetMap extends Settings {
 						$this->print_provider_setting( $provider_key, $provider_data );
 
 					}
-
+					
 					?>
 					</div>
 					<div class="acf-osm-test-map-container">
 						<div class="acf-osm-test-map">
-							<div
-								data-map="leaflet"
-								data-map-lat="53.55064"
-								data-map-lng="10.00065"
-								data-map-zoom="12"
-								data-map-layers="<?php esc_attr_e( json_encode([['type' => 'provider', 'provider'=>'OpenStreetMap.Mapnik']]) ); ?>"
-								>
-							</div>
+							<?php $templates->render_template( 'admin', null, [
+								'map_object'	=> $map,
+								'input_id'		=> false,
+								'input_name'	=> false,
+								'controls'		=> [
+									[ 'type' => 'reset-layers', ]
+								],
+							]); ?>
 						</div>
 					</div>
 				</div>

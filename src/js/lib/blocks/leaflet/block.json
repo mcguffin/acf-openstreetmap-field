@@ -1,0 +1,17 @@
+{
+	"name": "acf-osm/leaflet",
+	"category": "common",
+	"supports": {
+		"align": true
+	},
+	"attributes": {
+		"height": {
+			"type": "integer",
+			"default": 400
+		},
+		"map": {
+			"type": "string",
+			"default": ""
+		}
+	}
+}

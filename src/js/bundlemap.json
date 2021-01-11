@@ -1,12 +1,15 @@
 {
+  "src/js/blocks/index.js": [
+    "js/blocks.js"
+  ],
+  "src/js/main/index.js": [
+    "js/main.js"
+  ],
   "src/js/acf-input/index.js": [
     "js/acf-input.js"
   ],
   "src/js/acf-osm-settings/index.js": [
     "js/acf-osm-settings.js"
-  ],
-  "src/js/main/index.js": [
-    "js/main.js"
   ],
   "src/js/acf-field-group/index.js": [
     "js/acf-field-group.js"
@@ -18,57 +21,81 @@
     "js/admin.js"
   ],
   "src/js/lib/maps.js": [
+    "js/main.js",
     "js/admin.js",
-    "js/main.js"
+    "js/settings.js"
+  ],
+  "src/js/lib/blocks/leaflet/index.js": [
+    "js/blocks.js"
   ],
   "src/js/lib/leaflet/control-corner.js": [
-    "js/admin.js"
-  ],
-  "src/js/lib/controls/control-type-zoompan.js": [
-    "js/admin.js"
-  ],
-  "src/js/lib/controls/control-type.js": [
     "js/admin.js"
   ],
   "src/js/lib/controls/control-type-providers.js": [
     "js/admin.js"
   ],
-  "src/js/lib/controls/control-type-locator.js": [
+  "src/js/lib/controls/control-type.js": [
+    "js/admin.js"
+  ],
+  "src/js/lib/controls/control-type-zoompan.js": [
     "js/admin.js"
   ],
   "src/js/lib/controls/control-type-markers.js": [
     "js/admin.js"
   ],
+  "src/js/lib/controls/control-type-locator.js": [
+    "js/admin.js"
+  ],
   "src/js/lib/dom/is-visible.js": [
+    "js/main.js",
     "js/admin.js",
-    "js/main.js"
+    "js/settings.js"
   ],
   "src/js/lib/layers/index.js": [
+    "js/main.js",
     "js/admin.js",
-    "js/main.js"
+    "js/settings.js"
+  ],
+  "src/js/lib/blocks/leaflet/block.json": [
+    "js/blocks.js"
+  ],
+  "src/js/lib/blocks/leaflet/save.js": [
+    "js/blocks.js"
+  ],
+  "src/js/lib/blocks/leaflet/edit.js": [
+    "js/blocks.js"
   ],
   "src/js/lib/misc/geocoder.js": [
     "js/admin.js"
   ],
   "src/js/lib/layers/layer-type.js": [
+    "js/main.js",
     "js/admin.js",
-    "js/main.js"
-  ],
-  "src/js/lib/layers/layer-type-provider.js": [
-    "js/admin.js",
-    "js/main.js"
+    "js/settings.js"
   ],
   "src/js/lib/layers/layer-type-markers.js": [
+    "js/main.js",
     "js/admin.js",
-    "js/main.js"
+    "js/settings.js"
   ],
-  "src/js/lib/leaflet/control/marker-list.js": [
-    "js/admin.js"
+  "src/js/lib/layers/layer-type-provider.js": [
+    "js/main.js",
+    "js/admin.js",
+    "js/settings.js"
   ],
   "src/js/lib/leaflet/control/wp-button.js": [
     "js/admin.js"
   ],
+  "src/js/lib/leaflet/control/marker-list.js": [
+    "js/admin.js"
+  ],
   "src/js/lib/leaflet/control/message.js": [
+    "js/admin.js"
+  ],
+  "src/js/settings/index.js": [
+    "js/settings.js"
+  ],
+  "src/js/lib/controls/control-type-reset-layers.js": [
     "js/admin.js"
   ]
 }

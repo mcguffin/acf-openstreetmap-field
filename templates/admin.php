@@ -27,6 +27,8 @@
 $map = $args['map_object']->toArray();
 $controls = $args['controls'];
 
+$has_input = isset( $args['input_id'] ) && isset( $args['input_name'] ) && ! empty( $args['input_id'] ) && ! empty( $args['input_name'] );
+
 $has_markers = (boolean) count( array_filter( $controls, function( $control ) {
 	return 'markers' === $control['type'];
 } ) );
@@ -58,14 +60,20 @@ $attr = [
 	'data-map-version'	=> $map['version'],
 ];
 
+if ( $has_input ) {
+	$attr[ 'data-target-input-element' ] = '#' . $args['input_id'];
+}
+
 ?>
 <div class="leaflet-parent">
-	<input <?php echo acf_osm_esc_attr( [
-		'id'	=> $args['input_id'],
-		'name'	=> $args['input_name'],
-		'type'	=> 'hidden',
-		'class' => 'osm-json',
-		'value'	=> $map,
-	] ) ?> />
+	<?php if ( $has_input ) { ?>
+		<input <?php echo acf_osm_esc_attr( [
+			'id'	=> $args['input_id'],
+			'name'	=> $args['input_name'],
+			'type'	=> 'hidden',
+			'class' => 'osm-json',
+			'value'	=> $map,
+		] ) ?> />		
+	<?php } ?>
 	<div data-map-admin <?php echo acf_osm_esc_attr( $attr ) ?>></div>
 </div>

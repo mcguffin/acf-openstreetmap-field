@@ -75,8 +75,9 @@ const setupMap = el => {
 	if ( createEvt.defaultPrevented ) {
 		return
 	}
-
-	el.style.height = `${data.height}px`;
+	if ( !! data.height ) {
+		el.style.height = `${data.height}px`;		
+	}
 
 	map = L.map( el, createEvt.detail.mapInit ); // map init might have been mutated by event listeners
 

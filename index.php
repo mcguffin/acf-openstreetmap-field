@@ -49,7 +49,7 @@ Core\Core::instance( __FILE__ );
 Widget\Widgets::instance();
 
 if ( is_admin() || defined( 'DOING_AJAX' ) ) {
-
+	Admin\Admin::instance();
 	Settings\SettingsOpenStreetMap::instance();
 
 }

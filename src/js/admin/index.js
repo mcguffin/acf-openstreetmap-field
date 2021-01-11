@@ -7,6 +7,7 @@ import { options, providers } from 'pluginOptions'
 import { options as adminOptions, i18n } from 'pluginAdminOptions'
 import { addOutsideControlCorner } from 'leaflet/control-corner';
 
+import reactTriggerChange from 'react-trigger-change';
 
 class MapAdmin {
 	/** @var Array */
@@ -14,7 +15,7 @@ class MapAdmin {
 	/** @var L.Map */
 	#map
 	/** @var Object */
-	#value = {}
+	#value = adminOptions.default_map
 	/** @var Node */
 	#input
 	
@@ -28,12 +29,11 @@ class MapAdmin {
 	}
 	set input(input) {
 		this.#input = input
-		console.log('set input',JSON.parse( input.value ))
 		try {
 			this.#value = JSON.parse( input.value )
 		} catch(err) {
 			this.#value = {}
-			console.error('[ACF OpenStreetMap]',input.value)
+			console.error('[ACF OpenStreetMap]',input,input.value)
 		}
 	}
 	
@@ -42,15 +42,22 @@ class MapAdmin {
 	}
 
 	set value( value ) {
-		let prevValue = JSON.stringify(this.#value)
-
+		const prevValue = JSON.stringify(this.#value),
+			inputEvent = document.createEvent('HTMLEvents')
+			
+			    event
 		this.#value = value
 		this.input.value = JSON.stringify( value )
-
 		// required in widget editor
 		if ( this.input.value !== prevValue ) {
-			this.input.dispatchEvent( new Event( 'change', { bubbles: true } ) )			
+			this.input.dispatchEvent( new Event( 'change', { bubbles: true } ) )
+			reactTriggerChange( this.input )
 		}
+
+		// const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+		// nativeInputValueSetter.call( this.input, 'react 16 value');
+		// this.input.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+
 	}
 
 	constructor( map ) {
@@ -99,7 +106,10 @@ document.addEventListener( 'acf-osm-map-init', e => {
 	if ( ! e.target.hasAttribute('data-map-controls') ) {
 		return // it's just a map, don't init admin
 	}
-	const input = e.target.parentNode.querySelector('input.osm-json')
+
+	// get input from data-target-input-element OR data-target-input-getter
+	let input
+
 	const controls = JSON.parse( e.target.getAttribute('data-map-controls') )
 	const admin = new MapAdmin( e.detail.map );
 	const initEvt = new CustomEvent( 'acf-osm-map-admin-init', {
@@ -126,8 +136,19 @@ document.addEventListener( 'acf-osm-map-init', e => {
 	initEvt.detail.mapControls.map( controlConfig => {
 		admin.addControl( controlConfig )
 	} )
-
-	admin.input = input
+	
+	if ( e.target.matches( '[data-target-input-element]' ) ) {
+		admin.input = e.target.parentNode.querySelector( e.target.getAttribute( 'data-target-input-element' ) )
+	} else if ( e.detail.map.getContainer().querySelector('input') ) {
+		admin.input = e.detail.map.getContainer().querySelector('input')
+	} else {
+		// fallback
+		input = document.createElement('input')
+		input.type = 'hidden'
+		input.value = JSON.stringify( adminOptions.default_map )
+		admin.input = input
+		
+	}
 
 	e.detail.map.getContainer().dispatchEvent( new CustomEvent( 'acf-osm-map-admin-created', {
 		detail: {
