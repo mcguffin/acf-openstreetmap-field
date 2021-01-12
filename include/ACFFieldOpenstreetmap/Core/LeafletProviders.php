@@ -63,14 +63,14 @@ class LeafletProviders extends Singleton {
 				$providers = array_replace_recursive( $providers, $disabled_providers );
 
 				$providers = array_filter( $providers, function( $el ) {
-					return $el !== false;
+					return is_array( $el );
 				} );
 
 				foreach ( $providers as &$provider ) {
 					if ( isset( $provider['variants'] ) ) {
 						// remove disabled variants
 						$provider['variants'] = array_filter( $provider['variants'], function( $el ) {
-							return $el !== false;
+							return is_array( $el );
 						} );
 					}
 				}

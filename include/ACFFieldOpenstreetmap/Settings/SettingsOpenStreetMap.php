@@ -20,7 +20,8 @@ class SettingsOpenStreetMap extends Settings {
 	protected function __construct() {
 
 		$core = Core\Core::instance();
-
+		// delete_option( 'acf_osm_provider_tokens');
+		// delete_option( 'acf_osm_providers');
 		add_option( 'acf_osm_provider_tokens', [], '', false );
 		add_option( 'acf_osm_providers', $this->get_default_option_providers(), '', false );
 
@@ -564,7 +565,19 @@ class SettingsOpenStreetMap extends Settings {
 	}
 
 	/**
-	 *	@return array Disable tile providers with bounds
+	 *	Get acf_osm_providers option default.
+	 *	Returns '0' for providers or variants requiring credentails or having map bounds.
+	 *
+	 *	@return array [
+	 *		'OpenStreetMap' => [
+	 *			'variants' => [
+	 *				'CH' => '0',
+	 *				'BZH' => '0',
+	 *			]
+	 *		],
+	 *		'OpenPtMap' => '0',
+	 *		...
+	 *	]
 	 */
 	private function get_default_option_providers() {
 
@@ -581,7 +594,7 @@ class SettingsOpenStreetMap extends Settings {
 			if ( isset( $provider_data['variants'] ) ) {
 				foreach ( $provider_data['variants'] as $variant_key => $variant_data ) {
 					if ( $this->has_bounds( $variant_data ) || ( $is_https && $this->is_insecure( $variant_data ) )) {
-						$default_option[ $provider_key ]['variants'][$variant_key] = '0';
+						$default_option[ $provider_key ][ 'variants' ][$variant_key] = '0';
 					}
 				}
 			}
