@@ -66,8 +66,12 @@ class ControlTypeProviders extends ControlType {
 		}).addTo( this.map );
 		this.layersControl = layersControl
 
+		/**
+		 *
+		 */
 		const getLayer = pkey => {
 			let layer = Object.values(this.map._layers).find( l => l.providerKey === pkey )
+
 			if ( 'undefined' === typeof layer ) {
 				layer = L.tileLayer.provider( pkey )
 				layer.providerKey = pkey;
@@ -78,7 +82,12 @@ class ControlTypeProviders extends ControlType {
 		// seperate layers into base and overlay
 		this.config.forEach( pkey => {
 			let layer
-			layer = getLayer( pkey );
+			try {
+				layer = getLayer( pkey );				
+			} catch ( err ) {
+				// generating layer failed, we ignore this
+				return;
+			}
 
 			layers[pkey] = layer
 			if ( providerIsOverlay( pkey ) ) {
