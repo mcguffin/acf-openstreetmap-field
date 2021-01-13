@@ -15,13 +15,24 @@ OpenStreetMap Widget, Block and ACF Field.
 
 Hazzle free OpenStreetMap integration. 
 
+This plugin provides OpenStreetMap in the Block Editor, Widgets and as an ACF Field.
 
+Known to work with these page builder plugins:
+ - [Elementor](https://wordpress.org/plugins/elementor/)
+ - [Beaver Builder](https://wordpress.org/plugins/beaver-builder-lite-version/)
+ - [Page Builder by SiteOrigin](https://wordpress.org/plugins/siteorigin-panels/)
 
 [ACF-Field](https://www.advancedcustomfields.com/).
 
 ## Usage
 
-#### In the Fieldgroup editor:
+#### In the Block Editor
+…
+
+#### As a Widget
+…
+
+#### In the ACF Fieldgroup editor:
 
 **Return Format:**
 

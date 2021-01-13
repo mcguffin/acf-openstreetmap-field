@@ -23,6 +23,8 @@ class Core extends Plugin {
 		add_action( 'elementor/frontend/before_enqueue_scripts', [ $this, 'enqueue_frontend' ], 0 );
 
 		add_action( 'init', [ '\ACFFieldOpenstreetmap\Core\Templates', 'instance'] );
+		
+		add_action( 'plugins_loaded', [ $this, 'init_compat' ] );
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ] );
 
@@ -31,14 +33,24 @@ class Core extends Plugin {
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', [ $this, 'register_assets' ] );
 		}
-		add_action( 'admin_head', function(){
-			//echo '<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\' \'unsafe-inline\'">';
-		} );
-
 		
 
 		$args = func_get_args();
 		parent::__construct( ...$args );
+	}
+
+
+	/**
+	 *	@action plugins_loaded
+	 */
+	public function init_compat() {
+
+		if ( defined( 'FL_BUILDER_VERSION' ) ) {
+			Compat\BeaverBuilder::instance();
+		}
+		if ( defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
+			Compat\SiteOrigin::instance();
+		}
 	}
 
 	/**
@@ -119,18 +131,8 @@ class Core extends Plugin {
 			],
 			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
 		];
-		wp_localize_script('acf-osm-main','acf_osm', $osm_options );
-		wp_localize_script('acf-osm-frontend','acf_osm', $osm_options );
-
-		// STYLES
-		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), [], $this->get_version() ); // legacy
-		// wp_register_style( 'acf-osm-main', $this->get_asset_url( 'assets/css/main.css' ), [], $this->get_version() );
-
-		/* backend */
-		// ADMIN SCRIPTS
-		// field js
-		wp_register_script( 'acf-osm-admin', $this->get_asset_url('assets/js/admin.js'), [ /*'acf-input','wp-backbone'*/], $this->get_version(), true );
-		wp_localize_script( 'acf-osm-admin', 'acf_osm_admin',[
+		
+		$osm_admin_options = [
 			'options'	=> [
 				'osm_layers'		=> $osm_providers->get_layers(), // flat list
 				'leaflet_layers'	=> $leaflet_providers->get_layers(),  // flat list
@@ -164,7 +166,20 @@ class Core extends Plugin {
 				'drag_marker_to_move'
 								=> __('Drag Marker to move.', 'acf-openstreetmap-field' ),
 			],
-		]);
+		];
+
+		wp_localize_script('acf-osm-main','acf_osm', $osm_options );
+		wp_localize_script('acf-osm-frontend','acf_osm', $osm_options );
+
+		// STYLES
+		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), [], $this->get_version() ); // legacy
+		// wp_register_style( 'acf-osm-main', $this->get_asset_url( 'assets/css/main.css' ), [], $this->get_version() );
+
+		/* backend */
+		// ADMIN SCRIPTS
+		// field js
+		wp_register_script( 'acf-osm-admin', $this->get_asset_url('assets/js/admin.js'), [ /*'acf-input','wp-backbone'*/], $this->get_version(), true );
+		wp_localize_script( 'acf-osm-admin', 'acf_osm_admin', $osm_admin_options );
 		wp_localize_script( 'acf-osm-admin', 'acf_osm', $osm_options );
 
 		// acf field group js
