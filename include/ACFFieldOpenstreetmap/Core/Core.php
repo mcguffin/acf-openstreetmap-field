@@ -19,6 +19,9 @@ class Core extends Plugin {
 
 		add_action( 'acf/include_field_types', [ '\ACFFieldOpenstreetmap\Compat\ACF', 'instance'], 0 );
 
+		add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'enqueue_admin' ], 0 );
+		add_action( 'elementor/frontend/before_enqueue_scripts', [ $this, 'enqueue_frontend' ], 0 );
+
 		add_action( 'init', [ '\ACFFieldOpenstreetmap\Core\Templates', 'instance'] );
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ] );
@@ -120,7 +123,8 @@ class Core extends Plugin {
 		wp_localize_script('acf-osm-frontend','acf_osm', $osm_options );
 
 		// STYLES
-		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), [], $this->get_version() );
+		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), [], $this->get_version() ); // legacy
+		// wp_register_style( 'acf-osm-main', $this->get_asset_url( 'assets/css/main.css' ), [], $this->get_version() );
 
 		/* backend */
 		// ADMIN SCRIPTS
@@ -183,6 +187,36 @@ class Core extends Plugin {
 
 		$this->did_register_scripts = true;
 
+	}
+
+
+	/**
+	 *	Enqueue frontend assets
+	 */
+	public function enqueue_frontend() {
+
+		$this->register_assets();
+
+		wp_enqueue_script('acf-osm-main');
+
+		wp_enqueue_style('acf-osm-main');
+
+		wp_enqueue_style('leaflet');
+
+	}
+
+	/**
+	 *	Enqueue admin assets
+	 */
+	public function enqueue_admin() {
+
+		$this->register_assets();
+
+		wp_enqueue_script('acf-osm-admin');
+
+		wp_enqueue_style('acf-osm-admin');
+
+		wp_enqueue_style('leaflet');
 	}
 
 	/**
