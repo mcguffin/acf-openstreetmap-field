@@ -22,6 +22,7 @@ class Core extends Plugin {
 		add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'enqueue_admin' ], 0 );
 		add_action( 'elementor/frontend/before_enqueue_scripts', [ $this, 'enqueue_frontend' ], 0 );
 		add_action( 'wppb_enqueue_scripts_in_editor', [ $this, 'enqueue_admin' ] );
+		add_action( 'brizy_editor_enqueue_scripts', [ $this, 'enqueue_frontend' ], 0 );
 
 		add_action( 'init', [ '\ACFFieldOpenstreetmap\Core\Templates', 'instance'] );
 		
