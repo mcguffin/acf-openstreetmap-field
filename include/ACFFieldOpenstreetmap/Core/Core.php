@@ -21,6 +21,7 @@ class Core extends Plugin {
 
 		add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'enqueue_admin' ], 0 );
 		add_action( 'elementor/frontend/before_enqueue_scripts', [ $this, 'enqueue_frontend' ], 0 );
+		add_action( 'wppb_enqueue_scripts_in_editor', [ $this, 'enqueue_admin' ] );
 
 		add_action( 'init', [ '\ACFFieldOpenstreetmap\Core\Templates', 'instance'] );
 		
@@ -51,6 +52,10 @@ class Core extends Plugin {
 		if ( defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
 			Compat\SiteOrigin::instance();
 		}
+		
+		// if ( defined( 'WPPB_VERSION' ) ) {
+		// 	Compat\WPPageBuilder::instance();
+		// }
 	}
 
 	/**
@@ -141,6 +146,10 @@ class Core extends Plugin {
 			],
 			'i18n'	=> [
 				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),
+				'copy_shortcode'
+								=> __( 'Copy Shortcode', 'acf-openstreetmap-field' ),
+				'copied_shortcode'
+								=> __( 'Shortcode copied!', 'acf-openstreetmap-field' ),
 				'nothing_found'	=> __( 'Nothing found...', 'acf-openstreetmap-field' ),
 				'my_location'	=> __( 'My location', 'acf-openstreetmap-field' ),
 				'locate_marker'	=> __( 'Locate Marker', 'acf-openstreetmap-field' ),

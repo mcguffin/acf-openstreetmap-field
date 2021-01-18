@@ -7,7 +7,9 @@ use ACFFieldOpenstreetmap\Model;
 
 class AbstractMapWidget extends \WP_Widget {
 
-	protected $map_type;
+	use Core\MapOutputTrait;
+
+	protected $template_slug = 'widget';
 	
 	private $min_height = 50;
 	
@@ -19,23 +21,24 @@ class AbstractMapWidget extends \WP_Widget {
 		$templates = Core\Templates::instance();
 
 		$instance = $this->parse_defaults( $instance );
-		
+
 		echo $args['before_widget'];
+
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title'];
 		}
-
-		$map = Model\Map::fromArray( $instance['map'] + [ 'height' => $instance['height'] ] );
-
-		$templates->render_template( $this->map_type, 'widget', [
-			'input_id'		=> $this->get_field_id( 'map' ),
-			'input_name'	=> $this->get_field_name( 'map' ),
-			'map_object'	=> $map,
-			'map'			=> $map->toLegacyArray(),
-			'field'			=> [
-				'height'	=> $instance['height'],
-			],
-		] );
+		
+		$this->render_map( 'widget', $instance['map'] + [ 'height' => $instance['height'] ] );
+		// 
+		// $map = Model\Map::fromArray( $instance['map'] + [ 'height' => $instance['height'] ] );
+		// 
+		// $templates->render_template( $this->map_type, $this->slug, [
+		// 	'map_object'	=> $map,
+		// 	'map'			=> $map->toLegacyArray(),
+		// 	'field'			=> [
+		// 		'height'	=> $instance['height'],
+		// 	],
+		// ] );
 
 		echo $args['after_widget'];
 	}
@@ -44,7 +47,7 @@ class AbstractMapWidget extends \WP_Widget {
  	 *	@inheritdoc
  	 */
 	public function form( $instance ) {
-		
+
 		$instance = $this->parse_defaults( $instance );
 		
 		$templates = Core\Templates::instance();
@@ -98,6 +101,7 @@ class AbstractMapWidget extends \WP_Widget {
 					[ 'type' => 'providers', ],
 					[ 'type' => 'markers', 'config' => [ 'max_markers' => false ] ],
 					[ 'type' => 'locator' ],
+					[ 'type' => 'shortcode' ],
 				],
 			] );
 			?>
@@ -116,7 +120,7 @@ class AbstractMapWidget extends \WP_Widget {
 		] );
 
 		if ( is_string( $new_instance['map'] ) ) {
-			$new_instance['map'] = json_decode( $new_instance['map'], true );			
+			$new_instance['map'] = json_decode( wp_unslash( $new_instance['map'] ), true );
 		}
 		$map = Model\Map::fromArray( $new_instance['map'] );
 		$new_instance['title'] = sanitize_text_field( $new_instance['title'] );
@@ -126,24 +130,20 @@ class AbstractMapWidget extends \WP_Widget {
 		return $new_instance;
 	}
 
+	
 	/**
 	 *	Setup default map
 	 */
 	private function parse_defaults( $instance ) {
+
 		$instance = wp_parse_args( $instance, [
 			'title'		=> '',
 			'height'	=> 400,
 			'map'		=> [],
 		] );
-		$instance['map'] = wp_parse_args( $instance['map'], [
-			'lat'		=> 53.55064,
-			'lng'		=> 10.00065,
-			'zoom'		=> 12,
-			'layers'	=> [
-				[ 'type' => 'provider', 'provider' => 'OpenStreetMap.Mapnik' ],				
-				[ 'type' => 'markers', 'markers' => [] ], 
-			],
-		]);
+
+		$instance['map'] = $this->parse_map_args( $instance['map'] );
+
 		return $instance;
 	}
 }

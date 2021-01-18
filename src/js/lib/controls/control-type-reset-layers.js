@@ -9,7 +9,7 @@ L.Control.ResetLayers = L.Control.extend({
 			.filter( layer => layer.type === 'provider' );
 
 		this._container = L.DomUtil.create('div',
-			'leaflet-control-add-location-marker leaflet-bar leaflet-control');
+			'leaflet-control-reset-layers leaflet-bar leaflet-control');
 
 		this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
 		//this._link.title = i18n.add_marker_at_location;

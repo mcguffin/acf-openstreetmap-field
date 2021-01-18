@@ -52,7 +52,8 @@ const OSMLeafletBlockEdit = function(props) {
 		{ type: 'zoompan' },
 		{ type: 'providers', config: Object.values(adminOptions.leaflet_layers) },
 		{ type: 'markers', config: { max_markers: false } },
-		{ type: 'locator' }
+		{ type: 'locator' },
+		{ type: 'shortcode' }
 	];
 
 	const wrapperClass = [];

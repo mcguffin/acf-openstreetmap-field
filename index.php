@@ -46,6 +46,9 @@ require_once dirname( __FILE__ ) . '/include/api.php';
 
 Core\Core::instance( __FILE__ );
 
+Shortcode\OSMShortcode::instance();
+Shortcode\LeafletShortcode::instance();
+
 Widget\Widgets::instance();
 
 if ( is_admin() || defined( 'DOING_AJAX' ) ) {
