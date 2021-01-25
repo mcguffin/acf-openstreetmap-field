@@ -72,8 +72,13 @@ class LeafletProviders extends Singleton {
 						$provider['variants'] = array_filter( $provider['variants'], function( $el ) {
 							return $el !== false;
 						} );
+						// remove empty variants
+						if ( ! count( $provider['variants'] ) ) {
+							unset( $provider['variants'] );
+						}
 					}
 				}
+
 			}
 
 		}
