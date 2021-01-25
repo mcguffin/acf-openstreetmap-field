@@ -29,6 +29,22 @@
 		} );
 	}
 
+	// #64
+	var bulletproofParseFloat = function( value ) {
+		// already a number
+		if ( 'number' === typeof value ) {
+			return value;
+		}
+		if ( 'string' === typeof value ) {
+			// some messed around with value
+			if ( value.indexOf('.') === -1 && value.indexOf(',') !== -1 ) {
+				value = value.split(',').join('.')
+			}
+			return parseFloat( value )
+		}
+		return NaN
+	}
+
 
 	L.TileLayer.Provider.providers = arg.providers;
 
@@ -92,7 +108,7 @@
 			}
 
 			marker = L.marker(
-					L.latLng( parseFloat( createEvt.detail.markerData.lat ), parseFloat( createEvt.detail.markerData.lng ) ),
+					L.latLng( bulletproofParseFloat( createEvt.detail.markerData.lat ), bulletproofParseFloat( createEvt.detail.markerData.lng ) ),
 					createEvt.detail.markerOptions
 				)
 				.bindPopup( createEvt.detail.markerOptions.label )
@@ -162,8 +178,9 @@
 					map, maxzoom,
 					mapInit = {
 						scrollWheelZoom: false,
-						center: [ data.mapLat, data.mapLng ],
-						zoom: data.mapZoom
+						center: [ bulletproofParseFloat(data.mapLat), bulletproofParseFloat(data.mapLng) ],
+						zoom: data.mapZoom,
+						tap: false
 					},
 					createEvt = new CustomEvent( 'acf-osm-map-create', {
 						bubbles: true,
