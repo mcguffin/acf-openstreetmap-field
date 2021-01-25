@@ -28,6 +28,7 @@
 		} );
 	}
 
+	// #64
 	var bulletproofParseFloat = function( value ) {
 		// already a number
 		if ( 'number' === typeof value ) {
