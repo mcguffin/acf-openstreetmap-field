@@ -413,7 +413,7 @@
 		"options": {
 			"variant": "basic",
 			"maxZoom": 22,
-			"attribution": "<a href=\"https://tomtom.com\" target=\"_blank\">&copy;  1992 - 2020 TomTom.</a> ",
+			"attribution": "<a href=\"https://tomtom.com\" target=\"_blank\">&copy;  1992 - 2021 TomTom.</a> ",
 			"subdomains": "abcd",
 			"style": "main",
 			"ext": "png",
@@ -541,7 +541,7 @@
 	"HERE": {
 		"url": "https://{s}.{base}.maps.api.here.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?app_id={app_id}&app_code={app_code}&lg={language}",
 		"options": {
-			"attribution": "Map &copy; 1987-2020 <a href=\"http://developer.here.com\">HERE</a>",
+			"attribution": "Map &copy; 1987-2021 <a href=\"http://developer.here.com\">HERE</a>",
 			"subdomains": "1234",
 			"mapID": "newest",
 			"app_id": "<insert your app_id here>",
@@ -723,7 +723,7 @@
 	"HEREv3": {
 		"url": "https://{s}.{base}.maps.ls.hereapi.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?apiKey={apiKey}&lg={language}",
 		"options": {
-			"attribution": "Map &copy; 1987-2020 <a href=\"http://developer.here.com\">HERE</a>",
+			"attribution": "Map &copy; 1987-2021 <a href=\"http://developer.here.com\">HERE</a>",
 			"subdomains": "1234",
 			"mapID": "newest",
 			"apiKey": "<insert your apiKey here>",

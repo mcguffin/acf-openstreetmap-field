@@ -130,6 +130,11 @@ Please refer to this wiki article for a [migration guide](https://github.com/mcg
 
 == Changelog ==
 
+= 1.3.2 =
+ - Fix: No such variant of OpenStreetMap (Mapnik)
+ - Fix: Popups not opening in Safari
+ - Quick and dirty Fix: invalid (localized) lat/lng object.
+
 = 1.3.1 =
  - Fix: JS Event acf-osm-map-marker-create not applying marker options
 
