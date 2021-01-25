@@ -162,7 +162,8 @@
 					mapInit = {
 						scrollWheelZoom: false,
 						center: [ data.mapLat, data.mapLng ],
-						zoom: data.mapZoom
+						zoom: data.mapZoom,
+						tap: false
 					},
 					createEvt = new CustomEvent( 'acf-osm-map-create', {
 						bubbles: true,
