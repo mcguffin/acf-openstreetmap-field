@@ -1,3 +1,4 @@
+@use "sass:math";
 
 @import 'variables/variables';
 
@@ -84,7 +85,7 @@ $leaflet-panes: (
 	@each $pane,$zindex in $leaflet-panes {
 
 		.#{$pane} {
-			z-index: $zindex / 10;
+			z-index: math.div( $zindex, 10 );
 		}
 	}
 }

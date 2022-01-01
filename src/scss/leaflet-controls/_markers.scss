@@ -1,4 +1,4 @@
-
+@use "sass:math";
 
 @keyframes pling {
 	0% { left:0;top:0;width:12px;height:12px; opacity:0; }
@@ -29,13 +29,13 @@
 		clip:rect(0,0,100%,100%);
 		width:$size;
 		height:$size;
-		border-radius:$size / 2;
+		border-radius:math.div( $size, 2 );
 		background-color:#fff;
 		border:8px solid $wp-blue;
 		box-sizing:border-box;
 		position:absolute;
 		bottom:18px; // 24
-		left:-$size / 2 + 6px;
+		left: math.div( -$size, 2 ) + 6px;
 	}
 	&.focus,
 	&:focus {

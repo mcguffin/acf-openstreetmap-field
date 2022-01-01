@@ -7,7 +7,7 @@ const babelify		= require( 'babelify' );
 /*
 const sass			= require( 'gulp-sass' );
 /*/
-const sass			= require('@selfisekai/gulp-sass');
+const sass			= require('gulp-sass')( require('sass') );
 //*/
 const source		= require( 'vinyl-source-stream' );
 const sourcemaps	= require( 'gulp-sourcemaps' );
