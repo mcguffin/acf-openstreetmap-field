@@ -44,8 +44,7 @@ class MapAdmin {
 	set value( value ) {
 		const prevValue = JSON.stringify(this.#value),
 			inputEvent = document.createEvent('HTMLEvents')
-			
-			    event
+
 		this.#value = value
 		this.input.value = JSON.stringify( value )
 		// required in widget editor
@@ -129,7 +128,7 @@ document.addEventListener( 'acf-osm-map-init', e => {
 	}
 
 	addOutsideControlCorner( e.detail.map, 'top' )
-//	addOutsideControlCorner( e.detail.map, 'left' ) // later …
+//	addOutsideControlCorner( e.detail.map, 'left' ) // later ...
 	addOutsideControlCorner( e.detail.map, 'bottom' )
 //	addOutsideControlCorner( e.detail.map, 'right' )
 

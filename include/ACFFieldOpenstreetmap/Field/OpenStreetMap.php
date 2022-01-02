@@ -466,6 +466,7 @@ class OpenStreetMap extends \acf_field {
 
 		} else if ( 'admin' === $field['return_format'] ) {
 			// render map admin
+
 			$map = Model\Map::fromArray( $value );
 			$templates = Core\Templates::instance();
 			$map_args = [
@@ -479,6 +480,7 @@ class OpenStreetMap extends \acf_field {
 			];
 
 			ob_start();
+			
 			$templates->render_template( 'admin', null, $map_args );
 			$value = ob_get_clean();
 
@@ -525,7 +527,7 @@ class OpenStreetMap extends \acf_field {
 
 	function validate_value( $valid, $value, $field, $input ){
 
-		// bail early if not required
+		// bail early if not required or no markers allowed
 		if( ! $field['required'] || $field['max_markers'] === 0 ) {
 
 			return $valid;
@@ -533,6 +535,12 @@ class OpenStreetMap extends \acf_field {
 		}
 
 		$value = json_decode( stripslashes( $value ), true );
+
+		$map = Model\Map::fromArray( $value );
+
+		// ensure
+		$value = $map->toLegacyArray(); //$this->sanitize_value( $value, $field, 'display' );
+
 
 		if ( ! count( $value['markers'] ) ) {
 

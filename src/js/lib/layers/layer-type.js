@@ -23,12 +23,13 @@ class LayerType {
 
 
 	constructor(config) {
+
 		this.#config = Object.assign( this.default, config )
 		// like php magic getter
 		Object.keys(this.#config).forEach( k => Object.defineProperty( this, k, {
-    		get : function () {
-        		return this.#config[k];
-    		}
+			get : function () {
+				return this.#config[k];
+			}
 		}) );
 	}
 	
