@@ -14,7 +14,7 @@ Tests / Compatibility
 Integrations
 ------------
  - [x] Introduce map widget
- - [ ] Introduce map block
+ - [x] Introduce map block
 
 ESNext
 ------

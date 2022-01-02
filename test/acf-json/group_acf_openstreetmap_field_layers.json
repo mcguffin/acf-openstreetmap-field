@@ -23,7 +23,11 @@
             "height": 400,
             "max_markers": "",
             "layers": [
-                "OpenStreetMap"
+                "OpenStreetMap",
+                "Jawg.streets",
+                "Jawg.Terrain",
+                "Jawg.Light",
+                "MapBox"
             ]
         },
         {
@@ -44,7 +48,7 @@
             },
             "return_format": "leaflet",
             "layers": [
-                "Wikimedia",
+                "OpenStreetMap",
                 "SafeCast"
             ],
             "allow_map_layers": 1,
@@ -105,7 +109,7 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 0,
+    "active": 1,
     "description": "",
     "modified": 1576941560
 }
