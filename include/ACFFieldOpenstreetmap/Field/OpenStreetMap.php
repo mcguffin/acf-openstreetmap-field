@@ -483,6 +483,9 @@ class OpenStreetMap extends \acf_field {
 
 		$value = (array) $value;
 
+		// Add array merge to avoid non existing index errors
+		$field = array_merge( $this->defaults, $field );
+
 		//
 		// Markers
 		//
