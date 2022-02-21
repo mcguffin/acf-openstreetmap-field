@@ -34,7 +34,7 @@ abstract class Singleton {
 	/**
 	 *	Prevent Instantinating
 	 */
-	private function __clone() { }
+	public function __clone() { }
 	private function __wakeup() { }
 
 	/**
