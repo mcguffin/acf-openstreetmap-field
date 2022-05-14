@@ -977,23 +977,6 @@
 			}
 		}
 	},
-	"HikeBike": {
-		"url": "https://tiles.wmflabs.org/{variant}/{z}/{x}/{y}.png",
-		"options": {
-			"maxZoom": 19,
-			"attribution": "{attribution.OpenStreetMap}",
-			"variant": "hikebike"
-		},
-		"variants": {
-			"HikeBike": {},
-			"HillShading": {
-				"options": {
-					"maxZoom": 15,
-					"variant": "hillshading"
-				}
-			}
-		}
-	},
 	"BasemapAT": {
 		"url": "https://maps{s}.wien.gv.at/basemap/{variant}/{type}/google3857/{z}/{y}/{x}.{format}",
 		"options": {

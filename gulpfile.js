@@ -119,7 +119,7 @@ gulp.task('providers', function(cb){
 	 delete( L.TileLayer.Provider.providers.Stamen.variants.TopOSMFeatures);
 
 	 // remove HikeBike #83
-	 // delete( L.TileLayer.Provider.providers.HikeBike );
+	 delete( L.TileLayer.Provider.providers.HikeBike );
 
 
 /*
