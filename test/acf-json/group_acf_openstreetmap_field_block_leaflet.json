@@ -3,12 +3,12 @@
     "title": "OpenStreetMap Field - Block+Widget Leaflet",
     "fields": [
         {
-            "center_lat": 53.0000127,
-            "center_lng": 11.0000181,
-            "zoom": 15,
+            "center_lat": 2.7455307,
+            "center_lng": 10.9094238,
+            "zoom": 7,
             "key": "field_5d4c2962d6960",
             "label": "Leaflet Map",
-            "name": "leaflet_map_block",
+            "name": "leaflet_map",
             "type": "open_street_map",
             "instructions": "",
             "required": 0,
@@ -18,7 +18,7 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "leaflet",
+            "return_format": "custom-map",
             "layers": [
                 "OpenStreetMap.Mapnik",
                 "Stamen.TonerLines"
@@ -26,27 +26,16 @@
             "allow_map_layers": 1,
             "height": 400,
             "max_markers": ""
-        },
-        {
-            "key": "field_5ee5d68e55e70",
-            "label": "Google Map",
-            "name": "google_map",
-            "type": "google_map",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "center_lat": "",
-            "center_lng": "",
-            "zoom": "",
-            "height": ""
         }
     ],
     "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "post"
+            }
+        ],
         [
             {
                 "param": "block",
@@ -56,19 +45,20 @@
         ],
         [
             {
-                "param": "widget",
+                "param": "post_type",
                 "operator": "==",
-                "value": "acf-leaflet-widget"
+                "value": "page"
             }
         ]
     ],
     "menu_order": 0,
-    "position": "normal",
+    "position": "acf_after_title",
     "style": "default",
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 1,
+    "active": true,
     "description": "",
-    "modified": 1592120995
+    "show_in_rest": 1,
+    "modified": 1652527593
 }

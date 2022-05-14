@@ -5,6 +5,7 @@
         {
             "center_lat": 53.5527509,
             "center_lng": 9.9769592,
+            "zoom": 12,
             "key": "field_5d4d28a9ffcb9",
             "label": "Raw Map",
             "name": "raw_map_block",
@@ -21,7 +22,6 @@
             "layers": [
                 "OpenStreetMap.HOT"
             ],
-            "zoom": 12,
             "allow_map_layers": 1,
             "height": 400,
             "max_markers": 5
@@ -42,7 +42,8 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": 1,
+    "active": true,
     "description": "",
-    "modified": 1565428910
+    "show_in_rest": 1,
+    "modified": 1652529878
 }

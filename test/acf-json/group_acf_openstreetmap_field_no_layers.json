@@ -95,6 +95,7 @@
     "instruction_placement": "label",
     "hide_on_screen": "",
     "active": true,
+    "show_in_rest": 1,
     "description": "",
     "modified": 1607879865
 }
