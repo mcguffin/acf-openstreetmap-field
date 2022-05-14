@@ -34,8 +34,16 @@ abstract class Singleton {
 	/**
 	 *	Prevent Instantinating
 	 */
-	private function __clone() { }
-	private function __wakeup() { }
+	final public function __clone() {
+		throw new Exception('Unable to clone Singleton');
+	}
+
+	/**
+	 *	Prevent Instantinating
+	 */
+	final public function __wakeup() {
+		throw new Exception('Unable to clone Singleton');
+	}
 
 	/**
 	 *	Protected constructor
