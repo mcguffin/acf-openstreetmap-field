@@ -4,7 +4,7 @@ Donate link: https://donate.openstreetmap.org/
 Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
-Tested up to: 5.6
+Tested up to: 6.0
 Stable tag: 1.3.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -129,6 +129,15 @@ The *`osm_map_iframe_template` filter* has been removed in favour of theme overr
 Please refer to this wiki article for a [migration guide](https://github.com/mcguffin/acf-openstreetmap-field/wiki/The-abandoned-osm_map_iframe_template-filter).
 
 == Changelog ==
+
+= 1.3.3 =
+ - Upgrade leafletjs, leaflet-control-geocoder, leaflet-providers, leaflet, leaflet.locatecontrol to latest releases
+ - Remove HikeBike map provider
+ - Support ACF Rest API integration (since ACF 5.11)
+ - Fix: PHP 8 compatibility
+ - Fix: iframes in block preview not editable
+ - Fix: quote missing on html attribute in osm template
+ - Test with WP 6.0
 
 = 1.3.2 =
  - Fix: No such variant of OpenStreetMap (Mapnik)
