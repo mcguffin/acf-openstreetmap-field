@@ -4,10 +4,13 @@ var gulp = require('gulp');
 var rename = require('gulp-rename');
 var sass = require('@selfisekai/gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
-var uglify = require('gulp-uglify');
+// var uglify = require('gulp-uglify');
 var uglifycss = require('gulp-uglifycss');
 var fs = require('fs');
 
+const uglifyes = require('uglify-es');
+const composer = require('gulp-uglify/composer');
+const uglify = composer(uglifyes, console);
 
 
 function do_scss( src ) {
@@ -76,7 +79,7 @@ gulp.task('providers', function(cb){
 		let overlayPattern = [
 			'^(OpenWeatherMap|OpenSeaMap)',
 			'OpenMapSurfer.(Hybrid|AdminBounds|ContourLines|Hillshade|ElementsAtRisk)',
-			'HikeBike.HillShading',
+			// 'HikeBike.HillShading',
 			'Stamen.(Toner|Terrain)(Hybrid|Lines|Labels)',
 			'TomTom.(Hybrid|Labels)',
 			'Hydda.RoadsAndLabels',
@@ -114,6 +117,9 @@ gulp.task('providers', function(cb){
 	 // delete seemingly broken stamen variants
 	 delete( L.TileLayer.Provider.providers.Stamen.variants.TopOSMRelief);
 	 delete( L.TileLayer.Provider.providers.Stamen.variants.TopOSMFeatures);
+
+	 // remove HikeBike #83
+	 // delete( L.TileLayer.Provider.providers.HikeBike );
 
 
 /*
