@@ -21,7 +21,7 @@ $iframe_atts = [
 ?>
 <iframe src="<?php echo esc_url( $osm_providers->get_iframe_url( $map ) ); ?>" <?php echo acf_esc_attr( $iframe_atts ); ?>></iframe><br/>
 <small>
-	<a target="_blank" href=<?php echo esc_url( $osm_providers->get_link_url( $map ) ); ?>">
-		<?php esc_html_e( 'View Larger Map','acf-openstreetmap-field' ); ?>
+	<a target="_blank" href="<?php echo esc_url( $osm_providers->get_link_url( $map ) ); ?>">
+		<?php esc_html_e( 'View Larger Map', 'acf-openstreetmap-field' ); ?>
 	</a>
 </small>
