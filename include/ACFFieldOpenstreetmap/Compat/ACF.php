@@ -64,7 +64,7 @@ class ACF extends Core\Singleton {
 			$inp_field['attr'] = $field['attr'];
 		}
 
-		$map_field = Field\OpenStreetMap::get_instance();
+		$map_field = acf_get_field_type('open_street_map');
 
 		// format_value() returns sanitized HTML
 		echo $map_field->format_value( $field['value'], null, $inp_field ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -82,10 +82,10 @@ class ACF extends Core\Singleton {
 	 *  @param	$version (int) major ACF version. Defaults to false
 	 *  @return	n/a
 	 */
-	function include_field_types( $version = false ) {
+	public function include_field_types( $version = false ) {
 
 		if ( version_compare( acf_get_setting('version'), '5.7', '>=' ) ) {
-			Field\OpenStreetMap::get_instance();
+			acf_register_field_type( Field\OpenStreetMap::get_instance() );
 		}
 
 	}

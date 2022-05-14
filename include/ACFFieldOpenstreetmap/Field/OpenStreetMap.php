@@ -13,6 +13,8 @@ class OpenStreetMap extends \acf_field {
 
 	private static $_instance = null;
 
+	public $show_in_rest = true;
+
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
 			new self();
@@ -50,6 +52,8 @@ class OpenStreetMap extends \acf_field {
 		*/
 		$this->label = __("OpenStreetMap",'acf-openstreetmap-field');
 
+
+		$this->show_in_rest = true;
 		/*
 		 *  category (string) basic | content | choice | relational | jquery | layout | CUSTOM GROUP NAME
 		 */
@@ -734,6 +738,24 @@ class OpenStreetMap extends \acf_field {
 	}
 
 
+	/**
+	 * Apply basic formatting to prepare the value for default REST output.
+	 *
+	 * @param mixed      $value
+	 * @param int|string $post_id
+	 * @param array      $field
+	 * @return array|mixed
+	 */
+	public function format_value_for_rest( $value, $post_id, array $field ) {
+
+		if ( ! $value ) {
+			return null;
+		}
+
+		return acf_format_numerics( $value );
+	}
+
+
 	//*/
 
 
@@ -873,3 +895,4 @@ class OpenStreetMap extends \acf_field {
 	}
 
 }
+
