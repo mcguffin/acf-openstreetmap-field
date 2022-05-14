@@ -40,7 +40,7 @@
 	}
 }
 .acf-block-preview {
-	iframe {
+	iframe[src*="openstreetmap.org"] {
 		pointer-events:none;
 	}
 }
