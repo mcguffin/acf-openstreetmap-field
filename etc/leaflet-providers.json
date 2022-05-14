@@ -33,7 +33,7 @@
 				"url": "https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
 				"options": {
 					"maxZoom": 20,
-					"attribution": "&copy; Openstreetmap France | {attribution.OpenStreetMap}"
+					"attribution": "&copy; OpenStreetMap France | {attribution.OpenStreetMap}"
 				}
 			},
 			"HOT": {
@@ -67,13 +67,12 @@
 		},
 		"isOverlay": true
 	},
-	"OpenPtMap": {
-		"url": "http://openptmap.org/tiles/{z}/{x}/{y}.png",
+	"OPNVKarte": {
+		"url": "https://tileserver.memomaps.de/tilegen/{z}/{x}/{y}.png",
 		"options": {
-			"maxZoom": 17,
-			"attribution": "Map data: &copy; <a href=\"http://www.openptmap.org\">OpenPtMap</a> contributors"
-		},
-		"isOverlay": true
+			"maxZoom": 18,
+			"attribution": "Map <a href=\"https://memomaps.de/\">memomaps.de</a> <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, map data {attribution.OpenStreetMap}"
+		}
 	},
 	"OpenTopoMap": {
 		"url": "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
@@ -413,7 +412,7 @@
 		"options": {
 			"variant": "basic",
 			"maxZoom": 22,
-			"attribution": "<a href=\"https://tomtom.com\" target=\"_blank\">&copy;  1992 - 2021 TomTom.</a> ",
+			"attribution": "<a href=\"https://tomtom.com\" target=\"_blank\">&copy;  1992 - 2022 TomTom.</a> ",
 			"subdomains": "abcd",
 			"style": "main",
 			"ext": "png",
@@ -541,7 +540,7 @@
 	"HERE": {
 		"url": "https://{s}.{base}.maps.api.here.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?app_id={app_id}&app_code={app_code}&lg={language}",
 		"options": {
-			"attribution": "Map &copy; 1987-2021 <a href=\"http://developer.here.com\">HERE</a>",
+			"attribution": "Map &copy; 1987-2022 <a href=\"http://developer.here.com\">HERE</a>",
 			"subdomains": "1234",
 			"mapID": "newest",
 			"app_id": "<insert your app_id here>",
@@ -723,7 +722,7 @@
 	"HEREv3": {
 		"url": "https://{s}.{base}.maps.ls.hereapi.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?apiKey={apiKey}&lg={language}",
 		"options": {
-			"attribution": "Map &copy; 1987-2021 <a href=\"http://developer.here.com\">HERE</a>",
+			"attribution": "Map &copy; 1987-2022 <a href=\"http://developer.here.com\">HERE</a>",
 			"subdomains": "1234",
 			"mapID": "newest",
 			"apiKey": "<insert your apiKey here>",
@@ -919,7 +918,7 @@
 		"options": {
 			"attribution": "{attribution.OpenStreetMap} &copy; <a href=\"https://carto.com/attributions\">CARTO</a>",
 			"subdomains": "abcd",
-			"maxZoom": 19,
+			"maxZoom": 20,
 			"variant": "light_all"
 		},
 		"variants": {
@@ -991,8 +990,7 @@
 				"options": {
 					"maxZoom": 15,
 					"variant": "hillshading"
-				},
-				"isOverlay": true
+				}
 			}
 		}
 	},
@@ -1083,7 +1081,7 @@
 					7.6
 				]
 			],
-			"attribution": "Kaartgegevens &copy; <a href=\"kadaster.nl\">Kadaster</a>",
+			"attribution": "Kaartgegevens &copy; <a href=\"https://www.kadaster.nl\">Kadaster</a>",
 			"variant": "brtachtergrondkaart"
 		},
 		"variants": {
@@ -1103,7 +1101,7 @@
 				}
 			},
 			"luchtfoto": {
-				"url": "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wmts/2018_ortho25/EPSG:3857/{z}/{x}/{y}.png"
+				"url": "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/Actueel_ortho25/EPSG:3857/{z}/{x}/{y}.jpeg"
 			}
 		}
 	},
@@ -1155,7 +1153,7 @@
 			},
 			"ModisTerraSnowCover": {
 				"options": {
-					"variant": "MODIS_Terra_Snow_Cover",
+					"variant": "MODIS_Terra_NDSI_Snow_Cover",
 					"format": "png",
 					"maxZoom": 8,
 					"opacity": 0.75
@@ -1199,7 +1197,7 @@
 		}
 	},
 	"JusticeMap": {
-		"url": "http://www.justicemap.org/tile/{size}/{variant}/{z}/{x}/{y}.png",
+		"url": "https://www.justicemap.org/tile/{size}/{variant}/{z}/{x}/{y}.png",
 		"options": {
 			"attribution": "<a href=\"http://www.justicemap.org/terms.php\">Justice Map</a>",
 			"size": "county",
@@ -1228,14 +1226,6 @@
 		},
 		"isOverlay": true
 	},
-	"Wikimedia": {
-		"url": "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png",
-		"options": {
-			"attribution": "<a href=\"https://wikimediafoundation.org/wiki/Maps_Terms_of_Use\">Wikimedia</a>",
-			"minZoom": 1,
-			"maxZoom": 19
-		}
-	},
 	"GeoportailFrance": {
 		"url": "https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER={variant}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
 		"options": {
@@ -1253,32 +1243,27 @@
 			"minZoom": 2,
 			"maxZoom": 18,
 			"apikey": "choisirgeoportail",
-			"format": "image/jpeg",
+			"format": "image/png",
 			"style": "normal",
-			"variant": "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD"
+			"variant": "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2"
 		},
 		"variants": {
+			"plan": {
+				"options": {
+					"variant": "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2"
+				}
+			},
 			"parcels": {
 				"options": {
-					"variant": "CADASTRALPARCELS.PARCELS",
-					"maxZoom": 20,
-					"style": "bdparcellaire",
-					"format": "image/png"
-				}
-			},
-			"ignMaps": {
-				"options": {
-					"variant": "GEOGRAPHICALGRIDSYSTEMS.MAPS"
-				}
-			},
-			"maps": {
-				"options": {
-					"variant": "GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-EXPRESS.STANDARD"
+					"variant": "CADASTRALPARCELS.PARCELLAIRE_EXPRESS",
+					"style": "PCI vecteur",
+					"maxZoom": 20
 				}
 			},
 			"orthos": {
 				"options": {
 					"maxZoom": 19,
+					"format": "image/jpeg",
 					"variant": "ORTHOIMAGERY.ORTHOPHOTOS"
 				}
 			}
@@ -1346,5 +1331,85 @@
 			"skating": "skating"
 		},
 		"isOverlay": true
+	},
+	"OpenAIP": {
+		"url": "https://{s}.tile.maps.openaip.net/geowebcache/service/tms/1.0.0/openaip_basemap@EPSG%3A900913@png/{z}/{x}/{y}.{ext}",
+		"options": {
+			"attribution": "<a href=\"https://www.openaip.net/\">openAIP Data</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-NC-SA</a>)",
+			"ext": "png",
+			"minZoom": 4,
+			"maxZoom": 14,
+			"tms": true,
+			"detectRetina": true,
+			"subdomains": "12"
+		}
+	},
+	"OpenSnowMap": {
+		"url": "https://tiles.opensnowmap.org/{variant}/{z}/{x}/{y}.png",
+		"options": {
+			"minZoom": 9,
+			"maxZoom": 18,
+			"attribution": "Map data: {attribution.OpenStreetMap} & ODbL, &copy; <a href=\"https://www.opensnowmap.org/iframes/data.html\">www.opensnowmap.org</a> <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>"
+		},
+		"variants": {
+			"pistes": {
+				"options": {
+					"variant": "pistes"
+				}
+			}
+		}
+	},
+	"AzureMaps": {
+		"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&language={language}&subscription-key={subscriptionKey}",
+		"options": {
+			"attribution": "See https://docs.microsoft.com/en-US/rest/api/maps/renderv2/getmaptilepreview for details.",
+			"apiVersion": "2.0",
+			"variant": "microsoft.imagery",
+			"subscriptionKey": "<insert your subscription key here>",
+			"language": "en-US"
+		},
+		"variants": {
+			"MicrosoftImagery": {
+				"options": {
+					"variant": "microsoft.imagery"
+				}
+			},
+			"MicrosoftBaseDarkGrey": {
+				"options": {
+					"variant": "microsoft.base.darkgrey"
+				}
+			},
+			"MicrosoftBaseRoad": {
+				"options": {
+					"variant": "microsoft.base.road"
+				}
+			},
+			"MicrosoftBaseHybridRoad": {
+				"options": {
+					"variant": "microsoft.base.hybrid.road"
+				}
+			},
+			"MicrosoftTerraMain": {
+				"options": {
+					"variant": "microsoft.terra.main"
+				}
+			},
+			"MicrosoftWeatherInfraredMain": {
+				"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&timeStamp={timeStamp}&language={language}&subscription-key={subscriptionKey}",
+				"options": {
+					"timeStamp": "2021-05-08T09:03:00Z",
+					"attribution": "See https://docs.microsoft.com/en-US/rest/api/maps/renderv2/getmaptilepreview#uri-parameters for details.",
+					"variant": "microsoft.weather.infrared.main"
+				}
+			},
+			"MicrosoftWeatherRadarMain": {
+				"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&timeStamp={timeStamp}&language={language}&subscription-key={subscriptionKey}",
+				"options": {
+					"timeStamp": "2021-05-08T09:03:00Z",
+					"attribution": "See https://docs.microsoft.com/en-US/rest/api/maps/renderv2/getmaptilepreview#uri-parameters for details.",
+					"variant": "microsoft.weather.radar.main"
+				}
+			}
+		}
 	}
 }

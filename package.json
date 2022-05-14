@@ -38,10 +38,10 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "gulp-uglifycss": "^1.1.0",
-    "leaflet": "^1.7.1",
-    "leaflet-control-geocoder": "^2.1.0",
-    "leaflet-providers": "^1.11.0",
-    "leaflet.locatecontrol": "^0.72.0",
+    "leaflet": "1.8",
+    "leaflet-control-geocoder": "2.4",
+    "leaflet-providers": "1.13",
+    "leaflet.locatecontrol": "^0.76.1",
     "resize-observer-polyfill": "^1.5.1"
   },
   "dependencies": {
