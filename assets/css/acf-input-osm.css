@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /* Both Admin Menu and Post Formats */
 /* Post Format Icons */
 /* Welcome Screen Icons */
@@ -17,15 +16,54 @@
 /* Misc/CPT */
 /* Compatible with Leaflet 0.7 */
 .leaflet-control-locate a {
-  font-size: 1.4em;
-  color: #444;
   cursor: pointer;
 }
-.leaflet-control-locate.active a {
-  color: #2074b6;
+.leaflet-control-locate a .leaflet-control-locate-location-arrow {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 7px;
+  background-color: black;
+  -webkit-mask-image: url("../location-arrow-solid.svg");
+  mask-image: url("../location-arrow-solid.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
 }
-.leaflet-control-locate.active.following a {
-  color: #fc8428;
+.leaflet-control-locate a .leaflet-control-locate-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 7px;
+  background-color: black;
+  -webkit-mask-image: url("../spinner-solid.svg");
+  mask-image: url("../spinner-solid.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-animation: leaflet-control-locate-spin 2s linear infinite;
+          animation: leaflet-control-locate-spin 2s linear infinite;
+}
+.leaflet-control-locate.active a .leaflet-control-locate-location-arrow {
+  background-color: #2074b6;
+}
+.leaflet-control-locate.following a .leaflet-control-locate-location-arrow {
+  background-color: #fc8428;
+}
+
+.leaflet-touch .leaflet-bar .leaflet-locate-text-active {
+  width: 100%;
+  max-width: 200px;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0 10px;
+}
+.leaflet-touch .leaflet-bar .leaflet-locate-text-active .leaflet-locate-icon {
+  padding: 0 5px 0 0;
 }
 
 .leaflet-control-locate-location circle {
@@ -60,6 +98,26 @@
     stroke-width: 1;
   }
 }
+@-webkit-keyframes leaflet-control-locate-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes leaflet-control-locate-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
 [data-map=leaflet] {
   width: 100%;
 }
@@ -88,7 +146,7 @@
   display: inline;
 }
 
-.acf-block-preview iframe {
+.acf-block-preview iframe[src*="openstreetmap.org"] {
   pointer-events: none;
 }
 
@@ -219,7 +277,7 @@
           box-sizing: border-box;
   position: absolute;
   bottom: 18px;
-  left: -7px;
+  left: -3.25;
 }
 .osm-marker-icon.focus:after, .osm-marker-icon:focus:after {
   -webkit-box-shadow: 0 0 6px 12px rgba(255, 185, 0, 0.75);
@@ -229,7 +287,7 @@
   border-top-color: #dc3232;
 }
 .osm-marker-icon:hover:after {
-  content: "";
+  content: "\f158";
   font-family: "dashicons";
   color: #fff;
   font-size: 26px;
@@ -292,7 +350,7 @@
   border-radius: 0 4px 4px 0;
 }
 .acf-osm-above .leaflet-control-geocoder > .leaflet-control-geocoder-icon:before {
-  content: "";
+  content: "\f179";
   font-family: "dashicons";
   color: #fff;
   font-size: 20px;
@@ -410,7 +468,7 @@
   position: relative;
 }
 [data-can-add-marker=true] .leaflet-control-locate.active .dashicons-location-alt::before {
-  content: "";
+  content: "\f230";
 }
 [data-can-add-marker=true] .leaflet-control-locate.active + .leaflet-control-add-location-marker {
   display: block;
@@ -439,7 +497,7 @@
   font-size: 18px;
 }
 .leaflet-control-add-location-marker .dashicons::after {
-  content: "";
+  content: "\f132";
   font-size: 13px;
   position: absolute;
   top: -6px;

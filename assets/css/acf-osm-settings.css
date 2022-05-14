@@ -73,7 +73,7 @@
 }
 .acf-osm-settings .leaflet-container {
   min-height: 400px;
-  height: calc( 100vh - 32px );
+  height: calc(100vh - 32px);
 }
 
 .acf-osm-setting {
