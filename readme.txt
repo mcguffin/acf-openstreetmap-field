@@ -5,7 +5,7 @@ Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
 Tested up to: 6.0
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -129,6 +129,9 @@ The *`osm_map_iframe_template` filter* has been removed in favour of theme overr
 Please refer to this wiki article for a [migration guide](https://github.com/mcguffin/acf-openstreetmap-field/wiki/The-abandoned-osm_map_iframe_template-filter).
 
 == Changelog ==
+
+= 1.1.4 =
+ - Fix: locate control API
 
 = 1.3.3 =
  - Upgrade leafletjs, leaflet-control-geocoder, leaflet-providers, leaflet, leaflet.locatecontrol to latest releases
