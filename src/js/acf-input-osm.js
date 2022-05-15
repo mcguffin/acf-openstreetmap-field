@@ -362,7 +362,7 @@
 			var self = this;
 			this.currentLocation = false;
 
-			this.locator = new L.control.locate({
+			this.locator = L.control.locate({
 			    position: 'bottomleft',
 				icon: 'dashicons dashicons-location-alt',
 				iconLoading:'spinner is-active',
