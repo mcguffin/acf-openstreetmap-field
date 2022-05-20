@@ -133,13 +133,13 @@
 		clip:rect(0,0,100%,100%);
 		width:$size;
 		height:$size;
-		border-radius: math.div( $size, 2);
+		border-radius: math.div( $size, 2 );
 		background-color:#fff;
 		border:8px solid $wp-blue;
 		box-sizing:border-box;
 		position:absolute;
 		bottom:18px; // 24
-		left:math.div(-$size , 2 + 6px);
+		left: math.div( - $size , 2) + 6px;
 	}
 	&.focus,
 	&:focus {
