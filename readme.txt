@@ -130,7 +130,12 @@ Please refer to this wiki article for a [migration guide](https://github.com/mcg
 
 == Changelog ==
 
-= 1.1.4 =
+= 1.3.5 =
+ - Fix: Admin Marker styling broken
+ - Fix: PHP Fatal with suki theme
+ - Fix: include leaflet control geocode assets
+
+= 1.3.4 =
  - Fix: locate control API
 
 = 1.3.3 =
