@@ -36,16 +36,17 @@ class Templates extends Singleton {
 	/**
 	 *	@action get_template_part
 	 */
-	public function get_template_part( $slug, $name, $templates, $args ) {
+	public function get_template_part( $slug, $name = null, $templates = [], $args = [] ) {
 
 		if ( false === strpos( $slug, $this->template_dirname ) ) {
 			return;
 		}
 
 		$template = str_replace( $this->template_dirname . '/', '', $slug );
+		$name = (string) $name;
 
 		$locate = [ "{$slug}.php" ];
-		if ( ! is_null( $name ) ) {
+		if ( '' !== $name ) {
 			$locate[] = "{$slug}-{$name}.php";
 		}
 

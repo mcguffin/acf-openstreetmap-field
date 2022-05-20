@@ -6,7 +6,7 @@
 
 $map = $args['map'];
 $field = $args['field'];
-$attr = $args['field']['attr'] + [
+$attr = (array) $args['field']['attr'] + [
 	'class'				=> 'leaflet-map',
 	'data-height'		=> $field['height'],
 	'data-map'			=> 'leaflet',

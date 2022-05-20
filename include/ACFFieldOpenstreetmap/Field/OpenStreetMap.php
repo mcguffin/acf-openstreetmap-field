@@ -651,7 +651,7 @@ class OpenStreetMap extends \acf_field {
 
 			ob_start();
 
-			get_template_part( 'osm-maps/' . $field['return_format'], '', [
+			get_template_part( 'osm-maps/' . $field['return_format'], null, [
 				'field' => $field,
 				'map' => $value,
 			] );
