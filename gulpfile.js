@@ -233,8 +233,15 @@ gulp.task('leaflet-css', gulp.parallel(
 				// './node_modules/leaflet-minimap/dist/images/*.png',
 				'./node_modules/leaflet-control-geocoder/dist/images/*.gif',
 				'./node_modules/leaflet-control-geocoder/dist/images/*.png',
+				'./node_modules/leaflet-control-geocoder/dist/images/*.png',
 			])
 				.pipe( gulp.dest( './assets/css/images/' ) );
+		},
+		function() {
+			return gulp.src([
+				'./node_modules/leaflet.locatecontrol/*.svg',
+			])
+				.pipe( gulp.dest( './assets/' ) );
 		}
 
 	)
