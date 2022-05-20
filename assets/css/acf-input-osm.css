@@ -277,7 +277,7 @@
           box-sizing: border-box;
   position: absolute;
   bottom: 18px;
-  left: -3.25;
+  left: -7px;
 }
 .osm-marker-icon.focus:after, .osm-marker-icon:focus:after {
   -webkit-box-shadow: 0 0 6px 12px rgba(255, 185, 0, 0.75);
