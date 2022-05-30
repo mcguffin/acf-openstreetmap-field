@@ -487,6 +487,9 @@ class OpenStreetMap extends \acf_field {
 
 		$value = (array) $value;
 
+		// sanitize field
+		$field = $this->sanitize_field( $field );
+
 		//
 		// Markers
 		//
@@ -847,13 +850,9 @@ class OpenStreetMap extends \acf_field {
 	 */
 	private function sanitize_field( $field, $context = '' ) {
 
-		$field = wp_parse_args( $field, [
-			'center_lat'	=> $this->defaults['center_lat'],
-			'center_lng'	=> $this->defaults['center_lng'],
-			'zoom'			=> $this->defaults['zoom'],
-		] );
+		$field = wp_parse_args( $field, $this->defaults );
 
-		// typecast values
+		// typecast and restrict values
 		$field['center_lat']	= floatval( $field['center_lat'] );
 		$field['center_lng']	= floatval( $field['center_lng'] );
 		$field['zoom'] 			= min( 22, max( 1, intval( $field['zoom'] ) ) );
@@ -895,4 +894,3 @@ class OpenStreetMap extends \acf_field {
 	}
 
 }
-
