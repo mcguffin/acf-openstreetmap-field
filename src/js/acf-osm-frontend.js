@@ -1,10 +1,113 @@
 (function( $, arg ){
 
-	var visibilityObserver = new ResizeObserver( function(entries,observer) {
+	const leafletMapSelector = '[data-map="leaflet"]';
+	
+	const camelCase = str => {
+		return str.replace( /[-_\s.]+(.)?/g, (_, c) => c ? c.toUpperCase() : '' ).replace(/\s+/g, '');
+	}
+
+	const isVisible = el => {
+		return !! ( el.offsetWidth || el.offsetHeight || el.getClientRects().length )
+	}
+
+	const parseDataAttributes = el => {
+		const data = {}
+		Array.from(el.attributes).forEach( attr => {
+			let prop, val
+			if ( attr.name.indexOf('data-') === 0 ) {
+				prop = camelCase( attr.name.substr(5) )
+	
+				try {
+					val = JSON.parse(attr.value)
+				} catch (err) {
+					val = attr.value
+				}
+				data[ prop ] = val
+			}
+		})
+		return data;
+	}
+
+	const acfLeaflet = el => {
+		if ( !! el.acfOsmMap ) {
+			return
+		}
+
+		// if ( $(this).data( 'acf-osm-map' ) ) {
+		// 	return;
+		// }
+		const data = parseDataAttributes( el ),
+			mapInit = {
+				scrollWheelZoom: false,
+				center: [ bulletproofParseFloat(data.mapLat), bulletproofParseFloat(data.mapLng) ],
+				zoom: data.mapZoom,
+				tap: false
+			},
+			createEvt = new CustomEvent( 'acf-osm-map-create', {
+				bubbles: true,
+				cancelable: true,
+				detail: {
+					mapInit: mapInit
+				},
+			});
+		console.log(data)
+		let map, maxzoom,
+			initEvt;
+		el.dispatchEvent( createEvt )
+
+		// allow to skip map creation
+		if ( createEvt.defaultPrevented ) {
+			return;
+		}
+
+		el.style.height = data.height + 'px';
+
+		map = L.map( el, createEvt.detail.mapInit ); // map init might have been mutated by event listeners
+		el.acfOsmMap = map;
+		// $(this).data( 'acf-osm-map', map );
+
+		initEvt = new CustomEvent( 'acf-osm-map-init', {
+			detail: {
+				map: map
+			},
+			cancelable: true,
+			bubbles: true
+		})
+		el.dispatchEvent( initEvt )
+
+		// allow to skip initialization
+		if ( initEvt.defaultPrevented ) {
+			return;
+		}
+
+		createLayers.apply( el, [ data, map ] );
+
+		createMarkers.apply( el, [ data, map ] );
+
+		// reload hidden maps when they become visible
+		if ( ! isVisible(el) ) {
+			visibilityObserver.observe(el);
+			el.addEventListener( 'acf-osm-show', e => {
+				map.invalidateSize();
+			}, { once: true } )
+		}
+
+		// finished!
+		el.dispatchEvent( new CustomEvent( 'acf-osm-map-created', {
+			bubbles: true,
+			detail: {
+				map: map
+			}
+		 } ) )
+		
+	}
+
+	
+	const visibilityObserver = new ResizeObserver( function(entries,observer) {
 		entries.forEach(function(entry){
 			// @ see https://github.com/jquery/jquery/blob/a503c691dc06c59acdafef6e54eca2613c6e4032/test/data/jquery-1.9.1.js#L7469-L7481
-			if ( $(entry.target).is(':visible') ) {
-				$(entry.target).trigger('acf-osm-show');
+			if ( isVisible(entry.target) ) {
+				entry.target.dispatchEvent( new CustomEvent( 'acf-osm-show' ) );
 				observer.unobserve(entry.target);
 			}
 		})
@@ -14,18 +117,16 @@
 	// observe if new maps are being loaded into the dom
 	if ( !! MutationObserver ) {
 		var domObserver = new MutationObserver( function(entries,observer) {
-			entries.forEach(function(entry){
-				if ( $(entry.target).is('[data-map="leaflet"]') ) {
-					$(entry.target).acf_leaflet();
+			entries.forEach( entry => {
+				if ( entry.target.matches(leafletMapSelector) ) {
+					acfLeaflet(entry.target)
 				}
-				if ( $(entry.target).find('[data-map="leaflet"]') ) {
-					$(entry.target).find('[data-map="leaflet"]').acf_leaflet();
-				}
+				entry.target.querySelectorAll( leafletMapSelector ).forEach( acfLeaflet )
 			})
 		});
-		$(document).ready( function(){
+		window.addEventListener('DOMContentLoaded', e => {
 			domObserver.observe(document.body, { subtree: true, childList: true } );
-		} );
+		})
 	}
 
 	// #64
@@ -84,8 +185,8 @@
 			default_marker_config.icon = new L.icon( arg.options.marker.icon );
 		}
 
-		// markers again
-		$.each( data.mapMarkers, function( i, markerData ) {
+
+		data.mapMarkers.forEach( (markerData, i ) => {
 			// add markers
 			var marker, createEvt;
 
@@ -95,7 +196,7 @@
 				detail: {
 					map: map,
 					markerData: markerData,
-					markerOptions: $.extend( default_marker_config, {
+					markerOptions: Object.assign( default_marker_config, {
 						label: markerData.label
 					} ),
 				}
@@ -117,9 +218,9 @@
 				detail: {
 					marker: marker
 				}
-			}))
-
-		});
+			}))			
+		} )
+		// markers again
 
 
 	}
@@ -144,8 +245,9 @@
 
 		maxzoom = 100;
 
+
 		// layers ...
-		$.each( data.mapLayers, function( i, provider_key ) {
+		data.mapLayers.forEach( (provider_key, i) => {
 
 			if ( 'string' !== typeof provider_key ) {
 				return;
@@ -159,102 +261,48 @@
 			if ( !! layer.options.maxZoom ) {
 				maxzoom = Math.min( layer.options.maxZoom, maxzoom )
 			}
-		});
+			
+		} )
 		map.setMaxZoom( maxzoom );
 	}
 	
-	
-	$.fn.extend({
-		acf_leaflet:function() {
-
-			return this.each( function( i, el ) {
-
-				if ( $(this).data( 'acf-osm-map' ) ) {
-					return;
-				}
-				var data = $(this).data(),
-					self = this,
-					map, maxzoom,
-					mapInit = {
-						scrollWheelZoom: false,
-						center: [ bulletproofParseFloat(data.mapLat), bulletproofParseFloat(data.mapLng) ],
-						zoom: data.mapZoom,
-						tap: false
-					},
-					createEvt = new CustomEvent( 'acf-osm-map-create', {
-						bubbles: true,
-						cancelable: true,
-						detail: {
-							mapInit: mapInit
-						},
-					}),
-					initEvt;
-				this.dispatchEvent( createEvt )
-
-				// allow to skip map creation
-				if ( createEvt.defaultPrevented ) {
-					return;
-				}
-
-				$(this).height(data.height);
-
-				map = L.map( this, createEvt.detail.mapInit ); // map init might have been mutated by event listeners
-
-				$(this).data( 'acf-osm-map', map );
-
-				initEvt = new CustomEvent( 'acf-osm-map-init', {
-					detail: {
-						map: map
-					},
-					cancelable: true,
-					bubbles: true
-				})
-				this.dispatchEvent( initEvt )
-
-				// allow to skip initialization
-				if ( initEvt.defaultPrevented ) {
-					return;
-				}
-	
-				createLayers.apply( this, [ data, map ] );
-
-				createMarkers.apply( this, [ data, map ] );
-
-				// reload hidden maps when they become visible
-				if ( ! $(this).is(':visible') ) {
-					visibilityObserver.observe(this);
-					$(this).one('acf-osm-show', function(e){
-						map.invalidateSize();
-					} );
-				}
-
-				// finished!
-				this.dispatchEvent( new CustomEvent( 'acf-osm-map-created', {
-					bubbles: true,
-					detail: {
-						map: map
-					}
-				 } ) )
-
-			});
-		}
-	});
-	// static mathod
-	$.extend({
-		acf_leaflet:function() {
-			return $('[data-map="leaflet"]').acf_leaflet();
-		}
-	});
-	// init all maps
-	$(document).ready( $.acf_leaflet );
-
-	// listen to events
-	$(document).on( 'acf-osm-map-added', function(e) {
-		if ( $(e.target).is( '[data-map="leaflet"]') ) {
-			$(e.target).acf_leaflet();
+	window.addEventListener('DOMContentLoaded', e => {
+		document.querySelectorAll( leafletMapSelector ).forEach( acfLeaflet )
+		// domObserver.observe( document.body, { subtree: true, childList: true } );
+	})
+	document.addEventListener('acf-osm-map-added', e => {
+		if ( e.target.matches( leafletMapSelector ) ) {
+			acfLeaflet( e.target )
 		} else {
-			$.acf_leaflet();
+			document.querySelectorAll( leafletMapSelector, acfLeaflet )
 		}
-	});
+	})
+
+	// 
+	// $.fn.extend({
+	// 	acf_leaflet:function() {
+	// 
+	// 		return this.each( function( i, el ) {
+	// 
+	// 		});
+	// 	}
+	// });
+	// // static mathod
+	// $.extend({
+	// 	acf_leaflet:function() {
+	// 		return $('[data-map="leaflet"]').acf_leaflet();
+	// 	}
+	// });
+	// init all maps
+	// $(document).ready( $.acf_leaflet );
+	// 
+	// // listen to events
+	// $(document).on( 'acf-osm-map-added', function(e) {
+	// 	if ( $(e.target).is( '[data-map="leaflet"]') ) {
+	// 		$(e.target).acf_leaflet();
+	// 	} else {
+	// 		$.acf_leaflet();
+	// 	}
+	// });
 
 })( jQuery, acf_osm );

@@ -61,7 +61,7 @@ class Core extends Plugin {
 			$marker_html = wp_kses_post( $marker_html );
 		}
 
-		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), [ 'jquery' ], $this->get_version(), true );
+		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), [ ], $this->get_version(), true );
 
 		wp_localize_script('acf-osm-frontend','acf_osm', [
 			'options'	=> [
@@ -108,7 +108,7 @@ class Core extends Plugin {
 		/* backend */
 
 		// field js
-		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), ['acf-input','wp-backbone'], $this->get_version(), true );
+		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), ['acf-input','wp-backbone' ], $this->get_version(), true );
 		wp_localize_script( 'acf-input-osm', 'acf_osm_admin',[
 			'options'	=> [
 				'osm_layers'		=> $osm_providers->get_layers(), // flat list
