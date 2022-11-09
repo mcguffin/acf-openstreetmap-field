@@ -126,6 +126,9 @@ class OpenStreetMap extends \acf_field {
 			return $template['name'];
 		}, $return_choices );
 
+		$is_legacy = version_compare( acf()->version, '6.0.0', '<' );
+
+
 		// return_format
 		acf_render_field_setting( $field, [
 			'label'			=> __('Return Format','acf'),
@@ -138,6 +141,45 @@ class OpenStreetMap extends \acf_field {
 			'layout'	=>	'horizontal',
 		]);
 
+		if ( $is_legacy ) {
+			$this->render_field_presentation_settings( $field );
+			$this->render_field_validation_settings( $field );
+		}
+
+	}
+
+	/**
+	 * Renders the field settings used in the "Validation" tab.
+	 *
+	 * @since 6.0
+	 *
+	 * @param array $field The field settings array.
+	 * @return void
+	 */
+	function render_field_validation_settings( $field ) {
+
+		// allow_layer selection
+		acf_render_field_setting( $field, [
+			'label'			=> __( 'Max. number of Markers', 'acf-openstreetmap-field' ),
+			'instructions'	=> __( 'Leave empty for infinite markers', 'acf-openstreetmap-field' ),
+			'name'			=> 'max_markers',
+			'type'			=> 'number',
+			'ui'			=> 1,
+			'min'			=> 0,
+			'step'			=> 1,
+		]);
+
+	}
+
+	/**
+	 * Renders the field settings used in the "Presentation" tab.
+	 *
+	 * @since 6.0
+	 *
+	 * @param array $field The field settings array.
+	 * @return void
+	 */
+	function render_field_presentation_settings( $field ) {
 		acf_render_field_setting( $field, [
 			'label'				=> __( 'Map Appearance', 'acf-openstreetmap-field' ),
 			'instructions'		=> __( 'Set zoom, center and select layers being displayed.', 'acf-openstreetmap-field' ),
@@ -160,6 +202,10 @@ class OpenStreetMap extends \acf_field {
 				'zoom'				=> $field['zoom'],
 				'layers'			=> $field['layers'],
 				'markers'			=> [],
+			],
+			'wrapper'      => [
+				'data-name' => 'wrapper',
+				'class'     => 'acf-field-setting-wrapper',
 			],
 		] );
 
@@ -217,21 +263,8 @@ class OpenStreetMap extends \acf_field {
 			'append'		=> 'px',
 		]);
 
-
-		// allow_layer selection
-		acf_render_field_setting( $field, [
-			'label'			=> __( 'Max. number of Markers', 'acf-openstreetmap-field' ),
-			'instructions'	=> __( 'Leave empty for infinite markers', 'acf-openstreetmap-field' ),
-			'name'			=> 'max_markers',
-			'type'			=> 'number',
-			'ui'			=> 1,
-			'min'			=> 0,
-			'step'			=> 1,
-		]);
-
-		// layers
-
 	}
+
 
 	/*
 	 *  render_field()
