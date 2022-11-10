@@ -515,6 +515,14 @@ class OpenStreetMap extends \acf_field {
  	 */
 	private function sanitize_value( $value, $field, $context = '' ) {
 
+		if ( is_string( $value ) ) {
+			// try to json-decode
+			$value = json_decode( $value );
+			if ( is_null( $value ) ) {
+				$value = [];
+			}
+		}
+
 		$value = (array) $value;
 
 		// sanitize field
@@ -668,9 +676,9 @@ class OpenStreetMap extends \acf_field {
 			return $value;
 		}
 
-		if ( 'raw' === $field['return_format'] ) {
+		$value = $this->sanitize_value( $value, $field, 'display' );
 
-			$value = $this->sanitize_value( $value, $field, 'display' );
+		if ( 'raw' === $field['return_format'] ) {
 
 			// ensure backwards compatibility <= 1.0.1
 			$value['center_lat'] = $value['lat'];
