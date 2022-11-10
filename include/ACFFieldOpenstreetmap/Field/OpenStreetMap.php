@@ -15,6 +15,9 @@ class OpenStreetMap extends \acf_field {
 
 	public $show_in_rest = true;
 
+	/**
+	 *	@return ACFFieldOpenstreetmap\Field\OpenStreetMap
+	 */
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
 			new self();
@@ -93,10 +96,7 @@ class OpenStreetMap extends \acf_field {
 
 		add_action( 'print_media_templates', [ $this, 'print_media_templates' ] );
 
-		add_action( 'wp_footer', [ $this, 'maybe_print_media_templates' ], 11 );
-
-		// do not delete!
-    	parent::__construct();
+		parent::__construct();
 
 	}
 
@@ -288,9 +288,6 @@ class OpenStreetMap extends \acf_field {
 			$field['value'] = $this->sanitize_value( [], $field, 'display' );
 		}
 
-		// value
-		//$field['value'] = wp_parse_args( $field['value'], $this->default_values );
-
 		// json_encoded value
 		acf_hidden_input([
 			'id'		=> $field['id'],
@@ -360,8 +357,6 @@ class OpenStreetMap extends \acf_field {
 			
 		}
 
-		// add this to admin template?
-
 		// markers
 		$markers = []; // $field['value']['markers'];
 
@@ -415,6 +410,8 @@ class OpenStreetMap extends \acf_field {
 		wp_enqueue_style('acf-input-osm');
 
 		wp_enqueue_style('leaflet');
+
+		add_action( 'wp_footer', [ $this, 'maybe_print_media_templates' ], 11 );
 
 	}
 
