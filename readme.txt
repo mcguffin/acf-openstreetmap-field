@@ -132,6 +132,7 @@ Please refer to this wiki article for a [migration guide](https://github.com/mcg
 
 = 1.4.1 =
  - JS: remove console.log
+ - Fix: admin js broken after jquery removal
 
 = 1.4.0 =
  - UI: Adapt to ACF 6 field group admin

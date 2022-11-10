@@ -991,7 +991,7 @@
 
 	// init when fields get loaded ...
 	acf.addAction( 'append', function(){
-		$.acf_leaflet();
+		document.dispatchEvent( new CustomEvent('acf-osm-map-added') );	
 	});
 	// init when fields show ...
 	acf.addAction( 'show_field', function( field ) {

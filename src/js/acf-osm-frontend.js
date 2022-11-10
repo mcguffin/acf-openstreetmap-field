@@ -1,4 +1,4 @@
-(function( $, arg ){
+(function( arg ){
 
 	const leafletMapSelector = '[data-map="leaflet"]';
 	
@@ -50,7 +50,7 @@
 					mapInit: mapInit
 				},
 			});
-		console.log(data)
+
 		let map, maxzoom,
 			initEvt;
 		el.dispatchEvent( createEvt )
@@ -305,4 +305,4 @@
 	// 	}
 	// });
 
-})( jQuery, acf_osm );
+})( acf_osm );
