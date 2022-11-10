@@ -77,38 +77,39 @@
 
 	osm.MarkerData = GSModel.extend({
 		getters: {
-			lat:fixedFloatGetter( 'lat', options.accuracy ),
-			lng:fixedFloatGetter( 'lng', options.accuracy ),
+			lat: fixedFloatGetter( 'lat', options.accuracy ),
+			lng: fixedFloatGetter( 'lng', options.accuracy ),
 		},
 		setters: {
-			lat:fixedFloatSetter( 'lat', options.accuracy ),
-			lng:fixedFloatSetter( 'lng', options.accuracy ),
+			lat: fixedFloatSetter( 'lat', options.accuracy ),
+			lng: fixedFloatSetter( 'lng', options.accuracy ),
 		},
 		isDefaultLabel:function() {
 			return this.get('label') === this.get('default_label');
 		}
 	});
 	osm.MarkerCollection = Backbone.Collection.extend({
-		model:osm.MarkerData
+		model: osm.MarkerData
 	});
 
 
 	osm.MapData = GSModel.extend({
 		getters: {
-			lat:fixedFloatGetter( 'lat', options.accuracy ),
-			lng:fixedFloatGetter( 'lng', options.accuracy ),
-			zoom:intGetter('zoom'),
+			lat: fixedFloatGetter( 'lat', options.accuracy ),
+			lng: fixedFloatGetter( 'lng', options.accuracy ),
+			zoom: intGetter('zoom'),
 		},
 		setters: {
-			lat:fixedFloatSetter( 'lat', options.accuracy ),
-			lng:fixedFloatSetter( 'lng', options.accuracy ),
-			zoom:intSetter('zoom'),
+			lat: fixedFloatSetter( 'lat', options.accuracy ),
+			lng: fixedFloatSetter( 'lng', options.accuracy ),
+			zoom: intSetter('zoom'),
 		},
 		initialize:function(o) {
 			this.set( 'markers', new osm.MarkerCollection(o.markers) );
 			GSModel.prototype.initialize.apply(this,arguments)
 		}
 	});
+	
 	osm.MarkerEntry = wp.Backbone.View.extend({
 		tagName: 'div',
 		className:'osm-marker',
@@ -129,6 +130,7 @@
 			this.listenTo( this.model, 'change:lat', this.changedlatLng );
 			this.listenTo( this.model, 'change:lng', this.changedlatLng );
 			this.listenTo( this.model, 'destroy', this.remove );
+
 			return this.render();
 		},
 		changedLabel: function() {
@@ -151,6 +153,7 @@
 		},
 		changedlatLng: function() {
 			this.marker.setLatLng( { lat:this.model.get('lat'), lng:this.model.get('lng') } )
+			acf.doAction('acf-osm/update-marker-latlng', this.model, this.options.controller.field );
 		},
 		render:function(){
 			wp.media.View.prototype.render.apply(this,arguments);
@@ -414,7 +417,6 @@
 		addMarker:function( model, collection ) {
 
 			var self = this;
-
 			// add marker to map
 			var marker = L.marker( { lat: model.get('lat'), lng: model.get('lng') }, {
 					title: model.get('label'),
@@ -448,7 +450,8 @@
 				entry.$el.appendTo( self.$markers() );
 			});
 
-			model.on('destroy',function(){
+			model.on( 'destroy', function() {
+				acf.doAction('acf-osm/destroy-marker', model, self.field );
 				marker.remove();
 			});
 
@@ -456,6 +459,7 @@
 			if ( this.plingMarker ) {
 				entry.pling();
 			}
+			
 
 		},
 		initMarkers:function(){
@@ -567,10 +571,17 @@
 				default_label: '',
 				lat: latlng.lat,
 				lng: latlng.lng,
+				geocode: [],
+				uuid: acf.uniqid('marker_'),
 			});
+
 			this.plingMarker = true;
 			collection.add( model );
 			this.reverseGeocode( model );
+
+			acf.doAction('acf-osm/create-marker', model, this.field );
+			acf.doAction('acf-osm/update-marker-latlng', model, this.field );
+
 		},
 		/**
 		 *	Geocoding
@@ -635,6 +646,7 @@
  			})
  			.on('markgeocode',function(e){
  				// search result click
+
  				var latlng =  e.geocode.center,
  					count_markers = self.model.get('markers').length,
  					label = self.parseGeocodeResult( [ e.geocode ], latlng ),
@@ -642,9 +654,13 @@
  						label: label,
  						default_label: label,
  						lat: latlng.lat,
- 						lng: latlng.lng
+ 						lng: latlng.lng,
+						geocode: [],
  					},
- 					model;
+ 					model,
+					marker,
+					previousGeocode = false;
+
 				// getting rid of the modal – #35
 				self.geocoder._clearResults();
 				self.geocoder._input.value = '';
@@ -658,14 +674,19 @@
 
 
  				if ( self.config.max_markers === false || count_markers < self.config.max_markers ) {
+					marker_data.uuid = acf.uniqid('marker_')
 					// infinite markers or markers still in range
- 					self.model.get('markers').add( marker_data );
+ 					marker = self.model.get('markers').add( marker_data );
 
  				} else if ( self.config.max_markers === 1 ) {
 					// one marker only
- 					self.model.get('markers').at(0).set( marker_data );
+					marker = self.model.get('markers').at(0)
+					previousGeocode = marker.get('geocode')
+ 					marker.set( marker_data );
 
  				}
+
+				acf.doAction('acf-osm/marker-geocode-result', marker.model, self.field, [ e.geocode ], previousGeocode );
 
  				self.map.setView( latlng, self.map.getZoom() ); // keep zoom, might be confusing else
 
@@ -679,7 +700,12 @@
 			this.geocoder.options.geocoder.reverse(
 				latlng,
 				self.map.getZoom(),
+				/**
+				 *	@param array results
+				 */
 				function( results ) {
+					acf.doAction('acf-osm/marker-geocode-result', model, self.field, results, model.get('geocode' ) );
+					model.set('geocode', results );
 					model.set('default_label', self.parseGeocodeResult( results, latlng ) );
 				}
 			);
@@ -871,8 +897,8 @@
 							'leaflet-control-add-location-marker leaflet-bar leaflet-control');
 
 						this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
-		                this._link.title = i18n.add_marker_at_location;
-		                this._icon = L.DomUtil.create('span', 'dashicons dashicons-location', this._link);
+						this._link.title = i18n.add_marker_at_location;
+						this._icon = L.DomUtil.create('span', 'dashicons dashicons-location', this._link);
 						L.DomEvent
 							.on( this._link, 'click', L.DomEvent.stopPropagation)
 							.on( this._link, 'click', L.DomEvent.preventDefault)
@@ -926,7 +952,7 @@
 			}
 		})
 		.on( 'acf-osm-map-init', function( e ) {
-			var editor,
+			var editor, field,
 				map = e.detail.map;
 
 			// wrap osm.Field backbone view around editors
@@ -939,7 +965,9 @@
 					}
 					map.invalidateSize();
 				})();
-				editor = new osm.Field( { el: e.target, map: map, field: acf.getField( $(e.target).closest('.acf-field') ) } );
+				field = acf.getField( $(e.target).closest('.acf-field') )
+				editor = new osm.Field( { el: e.target, map: map, field: field } );
+				field.set( 'osmEditor', editor )
 				$(e.target).data( '_map_editor', editor );
 			}
 		});
@@ -958,6 +986,8 @@
 	    editor.update_visible();
 	});
 
-
+	acf.registerFieldType(acf.Field.extend({
+		type: 'open_street_map'
+	}));
 
 })( jQuery, acf_osm_admin, window );
