@@ -2,16 +2,16 @@
 # This file is distributed under the GPL3.
 msgid ""
 msgstr ""
-"Project-Id-Version: ACF OpenStreetMap Field 1.3.5\n"
+"Project-Id-Version: ACF OpenStreetMap Field 1.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/acf-openstreetmap-field\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-05-20T12:29:11+00:00\n"
+"POT-Creation-Date: 2022-11-10T09:37:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.6.0\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: acf-openstreetmap-field\n"
 
 #. Plugin Name of the plugin
@@ -32,6 +32,10 @@ msgstr ""
 
 #. Author URI of the plugin
 msgid "https://github.com/mcguffin"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Blocks~/Leaflet.php:48
+msgid "A Leaflet map"
 msgstr ""
 
 #: include/ACFFieldOpenstreetmap/Core/Core.php:119
@@ -69,98 +73,98 @@ msgstr ""
 msgid "{state} {country}"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:53
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:56
 #: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:62
 msgid "OpenStreetMap"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:136
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:139
 msgid "Raw Data"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:142
-msgid "Map Appearance"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:143
-msgid "Set zoom, center and select layers being displayed."
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:168
-msgid "Map Position"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:169
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:180
-msgid "Center the initial map"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:172
-msgid "lat"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:179
-msgid "Center"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:183
-msgid "lng"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:191
-msgid "Zoom"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:192
-msgid "Set the initial zoom level"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:197
-msgid "zoom"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:204
-msgid "Allow layer selection"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:214
-msgid "Customize the map height"
-msgstr ""
-
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:223
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:163
 msgid "Max. number of Markers"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:224
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:164
 msgid "Leave empty for infinite markers"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:341
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:184
+msgid "Map Appearance"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:185
+msgid "Set zoom, center and select layers being displayed."
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:214
+msgid "Map Position"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:215
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:226
+msgid "Center the initial map"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:218
+msgid "lat"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:225
+msgid "Center"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:229
+msgid "lng"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:237
+msgid "Zoom"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:238
+msgid "Set the initial zoom level"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:243
+msgid "zoom"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:250
+msgid "Allow layer selection"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:260
+msgid "Customize the map height"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:369
 msgid "Double click to add Marker."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:344
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:372
 msgid "Tap and hold to add Marker."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:347
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:375
 msgid "Drag Marker to move."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:706
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:747
 #: templates/osm.php:25
 msgid "View Larger Map"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:793
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:834
 msgid "Please set a marker on the map."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:883
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:920
 msgid "Locate Marker"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:891
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:928
 msgid "Remove Marker"
 msgstr ""
 
