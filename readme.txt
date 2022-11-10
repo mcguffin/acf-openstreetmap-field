@@ -130,9 +130,13 @@ Please refer to this wiki article for a [migration guide](https://github.com/mcg
 
 == Changelog ==
 
+= 1.4.1 =
+ - JS: remove console.log
+
 = 1.4.0 =
  - UI: Adapt to ACF 6 field group admin
  - JS API: do acf actions on marker events
+ - JS Frontend: remove jQuery dependency
  - Data: add geocode results to raw data
  - Fix: search submit button did not submit
  - Fix: print template script only if input element is present

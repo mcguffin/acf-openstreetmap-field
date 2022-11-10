@@ -693,28 +693,23 @@
  			})
  			.addTo( this.map );
 
-		// Issue #87 - <button>This is not a button</button>
-		L.DomEvent.on( 
-			this.geocoder.getContainer().querySelector('.leaflet-control-geocoder-icon'), 
-			'click', 
-			function() {
-				if (this._selection) {
-					var index = parseInt(this._selection.getAttribute('data-result-index'), 10);
-					
-					this._geocodeResultSelected(this._results[index]);
-					
-					this._clearResults();
-				} else {
-					this._geocode();
-				}
-			}, 
-			this.geocoder 
-		)
-
-/*
-
-*/
-console.log(this.geocoder)
+			// Issue #87 - <button>This is not a button</button>
+			L.DomEvent.on( 
+				this.geocoder.getContainer().querySelector('.leaflet-control-geocoder-icon'), 
+				'click', 
+				function() {
+					if (this._selection) {
+						var index = parseInt(this._selection.getAttribute('data-result-index'), 10);
+						
+						this._geocodeResultSelected(this._results[index]);
+						
+						this._clearResults();
+					} else {
+						this._geocode();
+					}
+				}, 
+				this.geocoder 
+			)
  		},
 		reverseGeocode:function( model ) {
 			var self = this,
