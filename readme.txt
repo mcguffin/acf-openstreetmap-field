@@ -136,6 +136,7 @@ Please refer to this wiki article for a [migration guide](https://github.com/mcg
  - Data: add geocode results to raw data
  - Fix: search submit button did not submit
  - Fix: print template script only if input element is present
+ - Fix: value sanitation. Shold now work with Frontend Admin for ACF
 
 = 1.3.5 =
  - Fix: Admin Marker styling broken
