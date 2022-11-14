@@ -990,8 +990,8 @@
 		});
 
 	// init when fields get loaded ...
-	acf.addAction( 'append', function(){
-		document.dispatchEvent( new CustomEvent('acf-osm-map-added') );	
+	acf.addAction( 'append', function( $el ){
+		$el.length && $el.get(0).dispatchEvent( new CustomEvent('acf-osm-map-added') );	
 	});
 	// init when fields show ...
 	acf.addAction( 'show_field', function( field ) {
