@@ -130,6 +130,9 @@ Please refer to this wiki article for a [migration guide](https://github.com/mcg
 
 == Changelog ==
 
+= 1.4.3 =
+ - Fix: JS – acf hook `acf-osm/create-marker` undefined argument + not firing on geocode
+
 = 1.4.2 =
  - Fix: JS Error on append repeater
 
