@@ -459,7 +459,6 @@
 			if ( this.plingMarker ) {
 				entry.pling();
 			}
-			
 
 		},
 		initMarkers:function(){
@@ -677,6 +676,7 @@
 					marker_data.uuid = acf.uniqid('marker_')
 					// infinite markers or markers still in range
  					marker = self.model.get('markers').add( marker_data );
+					acf.doAction('acf-osm/create-marker', marker, self.field );
 
  				} else if ( self.config.max_markers === 1 ) {
 					// one marker only
@@ -686,7 +686,7 @@
 
  				}
 
-				acf.doAction('acf-osm/marker-geocode-result', marker.model, self.field, [ e.geocode ], previousGeocode );
+				acf.doAction('acf-osm/marker-geocode-result', marker, self.field, [ e.geocode ], previousGeocode );
 
  				self.map.setView( latlng, self.map.getZoom() ); // keep zoom, might be confusing else
 
