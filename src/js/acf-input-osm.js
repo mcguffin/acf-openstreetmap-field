@@ -716,7 +716,7 @@
 				latlng = { lat: model.get('lat'), lng: model.get('lng') };
 			this.geocoder.options.geocoder.reverse(
 				latlng,
-				self.map.getZoom(),
+				Math.max( 1, self.map.getZoom() ), // must not be 0, results in -Infinity being sent to geocoder
 				/**
 				 *	@param array results
 				 */
