@@ -154,11 +154,6 @@ class Core extends Plugin {
 	 *	@return wp_enqueue_editor
 	 */
 	public function get_asset_url( $asset ) {
-
-		if ( ! defined('SCRIPT_DEBUG') || ! SCRIPT_DEBUG ) {
-			$pi = pathinfo($asset);
-			$asset = $pi['dirname'] . DIRECTORY_SEPARATOR . $pi['filename'] . '.min.' . $pi['extension'];
-		}
 		return plugins_url( $asset, $this->get_plugin_file() );
 	}
 
