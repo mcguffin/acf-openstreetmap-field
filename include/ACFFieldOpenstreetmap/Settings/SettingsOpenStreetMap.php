@@ -36,7 +36,7 @@ class SettingsOpenStreetMap extends Settings {
 	 *	@filter plugin_action_links_{$plugin_file}
 	 */
 	public function plugin_actions_links( $actions, $plugin_file, $plugin_data, $context ) {
-		if ( current_user_can( 'manage_options' ) ) {
+		if ( isset( $plugin_data['Name'] ) && current_user_can( 'manage_options' ) ) {
 			$actions['settings'] = sprintf(
 				'<a href="%s" aria-label="%s">%s</a>',
 				esc_url( 
