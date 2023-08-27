@@ -103,7 +103,7 @@ class Core extends Plugin {
 			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
 		]);
 
-		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/leaflet.css' ), [], $this->get_version() );
+		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/acf-osm-leaflet.css' ), [], $this->get_version() );
 
 		/* backend */
 
@@ -153,7 +153,7 @@ class Core extends Plugin {
 	 *	@param	string	$asset	URL part relative to plugin class
 	 *	@return wp_enqueue_editor
 	 */
-	public function get_asset_url( $asset ) {
+	public function get_asset_url( $asset ) { 
 		return plugins_url( $asset, $this->get_plugin_file() );
 	}
 
