@@ -41,7 +41,8 @@
 				scrollWheelZoom: false,
 				center: [ bulletproofParseFloat(data.mapLat), bulletproofParseFloat(data.mapLng) ],
 				zoom: data.mapZoom,
-				tap: false
+				tap: false,
+				worldCopyJump: true,
 			},
 			createEvt = new CustomEvent( 'acf-osm-map-create', {
 				bubbles: true,
