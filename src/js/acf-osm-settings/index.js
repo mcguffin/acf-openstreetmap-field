@@ -1,4 +1,3 @@
-
 (function( $, arg, exports ){
 	var options = arg.options,
 		providers = arg.providers,
