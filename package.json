@@ -25,29 +25,43 @@
   },
   "browserslist": [
     "last 3 versions",
-    "> 0.125%",
-    "IE 10"
+    "> 0.125%"
   ],
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
-    "@selfisekai/gulp-sass": "^4.2.0",
+    "@babel/preset-env": "^7.20.2",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "browserify-shim": "^3.8.16",
+    "event-stream": "^4.0.1",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-concat": "^2.6.1",
     "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "gulp-uglifycss": "^1.1.0",
-    "leaflet": "^1.9.3",
+    "leaflet": "^1.9.4",
     "leaflet-control-geocoder": "2.4",
     "leaflet-providers": "1.13",
     "leaflet.locatecontrol": "^0.76.1",
     "resize-observer-polyfill": "^1.5.1",
-    "uglify-es": "^3.3.9"
+    "sass": "^1.57.0",
+    "tinyify": "^4.0.0",
+    "uglify-es": "^3.3.9",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "jquery": "^3.5.1",
-    "sass": "^1.30.0"
+    "jquery": "^3.5.1"
+  },
+  "browserify-shim": {
+    "jquery": "global:jQuery",
+    "backbone": "global:Backbone",
+    "osm": "global:acf_osm",
+    "osm-admin": "global:acf_osm_admin",
+    "wp": "global:wp"
   },
   "wporg": {
     "steps": [
