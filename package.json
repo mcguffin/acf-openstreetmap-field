@@ -46,7 +46,6 @@
     "leaflet-control-geocoder": "2.4",
     "leaflet-providers": "1.13",
     "leaflet.locatecontrol": "^0.76.1",
-    "resize-observer-polyfill": "^1.5.1",
     "sass": "^1.57.0",
     "tinyify": "^4.0.0",
     "uglify-es": "^3.3.9",
