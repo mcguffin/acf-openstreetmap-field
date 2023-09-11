@@ -1,0 +1,24 @@
+{
+    "key": "group_acf_openstreetmap_some_fields",
+    "title": "OpenStreetMap Field - Other Block",
+    "fields": [],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "acf\/other-block"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "show_in_rest": 1,
+    "description": "",
+    "modified": 1565536105
+}

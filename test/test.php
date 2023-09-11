@@ -170,7 +170,7 @@ class PluginTest {
 			return;
 		}
 
-		// register a testimonial block
+		// register a map block
 		acf_register_block(array(
 			'name'				=> 'leaflet-map',
 			'title'				=> __('Leaflet Map Test'),
@@ -178,7 +178,7 @@ class PluginTest {
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
 				printf('<div class="align%s">',$block['align']);
 				//echo '<input type="checkbox" />';
-				the_field( 'leaflet_map_block' );
+				the_field( 'leaflet_map' );
 				echo '</div>';
 				?><hr /><?php
 			},
@@ -189,7 +189,7 @@ class PluginTest {
 			'keywords'			=> array( 'map' ),
 		));
 
-		// register a testimonial block
+		// register a map block
 		acf_register_block(array(
 			'name'				=> 'osm-map',
 			'title'				=> __('OpenStreetMap Test (iFrame)'),
@@ -208,8 +208,7 @@ class PluginTest {
 
 		));
 
-
-		// register a testimonial block
+		// register a map block
 		acf_register_block(array(
 			'name'				=> 'raw-map',
 			'title'				=> __('OpenStreetMap Test (Raw Data)'),
@@ -218,7 +217,6 @@ class PluginTest {
 				?><pre><?php
 				$data = get_field( 'raw_map_block' );
 				echo json_encode( $data,  JSON_PRETTY_PRINT );
-				
 				?></pre><?php
 			},
 			'category'			=> 'embed',
@@ -228,6 +226,29 @@ class PluginTest {
 			'keywords'			=> array( 'map' ),
 
 		));
+
+
+
+		// register a map block
+		acf_register_block(array(
+			'name'				=> 'other-block',
+			'title'				=> __('SOME ACF BLOCK'),
+			'description'		=> __('Testing block with some conditional logic'),
+			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
+				?><pre><?php 
+				the_field('text');
+				if ( get_field( 'show_conditional_text') ) {
+					?> and <?php the_field('conditional_text');
+				}
+				?></pre><?php
+			},
+			'category'			=> 'embed',
+			'icon'				=> 'location-alt',
+			'mode'				=> 'preview', // auto|preview|edit
+			'align'				=> 'full',
+			'keywords'			=> array( 'acf' ),
+		));
+
 
 	}
 

@@ -18,7 +18,7 @@
                 "class": "",
                 "id": ""
             },
-            "return_format": "custom-map",
+            "return_format": "leaflet",
             "layers": [
                 "OpenStreetMap.Mapnik",
                 "Stamen.TonerLines"
@@ -31,23 +31,9 @@
     "location": [
         [
             {
-                "param": "post_type",
-                "operator": "==",
-                "value": "post"
-            }
-        ],
-        [
-            {
                 "param": "block",
                 "operator": "==",
                 "value": "acf\/leaflet-map"
-            }
-        ],
-        [
-            {
-                "param": "post_type",
-                "operator": "==",
-                "value": "page"
             }
         ]
     ],
