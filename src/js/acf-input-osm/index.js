@@ -1,15 +1,17 @@
-(function( $, arg, exports ){
-	var options = arg.options,
-		i18n = arg.i18n,
-		result_tpl = '<div tabindex="<%= data.i %>" class="osm-result">'
+import L from 'lib/osm-map';
+import AddLocationMarker from 'lib/control-add-location-marker';
+import FitBounds from 'lib/control-fit-bounds';
+
+(function( $, { options, i18n }, exports ){
+
+	// const { options, i18n } = arg;
+
+	const result_tpl = '<div tabindex="<%= data.i %>" class="osm-result">'
 			+ '<%= data.result_text %>'
 			+ '<br /><small><%= data.properties.osm_value %></small>'
 			+ '</div>';
 
-	var osm = exports.osm = {
-	};
-
-	var locatorAddControl = null;
+	var osm = exports.osm = {};
 
 	var fixedFloatGetter = function( prop, fix ) {
 		return function() {
@@ -109,7 +111,7 @@
 			GSModel.prototype.initialize.apply(this,arguments)
 		}
 	});
-	
+
 	osm.MarkerEntry = wp.Backbone.View.extend({
 		tagName: 'div',
 		className:'osm-marker',
@@ -290,7 +292,7 @@
 			}
 
 			this.el.addEventListener( 'acf-osm-map-create-markers', this.preventDefault )
-			
+
 			// reset markers in case field was duplicated with a row
 			self.$markers().html('')
 			this.initMarkers();
@@ -331,7 +333,7 @@
 		init_fit_bounds:function() {
 			var self = this
 			// 2do: externalize L.Control.FitBoundsControl
-			this.fitBoundsControl = new L.Control.FitBoundsControl({
+			this.fitBoundsControl = new FitBounds({
 				position: 'bottomright',
 				callback: function() {
 					var markers = self.model.get('markers')
@@ -350,8 +352,9 @@
 		init_locator_add:function() {
 			var self = this
 
-			this.locatorAdd = new L.Control.AddLocationMarker({
+			this.locatorAdd = new AddLocationMarker({
 				position: 'bottomleft',
+				linkTitle: i18n.add_marker_at_location,
 				callback: function() {
 					if ( self.$el.attr('data-can-add-marker') === 'true' ) {
 						self.currentLocation && self.addMarkerByLatLng( self.currentLocation );
@@ -694,21 +697,21 @@
  			.addTo( this.map );
 
 			// Issue #87 - <button>This is not a button</button>
-			L.DomEvent.on( 
-				this.geocoder.getContainer().querySelector('.leaflet-control-geocoder-icon'), 
-				'click', 
+			L.DomEvent.on(
+				this.geocoder.getContainer().querySelector('.leaflet-control-geocoder-icon'),
+				'click',
 				function() {
 					if (this._selection) {
 						var index = parseInt(this._selection.getAttribute('data-result-index'), 10);
-						
+
 						this._geocodeResultSelected(this._results[index]);
-						
+
 						this._clearResults();
 					} else {
 						this._geocode();
 					}
-				}, 
-				this.geocoder 
+				},
+				this.geocoder
 			)
  		},
 		reverseGeocode:function( model ) {
@@ -780,8 +783,6 @@
 			// trim
 			return label;
 		},
-
-
 
 		/**
 		 *	Layers
@@ -944,60 +945,60 @@
 
 	$(document)
 		.on( 'acf-osm-map-create', function( e ) {
-			if ( ! L.Control.AddLocationMarker ) {
-				L.Control.AddLocationMarker = L.Control.extend({
-					onAdd:function() {
-
-						this._container = L.DomUtil.create('div',
-							'leaflet-control-add-location-marker leaflet-bar leaflet-control');
-
-						this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
-						this._link.title = i18n.add_marker_at_location;
-						this._icon = L.DomUtil.create('span', 'dashicons dashicons-location', this._link);
-						L.DomEvent
-							.on( this._link, 'click', L.DomEvent.stopPropagation)
-							.on( this._link, 'click', L.DomEvent.preventDefault)
-							.on( this._link, 'click', this.options.callback, this)
-							.on( this._link, 'dblclick', L.DomEvent.stopPropagation);
-
-						return this._container;
-					},
-					onRemove:function() {
-						L.DomEvent
-							.off(this._link, 'click', L.DomEvent.stopPropagation )
-							.off(this._link, 'click', L.DomEvent.preventDefault )
-							.off(this._link, 'click', this.options.callback, this )
-							.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
-					},
-				})
-			}
-			if ( ! L.Control.FitBoundsControl ) {
-				L.Control.FitBoundsControl = L.Control.extend({
-					onAdd:function() {
-
-						this._container = L.DomUtil.create('div',
-							'leaflet-control-fit-bounds leaflet-bar leaflet-control');
-
-						this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container );
-						this._link.title = i18n.fit_markers_in_view;
-						this._icon = L.DomUtil.create('span', 'dashicons dashicons-editor-expand', this._link );
-						L.DomEvent
-							.on( this._link, 'click', L.DomEvent.stopPropagation )
-							.on( this._link, 'click', L.DomEvent.preventDefault )
-							.on( this._link, 'click', this.options.callback, this )
-							.on( this._link, 'dblclick', L.DomEvent.stopPropagation );
-
-						return this._container;
-					},
-					onRemove:function() {
-						L.DomEvent
-							.off(this._link, 'click', L.DomEvent.stopPropagation )
-							.off(this._link, 'click', L.DomEvent.preventDefault )
-							.off(this._link, 'click', this.options.callback, this )
-							.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
-					},
-				});
-			}
+			// if ( ! L.Control.AddLocationMarker ) {
+			// 	L.Control.AddLocationMarker = L.Control.extend({
+			// 		onAdd:function() {
+			//
+			// 			this._container = L.DomUtil.create('div',
+			// 				'leaflet-control-add-location-marker leaflet-bar leaflet-control');
+			//
+			// 			this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
+			// 			this._link.title = i18n.add_marker_at_location;
+			// 			this._icon = L.DomUtil.create('span', 'dashicons dashicons-location', this._link);
+			// 			L.DomEvent
+			// 				.on( this._link, 'click', L.DomEvent.stopPropagation)
+			// 				.on( this._link, 'click', L.DomEvent.preventDefault)
+			// 				.on( this._link, 'click', this.options.callback, this)
+			// 				.on( this._link, 'dblclick', L.DomEvent.stopPropagation);
+			//
+			// 			return this._container;
+			// 		},
+			// 		onRemove:function() {
+			// 			L.DomEvent
+			// 				.off(this._link, 'click', L.DomEvent.stopPropagation )
+			// 				.off(this._link, 'click', L.DomEvent.preventDefault )
+			// 				.off(this._link, 'click', this.options.callback, this )
+			// 				.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
+			// 		},
+			// 	})
+			// }
+			// if ( ! L.Control.FitBoundsControl ) {
+			// 	L.Control.FitBoundsControl = L.Control.extend({
+			// 		onAdd:function() {
+			//
+			// 			this._container = L.DomUtil.create('div',
+			// 				'leaflet-control-fit-bounds leaflet-bar leaflet-control');
+			//
+			// 			this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container );
+			// 			this._link.title = i18n.fit_markers_in_view;
+			// 			this._icon = L.DomUtil.create('span', 'dashicons dashicons-editor-expand', this._link );
+			// 			L.DomEvent
+			// 				.on( this._link, 'click', L.DomEvent.stopPropagation )
+			// 				.on( this._link, 'click', L.DomEvent.preventDefault )
+			// 				.on( this._link, 'click', this.options.callback, this )
+			// 				.on( this._link, 'dblclick', L.DomEvent.stopPropagation );
+			//
+			// 			return this._container;
+			// 		},
+			// 		onRemove:function() {
+			// 			L.DomEvent
+			// 				.off(this._link, 'click', L.DomEvent.stopPropagation )
+			// 				.off(this._link, 'click', L.DomEvent.preventDefault )
+			// 				.off(this._link, 'click', this.options.callback, this )
+			// 				.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
+			// 		},
+			// 	});
+			// }
 
 
 			// don't init in repeater templates
@@ -1029,7 +1030,7 @@
 
 	// init when fields get loaded ...
 	acf.addAction( 'append', function( $el ){
-		$el.length && $el.get(0).dispatchEvent( new CustomEvent('acf-osm-map-added') );	
+		$el.length && $el.get(0).dispatchEvent( new CustomEvent('acf-osm-map-added') );
 	});
 	// init when fields show ...
 	acf.addAction( 'show_field', function( field ) {

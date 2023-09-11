@@ -324,7 +324,7 @@ class OpenStreetMap extends \acf_field {
 						'max_markers'			=> $max_markers,
 						'name_prefix'			=> $field['name'],
 					],
-				],				
+				],
 			],
 			'map' => $field['value'],
 		];
@@ -353,8 +353,8 @@ class OpenStreetMap extends \acf_field {
 			<div <?php echo acf_esc_attr( $attr ) ?>></div>
 			<?php
 
-			
-			
+
+
 		}
 
 		// markers
@@ -405,11 +405,11 @@ class OpenStreetMap extends \acf_field {
 
 		wp_enqueue_script('acf-input-osm');
 
-		wp_enqueue_script('acf-osm-frontend');
+		// wp_enqueue_script('acf-osm-frontend');
 
 		wp_enqueue_style('acf-input-osm');
 
-		wp_enqueue_style('leaflet');
+		// wp_enqueue_style('leaflet');
 
 		add_action( 'wp_footer', [ $this, 'maybe_print_media_templates' ], 11 );
 
@@ -436,9 +436,11 @@ class OpenStreetMap extends \acf_field {
 
 		wp_enqueue_script('acf-field-group-osm');
 
-		wp_enqueue_script('acf-osm-frontend');
+		// wp_enqueue_script('acf-osm-frontend');
 
 		wp_enqueue_style('acf-input-osm');
+
+		wp_enqueue_style('acf-field-group-osm');
 
 		wp_enqueue_style('leaflet');
 
@@ -698,9 +700,9 @@ class OpenStreetMap extends \acf_field {
 			] );
 
 			$value = ob_get_clean();
-			
+
 		} else if ( $field['return_format'] === 'admin' ) { // wp < 5.5
-			
+
 			$attr = $field['attr'] + [
 				'class'				=> 'leaflet-map',
 				'data-height'		=> $field['height'],
@@ -720,7 +722,7 @@ class OpenStreetMap extends \acf_field {
 
 			// features: one marker max. four maps to choose from
 			$osm_providers = Core\OSMProviders::instance();
-			
+
 			$iframe_atts = [
 				'height'		=> $field['height'],
 				'width'			=> '425',
@@ -729,26 +731,26 @@ class OpenStreetMap extends \acf_field {
 				'marginheight'	=> 0,
 				'marginwidth'	=> 0,
 			];
-			
+
 			$html = '<iframe src="%1$s" %2$s></iframe><br/><small><a target="_blank" href="%3$s">%4$s</a></small>';
-			
+
 			/**
 			 *	Filter iframe HTML.
 			 *
 			 *	@param string $html Template String. Placeholders: %1$s: iFrame Source, %2$s: iframe attributes, %3$s: URL to bigger map, %4$s: Link-Text.
 			 */
 			$html = apply_filters( 'osm_map_iframe_template', $html );
-			
-			$value = sprintf( 
-				$html, 
+
+			$value = sprintf(
+				$html,
 				$osm_providers->get_iframe_url( $value ),
-				acf_esc_attr( $iframe_atts ), 
-				esc_url( $osm_providers->get_link_url( $value ) ), 
-				esc_html__( 'View Larger Map','acf-openstreetmap-field' ) 
+				acf_esc_attr( $iframe_atts ),
+				esc_url( $osm_providers->get_link_url( $value ) ),
+				esc_html__( 'View Larger Map','acf-openstreetmap-field' )
 			);
 
 		} else if ( $field['return_format'] === 'leaflet' ) {
-			
+
 			// features: multiple markers. lots of maps to choose from
 			$map_attr = [
 				'class'				=> 'leaflet-map',
@@ -760,15 +762,15 @@ class OpenStreetMap extends \acf_field {
 				'data-map-layers'	=> $value['layers'],
 				'data-map-markers'	=> $value['markers'],
 			];
-			
+
 			if ( isset( $field['attr'] ) ) {
 				$map_attr = $field['attr'] + $map_attr;
 			}
-			
-			
+
+
 			$html = sprintf('<div %s></div>', acf_esc_attr( $map_attr ) );
 			$value = $html;
-			
+
 			wp_enqueue_script( 'acf-osm-frontend' );
 			wp_enqueue_style( 'leaflet' );
 

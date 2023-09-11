@@ -1,3 +1,5 @@
+import L from 'lib/leaflet-no-conflict';
+
 (function( $, arg, exports ){
 	var osm = exports.osm;
 
