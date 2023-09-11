@@ -107,11 +107,11 @@ No.
 
 == Upgrade Notice ==
 
-**Attention:** Version 1.3.0 involves some breaking changes. 
+**Attention:** Version 1.3.0 involves some breaking changes.
 
-**JS Events** are no longer triggered by jQuery‘s `.trigger(event)` but natively using the [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) type. 
+**JS Events** are no longer triggered by jQuery‘s `.trigger(event)` but natively using the [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) type.
 
-As a consequence event Data is now stored in the [`details`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/detail) property. 
+As a consequence event Data is now stored in the [`details`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/detail) property.
 
 This was necessary in order to keep compatibility with the jQuery update in WP 5.6.
 
@@ -129,6 +129,12 @@ The *`osm_map_iframe_template` filter* has been removed in favour of theme overr
 Please refer to this wiki article for a [migration guide](https://github.com/mcguffin/acf-openstreetmap-field/wiki/The-abandoned-osm_map_iframe_template-filter).
 
 == Changelog ==
+
+= 1.4.4 =
+ - Address detail level now controlled through map zoom
+ - Use Leaflet noConflict
+ - Refactor JS
+ - Fix: Weird coordinates (worldCopyJump)
 
 = 1.4.3 =
  - Fix: JS – acf hook `acf-osm/create-marker` undefined argument + not firing on geocode
