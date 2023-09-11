@@ -100,7 +100,18 @@ class PluginTest {
 			$api['key'] = exec('security find-generic-password -a maps.googleapis.com -s maps.googleapis.com -w');
 			return $api;
 		});
-		// 
+		//
+
+		add_action('wp_footer',function(){
+			?>
+			<div class="acf-osm-tests">
+				<?php
+				the_field('leaflet_map_nolay','acf_osm_test');
+				the_field('iframe_map_nolay','acf_osm_test');
+				?>
+			</div>
+			<?php
+		});
 
 	}
 
@@ -142,7 +153,7 @@ class PluginTest {
 					],
 				) );
 				update_post_meta( $post_id, '_leaflet_018', 'field_5d502dfd2b73e' );
-				
+
 				update_post_meta( $post_id, 'leaflet_101', array(
 					'center_lat'	=> '54.55',
 					'center_lng'	=> '10.03',
@@ -235,7 +246,7 @@ class PluginTest {
 			'title'				=> __('SOME ACF BLOCK'),
 			'description'		=> __('Testing block with some conditional logic'),
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
-				?><pre><?php 
+				?><pre><?php
 				the_field('text');
 				if ( get_field( 'show_conditional_text') ) {
 					?> and <?php the_field('conditional_text');
@@ -300,10 +311,10 @@ class PluginTest {
 			),
 
 			/* (array) An array of field group IDs/keys to override the fields displayed in this form */
-			'field_groups'			=> [ 
-				'group_acf_openstreetmap_field_layers', 
-				'group_acf_openstreetmap_field_no_layers', 
-				'group_acf_openstreetmap_field_repeatable' 
+			'field_groups'			=> [
+				'group_acf_openstreetmap_field_layers',
+				'group_acf_openstreetmap_field_no_layers',
+				'group_acf_openstreetmap_field_repeatable'
 			],
 
 			// /* (array) An array of field IDs/keys to override the fields displayed in this form */
