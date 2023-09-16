@@ -6,9 +6,18 @@
             "center_lat": 2.7455307,
             "center_lng": 10.9094238,
             "zoom": 7,
+            "height": 400,
+            "return_format": "leaflet",
+            "allow_map_layers": 1,
+            "max_markers": "",
+            "layers": [
+                "OpenStreetMap.Mapnik",
+                "Stamen.TonerLines"
+            ],
             "key": "field_5d4c2962d6960",
             "label": "Leaflet Map",
             "name": "leaflet_map",
+            "aria-label": "",
             "type": "open_street_map",
             "instructions": "",
             "required": 0,
@@ -17,15 +26,7 @@
                 "width": "",
                 "class": "",
                 "id": ""
-            },
-            "return_format": "leaflet",
-            "layers": [
-                "OpenStreetMap.Mapnik",
-                "Stamen.TonerLines"
-            ],
-            "allow_map_layers": 1,
-            "height": 400,
-            "max_markers": ""
+            }
         }
     ],
     "location": [
@@ -34,6 +35,13 @@
                 "param": "block",
                 "operator": "==",
                 "value": "acf\/leaflet-map"
+            }
+        ],
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
             }
         ]
     ],
@@ -46,5 +54,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 1,
-    "modified": 1652527593
+    "modified": 1694429716
 }
