@@ -1036,11 +1036,15 @@ import FitBounds from 'lib/control-fit-bounds';
 
 	// init when fields get loaded ...
 	acf.addAction( 'append', function( $el ){
+		//*
+		// @see https://github.com/mcguffin/acf-openstreetmap-field/issues/100
 		// @see https://github.com/mcguffin/acf-openstreetmap-field/pull/101
-		var el = $el.length && $el.get(0);
-		if ( el && typeof el.dispatchEvent === 'function' ) {
-			el.dispatchEvent( new CustomEvent('acf-osm-map-added') );
+		if ( $el.constructor === $ && $el.length ) {
+			$el.get(0).dispatchEvent( new CustomEvent('acf-osm-map-added') );
 		}
+		/*/
+		$el.length && $el.get(0).dispatchEvent( new CustomEvent('acf-osm-map-added') );
+		//*/
 	});
 	// init when fields show ...
 	acf.addAction( 'show_field', function( field ) {
