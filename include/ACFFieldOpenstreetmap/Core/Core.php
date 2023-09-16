@@ -112,6 +112,8 @@ class Core extends Plugin {
 
 		/* backend */
 
+		$language = substr( get_locale(), 0, 2 );
+
 		// field js
 		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), ['acf-input','wp-backbone' ], $this->get_version(), [
 			'strategy'  => 'defer',
@@ -123,6 +125,42 @@ class Core extends Plugin {
 				'osm_layers'		=> $osm_providers->get_layers(), // flat list
 				'leaflet_layers'	=> $leaflet_providers->get_layers(),  // flat list
 				'accuracy'			=> 7,
+				/**
+				 *	Filter Leaflet control geocoder options.
+				 *
+				 *	@see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocodercontroloptions.html
+				 *
+				 *	@param $geocoder_options array(
+				 *		'collapsed'				=> boolean
+				 *		'defaultMarkGeocode'	=> boolean
+				 *		'errorMessage'			=> string
+				 *		'position'				=> string
+				 *		'expand'				=> string ("touch" | "click" | "hover")
+				 *		'iconLabel'				=> string
+				 *		'placeholder'			=> string
+				 *		'queryMinLength'		=> number
+				 *		'showResultIcons'		=> boolean
+				 *		'suggestMinLength'		=> number
+				 *		'suggestTimeout'		=> number
+				 *	)
+				 */
+				'geocoder' 			=> apply_filters( 'acf_osm_geocoder_options', [] ),
+				/**
+				 *	Filter Nominatim geocoder options.
+				 *
+				 *	@see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/nominatimoptions.html
+				 *
+				 *	@param $nominatim_options array(
+				 *		'apiKey'				=> boolean
+				 *		'geocodingQueryParams'	=> object @see https://nominatim.org/release-docs/develop/api/Search/
+				 *		'reverseQueryParams'	=> object @see https://nominatim.org/release-docs/develop/api/Reverse/
+				 *		'serviceUrl'			=> string
+				 *	)
+				 */
+				'nominatim'			=> apply_filters( 'acf_osm_nominatim_options', [
+					'geocoderQueryParams' => [ 'accept-language' => $language, ],
+					'reverseQueryParams' => [ 'accept-language' => $language, ],
+				]),
 			],
 			'i18n'	=> [
 				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),

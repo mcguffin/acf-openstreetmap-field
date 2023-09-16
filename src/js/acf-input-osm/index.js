@@ -602,17 +602,9 @@ import FitBounds from 'lib/control-fit-bounds';
 			// add an extra control panel region for out search
  			this.map._controlCorners['above'] = $above.get(0);
 
- 			this.geocoder = L.Control.geocoder({
- 				collapsed: false,
- 				position:'above',
- 				placeholder:i18n.search,
- 				errorMessage:i18n.nothing_found,
- 				showResultIcons:true,
- 				suggestMinLength:3,
- 				suggestTimeout:250,
- 				queryMinLength:3,
- 				defaultMarkGeocode:false,
-				geocoder:L.Control.Geocoder.nominatim({
+			const nominatim_options = Object.assign( {
+					// geocodingQueryParams: {'accept-language':'it'},
+					// reverseQueryParams: {'accept-language':'it'},
 					htmlTemplate: function(result) {
 						var parts = [],
 							templateConfig = {
@@ -644,8 +636,22 @@ import FitBounds from 'lib/control-fit-bounds';
 							.filter( function(el) { return el !== '' } )
 							.join(', ')
 					}
-				})
- 			})
+				}, options.nominatim ),
+				geocoder_options = Object.assign({
+	 				collapsed: false,
+	 				position: 'above',
+	 				placeholder: i18n.search,
+	 				errorMessage: i18n.nothing_found,
+	 				showResultIcons:true,
+	 				suggestMinLength:3,
+	 				suggestTimeout:250,
+	 				queryMinLength:3,
+	 				defaultMarkGeocode:false,
+					// geocodingQueryParams: {'accept-language':'de_DE'},
+					geocoder: L.Control.Geocoder.nominatim( nominatim_options )
+	 			}, options.geocoder );
+
+ 			this.geocoder = L.Control.geocoder( geocoder_options )
  			.on('markgeocode',function(e){
  				// search result click
 
@@ -1030,7 +1036,11 @@ import FitBounds from 'lib/control-fit-bounds';
 
 	// init when fields get loaded ...
 	acf.addAction( 'append', function( $el ){
-		$el.length && $el.get(0).dispatchEvent( new CustomEvent('acf-osm-map-added') );
+		// @see https://github.com/mcguffin/acf-openstreetmap-field/pull/101
+		var el = $el.length && $el.get(0);
+		if ( el && typeof el.dispatchEvent === 'function' ) {
+			el.dispatchEvent( new CustomEvent('acf-osm-map-added') );
+		}
 	});
 	// init when fields show ...
 	acf.addAction( 'show_field', function( field ) {
