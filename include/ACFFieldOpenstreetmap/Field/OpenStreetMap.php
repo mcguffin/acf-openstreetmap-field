@@ -771,7 +771,6 @@ class OpenStreetMap extends \acf_field {
 			$html = sprintf('<div %s></div>', acf_esc_attr( $map_attr ) );
 			$value = $html;
 
-			wp_enqueue_script( 'acf-osm-frontend' );
 			wp_enqueue_style( 'leaflet' );
 
 		}
