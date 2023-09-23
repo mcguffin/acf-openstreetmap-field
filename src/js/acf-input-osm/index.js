@@ -373,9 +373,9 @@ import FitBounds from 'lib/control-fit-bounds';
 				icon: 'dashicons dashicons-location-alt',
 				iconLoading:'spinner is-active',
 				flyTo:true,
-			    strings: {
-			        title: i18n.my_location
-			    },
+				strings: {
+					title: i18n.my_location
+				},
 				onLocationError:function(err) {}
 			}).addTo(this.map);
 
@@ -636,7 +636,7 @@ import FitBounds from 'lib/control-fit-bounds';
 							.filter( function(el) { return el !== '' } )
 							.join(', ')
 					}
-				}, options.nominatim ),
+				}, options.nominatim),
 				geocoder_options = Object.assign({
 	 				collapsed: false,
 	 				position: 'above',

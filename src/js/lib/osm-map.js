@@ -47,7 +47,8 @@ import L from 'lib/leaflet-no-conflict';
 				bubbles: true,
 				cancelable: true,
 				detail: {
-					mapInit: mapInit
+					mapInit: mapInit,
+					L: L
 				},
 			});
 
@@ -68,7 +69,8 @@ import L from 'lib/leaflet-no-conflict';
 
 		initEvt = new CustomEvent( 'acf-osm-map-init', {
 			detail: {
-				map: map
+				map: map,
+				L: L
 			},
 			cancelable: true,
 			bubbles: true
@@ -96,7 +98,8 @@ import L from 'lib/leaflet-no-conflict';
 		el.dispatchEvent( new CustomEvent( 'acf-osm-map-created', {
 			bubbles: true,
 			detail: {
-				map: map
+				map: map,
+				L: L
 			}
 		 } ) )
 
@@ -107,7 +110,9 @@ import L from 'lib/leaflet-no-conflict';
 		entries.forEach(function(entry){
 			// @ see https://github.com/jquery/jquery/blob/a503c691dc06c59acdafef6e54eca2613c6e4032/test/data/jquery-1.9.1.js#L7469-L7481
 			if ( isVisible(entry.target) ) {
-				entry.target.dispatchEvent( new CustomEvent( 'acf-osm-show' ) );
+				entry.target.dispatchEvent( new CustomEvent( 'acf-osm-show', {
+					detail: { L: L }
+				} ) );
 				observer.unobserve(entry.target);
 			}
 		})
@@ -162,7 +167,8 @@ import L from 'lib/leaflet-no-conflict';
 				cancelable: true,
 				detail: {
 					map: map,
-					mapData: data
+					mapData: data,
+					L: L
 				}
 			} ),
 			//*/
@@ -197,8 +203,9 @@ import L from 'lib/leaflet-no-conflict';
 					map: map,
 					markerData: markerData,
 					markerOptions: Object.assign( default_marker_config, {
-						label: markerData.label
+						label: markerData.label // <= TODO: deprecate this!
 					} ),
+					L: L
 				}
 			} );
 			self.dispatchEvent( createEvt )
@@ -215,8 +222,11 @@ import L from 'lib/leaflet-no-conflict';
 				.addTo( map );
 
 			self.dispatchEvent(new CustomEvent('acf-osm-map-marker-created',{
+				bubbles: true,
 				detail: {
-					marker: marker
+					map: map,
+					marker: marker,
+					L: L
 				}
 			}))
 		} )
@@ -232,6 +242,7 @@ import L from 'lib/leaflet-no-conflict';
 				detail: {
 					map: map,
 					mapData: data,
+					L: L
 				}
 			}),
 			maxzoom;
