@@ -5,7 +5,7 @@ Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
 Tested up to: 6.3
-Stable tag: 1.4.3
+Stable tag: 1.5.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -117,7 +117,7 @@ The global Leaflet object is no longer available. If
 = 1.5.0 =
  - Use Leaflet noConflict
  - Refactor JS
- - Geocoder: Address detail level is now controlled through map zoom
+ - Geocoder: Address detail level is now controlled by map zoom
  - Geocoder: Provide filters for configuration overides
  - Fix: Make JS event `acf-osm-map-marker-created` bubbling
  - Fix: JS Crashes in ACF Blocks

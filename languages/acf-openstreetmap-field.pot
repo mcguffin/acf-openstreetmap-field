@@ -1,17 +1,17 @@
-# Copyright (C) 2022 Jörn Lund
+# Copyright (C) 2023 Jörn Lund
 # This file is distributed under the GPL3.
 msgid ""
 msgstr ""
-"Project-Id-Version: ACF OpenStreetMap Field 1.4.3\n"
+"Project-Id-Version: ACF OpenStreetMap Field 1.5.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/acf-openstreetmap-field\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-12-13T13:21:46+00:00\n"
+"POT-Creation-Date: 2023-09-23T09:23:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: acf-openstreetmap-field\n"
 
 #. Plugin Name of the plugin
@@ -34,38 +34,38 @@ msgstr ""
 msgid "https://github.com/mcguffin"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:119
+#: include/ACFFieldOpenstreetmap/Core/Core.php:166
 msgid "Search..."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:120
+#: include/ACFFieldOpenstreetmap/Core/Core.php:167
 msgid "Nothing found..."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:121
+#: include/ACFFieldOpenstreetmap/Core/Core.php:168
 msgid "My location"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:123
+#: include/ACFFieldOpenstreetmap/Core/Core.php:170
 msgid "Add Marker at location"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Core/Core.php:125
+#: include/ACFFieldOpenstreetmap/Core/Core.php:172
 msgid "Fit markers into view"
 msgstr ""
 
 #. translators: address format for marker labels (street level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
-#: include/ACFFieldOpenstreetmap/Core/Core.php:128
+#: include/ACFFieldOpenstreetmap/Core/Core.php:175
 msgid "{building} {road} {house_number}"
 msgstr ""
 
 #. translators: address format for marker labels (city level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
-#: include/ACFFieldOpenstreetmap/Core/Core.php:130
+#: include/ACFFieldOpenstreetmap/Core/Core.php:177
 msgid "{postcode} {city} {town} {village} {hamlet}"
 msgstr ""
 
 #. translators: address format for marker labels (country level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
-#: include/ACFFieldOpenstreetmap/Core/Core.php:132
+#: include/ACFFieldOpenstreetmap/Core/Core.php:179
 msgid "{state} {country}"
 msgstr ""
 
@@ -147,20 +147,20 @@ msgstr ""
 msgid "Drag Marker to move."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:747
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:749
 #: templates/osm.php:25
 msgid "View Larger Map"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:834
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:835
 msgid "Please set a marker on the map."
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:920
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:921
 msgid "Locate Marker"
 msgstr ""
 
-#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:928
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:929
 msgid "Remove Marker"
 msgstr ""
 
