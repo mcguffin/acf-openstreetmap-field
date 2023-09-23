@@ -3,6 +3,10 @@
 namespace ACFFieldOpenstreetmap;
 
 
+foreach ( glob(__DIR__.'/features/*.php') as $file ) {
+	include_once $file;
+}
+
 abstract class Test_Widget extends \WP_Widget {
 	public function form( $instance ) {
 	}
