@@ -951,61 +951,6 @@ import FitBounds from 'lib/control-fit-bounds';
 
 	$(document)
 		.on( 'acf-osm-map-create', function( e ) {
-			// if ( ! L.Control.AddLocationMarker ) {
-			// 	L.Control.AddLocationMarker = L.Control.extend({
-			// 		onAdd:function() {
-			//
-			// 			this._container = L.DomUtil.create('div',
-			// 				'leaflet-control-add-location-marker leaflet-bar leaflet-control');
-			//
-			// 			this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
-			// 			this._link.title = i18n.add_marker_at_location;
-			// 			this._icon = L.DomUtil.create('span', 'dashicons dashicons-location', this._link);
-			// 			L.DomEvent
-			// 				.on( this._link, 'click', L.DomEvent.stopPropagation)
-			// 				.on( this._link, 'click', L.DomEvent.preventDefault)
-			// 				.on( this._link, 'click', this.options.callback, this)
-			// 				.on( this._link, 'dblclick', L.DomEvent.stopPropagation);
-			//
-			// 			return this._container;
-			// 		},
-			// 		onRemove:function() {
-			// 			L.DomEvent
-			// 				.off(this._link, 'click', L.DomEvent.stopPropagation )
-			// 				.off(this._link, 'click', L.DomEvent.preventDefault )
-			// 				.off(this._link, 'click', this.options.callback, this )
-			// 				.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
-			// 		},
-			// 	})
-			// }
-			// if ( ! L.Control.FitBoundsControl ) {
-			// 	L.Control.FitBoundsControl = L.Control.extend({
-			// 		onAdd:function() {
-			//
-			// 			this._container = L.DomUtil.create('div',
-			// 				'leaflet-control-fit-bounds leaflet-bar leaflet-control');
-			//
-			// 			this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container );
-			// 			this._link.title = i18n.fit_markers_in_view;
-			// 			this._icon = L.DomUtil.create('span', 'dashicons dashicons-editor-expand', this._link );
-			// 			L.DomEvent
-			// 				.on( this._link, 'click', L.DomEvent.stopPropagation )
-			// 				.on( this._link, 'click', L.DomEvent.preventDefault )
-			// 				.on( this._link, 'click', this.options.callback, this )
-			// 				.on( this._link, 'dblclick', L.DomEvent.stopPropagation );
-			//
-			// 			return this._container;
-			// 		},
-			// 		onRemove:function() {
-			// 			L.DomEvent
-			// 				.off(this._link, 'click', L.DomEvent.stopPropagation )
-			// 				.off(this._link, 'click', L.DomEvent.preventDefault )
-			// 				.off(this._link, 'click', this.options.callback, this )
-			// 				.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
-			// 		},
-			// 	});
-			// }
-
 
 			// don't init in repeater templates
 			if ( $(e.target).closest('[data-id="acfcloneindex"]').length ) {
