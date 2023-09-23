@@ -5,6 +5,7 @@
 @import 'mixins/mixins';
 
 @import 'leaflet.locatecontrol/src/L.Control.Locate';
+@import 'leaflet-control-geocoder/dist/Control.Geocoder';
 
 
 [data-map="leaflet"] {
