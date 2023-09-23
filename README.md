@@ -37,7 +37,7 @@ composer require mcguffin/acf-openstreetmap-field
 ### Development
 ```shell
 git clone git@github.com:mcguffin/acf-openstreetmap-field.git
-cd acf-dropzone
+cd acf-openstreetmap-field
 npm install
 npm run dev
 ```

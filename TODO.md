@@ -1,32 +1,23 @@
 ACF OpenStreetMap Field ToDo
 ============================
 
-1.2.0
------
- - [x] Options: allow `'api_key':'<enter key here>'` in filter `acf_osm_leaflet_providers` (#38)
- - [ ] Tests:
-     - [ ] ACF-Customizer
-     - [ ] ACF WP-Objects
-     - [ ] ACF Quick Edit Fields
- - [x] Fit markers in view (backend) #30
-
-
 Remove dependencies
 -------------------
- - [ ] Frontend jQuery
+ - [x] Frontend jQuery
    - [x] Use `CustomEvent` in frontend event triggers
-   - [ ] Replace `.trigger()` an `.on()` in favor of `addEventListener()` and `dispatchEvent()` entirely
-   - [ ] Work with DOM objects everywhere
+   - [x] Replace `.trigger()` an `.on()` in favor of `addEventListener()` and `dispatchEvent()` entirely
+   - [x] Work with DOM objects everywhere
  - [ ] ACF
    - [ ] Seperate Field-logic from map logic
-   - [ ] Introduce map widget
-   - [ ] Introduce map block
+ - [ ] Leaflet providers
+ - [ ] Leaflet control geocode
+ - [ ] Leaflet locatecontrol
 
 ESNext
 ------
- - [ ] Use imports
- - [ ] Frontend
- - [ ] Backend
+ - [x] Use imports
+ - [ ] use modern syntax
+ - [ ] modularize
 
 Theme Overrides
 ---------------
@@ -36,6 +27,18 @@ Theme Overrides
    - [ ] OSM-Link
    - [ ] Leaflet Div
    - [ ] Static image #31
+
+Features
+--------
+ - [ ] Extend WP Core
+   - [ ] geolocate post types
+   - [ ] output geojson feed
+   - [ ] Map block
+   - [ ] Map post type (fullscreen map)
+ - [ ] Map tile proxy
+   - [ ] proxy
+   - [ ] cache
+ - [ ] Redesign Map UI
 
 Future
 ------

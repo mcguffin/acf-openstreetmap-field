@@ -4,7 +4,7 @@ Donate link: https://donate.openstreetmap.org/
 Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
-Tested up to: 6.1
+Tested up to: 6.3
 Stable tag: 1.4.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -47,7 +47,7 @@ You can choose from a long list of map styles and it supports multiple markers.
 Please head over to the source code [on Github](https://github.com/mcguffin/acf-openstreetmap-field).
 
 ## Credits
-- Eliott Condon's [ACF](https://www.advancedcustomfields.com/) for sure!
+- [ACF](https://www.advancedcustomfields.com/) for sure!
 - The [OpenStreetMap](https://www.openstreetmap.org/) project
 - [The Leaflet Project](https://leafletjs.com/)
 - The maintainers and [contributors](https://github.com/leaflet-extras/leaflet-providers/graphs/contributors) of [Leaflet providers](https://github.com/leaflet-extras/leaflet-providers)
@@ -86,7 +86,7 @@ Some providers – like OpenPtMap or MtbMap – do not support https. If these w
 
 = Why isn't the map loading? =
 
-There is very likely an issue with the map tiles provider you've choosen. Some of them might be down or have suspended their service. Choose another one.
+There is very likely an issue with the map tiles provider you've choosen. Some of them might have gone offline or have suspended their service. Choose another one.
 
 = I need to do some fancy JS magic with my map. =
 
@@ -107,33 +107,20 @@ No.
 
 == Upgrade Notice ==
 
-**Attention:** Version 1.3.0 involves some breaking changes.
+**Attention:** Version 1.4.4 may involve some breaking changes.
 
-**JS Events** are no longer triggered by jQuery‘s `.trigger(event)` but natively using the [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) type.
+The global Leaflet object is no longer available. If 
 
-As a consequence event Data is now stored in the [`details`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/detail) property.
-
-This was necessary in order to keep compatibility with the jQuery update in WP 5.6.
-
-See the following wiki articles for more intel:
-
- - [JS-Event: Map Create](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Create)
- - [JS-Event: Map Created](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Created)
- - [JS Event: Map Create Markers](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Create-Markers)
- - [JS Event: Marker Create](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Marker-Create)
- - [JS Event: Marker Created](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Marker-Created)
- - [JS Event: Map Init](https://github.com/mcguffin/acf-openstreetmap-field/wiki/JS-Event:-Map-Init)
-
-The *`osm_map_iframe_template` filter* has been removed in favour of theme overrides.
-
-Please refer to this wiki article for a [migration guide](https://github.com/mcguffin/acf-openstreetmap-field/wiki/The-abandoned-osm_map_iframe_template-filter).
 
 == Changelog ==
 
-= 1.4.4 =
- - Address detail level now controlled through map zoom
+= 1.5.0 =
  - Use Leaflet noConflict
  - Refactor JS
+ - Geocoder: Address detail level is now controlled through map zoom
+ - Geocoder: Provide filters for configuration overides
+ - Fix: Make JS event `acf-osm-map-marker-created` bubbling
+ - Fix: JS Crashes in ACF Blocks
  - Fix: Weird coordinates (worldCopyJump)
 
 = 1.4.3 =
