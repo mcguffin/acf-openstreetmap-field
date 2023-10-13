@@ -7,9 +7,9 @@ const AddLocationMarker = L.Control.extend({
 		this._container = L.DomUtil.create('div',
 			'leaflet-control-add-location-marker leaflet-bar leaflet-control');
 
-		this._link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
+		this._link       = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
 		this._link.title = this.linkTitle;
-		this._icon = L.DomUtil.create('span', 'dashicons dashicons-location', this._link);
+		this._icon       = L.DomUtil.create('span', 'dashicons dashicons-location', this._link);
 		L.DomEvent
 			.on( this._link, 'click', L.DomEvent.stopPropagation)
 			.on( this._link, 'click', L.DomEvent.preventDefault)
@@ -28,7 +28,7 @@ const AddLocationMarker = L.Control.extend({
 })
 
 L.control.addLocationMarker = function (options) {
-    return new L.Control.AddLocationMarker(options);
+	return new L.Control.AddLocationMarker(options);
 };
 
 module.exports = AddLocationMarker

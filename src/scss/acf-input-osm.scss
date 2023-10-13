@@ -329,6 +329,26 @@ $leaflet-panes: (
 			}
 		}
 	}
+	&:not(.active):not(.following) {
+		.dashicons:not(.dashicons-warning) {
+			border-radius: 50%;
+			outline: 1px solid currentcolor;
+			outline-offset: -3px;
+			border-image: conic-gradient( currentcolor 6deg, transparent 6deg 90deg, currentcolor 90deg 96deg, transparent 96deg 180deg, currentcolor 180deg 186deg, transparent 186deg 270deg, currentcolor 270deg 276deg, transparent 276deg );
+			border-width: 0.5em;
+			border-style: solid;
+			box-sizing: border-box;
+			border-image-repeat: stretch;
+			border-image-slice: 50%;
+			transform: rotate(-3deg);
+			margin-top:5px;
+			// background: radial-gradient( #ffff 10%, #fff0 10%, #0000 60%, #000f 60%, #000f 70%, #0000 70% );
+			&::before {
+				// content: "\f543"; /* plus-alt2 */
+				color: transparent;
+			}
+		}
+	}
 	&.following {
 		.dashicons {
 			color:$wp-blue-lighter;

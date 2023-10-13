@@ -351,32 +351,32 @@ import FitBounds from 'lib/control-fit-bounds';
 		},
 		init_locator_add:function() {
 			var self = this
-
-			this.locatorAdd = new AddLocationMarker({
-				position: 'bottomleft',
-				linkTitle: i18n.add_marker_at_location,
-				callback: function() {
-					if ( self.$el.attr('data-can-add-marker') === 'true' ) {
-						self.currentLocation && self.addMarkerByLatLng( self.currentLocation );
+			if ( this.config.max_markers > 0 ) {
+				this.locatorAdd = new AddLocationMarker({
+					position: 'bottomleft',
+					linkTitle: i18n.add_marker_at_location,
+					callback: function() {
+						if ( self.$el.attr('data-can-add-marker') === 'true' ) {
+							self.currentLocation && self.addMarkerByLatLng( self.currentLocation );
+						}
+						self.locator.stop();
 					}
-					self.locator.stop();
-				}
-			}).addTo(this.map);
-
+				}).addTo(this.map);
+			}
 		},
 		init_locator:function() {
 			var self = this;
 			this.currentLocation = false;
 
 			this.locator = L.control.locate({
-			    position: 'bottomleft',
+				position: 'bottomleft',
 				icon: 'dashicons dashicons-location-alt',
-				iconLoading:'spinner is-active',
-				flyTo:true,
+				iconLoading: 'spinner is-active',
+				flyTo: true,
 				strings: {
 					title: i18n.my_location
 				},
-				onLocationError:function(err) {}
+				onLocationError: function(err) {}
 			}).addTo(this.map);
 
 
@@ -385,13 +385,18 @@ import FitBounds from 'lib/control-fit-bounds';
 				self.currentLocation = e.latlng;
 
 				setTimeout(function(){
-					self.locator.stopFollowing();
+					if ( self.config.max_markers > 0 ) {
+						self.locator.stopFollowing();
+					} else {
+						self.locator.stop();
+					}
 					$(self.locator._icon).removeClass('dashicons-warning');
 					//self.locatorAdd.addTo(self.map)
 				},1);
 			})
 			this.map.on('locationerror',function(e){
 				self.currentLocation = false;
+				self.locator.stop();
 				setTimeout(function(){
 					$(self.locator._icon).addClass('dashicons-warning');
 				},1);
@@ -412,7 +417,7 @@ import FitBounds from 'lib/control-fit-bounds';
 		updateMarkerState:function() {
 			var len = this.model.get('markers').length;
 			this.$el.attr('data-has-markers', !!len ? 'true' : 'false');
-			this.$el.attr('data-can-add-marker', ( false === this.config.max_markers || len < this.config.max_markers) ? 'true' : 'false');
+			this.$el.attr('data-can-add-marker', ( 0 === this.config.max_markers || len < this.config.max_markers) ? 'true' : 'false');
 		},
 		/**
 		 *	Markers
