@@ -1,5 +1,5 @@
-import L from 'lib/osm-map';
-import ResetLayers from 'lib/control-reset-layers';
+import L from 'osm-map';
+import ResetLayers from 'control-reset-layers';
 
 (function( $, arg, exports ){
 	var options = arg.options,

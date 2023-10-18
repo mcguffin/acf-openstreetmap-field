@@ -1,4 +1,4 @@
-import L from 'lib/leaflet-no-conflict';
+import L from 'leaflet-no-conflict';
 
 (function( arg ){
 

@@ -48,7 +48,6 @@ node_modules
 
 # Ignore compiled stuff
 # assets/dist
-assets/**/*.map
 
 # Composer
 vendor/

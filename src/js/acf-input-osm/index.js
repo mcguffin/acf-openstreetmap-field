@@ -1,6 +1,6 @@
-import L from 'lib/osm-map';
-import AddLocationMarker from 'lib/control-add-location-marker';
-import FitBounds from 'lib/control-fit-bounds';
+import L from 'osm-map';
+import AddLocationMarker from 'control-add-location-marker';
+import FitBounds from 'control-fit-bounds';
 
 (function( $, { options, i18n }, exports ){
 

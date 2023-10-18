@@ -10,6 +10,7 @@ const source		= require( 'vinyl-source-stream' );
 const sourcemaps	= require( 'gulp-sourcemaps' );
 const es			= require( 'event-stream' );
 const child_process	= require( 'child_process' );
+const uglify        = require( 'gulp-uglify' );
 
 const package       = require( './package.json' );
 
@@ -46,28 +47,32 @@ function js_task(debug) {
 			.filter( p => ! config.js.exclude.find( ex => p.indexOf(ex) !== -1 ) )
 			.map( entry => {
 				let target = entry.replace(/(\.\/src\/js\/|\/index)/g,'');
-				return browserify({
+				const bundler = browserify({
 						entries: [entry],
-						debug: debug,
-						paths:['./src/js']
+						debug: true, // keep always true
+						paths:['./src/js/lib']
 					})
 					.transform( babelify.configure({}) )
-					.transform( 'browserify-shim' )
-					.plugin('tinyify')
+					.transform( 'browserify-shim' );
+
+				return bundler
+					// .plugin('tinyify')
 					.bundle()
-					.on('error', console.log)
 					.pipe(source(target))
 					.pipe(buffer())
-					.pipe(sourcemaps.init({loadMaps: true}))
-					// .pipe(uglify())
-					.pipe(sourcemaps.write(`./`))
+					.pipe(sourcemaps.init( { loadMaps: true } ) )
+					.pipe( uglify() )
+					.on('error', function (error) {
+						console.error(error.message);
+						// this.emit('end');
+					})
+					.pipe(sourcemaps.write( './' ) )
 					.pipe( gulp.dest( `${config.destPath}/js` ) );
 			} );
 
 		return es.merge(tasks).on('end',cb)
 	}
 }
-
 function scss_task(debug) {
 	return cb => {
 		let g = gulp.src( config.sass.watchPaths ); // fuck gulp 4 sourcemaps!

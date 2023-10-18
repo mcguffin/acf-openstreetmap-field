@@ -1,4 +1,4 @@
-import L from 'lib/leaflet-no-conflict';
+import L from 'leaflet-no-conflict';
 
 const FitBounds = L.Control.extend({
 	onAdd:function() {

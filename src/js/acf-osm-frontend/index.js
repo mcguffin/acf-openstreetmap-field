@@ -1,2 +1,1 @@
-import {} from 'lib/osm-map';
-
+import {} from 'osm-map';
