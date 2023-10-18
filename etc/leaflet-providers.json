@@ -331,10 +331,9 @@
 		}
 	},
 	"Stamen": {
-		"url": "https://stamen-tiles-{s}.a.ssl.fastly.net/{variant}/{z}/{x}/{y}{r}.{ext}",
+		"url": "https://tiles.stadiamaps.com/tiles/{variant}/{z}/{x}/{y}{r}.{ext}",
 		"options": {
-			"attribution": "Map tiles by <a href=\"http://stamen.com\">Stamen Design</a>, <a href=\"http://creativecommons.org/licenses/by/3.0\">CC BY 3.0</a> &mdash; Map data {attribution.OpenStreetMap}",
-			"subdomains": "abcd",
+			"attribution": "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors"
 			"minZoom": 0,
 			"maxZoom": 20,
 			"variant": "toner",
@@ -343,41 +342,34 @@
 		"variants": {
 			"Toner": {
 				"options": {
-					"variant": "toner"
+					"variant": "stamen_toner"
 				}
 			},
 			"TonerBackground": {
 				"options": {
-					"variant": "toner-background"
+					"variant": "stamen_toner_background"
 				}
-			},
-			"TonerHybrid": {
-				"options": {
-					"variant": "toner-hybrid"
-				},
-				"isOverlay": true
 			},
 			"TonerLines": {
 				"options": {
-					"variant": "toner-lines"
+					"variant": "stamen_toner_lines"
 				},
 				"isOverlay": true
 			},
 			"TonerLabels": {
 				"options": {
-					"variant": "toner-labels"
+					"variant": "stamen_toner_labels"
 				},
 				"isOverlay": true
 			},
 			"TonerLite": {
 				"options": {
-					"variant": "toner-lite"
+					"variant": "stamen_toner_lite"
 				}
 			},
 			"Watercolor": {
-				"url": "https://stamen-tiles-{s}.a.ssl.fastly.net/{variant}/{z}/{x}/{y}.{ext}",
+				"url": "https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.{ext}",
 				"options": {
-					"variant": "watercolor",
 					"ext": "jpg",
 					"minZoom": 1,
 					"maxZoom": 16
@@ -385,19 +377,28 @@
 			},
 			"Terrain": {
 				"options": {
-					"variant": "terrain",
+					"variant": "stamen_terrain",
 					"minZoom": 0,
 					"maxZoom": 18
 				}
 			},
 			"TerrainBackground": {
 				"options": {
-					"variant": "terrain-background",
+					"variant": "stamen_terrain_background",
+					"minZoom": 0,
+					"maxZoom": 18
+				}
+			},
+			"TerrainLines": {
+				"url": "https://tiles.stadiamaps.com/tiles/stamen_terrain_lines/{z}/{x}/{y}{r}.png",
+				"options": {
+					"variant": "terrain-lines",
 					"minZoom": 0,
 					"maxZoom": 18
 				}
 			},
 			"TerrainLabels": {
+				"url": "https://tiles.stadiamaps.com/tiles/stamen_terrain_labels/{z}/{x}/{y}{r}.png",
 				"options": {
 					"variant": "terrain-labels",
 					"minZoom": 0,
