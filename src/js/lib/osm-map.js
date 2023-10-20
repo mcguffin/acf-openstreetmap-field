@@ -29,10 +29,13 @@ import L from 'leaflet/no-conflict';
 		})
 		return data;
 	}
-
+	/**
+	 *	@param HTMLElement el Map Div
+	 *	@return boolean
+	 */
 	const acfLeaflet = el => {
 		if ( !! el.acfOsmMap ) {
-			return
+			return false
 		}
 
 		let map, maxzoom,
@@ -90,10 +93,11 @@ import L from 'leaflet/no-conflict';
 		// reload hidden maps when they become visible
 		if ( ! isVisible(el) ) {
 			visibilityObserver.observe(el);
-			el.addEventListener( 'acf-osm-show', e => {
-				map.invalidateSize();
-			}, { once: true } )
 		}
+
+		el.addEventListener( 'acf-osm-show', e => {
+			map.invalidateSize();
+		} )
 
 		// finished!
 		el.dispatchEvent( new CustomEvent( 'acf-osm-map-created', {
@@ -103,9 +107,16 @@ import L from 'leaflet/no-conflict';
 				L: L
 			}
 		 } ) )
-
+		 return true
 	}
 
+	const maybeAcfLeaflet = el => {
+		if ( ! acfLeaflet( el ) ) {
+			el.dispatchEvent( new CustomEvent( 'acf-osm-show', {
+				detail: { L: L }
+			} ) );
+		}
+	}
 
 	const visibilityObserver = new ResizeObserver( function(entries,observer) {
 		entries.forEach(function(entry){
@@ -124,16 +135,19 @@ import L from 'leaflet/no-conflict';
 	if ( !! MutationObserver ) {
 		const domObserver = new MutationObserver( function(entries,observer) {
 			entries.forEach( entry => {
-				if ( entry.target.matches(leafletMapSelector) ) {
-					acfLeaflet(entry.target)
+				let mapElement
+				if ( mapElement = entry.target.querySelector(leafletMapSelector) ) {
+					maybeAcfLeaflet( mapElement )
+				} else{
+					entry.target.querySelectorAll( leafletMapSelector ).forEach( maybeAcfLeaflet )
 				}
-				entry.target.querySelectorAll( leafletMapSelector ).forEach( acfLeaflet )
 			})
 		});
 		window.addEventListener('DOMContentLoaded', e => {
 			domObserver.observe(document.body, { subtree: true, childList: true } );
 		})
 	}
+
 
 	// #64
 	const bulletproofParseFloat = value => {
