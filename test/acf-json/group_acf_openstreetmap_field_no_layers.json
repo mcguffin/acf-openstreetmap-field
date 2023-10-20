@@ -24,7 +24,7 @@
             ],
             "allow_map_layers": 0,
             "height": 400,
-            "max_markers": ""
+            "max_markers": 5
         },
         {
             "center_lat": 53.5507112,

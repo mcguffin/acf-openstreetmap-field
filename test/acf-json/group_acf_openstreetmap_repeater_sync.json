@@ -1,0 +1,242 @@
+{
+    "key": "group_acf_openstreetmap_repeater_sync",
+    "title": "ACF OSM – Sync repeater",
+    "fields": [
+		{
+			"center_lat": 53.55064,
+			"center_lng": 10.00065,
+			"zoom": 12,
+			"height": 400,
+			"return_format": "leaflet",
+			"allow_map_layers": 1,
+			"max_markers": "",
+			"layers": [
+				"OpenStreetMap"
+			],
+			"key": "field_65323cd66967e",
+			"label": "Location",
+			"name": "location",
+			"aria-label": "",
+			"type": "open_street_map",
+			"instructions": "",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "osm-sync-plugintest",
+				"id": ""
+			}
+		},
+		{
+			"key": "field_65323d146967f",
+			"label": "Addresses",
+			"name": "addresses",
+			"aria-label": "",
+			"type": "repeater",
+			"instructions": "",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "osm-sync-plugintest",
+				"id": ""
+			},
+			"layout": "block",
+			"pagination": 0,
+			"min": 0,
+			"max": 0,
+			"collapsed": "",
+			"button_label": "Add Row",
+			"rows_per_page": 20,
+			"sub_fields": [
+				{
+					"key": "field_65323d65fc320",
+					"label": "Name",
+					"name": "name",
+					"aria-label": "",
+					"type": "text",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+						"width": "",
+						"class": "",
+						"id": ""
+					},
+					"default_value": "",
+					"maxlength": "",
+					"placeholder": "",
+					"prepend": "",
+					"append": "",
+					"parent_repeater": "field_65323d146967f"
+				},
+				{
+					"key": "field_65323d7bfc321",
+					"label": "Address Line 1",
+					"name": "address_line_1",
+					"aria-label": "",
+					"type": "text",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+						"width": "",
+						"class": "",
+						"id": ""
+					},
+					"default_value": "",
+					"maxlength": "",
+					"placeholder": "",
+					"prepend": "",
+					"append": "",
+					"parent_repeater": "field_65323d146967f"
+				},
+				{
+					"key": "field_65323d85fc322",
+					"label": "Address Line 2",
+					"name": "address_line_2",
+					"aria-label": "",
+					"type": "text",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+						"width": "",
+						"class": "",
+						"id": ""
+					},
+					"default_value": "",
+					"maxlength": "",
+					"placeholder": "",
+					"prepend": "",
+					"append": "",
+					"parent_repeater": "field_65323d146967f"
+				},
+				{
+					"key": "field_65323d8dfc323",
+					"label": "ZIP",
+					"name": "zip",
+					"aria-label": "",
+					"type": "text",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+						"width": "",
+						"class": "",
+						"id": ""
+					},
+					"default_value": "",
+					"maxlength": "",
+					"placeholder": "",
+					"prepend": "",
+					"append": "",
+					"parent_repeater": "field_65323d146967f"
+				},
+				{
+					"key": "field_65323d92fc324",
+					"label": "City",
+					"name": "city",
+					"aria-label": "",
+					"type": "text",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+						"width": "",
+						"class": "",
+						"id": ""
+					},
+					"default_value": "",
+					"maxlength": "",
+					"placeholder": "",
+					"prepend": "",
+					"append": "",
+					"parent_repeater": "field_65323d146967f"
+				},
+				{
+					"key": "field_65323d92fc344",
+					"label": "uuid",
+					"name": "uuid",
+					"aria-label": "",
+					"type": "text",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+						"width": "",
+						"class": "",
+						"id": ""
+					},
+					"default_value": "",
+					"maxlength": "",
+					"placeholder": "",
+					"prepend": "",
+					"append": "",
+					"parent_repeater": "field_65323d146967f"
+				},
+				{
+					"key": "field_65323d92fc345",
+					"label": "Latitude",
+					"name": "lat",
+					"aria-label": "",
+					"type": "text",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+						"width": "50",
+						"class": "",
+						"id": ""
+					},
+					"default_value": "",
+					"maxlength": "",
+					"placeholder": "",
+					"prepend": "",
+					"append": "",
+					"parent_repeater": "field_65323d146967f"
+				},
+				{
+					"key": "field_65323d92fc346",
+					"label": "Longitude",
+					"name": "lng",
+					"aria-label": "",
+					"type": "text",
+					"instructions": "",
+					"required": 0,
+					"conditional_logic": 0,
+					"wrapper": {
+						"width": "50",
+						"class": "",
+						"id": ""
+					},
+					"default_value": "",
+					"maxlength": "",
+					"placeholder": "",
+					"prepend": "",
+					"append": "",
+					"parent_repeater": "field_65323d146967f"
+				}
+			]
+		}
+	],
+    "location": [
+        [
+            {
+				"param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "show_in_rest": 1,
+    "description": "",
+    "modified": 1565536105
+}

@@ -57,6 +57,10 @@ class PluginTest {
 		add_action( 'acf/init', [ $this, 'register_frontend_form' ] );
 		add_action( 'template_redirect', 'acf_form_head' );
 
+		add_action( 'admin_print_scripts', function() {
+			wp_enqueue_script( 'acf-osm-test-repeater-sync', plugins_url( 'test/js/repeater-sync.js', dirname(__DIR__).'/index.php' ), [], true, '0.0.1' );
+		} );
+
 		add_action( 'acf/init', [ $this, 'register_options_page' ] );
 
 
