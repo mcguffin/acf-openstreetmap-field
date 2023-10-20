@@ -1,4 +1,4 @@
-import L from 'leaflet-no-conflict';
+import L from 'leaflet/no-conflict';
 
 const ResetLayers = L.Control.extend({
 	onAdd:function() {

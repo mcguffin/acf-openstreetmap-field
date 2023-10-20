@@ -31,14 +31,11 @@
 			display:none;
 		}
 	}
-	~ .markers-instruction .add-marker-instructions {
+	&.add-marker-on-taphold ~ .markers-instruction .marker-on-dblclick {
 		display:none;
 	}
-	&.add-marker-on-dblclick ~ .markers-instruction .marker-on-dblclick {
-		display:inline;
-	}
-	&.add-marker-on-taphold ~ .markers-instruction .marker-on-taphold {
-		display:inline;
+	&.add-marker-on-dblclick ~ .markers-instruction .marker-on-taphold {
+		display:none;
 	}
 }
 .acf-block-preview {
@@ -115,7 +112,7 @@
 .osm-marker-icon {
 	//border:1px solid $wp-red;
 	border-radius:50%;
-	position:relative;
+	// position:relative;
 	// triangle
 	&:before {
 		content:'';

@@ -1,4 +1,4 @@
-import L from 'leaflet-no-conflict';
+import L from 'leaflet/no-conflict';
 
 (function( arg ){
 
@@ -35,6 +35,9 @@ import L from 'leaflet-no-conflict';
 			return
 		}
 
+		let map, maxzoom,
+			initEvt;
+
 		const data = parseDataAttributes( el ),
 			mapInit = {
 				scrollWheelZoom: false,
@@ -52,8 +55,6 @@ import L from 'leaflet-no-conflict';
 				},
 			});
 
-		let map, maxzoom,
-			initEvt;
 		el.dispatchEvent( createEvt )
 
 		// allow to skip map creation
@@ -121,7 +122,7 @@ import L from 'leaflet-no-conflict';
 
 	// observe if new maps are being loaded into the dom
 	if ( !! MutationObserver ) {
-		var domObserver = new MutationObserver( function(entries,observer) {
+		const domObserver = new MutationObserver( function(entries,observer) {
 			entries.forEach( entry => {
 				if ( entry.target.matches(leafletMapSelector) ) {
 					acfLeaflet(entry.target)
@@ -135,7 +136,7 @@ import L from 'leaflet-no-conflict';
 	}
 
 	// #64
-	var bulletproofParseFloat = function( value ) {
+	const bulletproofParseFloat = value => {
 		// already a number
 		if ( 'number' === typeof value ) {
 			return value;
@@ -153,16 +154,16 @@ import L from 'leaflet-no-conflict';
 
 	L.TileLayer.Provider.providers = arg.providers;
 
-	var options = arg.options;
+	const options = arg.options;
 
 	function createMarkers( data, map ) {
-		var self = this, // @var DIV element
+		// const self = this, // @var DIV element
 			/*
 			createEvt = $.Event({
 				type: 'acf-osm-map-create-markers',
 			}),
 			/*/
-			createEvt = new CustomEvent('acf-osm-map-create-markers', {
+		const createEvt = new CustomEvent('acf-osm-map-create-markers', {
 				bubbles: true,
 				cancelable: true,
 				detail: {
@@ -194,9 +195,9 @@ import L from 'leaflet-no-conflict';
 
 		data.mapMarkers?.forEach( (markerData, i ) => {
 			// add markers
-			var marker, createEvt;
+			let marker;
 
-			createEvt = new CustomEvent( 'acf-osm-map-marker-create', {
+			const createEvt = new CustomEvent( 'acf-osm-map-marker-create', {
 				bubbles: true,
 				cancelable: true,
 				detail: {
@@ -208,7 +209,7 @@ import L from 'leaflet-no-conflict';
 					L: L
 				}
 			} );
-			self.dispatchEvent( createEvt )
+			this.dispatchEvent( createEvt )
 
 			if ( createEvt.defaultPrevented ) {
 				return;
@@ -221,13 +222,9 @@ import L from 'leaflet-no-conflict';
 				.bindPopup( createEvt.detail.markerOptions.label )
 				.addTo( map );
 
-			self.dispatchEvent(new CustomEvent('acf-osm-map-marker-created',{
+			this.dispatchEvent(new CustomEvent('acf-osm-map-marker-created',{
 				bubbles: true,
-				detail: {
-					map: map,
-					marker: marker,
-					L: L
-				}
+				detail: { map, marker, L }
 			}))
 		} )
 		// markers again
@@ -236,7 +233,9 @@ import L from 'leaflet-no-conflict';
 	}
 
 	function createLayers( data, map ) {
-		var createEvt = new CustomEvent( 'acf-osm-map-create-layers', {
+		let maxzoom;
+
+		const createEvt = new CustomEvent( 'acf-osm-map-create-layers', {
 				bubbles: true,
 				cancelable: true,
 				detail: {
@@ -244,8 +243,7 @@ import L from 'leaflet-no-conflict';
 					mapData: data,
 					L: L
 				}
-			}),
-			maxzoom;
+			});
 
 		this.dispatchEvent( createEvt );
 
@@ -264,7 +262,7 @@ import L from 'leaflet-no-conflict';
 				return;
 			}
 
-			var layer_config = options.layer_config[ provider_key.split('.')[0] ] || { options: {} },
+			const layer_config = options.layer_config[ provider_key.split('.')[0] ] || { options: {} },
 				layer = L.tileLayer.provider( provider_key, layer_config.options ).addTo( map );
 
 			layer.providerKey = provider_key;

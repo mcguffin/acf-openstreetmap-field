@@ -1,4 +1,4 @@
-import L from 'leaflet-no-conflict';
+import L from 'leaflet/no-conflict';
 
 const FitBounds = L.Control.extend({
 	onAdd:function() {
@@ -12,7 +12,7 @@ const FitBounds = L.Control.extend({
 		L.DomEvent
 			.on( this._link, 'click', L.DomEvent.stopPropagation )
 			.on( this._link, 'click', L.DomEvent.preventDefault )
-			.on( this._link, 'click', this.options.callback, this )
+			.on( this._link, 'click', this.options.callback )
 			.on( this._link, 'dblclick', L.DomEvent.stopPropagation );
 
 		return this._container;
@@ -21,7 +21,7 @@ const FitBounds = L.Control.extend({
 		L.DomEvent
 			.off(this._link, 'click', L.DomEvent.stopPropagation )
 			.off(this._link, 'click', L.DomEvent.preventDefault )
-			.off(this._link, 'click', this.options.callback, this )
+			.off(this._link, 'click', this.options.callback )
 			.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
 	},
 })
