@@ -4,23 +4,18 @@ import AddLocationMarker from 'leaflet/control-add-location-marker';
 import FitBounds from 'leaflet/control-fit-bounds';
 import { MarkerData, MapData } from 'media/models';
 import MarkerEntry from 'media/views/marker-entry';
+import { uniqid } from 'misc/uniquid';
 
 const { options, i18n } = acf_osm_admin
 
 class MapInput extends Backbone.View {
 
-	get $parent() {
-		return this.$el.closest('.acf-field-settings,.acf-field-open-street-map');
+	get $value() {
+		return this.$el.siblings('input.osm-json:first');
 	}
 
-	get $value() {
-		return this.$parent.find('input.osm-json');
-	}
-	// get $results() {
-	// 	return this.$parent.find('.osm-results');
-	// }
 	get $markers() {
-		return this.$parent.find('.osm-markers');
+		return this.$el.siblings('.osm-markers:first');
 	}
 
 	preventDefault( e ) {
@@ -32,7 +27,7 @@ class MapInput extends Backbone.View {
 
 		this.config      = this.$el.data().editorConfig;
 		this.map         = conf.map;
-		this.field       = conf.field;
+		// this.field       = conf.field;
 		this.model       = new MapData(this.mapData);
 		this.plingMarker = false;
 
@@ -44,8 +39,6 @@ class MapInput extends Backbone.View {
 		if ( this.config.max_markers !== 0 ) {
 			this.init_fit_bounds();
 		}
-
-		this.init_acf();
 
 		if ( this.config.allow_providers ) {
 			// prevent default layer creation
@@ -86,11 +79,6 @@ class MapInput extends Backbone.View {
 		// kb navigation might interfere with other kb listeners
 		this.map.keyboard.disable();
 
-		acf.addAction('remount_field/type=open_street_map', field => {
-			if ( this.field === field ) {
-				this.map.invalidateSize();
-			}
-		})
 		return this;
 	}
 
@@ -244,7 +232,7 @@ class MapInput extends Backbone.View {
 		});
 
 		model.on( 'destroy', () => {
-			acf.doAction('acf-osm/destroy-marker', model, this.field );
+			this.el.dispatchEvent( new CustomEvent( 'osm/destroy-marker', { detail: {  model } } ), { bubbles: true } )
 			marker.remove();
 		});
 
@@ -362,15 +350,19 @@ class MapInput extends Backbone.View {
 			lat: latlng.lat,
 			lng: latlng.lng,
 			geocode: [],
-			uuid: acf.uniqid('marker_'),
+			uuid: uniqid('marker_'),
 		});
+		const changedlatLng = e => {
+			this.el.dispatchEvent( new CustomEvent( 'osm/update-marker-latlng', { detail: {  model } } ), { bubbles: true } )
+		}
+		this.listenTo( model, 'change:lat', changedlatLng );
+		this.listenTo( model, 'change:lng', changedlatLng );
 
 		this.plingMarker = true;
 		this.markers.add( model );
 		this.reverseGeocode( model );
 
-		acf.doAction('acf-osm/create-marker', model, this.field );
-		acf.doAction('acf-osm/update-marker-latlng', model, this.field );
+		this.el.dispatchEvent( new CustomEvent( 'osm/create-marker', { detail: {  model } } ), { bubbles: true } )
 	}
 
 	/**
@@ -439,10 +431,9 @@ class MapInput extends Backbone.View {
 			}, options.geocoder );
 
 		this.geocoder = L.Control.geocoder( geocoder_options )
-			.on('markgeocode',e => {
+			.on( 'markgeocode', e => {
 				// search result click
 				let model,
-					marker,
 					previousGeocode = false;
 
 				const latlng =  e.geocode.center,
@@ -468,19 +459,19 @@ class MapInput extends Backbone.View {
 
 
 				if ( this.canAddmarker ) {
-					marker_data.uuid = acf.uniqid('marker_')
+					marker_data.uuid = uniqid('marker_')
 					// infinite markers or markers still in range
-					marker = this.markers.add( marker_data );
-					acf.doAction('acf-osm/create-marker', marker, this.field );
+					model = this.markers.add( marker_data );
+					this.el.dispatchEvent( new CustomEvent( 'osm/create-marker', { detail: {  model } } ), { bubbles: true } )
 
 				} else if ( this.maxMarkers === 1 ) {
 					// one marker only
-					marker = this.markers.at(0)
+					model = this.markers.at(0)
 					previousGeocode = marker.get('geocode')
-					marker.set( marker_data );
+					model.set( marker_data );
 				}
 
-				acf.doAction('acf-osm/marker-geocode-result', marker, this.field, [ e.geocode ], previousGeocode );
+				this.el.dispatchEvent( new CustomEvent( 'osm/marker-geocode-result', { detail: {  model, geocode: e.geocode, previousGeocode } } ), { bubbles: true } )
 
 				this.map.setView( latlng, this.map.getZoom() ); // keep zoom, might be confusing else
 
@@ -552,10 +543,11 @@ class MapInput extends Backbone.View {
 			/**
 			 *	@param array results
 			 */
-			results => {
-				acf.doAction('acf-osm/marker-geocode-result', model, this.field, results, model.get('geocode' ) );
-				model.set('geocode', results );
-				model.set('default_label', this.parseGeocodeResult( results, latlng ) );
+			geocode => {
+				this.el.dispatchEvent( new CustomEvent( 'osm/marker-geocode-result', { detail: {  model, geocode, previousGeocode: model.get('geocode' ) }} ), { bubbles: true } )
+
+				model.set('geocode', geocode );
+				model.set('default_label', this.parseGeocodeResult( geocode, latlng ) );
 			}
 		);
 	}
@@ -567,9 +559,7 @@ class MapInput extends Backbone.View {
 			label = latlng.lat + ', ' + latlng.lng;
 		} else {
 			$.each( results, ( i, result ) => {
-
 				label = result.html;
-
 			});
 		}
 		// trim
@@ -710,19 +700,6 @@ class MapInput extends Backbone.View {
 		return this;
 	}
 
-	init_acf() {
-		const toggle_cb = () => this.update_visible();
-
-		// expand/collapse acf setting
-		acf.addAction( 'show', toggle_cb );
-		acf.addAction( 'hide', toggle_cb );
-
-		// expand wp metabox
-		$(document).on('postbox-toggled', toggle_cb );
-		$(document).on('click','.widget-top *', toggle_cb );
-
-	}
-
 	update_map() {
 		var latlng = { lat: this.model.get('lat'), lng: this.model.get('lng') }
 		this.map.setView(
@@ -731,4 +708,13 @@ class MapInput extends Backbone.View {
 		);
 	}
 }
+
+document.addEventListener( 'acf-osm-map-init', e => {
+	// setup map input element
+	if ( e.target.matches('[data-editor-config]') ) {
+		const { map } = e.detail;
+		new MapInput( { el: e.target, map: map } );
+	}
+} )
+
 module.exports = MapInput

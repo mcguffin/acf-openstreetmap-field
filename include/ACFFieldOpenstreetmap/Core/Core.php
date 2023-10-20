@@ -116,7 +116,7 @@ class Core extends Plugin {
 
 		// field js
 		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), ['acf-input','wp-backbone' ], $this->get_version(), [
-			'strategy'  => 'defer',
+			// 'strategy'  => 'defer',
 			'in_footer' => true,
 		] );
 		wp_localize_script( 'acf-input-osm', 'acf_osm', $osm_l10n );

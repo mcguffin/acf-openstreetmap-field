@@ -49,7 +49,6 @@ class MarkerEntry extends wp.Backbone.View.extend({
 
 	changedlatLng() {
 		this.marker.setLatLng( { lat:this.model.get('lat'), lng:this.model.get('lng') } )
-		acf.doAction('acf-osm/update-marker-latlng', this.model, this.options.controller.field );
 	}
 
 	render() {
