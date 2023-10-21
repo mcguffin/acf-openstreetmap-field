@@ -82,17 +82,25 @@
 		}
 	},
 	"OpenRailwayMap": {
-		"url": "https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
+		"url": "https://{s}.tiles.openrailwaymap.org/{variant}/{z}/{x}/{y}.png",
 		"options": {
 			"maxZoom": 19,
-			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"https://www.OpenRailwayMap.org\">OpenRailwayMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)"
+			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"https://www.OpenRailwayMap.org\">OpenRailwayMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)",
+			"variant": "standard"
+		},
+		"variants": {
+			"Standard": "standard",
+			"Maxspeed": "maxspeed",
+			"Signals": "signals",
+			"Electrification": "electrification",
+			"Gauge": "gauge"
 		},
 		"isOverlay": true
 	},
 	"OpenFireMap": {
-		"url": "http://openfiremap.org/hytiles/{z}/{x}/{y}.png",
+		"url": "https://openfiremap.de/hytiles/{z}/{x}/{y}.png",
 		"options": {
-			"maxZoom": 19,
+			"maxZoom": 18,
 			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)"
 		},
 		"isOverlay": true
@@ -190,46 +198,22 @@
 		}
 	},
 	"Jawg": {
-		"url": "https://{s}.tile.jawg.io/{variant}/{z}/{x}/{y}{r}.png?access-token={accessToken}",
+		"url": "https://tile.jawg.io/{variant}/{z}/{x}/{y}{r}.png?access-token={accessToken}",
 		"options": {
-			"attribution": "<a href=\"http://jawg.io\" title=\"Tiles Courtesy of Jawg Maps\" target=\"_blank\">&copy; <b>Jawg</b>Maps</a> {attribution.OpenStreetMap}",
+			"attribution": "<a href=\"https://jawg.io\" title=\"Tiles Courtesy of Jawg Maps\" target=\"_blank\">&copy; <b>Jawg</b>Maps</a> {attribution.OpenStreetMap}",
 			"minZoom": 0,
 			"maxZoom": 22,
-			"subdomains": "abcd",
-			"variant": "jawg-terrain",
+			"variant": "jawg-streets",
 			"accessToken": "<insert your access token here>"
 		},
 		"variants": {
-			"Streets": {
-				"options": {
-					"variant": "jawg-streets"
-				}
-			},
-			"Terrain": {
-				"options": {
-					"variant": "jawg-terrain"
-				}
-			},
-			"Sunny": {
-				"options": {
-					"variant": "jawg-sunny"
-				}
-			},
-			"Dark": {
-				"options": {
-					"variant": "jawg-dark"
-				}
-			},
-			"Light": {
-				"options": {
-					"variant": "jawg-light"
-				}
-			},
-			"Matrix": {
-				"options": {
-					"variant": "jawg-matrix"
-				}
-			}
+			"Streets": "jawg-streets",
+			"Terrain": "jawg-terrain",
+			"Lagoon": "jawg-lagoon",
+			"Sunny": "jawg-sunny",
+			"Dark": "jawg-dark",
+			"Light": "jawg-light",
+			"Matrix": "jawg-matrix"
 		}
 	},
 	"MapBox": {
@@ -301,7 +285,10 @@
 				"options": {
 					"variant": "voyager"
 				}
-			}
+			},
+			"Ocean": "ocean",
+			"Backdrop": "backdrop",
+			"Dataviz": "dataviz"
 		}
 	},
 	"Stamen": {
@@ -491,25 +478,18 @@
 		}
 	},
 	"OpenWeatherMap": {
-		"url": "http://{s}.tile.openweathermap.org/map/{variant}/{z}/{x}/{y}.png?appid={apiKey}",
+		"url": "https://{s}.tile.openweathermap.org/map/{variant}/{z}/{x}/{y}.png?appid={apiKey}",
 		"options": {
 			"maxZoom": 19,
 			"attribution": "Map data &copy; <a href=\"http://openweathermap.org\">OpenWeatherMap</a>",
 			"apiKey": "<insert your api key here>",
-			"opacity": 0.5
+			"opacity": 1
 		},
 		"variants": {
-			"Clouds": "clouds",
-			"CloudsClassic": "clouds_cls",
-			"Precipitation": "precipitation",
-			"PrecipitationClassic": "precipitation_cls",
-			"Rain": "rain",
-			"RainClassic": "rain_cls",
-			"Pressure": "pressure",
-			"PressureContour": "pressure_cntr",
-			"Wind": "wind",
-			"Temperature": "temp",
-			"Snow": "snow"
+			"Clouds": "clouds_new",
+			"Precipitation": "precipitation_new",
+			"Pressure": "pressure_new",
+			"Wind": "wind_new"
 		},
 		"isOverlay": true
 	},
@@ -702,7 +682,7 @@
 		}
 	},
 	"MtbMap": {
-		"url": "http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png",
+		"url": "https://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png",
 		"options": {
 			"attribution": "{attribution.OpenStreetMap} &amp; USGS"
 		}
@@ -772,17 +752,10 @@
 		}
 	},
 	"BasemapAT": {
-		"url": "https://maps{s}.wien.gv.at/basemap/{variant}/{type}/google3857/{z}/{y}/{x}.{format}",
+		"url": "https://mapsneu.wien.gv.at/basemap/{variant}/{type}/google3857/{z}/{y}/{x}.{format}",
 		"options": {
 			"maxZoom": 19,
 			"attribution": "Datenquelle: <a href=\"https://www.basemap.at\">basemap.at</a>",
-			"subdomains": [
-				"",
-				"1",
-				"2",
-				"3",
-				"4"
-			],
 			"type": "normal",
 			"format": "png",
 			"bounds": [
@@ -844,7 +817,7 @@
 		}
 	},
 	"nlmaps": {
-		"url": "https://geodata.nationaalgeoregister.nl/tiles/service/wmts/{variant}/EPSG:3857/{z}/{x}/{y}.png",
+		"url": "https://service.pdok.nl/brt/achtergrondkaart/wmts/v2_0/{variant}/EPSG:3857/{z}/{x}/{y}.png",
 		"options": {
 			"minZoom": 6,
 			"maxZoom": 19,
@@ -862,21 +835,10 @@
 			"variant": "brtachtergrondkaart"
 		},
 		"variants": {
-			"standaard": {
-				"options": {
-					"variant": "brtachtergrondkaart"
-				}
-			},
-			"pastel": {
-				"options": {
-					"variant": "brtachtergrondkaartpastel"
-				}
-			},
-			"grijs": {
-				"options": {
-					"variant": "brtachtergrondkaartgrijs"
-				}
-			},
+			"standaard": "standaard",
+			"pastel": "pastel",
+			"grijs": "grijs",
+			"water": "water",
 			"luchtfoto": {
 				"url": "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/Actueel_ortho25/EPSG:3857/{z}/{x}/{y}.jpeg"
 			}
@@ -955,9 +917,10 @@
 		}
 	},
 	"NLS": {
-		"url": "https://nls-{s}.tileserver.com/nls/{z}/{x}/{y}.jpg",
+		"url": "https://api.maptiler.com/tiles/{variant}/{z}/{x}/{y}.jpg?key={key}",
 		"options": {
-			"attribution": "<a href=\"http://geo.nls.uk/maps/\">National Library of Scotland Historic Maps</a>",
+			"attribution": "<a href=\"https://maps.nls.uk/projects/subscription-api\">National Library of Scotland Historic Maps</a>",
+			"key": "<insert your MapTiler Cloud API key here>",
 			"bounds": [
 				[
 					49.6,
@@ -970,7 +933,16 @@
 			],
 			"minZoom": 1,
 			"maxZoom": 18,
-			"subdomains": "0123"
+			"variant": "uk-osgb63k1885"
+		},
+		"variants": {
+			"osgb63k1885": "uk-osgb63k1885",
+			"osgb1888": "uk-osgb1888",
+			"osgb10k1888": "uk-osgb10k1888",
+			"osgb1919": "uk-osgb1919",
+			"osgb25k1937": "uk-osgb25k1937",
+			"osgb63k1955": "uk-osgb63k1955",
+			"oslondon1k1893": "uk-oslondon1k1893"
 		}
 	},
 	"JusticeMap": {
@@ -1065,31 +1037,11 @@
 			"attribution": "<img src=\"https://docs.onemap.sg/maps/images/oneMap64-01.png\" style=\"height:20px;width:20px;\"/> New OneMap | Map data &copy; contributors, <a href=\"http://SLA.gov.sg\">Singapore Land Authority</a>"
 		},
 		"variants": {
-			"Default": {
-				"options": {
-					"variant": "Default"
-				}
-			},
-			"Night": {
-				"options": {
-					"variant": "Night"
-				}
-			},
-			"Original": {
-				"options": {
-					"variant": "Original"
-				}
-			},
-			"Grey": {
-				"options": {
-					"variant": "Grey"
-				}
-			},
-			"LandLot": {
-				"options": {
-					"variant": "LandLot"
-				}
-			}
+			"Default":  "Default",
+			"Night": "Night",
+			"Original": "Original",
+			"Grey": "Grey",
+			"LandLot": "LandLot"
 		}
 	},
 	"WaymarkedTrails": {
