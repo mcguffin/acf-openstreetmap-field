@@ -1131,15 +1131,13 @@
 		"options": {
 			"minZoom": 9,
 			"maxZoom": 18,
-			"attribution": "Map data: {attribution.OpenStreetMap} & ODbL, &copy; <a href=\"https://www.opensnowmap.org/iframes/data.html\">www.opensnowmap.org</a> <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>"
+			"attribution": "Map data: {attribution.OpenStreetMap} & ODbL, &copy; <a href=\"https://www.opensnowmap.org/iframes/data.html\">www.opensnowmap.org</a> <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>",
+			"variant": "pistes"
 		},
 		"variants": {
-			"pistes": {
-				"options": {
-					"variant": "pistes"
-				}
-			}
-		}
+			"pistes": "pistes"
+		},
+		"isOverlay": true
 	},
 	"AzureMaps": {
 		"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&language={language}&subscription-key={subscriptionKey}",
