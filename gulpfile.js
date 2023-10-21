@@ -1,15 +1,16 @@
-const fs			= require( 'fs' );
-const gulp			= require( 'gulp' );
-const glob			= require( 'glob' );
 const autoprefixer	= require( 'gulp-autoprefixer' );
-const browserify	= require( 'browserify' );
 const babelify		= require( 'babelify' );
+const browserify	= require( 'browserify' );
 const buffer		= require( 'vinyl-buffer' );
+const child_process	= require( 'child_process' );
+const es			= require( 'event-stream' );
+const fs			= require( 'fs' );
+const glob			= require( 'glob' );
+const gulp			= require( 'gulp' );
+const jsonlint      = require( 'gulp-jsonlint' );
 const sass			= require( 'gulp-sass' )( require('sass') );
 const source		= require( 'vinyl-source-stream' );
 const sourcemaps	= require( 'gulp-sourcemaps' );
-const es			= require( 'event-stream' );
-const child_process	= require( 'child_process' );
 const uglify        = require( 'gulp-uglify' );
 
 const package       = require( './package.json' );
@@ -105,12 +106,18 @@ gulp.task('dev:scss', scss_task( true ) );
 gulp.task('watch:scss',cb => {
 	cb()
 });
+gulp.task('jsonlint', () => {
+	return gulp.src("./etc/**/*.json")
+		.pipe(jsonlint())
+		.pipe(jsonlint.reporter())
+})
 
 gulp.task('build',gulp.series('build:scss','build:js'));
 
 gulp.task('watch', cb => {
 	gulp.watch( config.sass.watchPaths, gulp.parallel('dev:scss','watch:scss'));
 	gulp.watch('./src/js/**/*.js',gulp.parallel('dev:js'));
+	gulp.watch('./etc/**/*.json', gulp.parallel('jsonlint'))
 });
 
 gulp.task('dev',gulp.series('dev:scss','dev:js','watch'));
