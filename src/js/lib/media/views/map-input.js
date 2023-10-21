@@ -7,8 +7,15 @@ import MarkerEntry from 'media/views/marker-entry';
 import { uniqid } from 'misc/uniquid';
 
 const { options, i18n } = acf_osm_admin
+const instances = []
 
 class MapInput extends Backbone.View {
+
+	static L = L
+
+	static getByElement( mapDiv ) {
+		return instances.find( inst => inst.el === mapDiv )
+	}
 
 	get $value() {
 		return this.$el.siblings('input.osm-json:first');
@@ -18,12 +25,55 @@ class MapInput extends Backbone.View {
 		return this.$el.siblings('.osm-markers:first');
 	}
 
+	get mapData() {
+		const data = JSON.parse( this.$value.val() );
+		data.lat = data.lat || this.$el.attr('data-map-lat');
+		data.lng = data.lng || this.$el.attr('data-map-lng');
+		data.zoom = data.zoom || this.$el.attr('data-map-zoom');
+		return data;
+	}
+
+	get markers() {
+		return this.model.get('markers');
+	}
+
+	get countMarkers() {
+		return this.markers.length;
+	}
+
+	get hasMarkers() {
+		return this.countMarkers > 0
+	}
+
+	get maxMarkers() {
+		return this.config.max_markers === false
+			? Infinity
+			: this.config.max_markers
+	}
+
+	get canAddMarker() {
+		return this.countMarkers < this.maxMarkers
+	}
+
+	constructor(conf) {
+		super(conf)
+		instances.push(this)
+		this.L = L
+	}
+	destructor() {
+		const idx = instances.indexOf(this)
+		if ( idx > -1 ) {
+			instances.splice(idx,1)
+		}
+	}
+
 	preventDefault( e ) {
 		e.preventDefault();
 	}
 
 	initialize(conf) {
 		super.initialize(conf)
+
 
 		this.config      = this.$el.data().editorConfig;
 		this.map         = conf.map;
@@ -75,9 +125,10 @@ class MapInput extends Backbone.View {
 
 		this.update_map();
 
-
 		// kb navigation might interfere with other kb listeners
 		this.map.keyboard.disable();
+
+		this.el.dispatchEvent( new CustomEvent( 'osm-editor/initialized', { detail: {  view: this } } ), { bubbles: true } )
 
 		return this;
 	}
@@ -153,41 +204,13 @@ class MapInput extends Backbone.View {
 			},1);
 		})
 	}
-	get mapData() {
-		const data = JSON.parse( this.$value.val() );
-		data.lat = data.lat || this.$el.attr('data-map-lat');
-		data.lng = data.lng || this.$el.attr('data-map-lng');
-		data.zoom = data.zoom || this.$el.attr('data-map-zoom');
-		return data;
-	}
-
-	get markers() {
-		return this.model.get('markers');
-	}
-
-	get countMarkers() {
-		return this.markers.length;
-	}
-
-	get hasMarkers() {
-		return this.countMarkers > 0
-	}
-
-	get maxMarkers() {
-		return this.config.max_markers === false
-			? Infinity
-			: this.config.max_markers
-	}
-
-	get canAddMarker() {
-		return this.countMarkers < this.maxMarkers
-	}
 
 	updateValue() {
 		this.$value.val( JSON.stringify( this.model.toJSON() ) ).trigger('change');
 		//this.$el.trigger('change')
 		this.updateMarkerState();
 	}
+
 	updateMarkerState() {
 		this.$el.attr('data-has-markers', this.hasMarkers.toString() );
 		this.$el.attr('data-can-add-marker', this.canAddMarker.toString() );
@@ -232,7 +255,7 @@ class MapInput extends Backbone.View {
 		});
 
 		model.on( 'destroy', () => {
-			this.el.dispatchEvent( new CustomEvent( 'osm/destroy-marker', { detail: {  model } } ), { bubbles: true } )
+			this.el.dispatchEvent( new CustomEvent( 'osm-editor/destroy-marker', { detail: {  model } } ), { bubbles: true } )
 			marker.remove();
 		});
 
@@ -353,7 +376,7 @@ class MapInput extends Backbone.View {
 			uuid: uniqid('marker_'),
 		});
 		const changedlatLng = e => {
-			this.el.dispatchEvent( new CustomEvent( 'osm/update-marker-latlng', { detail: {  model } } ), { bubbles: true } )
+			this.el.dispatchEvent( new CustomEvent( 'osm-editor/update-marker-latlng', { detail: {  model } } ), { bubbles: true } )
 		}
 		this.listenTo( model, 'change:lat', changedlatLng );
 		this.listenTo( model, 'change:lng', changedlatLng );
@@ -362,7 +385,7 @@ class MapInput extends Backbone.View {
 		this.markers.add( model );
 		this.reverseGeocode( model );
 
-		this.el.dispatchEvent( new CustomEvent( 'osm/create-marker', { detail: {  model } } ), { bubbles: true } )
+		this.el.dispatchEvent( new CustomEvent( 'osm-editor/create-marker', { detail: {  model } } ), { bubbles: true } )
 	}
 
 	/**
@@ -462,7 +485,7 @@ class MapInput extends Backbone.View {
 					marker_data.uuid = uniqid('marker_')
 					// infinite markers or markers still in range
 					model = this.markers.add( marker_data );
-					this.el.dispatchEvent( new CustomEvent( 'osm/create-marker', { detail: {  model } } ), { bubbles: true } )
+					this.el.dispatchEvent( new CustomEvent( 'osm-editor/create-marker', { detail: {  model } } ), { bubbles: true } )
 
 				} else if ( this.maxMarkers === 1 ) {
 					// one marker only
@@ -471,7 +494,7 @@ class MapInput extends Backbone.View {
 					model.set( marker_data );
 				}
 
-				this.el.dispatchEvent( new CustomEvent( 'osm/marker-geocode-result', { detail: {  model, geocode: e.geocode, previousGeocode } } ), { bubbles: true } )
+				this.el.dispatchEvent( new CustomEvent( 'osm-editor/marker-geocode-result', { detail: {  model, geocode: e.geocode, previousGeocode } } ), { bubbles: true } )
 
 				this.map.setView( latlng, this.map.getZoom() ); // keep zoom, might be confusing else
 
@@ -544,7 +567,7 @@ class MapInput extends Backbone.View {
 			 *	@param array results
 			 */
 			geocode => {
-				this.el.dispatchEvent( new CustomEvent( 'osm/marker-geocode-result', { detail: {  model, geocode, previousGeocode: model.get('geocode' ) }} ), { bubbles: true } )
+				this.el.dispatchEvent( new CustomEvent( 'osm-editor/marker-geocode-result', { detail: {  model, geocode, previousGeocode: model.get('geocode' ) }} ), { bubbles: true } )
 
 				model.set('geocode', geocode );
 				model.set('default_label', this.parseGeocodeResult( geocode, latlng ) );
@@ -566,11 +589,16 @@ class MapInput extends Backbone.View {
 		return label;
 	}
 
+	getDefaultProviders() {
+
+	}
+
 	/**
 	 *	Layers
 	 */
 	initLayers() {
 		var selectedLayers = [],
+			availableLayers = this.config.restrict_providers || Object.keys(acf_osm_admin.options.leaflet_layers),
 			baseLayers = {},
 			overlays = {},
 			is_omitted = key =>  key === null || ( !! this.config.restrict_providers && this.config.restrict_providers.indexOf( key ) === -1 ),
@@ -609,17 +637,16 @@ class MapInput extends Backbone.View {
 			selectedLayers = selectedLayers.filter( el => {
 				return this.config.restrict_providers.indexOf( el ) !== -1;
 			});
+			// set default layer
+			if ( ! selectedLayers.length ) {
+
+				selectedLayers = this.config.restrict_providers.slice( 0, 1 );
+
+			}
 		}
 
-		// set default layer
-		if ( ! selectedLayers.length ) {
-
-			selectedLayers = this.config.restrict_providers.slice( 0, 1 );
-
-		}
 
 		// editable layers!
-
 		this.map.on( 'baselayerchange layeradd layerremove', e => {
 
 			if ( ! e.layer.providerKey ) {
@@ -641,7 +668,9 @@ class MapInput extends Backbone.View {
 			this.model.set( 'layers', layers );
 		} );
 
-		$.each( this.config.restrict_providers, setupMap );
+		$.each( availableLayers, setupMap );
+
+		// acf_osm_admin.options.leaflet_layers
 
 		this.layersControl = L.control.layers( baseLayers, overlays, {
 			collapsed: true,
@@ -659,6 +688,7 @@ class MapInput extends Backbone.View {
 			'^(OpenWeatherMap|OpenSeaMap)',
 			'OpenMapSurfer.(Hybrid|AdminBounds|ContourLines|Hillshade|ElementsAtRisk)',
 			'HikeBike.HillShading',
+			'^WaymarkedTrails',
 			'Stamen.(Toner|Terrain)(Hybrid|Lines|Labels)',
 			'TomTom.(Hybrid|Labels)',
 			'Hydda.RoadsAndLabels',
@@ -681,13 +711,13 @@ class MapInput extends Backbone.View {
 				layer.remove();
 			}
 		})
-
+		this.map.off('baselayerchange layeradd layerremove')
 		// remove layer control
 		!! this.layersControl && this.layersControl.remove()
 	}
 
 	update_visible() {
-
+		// no change
 		if ( this.visible === this.$el.is(':visible') ) {
 			return this;
 		}

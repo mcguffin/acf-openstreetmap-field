@@ -15,10 +15,10 @@ class OSMProviders extends Singleton {
 		'T' => 'Thunderforest.Transport',
 		'C' => 'Thunderforest.OpenCycleMap',
 	];
-	
+
 	/** @var array mapping of OSM iframe layers to leaflet layers */
 	private $iframe_layers = [
-		'mapnik'		=> 'OpenStreetMap',
+		'mapnik'		=> 'OpenStreetMap.Mapnik',
 		'cyclemap'		=> 'Thunderforest.OpenCycleMap',
 		'transportmap'	=> 'Thunderforest.Transport',
 		'hot'			=> 'OpenStreetMap.HOT',
@@ -30,8 +30,8 @@ class OSMProviders extends Singleton {
 	 */
 	protected function __construct() {
 	}
-	
-	
+
+
 	/**
 	 *	Returns raw leaflet providers
 	 *	@param array $filters credentials|enabled
@@ -71,14 +71,14 @@ class OSMProviders extends Singleton {
 	 *	@param config array [
 	 *		'lat'		: (float),
 	 *		'lng'		: (float),
-	 *		'markers'	: optional. 
+	 *		'markers'	: optional.
 	 *			[
 	 *				'lat'		: (float),
 	 *				'lng'		: (float),
  	 *			],
 	 *		'layers'	: optional. any of
 	 *			[
-	 *				'OpenStreetMap', 
+	 *				'OpenStreetMap',
 	 *				'Thunderforest.OpenCycleMap',
 	 *				'Thunderforest.Transport',
 	 *				'OpenStreetMap.HOT',
@@ -95,7 +95,7 @@ class OSMProviders extends Singleton {
 			'markers' => [],
 			'layers' => [],
 		]);
-		
+
 		$bbox = Helper\MapHelper::getBbox( $config['lat'], $config['lng'], $config['zoom'] );
 		$args = [
 			'bbox'	=> implode( ',', $bbox ),
@@ -122,14 +122,14 @@ class OSMProviders extends Singleton {
 	 *	@param config array [
 	 *		'lat'		: (float),
 	 *		'lng'		: (float),
-	 *		'markers'	: optional. 
+	 *		'markers'	: optional.
 	 *			[
 	 *				'lat'		: (float),
 	 *				'lng'		: (float),
  	 *			],
 	 *		'layers'	: optional. any of
 	 *			[
-	 *				'OpenStreetMap', 
+	 *				'OpenStreetMap',
 	 *				'Thunderforest.OpenCycleMap',
 	 *				'Thunderforest.Transport',
 	 *				'OpenStreetMap.HOT',
@@ -153,12 +153,12 @@ class OSMProviders extends Singleton {
 			$args['mlat'] = $marker['lat'];
 			$args['mlon'] = $marker['lng'];
 		}
-		
+
 		$map_link = add_query_arg( $args, 'https://www.openstreetmap.org/' );
-		$map_link .= '#map=' . implode( '/', [ 
-			intval( $config['zoom'] ), 
-			floatval( $config['lat'] ), 
-			floatval( $config['lng'] ) 
+		$map_link .= '#map=' . implode( '/', [
+			intval( $config['zoom'] ),
+			floatval( $config['lat'] ),
+			floatval( $config['lng'] )
 		] );
 
 

@@ -12,10 +12,10 @@ acf.registerFieldType( acf.Field.extend({
 	},
 	initialize: function($field){
 		const mapDiv = this.$map().get(0)
-		mapDiv.addEventListener( 'osm/create-marker', e => this.createMarker(e) )
-		mapDiv.addEventListener( 'osm/destroy-marker', e => this.destroyMarker(e) )
-		mapDiv.addEventListener( 'osm/update-marker-latlng', e => this.updateMarkerLatlng(e) )
-		mapDiv.addEventListener( 'osm/marker-geocode-result', e => this.geocodeResult(e) )
+		mapDiv.addEventListener( 'osm-editor/create-marker', e => this.createMarker(e) )
+		mapDiv.addEventListener( 'osm-editor/destroy-marker', e => this.destroyMarker(e) )
+		mapDiv.addEventListener( 'osm-editor/update-marker-latlng', e => this.updateMarkerLatlng(e) )
+		mapDiv.addEventListener( 'osm-editor/marker-geocode-result', e => this.geocodeResult(e) )
 	},
 	createMarker: function( e ) {
 		const {  model } = e.detail

@@ -40,14 +40,13 @@ class Core extends Plugin {
 		$leaflet_providers = LeafletProviders::instance();
 		$osm_providers = OSMProviders::instance();
 
-
 		$provider_filters = ['credentials'];
 
 		if ( ! is_admin() || get_current_screen()->base !== 'settings_page_acf_osm' ) {
-
 			$provider_filters[] = 'enabled';
-
 		}
+
+		$language = substr( get_locale(), 0, 2 );
 
 		/* frontend */
 		/**
@@ -100,27 +99,7 @@ class Core extends Plugin {
 			],
 			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
 		];
-
-		/* frontend */
-		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), [ ], $this->get_version(), [
-			'strategy'  => 'defer',
-			'in_footer' => true,
-		] );
-		wp_localize_script( 'acf-osm-frontend', 'acf_osm', $osm_l10n );
-
-		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/acf-osm-leaflet.css' ), [], $this->get_version() );
-
-		/* backend */
-
-		$language = substr( get_locale(), 0, 2 );
-
-		// field js
-		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), ['acf-input','wp-backbone' ], $this->get_version(), [
-			// 'strategy'  => 'defer',
-			'in_footer' => true,
-		] );
-		wp_localize_script( 'acf-input-osm', 'acf_osm', $osm_l10n );
-		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', [
+		$osm_admin = [
 			'options'	=> [
 				'osm_layers'		=> $osm_providers->get_layers(), // flat list
 				'leaflet_layers'	=> $leaflet_providers->get_layers(),  // flat list
@@ -179,19 +158,40 @@ class Core extends Plugin {
 					'country'	=> __( '{state} {country}', 'acf-openstreetmap-field' ),
 				]
 			],
-		]);
+		];
+
+		/* frontend */
+		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), [ ], $this->get_version(), [
+			'strategy'  => 'defer',
+			'in_footer' => true,
+		] );
+		wp_localize_script( 'acf-osm-frontend', 'acf_osm', $osm_l10n );
+
+		wp_register_style( 'leaflet', $this->get_asset_url( 'assets/css/acf-osm-leaflet.css' ), [], $this->get_version() );
+
+		/* backend */
+
+		// field js
+		wp_register_script( 'acf-input-osm', $this->get_asset_url('assets/js/acf-input-osm.js'), ['acf-input','wp-backbone' ], $this->get_version(), [
+			// 'strategy'  => 'defer',
+			'in_footer' => true,
+		] );
+		wp_localize_script( 'acf-input-osm', 'acf_osm', $osm_l10n );
+		wp_localize_script( 'acf-input-osm', 'acf_osm_admin', $osm_admin );
 		// field css
 		wp_register_style( 'acf-input-osm', $this->get_asset_url( 'assets/css/acf-input-osm.css' ), [ 'leaflet', 'acf-input', 'dashicons' ], $this->get_version() );
 
 
 		// field group admin js
 		wp_register_script( 'acf-field-group-osm', $this->get_asset_url('assets/js/acf-field-group-osm.js'), [ 'acf-field-group' ], $this->get_version(), [
-			'strategy'  => 'defer',
+			// 'strategy'  => 'defer',
 			'in_footer' => true,
 		] );
 
 		// field group admin css
 		wp_register_style( 'acf-field-group-osm', $this->get_asset_url( 'assets/css/acf-field-group-osm.css' ), [], $this->get_version() );
+		wp_localize_script( 'acf-field-group-osm', 'acf_osm', $osm_l10n );
+		wp_localize_script( 'acf-field-group-osm', 'acf_osm_admin', $osm_admin );
 
 
 		// settings js

@@ -67,7 +67,7 @@ class OpenStreetMap extends \acf_field {
 			'lat'		=> 53.55064,
 			'lng'		=> 10.00065,
 			'zoom'		=> 12,
-			'layers'	=> [ 'OpenStreetMap' ],
+			'layers'	=> [ 'OpenStreetMap.Mapnik' ],
 			'markers'	=> [],
 			// gm compatibility
 			'address'	=> '',
@@ -180,17 +180,21 @@ class OpenStreetMap extends \acf_field {
 	 * @return void
 	 */
 	function render_field_presentation_settings( $field ) {
+
+		$leafletProviders = Core\LeafletProviders::instance();
+		$osmProviders     = Core\OSMProviders::instance();
+
 		acf_render_field_setting( $field, [
 			'label'				=> __( 'Map Appearance', 'acf-openstreetmap-field' ),
 			'instructions'		=> __( 'Set zoom, center and select layers being displayed.', 'acf-openstreetmap-field' ),
-			'type'				=> 'leaflet_map',
+			'type'				=> 'open_street_map',
 			'name'				=> 'leaflet_map',
 
 			'return_format'		=> 'admin',
 			'attr'				=> [
 				'data-editor-config'	=> [
 					'allow_providers'		=> true,
-					'restrict_providers'	=> [],
+					'restrict_providers'	=> false,
 					'max_markers'			=> 0, // no markers
 					'name_prefix'			=> $field['prefix'],
 				],
@@ -216,26 +220,28 @@ class OpenStreetMap extends \acf_field {
 			'type'			=> 'number',
 			'name'			=> 'center_lat',
 			'prepend'		=> __('lat','acf-openstreetmap-field'),
-			'placeholder'	=> $this->default_values['lat']
+			'placeholder'	=> $this->default_values['lat'],
+			'step'			=> 0.1,
 		]);
 
 
 		// lng
 		acf_render_field_setting( $field, [
-			'label'			=> __('Center','acf-openstreetmap-field'),
-			'instructions'	=> __('Center the initial map','acf-openstreetmap-field'),
+			'label'			=> __( 'Center', 'acf-openstreetmap-field' ),
+			'instructions'	=> __( 'Center the initial map', 'acf-openstreetmap-field' ),
 			'type'			=> 'number',
 			'name'			=> 'center_lng',
 			'prepend'		=> __('lng','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['lng'],
-			'_append' 		=> 'center_lat'
+			'_append' 		=> 'center_lat',
+			'step'			=> 0.1,
 		]);
 
 
 		// zoom
 		acf_render_field_setting( $field, [
-			'label'			=> __('Zoom','acf-openstreetmap-field'),
-			'instructions'	=> __('Set the initial zoom level','acf-openstreetmap-field'),
+			'label'			=> __( 'Zoom', 'acf-openstreetmap-field' ),
+			'instructions'	=> __( 'Set the initial zoom level', 'acf-openstreetmap-field' ),
 			'type'			=> 'number',
 			'name'			=> 'zoom',
 			'min'			=> 1,
@@ -247,12 +253,45 @@ class OpenStreetMap extends \acf_field {
 
 		// allow_layer selection
 		acf_render_field_setting( $field, [
-			'label'			=> __('Allow layer selection','acf-openstreetmap-field'),
+			'label'			=> __( 'Allow layer selection', 'acf-openstreetmap-field' ),
 			'instructions'	=> '',
 			'name'			=> 'allow_map_layers',
 			'type'			=> 'true_false',
 			'ui'			=> 1,
 		]);
+
+		// Leaflet layers
+		acf_render_field_setting( $field, [
+			'label'			=> __( 'Leaflet Layers', 'acf-openstreetmap-field' ),
+			'instructions'	=> '',
+			'name'			=> 'layers',
+			'type'			=> 'select',
+			'multiple'		=> 1,
+			'choices'		=> $leafletProviders->get_layers(),
+			// 'conditions' => [
+			// 	'field'    => 'return_format',
+			// 	'operator' => '!=',
+			// 	'value'    => 'osm',
+			// ],
+		]);
+		//
+		// // OSM layer
+		// acf_render_field_setting( $field, [
+		// 	'label'			=> __( 'OSM Layers', 'acf-openstreetmap-field' ),
+		// 	'instructions'	=> '',
+		// 	'name'			=> 'layers',
+		// 	'type'			=> 'select',
+		// 	'multiple'		=> 0,
+		// 	'choices'		=> array_combine(
+		// 		array_values( $osmProviders->get_layers() ),
+		// 		array_values( $osmProviders->get_layers() )
+		// 	),
+		// 	'conditions' => [
+		// 		'field'    => 'return_format',
+		// 		'operator' => '==',
+		// 		'value'    => 'osm',
+		// 	],
+		// ]);
 
 		// map height
 		acf_render_field_setting( $field, [
@@ -432,7 +471,7 @@ class OpenStreetMap extends \acf_field {
 
 		wp_enqueue_media();
 
-		wp_enqueue_script('acf-input-osm');
+		wp_dequeue_script('acf-input-osm');
 
 		wp_enqueue_script('acf-field-group-osm');
 
@@ -600,24 +639,34 @@ class OpenStreetMap extends \acf_field {
 		//
 		// Layers
 		//
-		if ( ! isset( $value['layers'] ) || ! is_array( $value['layers'] ) ) {
-			$value['layers'] = [];
-		}
-
-		// set default layers if layer selection is empty or prohibited
-		if ( ! count( $value['layers'] ) || ! $field['allow_map_layers'] ) {
+		if ( ! is_array( $value['layers'] ) || ! count( $value['layers'] ) || ! $field['allow_map_layers'] ) {
 			$value['layers'] = $field['layers'];
 		} else {
 			// normalize layers
-			$value['layers'] = array_filter( $value['layers'] );
-			$value['layers'] = array_unique( $value['layers'] );
-			$value['layers'] = array_values( $value['layers'] );
+			$value['layers'] = $this->sanitize_layers( $value['layers'] );
 		}
 
 		return array_intersect_key( $value, $this->default_values );
 
 	}
 
+	/**
+	 *	Sanitize layers
+	 */
+	private function sanitize_layers( $layers ) {
+		$layers = (array) $layers;
+
+		$layers = array_map( function( $layer ) {
+			if ( 'OpenStreetMap' === $layer ) {
+				$layer = 'OpenStreetMap.Mapnik';
+			}
+			return $layer;
+		}, $layers );
+		$layers = array_filter( $layers );
+		$layers = array_unique( $layers );
+		$layers = array_values( $layers );
+		return $layers;
+	}
 
 	/*
 	 *  update_value()
@@ -892,9 +941,12 @@ class OpenStreetMap extends \acf_field {
 		$field = wp_parse_args( $field, $this->defaults );
 
 		// typecast and restrict values
-		$field['center_lat']	= floatval( $field['center_lat'] );
-		$field['center_lng']	= floatval( $field['center_lng'] );
-		$field['zoom'] 			= min( 22, max( 1, intval( $field['zoom'] ) ) );
+		$field['center_lat'] = floatval( $field['center_lat'] );
+		$field['center_lng'] = floatval( $field['center_lng'] );
+		$field['zoom']       = min( 22, max( 1, intval( $field['zoom'] ) ) );
+
+		// layers
+		$field['layers']     = $this->sanitize_layers( $field['layers'] );
 
 		return $field;
 	}

@@ -23,7 +23,7 @@ class ACF extends Core\Singleton {
 		} else {
 			add_action('acf/include_field_types', [ $this, 'include_field_types' ] ); // v5
 		}
-		add_action( 'acf/render_field/type=leaflet_map', [ $this, 'render_map_input' ] );
+		// add_action( 'acf/render_field/type=leaflet_map', [ $this, 'render_map_input' ] );
 
 		// Compat with https://github.com/mcguffin/polylang-sync
 		add_filter( 'polylang_acf_sync_supported_fields', [ $this, 'add_pll_sync_field_type'] );
