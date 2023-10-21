@@ -307,10 +307,10 @@
 	"Stamen": {
 		"url": "https://tiles.stadiamaps.com/tiles/{variant}/{z}/{x}/{y}{r}.{ext}",
 		"options": {
-			"attribution": "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors"
+			"attribution": "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
 			"minZoom": 0,
 			"maxZoom": 20,
-			"variant": "toner",
+			"variant": "stamen_toner",
 			"ext": "png"
 		},
 		"variants": {
