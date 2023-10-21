@@ -194,7 +194,7 @@
             {
                 "param": "options_page",
                 "operator": "==",
-                "value": "acf-options-acf-theme-options"
+                "value": "acf-options-acf-osm-test"
             }
         ]
     ],
