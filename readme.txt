@@ -114,6 +114,12 @@ The global Leaflet object is no longer available. If
 
 == Changelog ==
 
+= 1.5.1 =
+ - [Migrate Stamen to Stadia Maps](https://maps.stamen.com/stadia-partnership/)
+ - Fix: Marker instructions display
+ - Remove map tile providers: HERE (Legacy), Hydda
+ - Update Providers: Esri Ocean base map, OpenAIP, Opensnowmap, OpenWeathermap, OpenFireMap, NLS, OpenRailwayMap, Jawg, MapTiler, MtbMap, nlmaps
+
 = 1.5.0 =
  - Use Leaflet noConflict
  - Refactor JS
