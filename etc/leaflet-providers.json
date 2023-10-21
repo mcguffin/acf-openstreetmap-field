@@ -1110,16 +1110,21 @@
 		"isOverlay": true
 	},
 	"OpenAIP": {
-		"url": "https://{s}.tile.maps.openaip.net/geowebcache/service/tms/1.0.0/openaip_basemap@EPSG%3A900913@png/{z}/{x}/{y}.{ext}",
+		"url": "https://{s}.api.tiles.openaip.net/api/data/{variant}/{z}/{x}/{y}.png?apiKey={apiKey}",
 		"options": {
 			"attribution": "<a href=\"https://www.openaip.net/\">openAIP Data</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-NC-SA</a>)",
 			"ext": "png",
 			"minZoom": 4,
 			"maxZoom": 14,
-			"tms": true,
-			"detectRetina": true,
-			"subdomains": "12"
-		}
+			"subdomains": "abc",
+			"apiKey": "<insert Client ID Token>",
+			"variant": "openaip"
+		},
+		"variants": {
+			"OpenAIP": "openaip",
+			"Hotspots": "hotspots"
+		},
+		"isOverlay": true
 	},
 	"OpenSnowMap": {
 		"url": "https://tiles.opensnowmap.org/{variant}/{z}/{x}/{y}.png",
