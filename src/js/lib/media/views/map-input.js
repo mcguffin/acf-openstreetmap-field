@@ -1,7 +1,10 @@
 import $ from 'jquery';
 import L from 'osm-map';
+
 import AddLocationMarker from 'leaflet/control-add-location-marker';
 import FitBounds from 'leaflet/control-fit-bounds';
+import 'leaflet/corners';
+
 import { MarkerData, MapData } from 'media/models';
 import MarkerEntry from 'media/views/marker-entry';
 import { uniqid } from 'misc/uniquid';
@@ -121,6 +124,12 @@ class MapInput extends Backbone.View {
 			this.model.set('lng',latlng.lng );
 		});
 
+		//
+		const attributionControl = this.map.attributionControl
+		attributionControl.remove()
+		attributionControl.options.position = 'below'
+		attributionControl.addTo( this.map )
+
 		this.update_visible();
 
 		this.update_map();
@@ -129,6 +138,7 @@ class MapInput extends Backbone.View {
 		this.map.keyboard.disable();
 
 		this.el.dispatchEvent( new CustomEvent( 'osm-editor/initialized', { detail: {  view: this } } ), { bubbles: true } )
+
 
 		return this;
 	}
