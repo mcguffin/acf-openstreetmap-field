@@ -264,6 +264,7 @@ $leaflet-panes: (
 // block editor fixes
 .leaflet-pane {
 	.postbox &,
+	.components-panel &, // block editor
 	.wp-block & {
 		z-index:30;
 	}
