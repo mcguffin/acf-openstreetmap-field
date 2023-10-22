@@ -1,4 +1,5 @@
 import L from 'leaflet/no-conflict';
+import 'leaflet/tile-layer-provider';
 
 (function( arg ){
 
@@ -166,8 +167,7 @@ import L from 'leaflet/no-conflict';
 	}
 
 
-	L.TileLayer.Provider.providers = arg.providers;
-
+	// L.TileLayer.Provider.providers = arg.providers;
 	const options = arg.options;
 
 	function createMarkers( data, map ) {
@@ -276,8 +276,7 @@ import L from 'leaflet/no-conflict';
 				return;
 			}
 
-			const layer_config = options.layer_config[ provider_key.split('.')[0] ] || { options: {} },
-				layer = L.tileLayer.provider( provider_key, layer_config.options ).addTo( map );
+			const layer = L.tileLayer.provider( provider_key ).addTo( map );
 
 			layer.providerKey = provider_key;
 
