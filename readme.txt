@@ -107,18 +107,21 @@ No.
 
 == Upgrade Notice ==
 
-**Attention:** Version 1.4.4 may involve some breaking changes.
+**Attention:** Version 1.5.0 may involve some breaking changes.
 
-The global Leaflet object is no longer available. If 
+The global Leaflet object is no longer available.
 
 
 == Changelog ==
 
 = 1.5.1 =
- - [Migrate Stamen to Stadia Maps](https://maps.stamen.com/stadia-partnership/)
+ - UI: Attribution below map
+ - Fix: Some map controls not visible in Blockeditor sidebar
  - Fix: Marker instructions display
- - Remove map tile providers: HERE (Legacy), Hydda
- - Update Providers: Esri Ocean base map, OpenAIP, Opensnowmap, OpenWeathermap, OpenFireMap, NLS, OpenRailwayMap, Jawg, MapTiler, MtbMap, nlmaps
+ - Providers: [Migrate Stamen to Stadia Maps](https://maps.stamen.com/stadia-partnership/)
+ - Providers: Update Esri Ocean base map, OpenAIP, Opensnowmap, OpenWeathermap, OpenFireMap, NLS, OpenRailwayMap, Jawg, MapTiler, MtbMap, nlmaps
+ - Providers: Remove HERE (Legacy), Hydda
+ - Code: Refactor ACF integration
 
 = 1.5.0 =
  - Use Leaflet noConflict
