@@ -10,7 +10,7 @@ class MapHelper {
 	 *	Add Offset in meters to a latitude or longitude
 	 *
 	 *	@param Int $what 0: latitude, 1: longitude
-	 *	@param Float $lat 
+	 *	@param Float $lat
 	 *	@param Float $lon
 	 *	@param Float $offset Value to add in meters
 	 *
@@ -18,13 +18,13 @@ class MapHelper {
 	 */
 	public static function getCoordOffset( $what, $lat, $lon, $offset ) {
 
-	    $coord = [ 0 => $lat, 1 => $lon ];
+		$coord = [ 0 => $lat, 1 => $lon ];
 
-	    $radOff = $what === 0 
-			? $offset / self::EARTH_RADIUS 
+		$radOff = $what === 0
+			? $offset / self::EARTH_RADIUS
 			: $offset / ( self::EARTH_RADIUS * cos( M_PI * $coord[0] / 180 ) );
 
-	    return $coord[$what] + $radOff * 180 / M_PI;
+		return $coord[$what] + $radOff * 180 / M_PI;
 	}
 
 	/**
@@ -46,10 +46,10 @@ class MapHelper {
 		$offset = self::zoomToOffset( $zoom );
 
 		return [
-		    0 => self::getCoordOffset(1, $lat, $lon, -$offset),
-		    1 => self::getCoordOffset(0, $lat, $lon, -$offset),
-		    2 => self::getCoordOffset(1, $lat, $lon, $offset),
-		    3 => self::getCoordOffset(0, $lat, $lon, $offset),
+			0 => self::getCoordOffset(1, $lat, $lon, -$offset),
+			1 => self::getCoordOffset(0, $lat, $lon, -$offset),
+			2 => self::getCoordOffset(1, $lat, $lon, $offset),
+			3 => self::getCoordOffset(0, $lat, $lon, $offset),
 		]; // 0 = minlon, 1 = minlat, 2 = maxlon, 3 = maxlat, 4,5 = original val (marker)
 	}
 

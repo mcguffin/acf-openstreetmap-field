@@ -12,7 +12,6 @@ class SettingsOpenStreetMap extends Settings {
 
 	private $optionset = 'acf_osm';
 
-
 	/**
 	 *	@inheritdoc
 	 */
@@ -39,11 +38,11 @@ class SettingsOpenStreetMap extends Settings {
 		if ( isset( $plugin_data['Name'] ) && current_user_can( 'manage_options' ) ) {
 			$actions['settings'] = sprintf(
 				'<a href="%s" aria-label="%s">%s</a>',
-				esc_url( 
-					add_query_arg( 
-						[ 'page' => $this->optionset ], 
+				esc_url(
+					add_query_arg(
+						[ 'page' => $this->optionset ],
 						admin_url( 'options-general.php' )
-					) 
+					)
 				),
 				/* translators: %s: Plugin name. */
 				esc_attr( sprintf( _x( '%s Settings', 'plugin', 'acf-openstreetmap-field' ), $plugin_data['Name'] ) ),
@@ -121,7 +120,6 @@ class SettingsOpenStreetMap extends Settings {
 		<?php
 	}
 
-
 	/**
 	 * Enqueue settings Assets
 	 *
@@ -138,7 +136,6 @@ class SettingsOpenStreetMap extends Settings {
 		wp_enqueue_style( 'acf-osm-settings' );
 		//*/
 	}
-
 
 	/**
 	 *	Setup options.
@@ -160,7 +157,6 @@ class SettingsOpenStreetMap extends Settings {
 
 		register_setting( $this->optionset, 'acf_osm_provider_tokens', [ $this , 'sanitize_provider_tokens' ] );
 		register_setting( $this->optionset, 'acf_osm_providers', [ $this , 'sanitize_providers' ] );
-
 	}
 
 	/**
@@ -531,6 +527,7 @@ class SettingsOpenStreetMap extends Settings {
 	private function sanitize_key_case( $key ) {
 		return preg_replace( '/[^A-Za-z0-9_\-]/', '', $key );
 	}
+
 	/**
 	 *
 	 */

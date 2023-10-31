@@ -200,7 +200,6 @@ class Core extends Plugin {
 
 		// settings css
 		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), ['leaflet'], $this->get_version() );
-
 	}
 
 	/**
@@ -212,6 +211,4 @@ class Core extends Plugin {
 	public function get_asset_url( $asset ) {
 		return plugins_url( $asset, $this->get_plugin_file() );
 	}
-
-
 }

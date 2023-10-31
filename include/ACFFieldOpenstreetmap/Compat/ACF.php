@@ -29,9 +29,7 @@ class ACF extends Core\Singleton {
 		add_filter( 'polylang_acf_sync_supported_fields', [ $this, 'add_pll_sync_field_type'] );
 
 		add_action( 'acf/input/admin_enqueue_scripts', [ $this, 'acf_admin_enqueue_scripts' ] );
-
 	}
-
 
 	/**
 	 *	@action acf/input/admin_enqueue_scripts
@@ -87,7 +85,5 @@ class ACF extends Core\Singleton {
 		if ( version_compare( acf_get_setting('version'), '5.7', '>=' ) ) {
 			acf_register_field_type( Field\OpenStreetMap::get_instance() );
 		}
-
 	}
-
 }

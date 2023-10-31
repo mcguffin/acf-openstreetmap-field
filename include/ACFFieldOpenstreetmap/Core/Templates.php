@@ -12,27 +12,22 @@ class Templates extends Singleton {
 
 	private $template_dirname = 'osm-maps';
 
-	/** 
+	/**
 	 *	@return Boolean
 	 */
 	public static function is_supported() {
 		return version_compare( $GLOBALS['wp_version'], '5.5.0', '>=' );
 	}
 
-	/** 
+	/**
 	 *	@inheritdoc
 	 */
 	protected function __construct() {
-
 		if ( self::is_supported() ) {
-
 			add_action( 'get_template_part', [ $this, 'get_template_part' ], 10, 4 );
-
 		}
-
 	}
-	
-	
+
 	/**
 	 *	@action get_template_part
 	 */
@@ -62,10 +57,7 @@ class Templates extends Singleton {
 		if ( file_exists( $file ) ) {
 			load_template( $file, false, $args );
 		}
-
 	}
-
-	
 
 	/**
 	 *	@return Array template slug
@@ -93,13 +85,11 @@ class Templates extends Singleton {
 						'name' => $file_data['name'],
 						'private' => boolval( $file_data['private'] ),
 					];
-				}			
+				}
 			}
 		}
 		return array_filter( $this->templates, function( $template ) {
 			return ! $template['private'];
 		});
 	}
-	
-
 }

@@ -21,9 +21,7 @@ abstract class Settings extends Core\Singleton {
 
 	}
 
-
 	abstract function register_settings();
-
 
 	/**
 	 *	Print a checkbox

@@ -58,7 +58,6 @@ class Plugin extends PluginComponent {
 		return $this->plugin_file;
 	}
 
-
 	/**
 	 *	@param string $file Path within plugin directory
 	 *	@return boolean|string file contents, false on failure
@@ -76,7 +75,6 @@ class Plugin extends PluginComponent {
 
 		return false;
 	}
-
 
 	/**
 	 *	@return string full plugin file path
@@ -139,10 +137,8 @@ class Plugin extends PluginComponent {
 
 			$this->upgrade( $new_version, $old_version );
 
-			update_site_option( 'acf-openstreetmap-field_version', $new_version );
-
+			update_site_option( 'acf-openstreetmap-field_version', $new_version ); // TODO: store blog-wide
 		}
-
 	}
 
 	/**
@@ -154,8 +150,6 @@ class Plugin extends PluginComponent {
 		$path = pathinfo( $this->get_wp_plugin(), PATHINFO_DIRNAME );
 		load_plugin_textdomain( 'acf-openstreetmap-field', false, $path . '/languages' );
 	}
-
-
 
 	/**
 	 *	Fired on plugin activation
@@ -169,7 +163,6 @@ class Plugin extends PluginComponent {
 			$comp->activate();
 		}
 	}
-
 
 	/**
 	 *	Fired on plugin updgrade

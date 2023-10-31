@@ -25,19 +25,18 @@ class OpenStreetMap extends \acf_field {
 		return self::$_instance;
 	}
 
-	/*
-	*  __construct
-	*
-	*  This function will setup the field type data
-	*
-	*  @type	function
-	*  @date	5/03/2014
-	*  @since	5.0.0
-	*
-	*  @param	n/a
-	*  @return	n/a
-	*/
-
+	/**
+	 *  __construct
+	 *
+	 *  This function will setup the field type data
+	 *
+	 *  @type	function
+	 *  @date	5/03/2014
+	 *  @since	5.0.0
+	 *
+	 *  @param	n/a
+	 *  @return	n/a
+	 */
 	function __construct() {
 		if ( ! is_null( self::$_instance ) ) {
 			throw new Exception('Not more than one Field\OpenStreetMap!');
@@ -97,22 +96,20 @@ class OpenStreetMap extends \acf_field {
 		add_action( 'print_media_templates', [ $this, 'print_media_templates' ] );
 
 		parent::__construct();
-
 	}
 
-
 	/*
-	*  render_field_settings()
-	*
-	*  Create extra settings for your field. These are visible when editing a field
-	*
-	*  @type	action
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$field (array) the $field being edited
-	*  @return	n/a
-	*/
+	 *  render_field_settings()
+	 *
+	 *  Create extra settings for your field. These are visible when editing a field
+	 *
+	 *  @type	action
+	 *  @since	3.6
+	 *  @date	23/01/13
+	 *
+	 *  @param	$field (array) the $field being edited
+	 *  @return	n/a
+	 */
 
 	function render_field_settings( $field ) {
 
@@ -145,7 +142,6 @@ class OpenStreetMap extends \acf_field {
 			$this->render_field_presentation_settings( $field );
 			$this->render_field_validation_settings( $field );
 		}
-
 	}
 
 	/**
@@ -168,7 +164,6 @@ class OpenStreetMap extends \acf_field {
 			'min'			=> 0,
 			'step'			=> 1,
 		]);
-
 	}
 
 	/**
@@ -223,7 +218,6 @@ class OpenStreetMap extends \acf_field {
 			'placeholder'	=> $this->default_values['lat'],
 			'step'			=> 0.1,
 		]);
-
 
 		// lng
 		acf_render_field_setting( $field, [
@@ -301,7 +295,6 @@ class OpenStreetMap extends \acf_field {
 			'name'			=> 'height',
 			'append'		=> 'px',
 		]);
-
 	}
 
 
@@ -422,7 +415,6 @@ class OpenStreetMap extends \acf_field {
 		<div class="osm-markers">
 		</div>
 		<?php
-
 	}
 
 	/*
@@ -451,22 +443,21 @@ class OpenStreetMap extends \acf_field {
 		// wp_enqueue_style('leaflet');
 
 		add_action( 'wp_footer', [ $this, 'maybe_print_media_templates' ], 11 );
-
 	}
 
 	/*
-	*  field_group_admin_enqueue_scripts()
-	*
-	*  This action is called in the admin_enqueue_scripts action on the edit screen where your field is edited.
-	*  Use this action to add CSS + JavaScript to assist your render_field_options() action.
-	*
-	*  @type	action (admin_enqueue_scripts)
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	n/a
-	*  @return	n/a
-	*/
+	 *  field_group_admin_enqueue_scripts()
+	 *
+	 *  This action is called in the admin_enqueue_scripts action on the edit screen where your field is edited.
+	 *  Use this action to add CSS + JavaScript to assist your render_field_options() action.
+	 *
+	 *  @type	action (admin_enqueue_scripts)
+	 *  @since	3.6
+	 *  @date	23/01/13
+	 *
+	 *  @param	n/a
+	 *  @return	n/a
+	 */
 	function field_group_admin_enqueue_scripts() {
 
 		wp_enqueue_media();
@@ -482,24 +473,22 @@ class OpenStreetMap extends \acf_field {
 		wp_enqueue_style('acf-field-group-osm');
 
 		wp_enqueue_style('leaflet');
-
 	}
 
-
 	/*
-	*  load_value()
-	*
-	*  This filter is applied to the $value after it is loaded from the db
-	*
-	*  @type	filter
-	*  @since	3.6
-	*  @date	23/01/13
-	*
-	*  @param	$value (mixed) the value found in the database
-	*  @param	$post_id (mixed) the $post_id from which the value was loaded
-	*  @param	$field (array) the field array holding all the field options
-	*  @return	$value
-	*/
+	 *  load_value()
+	 *
+	 *  This filter is applied to the $value after it is loaded from the db
+	 *
+	 *  @type	filter
+	 *  @since	3.6
+	 *  @date	23/01/13
+	 *
+	 *  @param	$value (mixed) the value found in the database
+	 *  @param	$post_id (mixed) the $post_id from which the value was loaded
+	 *  @param	$field (array) the field array holding all the field options
+	 *  @return	$value
+	 */
 	function load_value( $value, $post_id, $field ) {
 
 		// prepare data for display
@@ -541,12 +530,10 @@ class OpenStreetMap extends \acf_field {
 		if ( isset( $value['zoom'] )) {
 			// boundaries
 			$value['zoom'] = min( 22, max( 0, intval( $value['zoom'] ) ) );
-
 		}
 
 		return $value;
 	}
-
 
 	/**
 	 *	@param array $value	array( 'lat' => float, 'lng => float, 'zoom' => int, 'address' => string, 'markers' => array, 'layers' => array )
@@ -828,7 +815,6 @@ class OpenStreetMap extends \acf_field {
 		return $value;
 	}
 
-
 	/**
 	 * Apply basic formatting to prepare the value for default REST output.
 	 *
@@ -851,23 +837,22 @@ class OpenStreetMap extends \acf_field {
 
 
 	/*
-	*  validate_value()
-	*
-	*  This filter is used to perform validation on the value prior to saving.
-	*  All values are validated regardless of the field's required setting. This allows you to validate and return
-	*  messages to the user if the value is not correct
-	*
-	*  @type	filter
-	*  @date	11/02/2014
-	*  @since	5.0.0
-	*
-	*  @param	$valid (boolean) validation status based on the value and the field's required setting
-	*  @param	$value (mixed) the $_POST value
-	*  @param	$field (array) the field array holding all the field options
-	*  @param	$input (string) the corresponding input name for $_POST value
-	*  @return	$valid
-	*/
-
+	 *  validate_value()
+	 *
+	 *  This filter is used to perform validation on the value prior to saving.
+	 *  All values are validated regardless of the field's required setting. This allows you to validate and return
+	 *  messages to the user if the value is not correct
+	 *
+	 *  @type	filter
+	 *  @date	11/02/2014
+	 *  @since	5.0.0
+	 *
+	 *  @param	$valid (boolean) validation status based on the value and the field's required setting
+	 *  @param	$value (mixed) the $_POST value
+	 *  @param	$field (array) the field array holding all the field options
+	 *  @param	$input (string) the corresponding input name for $_POST value
+	 *  @return	$valid
+	 */
 	function validate_value( $valid, $value, $field, $input ){
 
 		// bail early if not required
@@ -885,32 +870,28 @@ class OpenStreetMap extends \acf_field {
 
 		}
 
-
 		// return
 		return $valid;
-
 	}
 
 
 
 	/*
-	*  load_field()
-	*
-	*  This filter is applied to the $field after it is loaded from the database
-	*
-	*  @type	filter
-	*  @date	23/01/2013
-	*  @since	3.6.0
-	*
-	*  @param	$field (array) the field array holding all the field options
-	*  @return	$field
-	*/
+	 *  load_field()
+	 *
+	 *  This filter is applied to the $field after it is loaded from the database
+	 *
+	 *  @type	filter
+	 *  @date	23/01/2013
+	 *  @since	3.6.0
+	 *
+	 *  @param	$field (array) the field array holding all the field options
+	 *  @return	$field
+	 */
 	function load_field( $field ) {
 
 		return $this->sanitize_field( $field, 'display' );
-
 	}
-
 
 	/*
 	*  update_field()
@@ -927,7 +908,6 @@ class OpenStreetMap extends \acf_field {
 	function update_field( $field ) {
 
 		return $this->sanitize_field( $field, 'update' );
-
 	}
 
 
@@ -960,7 +940,6 @@ class OpenStreetMap extends \acf_field {
 		}
 	}
 
-
 	/**
 	 *	@action print_media_templates
 	 */
@@ -983,5 +962,4 @@ class OpenStreetMap extends \acf_field {
 		</script>
 		<?php
 	}
-
 }

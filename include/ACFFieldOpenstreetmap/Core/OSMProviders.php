@@ -24,14 +24,6 @@ class OSMProviders extends Singleton {
 		'hot'			=> 'OpenStreetMap.HOT',
 	];
 
-
-	/**
-	 *	@inheritdoc
-	 */
-	protected function __construct() {
-	}
-
-
 	/**
 	 *	Returns raw leaflet providers
 	 *	@param array $filters credentials|enabled
@@ -41,9 +33,6 @@ class OSMProviders extends Singleton {
 
 
 	public function get_token_options() {}
-
-
-
 
 	/**
 	 *	get default OpenStreetMap Layers
@@ -114,9 +103,7 @@ class OSMProviders extends Singleton {
 		}
 
 		return add_query_arg( $args, 'https://www.openstreetmap.org/export/embed.html' );
-
 	}
-
 
 	/**
 	 *	@param config array [
@@ -172,5 +159,4 @@ class OSMProviders extends Singleton {
 
 		return $map_link;
 	}
-
 }
