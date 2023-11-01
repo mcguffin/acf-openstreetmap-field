@@ -1119,12 +1119,14 @@
 			"MicrosoftBaseHybridRoad": {
 				"options": {
 					"variant": "microsoft.base.hybrid.road"
-				}
+				},
+				"isOverlay": true
 			},
 			"MicrosoftTerraMain": {
 				"options": {
 					"variant": "microsoft.terra.main"
-				}
+				},
+				"isOverlay": true
 			},
 			"MicrosoftWeatherInfraredMain": {
 				"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&timeStamp={timeStamp}&language={language}&subscription-key={subscriptionKey}",
@@ -1132,7 +1134,8 @@
 					"timeStamp": "2021-05-08T09:03:00Z",
 					"attribution": "See https://docs.microsoft.com/en-US/rest/api/maps/renderv2/getmaptilepreview#uri-parameters for details.",
 					"variant": "microsoft.weather.infrared.main"
-				}
+				},
+				"isOverlay": true
 			},
 			"MicrosoftWeatherRadarMain": {
 				"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&timeStamp={timeStamp}&language={language}&subscription-key={subscriptionKey}",
@@ -1140,7 +1143,8 @@
 					"timeStamp": "2021-05-08T09:03:00Z",
 					"attribution": "See https://docs.microsoft.com/en-US/rest/api/maps/renderv2/getmaptilepreview#uri-parameters for details.",
 					"variant": "microsoft.weather.radar.main"
-				}
+				},
+				"isOverlay": true
 			}
 		}
 	}
