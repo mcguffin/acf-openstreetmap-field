@@ -44,7 +44,6 @@
     "gulp-uglifycss": "*",
     "leaflet": "1.9.4",
     "leaflet-control-geocoder": "2.4",
-    "leaflet-providers": "1.13",
     "leaflet.locatecontrol": "^0.76.1",
     "sass": "*",
     "tinyify": "*",
@@ -53,6 +52,7 @@
     "vinyl-source-stream": "*"
   },
   "dependencies": {
+    "leaflet-providers": "1.13",
     "gulp-jsonlint": "^1.3.2",
     "jquery": "^3.5.1"
   },

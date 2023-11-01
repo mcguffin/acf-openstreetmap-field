@@ -52,3 +52,4 @@ if ( is_admin() || defined( 'DOING_AJAX' ) ) {
 	Settings\SettingsOpenStreetMap::instance();
 
 }
+
