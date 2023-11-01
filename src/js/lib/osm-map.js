@@ -270,23 +270,25 @@ import 'leaflet/tile-layer-provider';
 		maxzoom = 100;
 
 
-		// layers ...
+		data.mapLayers
+			.filter( providerKey => 'string' === typeof providerKey ) // string keys only
+			.map( providerKey => { // be forgiving with deceased providers
+				try {
+					return L.tileLayer.provider( providerKey )
+				} catch( err ) {}
+			} )
+			.filter(e=>!!e) //
+			.sort( (a,b) => a.overlay ) // overlays always on top
+			.forEach( layer => { // add
 
-		data.mapLayers.forEach( (provider_key, i) => {
+				layer.addTo(map)
 
-			if ( 'string' !== typeof provider_key ) {
-				return;
-			}
+				if ( !! layer.options.maxZoom ) {
+					maxzoom = Math.min( layer.options.maxZoom, maxzoom )
+				}
 
-			const layer = L.tileLayer.provider( provider_key ).addTo( map );
+			} )
 
-			layer.providerKey = provider_key;
-
-			if ( !! layer.options.maxZoom ) {
-				maxzoom = Math.min( layer.options.maxZoom, maxzoom )
-			}
-
-		} )
 		map.setMaxZoom( maxzoom );
 	}
 

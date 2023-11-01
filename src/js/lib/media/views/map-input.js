@@ -3,6 +3,8 @@ import L from 'osm-map';
 
 import AddLocationMarker from 'leaflet/control-add-location-marker';
 import FitBounds from 'leaflet/control-fit-bounds';
+import Provider from 'leaflet/tile-layer-provider';
+
 import 'leaflet/corners';
 
 import { MarkerData, MapData } from 'media/models';
@@ -95,12 +97,12 @@ class MapInput extends Backbone.View {
 
 		if ( this.config.allow_providers ) {
 			// prevent default layer creation
-			this.el.addEventListener( 'acf-osm-map-create-layers', this.preventDefault )
+			this.el.addEventListener( 'acf-osm-map-create-layers', e => e.preventDefault() )
 
 			this.initLayers();
 		}
 
-		this.el.addEventListener( 'acf-osm-map-create-markers', this.preventDefault )
+		this.el.addEventListener( 'acf-osm-map-create-markers', e => e.preventDefault() )
 
 		// reset markers in case field was duplicated with a row
 		this.$markers.html('')
@@ -607,56 +609,20 @@ class MapInput extends Backbone.View {
 	 *	Layers
 	 */
 	initLayers() {
-		var selectedLayers = [],
-			availableLayers = this.config.restrict_providers || Object.keys(acf_osm_admin.options.leaflet_layers),
-			baseLayers = {},
-			overlays = {},
-			is_omitted = key =>  key === null || ( !! this.config.restrict_providers && this.config.restrict_providers.indexOf( key ) === -1 ),
-			setupMap = ( val, key ) => {
-				var layer;
-				if ( _.isObject(val) ) {
-					return $.each( val, setupMap );
-				}
 
-				if ( is_omitted(key) ) {
-					return;
-				}
+		const selectedLayers = this.model.get('layers')
+		const allLayers      = (this.config.restrict_providers || Object.values(acf_osm_admin.options.leaflet_layers))
+			.map( providerKey => L.tileLayer.provider( providerKey ) )
 
-				try {
-					layer = L.tileLayer.provider( key /*, layer_config.options*/ );
-				} catch(ex) {
-					return;
-				}
-				layer.providerKey = key;
+		const baseLayers     = Object.fromEntries( allLayers.filter( l => ! l.overlay ).map( l => [ l.providerKey, l ] ) )
+		const overlays       = Object.fromEntries( allLayers.filter( l => l.overlay ).map( l => [ l.providerKey, l ] ) )
 
-				if ( this.layer_is_overlay( key, layer ) ) {
-					overlays[key] = layer;
-				} else {
-					baseLayers[key] = layer;
-				}
+		allLayers
+			.filter( layer => selectedLayers.includes( layer.providerKey ) )
+			.sort( (a,b) => a.overlay )
+			.forEach( layer => layer.addTo( this.map ) )
 
-				if ( selectedLayers.indexOf( key ) !== -1 ) {
-					this.map.addLayer(layer);
-				}
-			};
-
-		selectedLayers = this.model.get('layers'); // should be layer store value
-
-		// filter avaialble layers in field value
-		if ( this.config.restrict_providers !== false && _.isArray( this.config.restrict_providers ) ) {
-			selectedLayers = selectedLayers.filter( el => {
-				return this.config.restrict_providers.indexOf( el ) !== -1;
-			});
-			// set default layer
-			if ( ! selectedLayers.length ) {
-
-				selectedLayers = this.config.restrict_providers.slice( 0, 1 );
-
-			}
-		}
-
-
-		// editable layers!
+		// update model
 		this.map.on( 'baselayerchange layeradd layerremove', e => {
 
 			if ( ! e.layer.providerKey ) {
@@ -669,7 +635,7 @@ class MapInput extends Backbone.View {
 					return;
 				}
 
-				if ( this.layer_is_overlay( layer.providerKey, layer ) ) {
+				if ( layer.overlay ) {
 					layers.push( layer.providerKey )
 				} else {
 					layers.unshift( layer.providerKey )
@@ -677,10 +643,6 @@ class MapInput extends Backbone.View {
 			});
 			this.model.set( 'layers', layers );
 		} );
-
-		$.each( availableLayers, setupMap );
-
-		// acf_osm_admin.options.leaflet_layers
 
 		this.layersControl = L.control.layers( baseLayers, overlays, {
 			collapsed: true,
@@ -753,7 +715,6 @@ document.addEventListener( 'acf-osm-map-init', e => {
 	// setup map input element
 	if ( e.target.matches('[data-editor-config]') ) {
 		const { map } = e.detail;
-		console.log(map)
 		new MapInput( { el: e.target, map: map } );
 	}
 } )

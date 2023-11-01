@@ -327,23 +327,17 @@ class OpenStreetMap extends \acf_field {
 			'class'		=> 'osm-json',
 		]);
 
-		$providers = false;
-
-		if ( isset($field['return_format']) ) {
-			if ( $field['return_format'] === 'osm' ) {
-				$providers = Core\OSMProviders::instance()->get_layers();
-			} else {
-				$providers = Core\LeafletProviders::instance()->get_layers();
-			}
-		}
+		$restrict_providers = isset($field['return_format']) && $field['return_format'] === 'osm'
+			? array_values( Core\OSMProviders::instance()->get_layers() )
+			: false;
 
 		$max_markers = $field['max_markers'] === '' ? false : intval( $field['max_markers'] );
 
 		if ( 'osm' === $field['return_format'] ) {
-			if ( $max_markers === false ) { // no restrictin > max one marker
+			if ( $max_markers === false ) { // no restriction > max one marker
 				$max_markers = 1;
 			}
-			// oly one marker max
+			// only one marker max
 			$max_markers = min( $max_markers, 1 );
 		}
 		$map_args = [
@@ -351,7 +345,7 @@ class OpenStreetMap extends \acf_field {
 				'attr'	=> [
 					'data-editor-config'	=> [
 						'allow_providers'		=> $field['allow_map_layers'],
-						'restrict_providers'	=> array_values( $providers ),
+						'restrict_providers'	=> $restrict_providers,
 						'max_markers'			=> $max_markers,
 						'name_prefix'			=> $field['name'],
 					],
