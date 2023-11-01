@@ -115,13 +115,14 @@ The global Leaflet object is no longer available.
 == Changelog ==
 
 = 1.5.1 =
- - UI: Attribution below map
+ - Backend UI: Attribution below map
+ - ACF Field: Introduce conditional logic
  - Fix: Some map controls not visible in Blockeditor sidebar
  - Fix: Marker instructions display
  - Providers: [Migrate Stamen to Stadia Maps](https://maps.stamen.com/stadia-partnership/)
  - Providers: Update Esri Ocean base map, OpenAIP, Opensnowmap, OpenWeathermap, OpenFireMap, NLS, OpenRailwayMap, Jawg, MapTiler, MtbMap, nlmaps
  - Providers: Remove HERE (Legacy), Hydda
- - Code: Refactor ACF integration
+ - JS: Refactored ACF integration
 
 = 1.5.0 =
  - Use Leaflet noConflict
