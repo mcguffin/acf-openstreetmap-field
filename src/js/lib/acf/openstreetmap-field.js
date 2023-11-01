@@ -10,6 +10,12 @@ acf.registerFieldType( acf.Field.extend({
 	$map: function() {
 		return this.$('.leaflet-map')
 	},
+	setup: function($field) {
+		acf.Field.prototype.setup.apply(this,[$field])
+		this.$map().get(0).addEventListener('osm-editor/initialized', e => {
+			this.set('osmEditor',e.detail.view);
+		})
+	},
 	initialize: function($field){
 		const mapDiv = this.$map().get(0)
 		mapDiv.addEventListener( 'osm-editor/create-marker', e => this.createMarker(e) )
