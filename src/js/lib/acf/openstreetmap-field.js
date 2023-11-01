@@ -10,6 +10,17 @@ acf.registerFieldType( acf.Field.extend({
 	$map: function() {
 		return this.$('.leaflet-map')
 	},
+	getMapValue: function() {
+		const editor = this.get('osmEditor')
+		if ( editor ) {
+			return editor.model.toJSON()
+		}
+		return JSON.parse(this.$input().val())
+
+	},
+	countMarkers: function() {
+		return this.getMapValue().markers?.length||0
+	},
 	setup: function($field) {
 		acf.Field.prototype.setup.apply(this,[$field])
 		this.$map().get(0).addEventListener('osm-editor/initialized', e => {
@@ -25,25 +36,18 @@ acf.registerFieldType( acf.Field.extend({
 	},
 	createMarker: function( e ) {
 		const {  model } = e.detail
-		console.log(this)
 		acf.doAction('acf-osm/create-marker', model, this );
 	},
 	destroyMarker: function( e ) {
 		const {  model } = e.detail
-		console.log(this)
 		acf.doAction('acf-osm/destroy-marker', model, this );
 	},
 	updateMarkerLatlng: function( e ) {
 		const {  model } = e.detail
-		console.log(this)
 		acf.doAction('acf-osm/update-marker-latlng', model, this );
 	},
 	geocodeResult: function( e ) {
 		const { model, geocode, previousGeocode } = e.detail
-		console.log(this)
 		acf.doAction('acf-osm/marker-geocode-result', model, this, geocode, previousGeocode );
 	},
 } ) );
-
-// TODO: Conditionals
-// module.exports = { OpenStreetmapField }

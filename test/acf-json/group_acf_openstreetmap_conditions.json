@@ -1,0 +1,290 @@
+{
+    "key": "group_acf_openstreetmap_conditions",
+    "title": "OpenStreetMap Field - Conditions",
+    "fields": [
+
+        {
+            "center_lat": 53.5507112,
+            "center_lng": 10.0006485,
+            "zoom": 12,
+            "height": 400,
+            "return_format": "leaflet",
+            "allow_map_layers": 1,
+            "max_markers": "",
+            "layers": [
+                "OpenRailwayMap.Signals",
+                "CartoDB.VoyagerNoLabels"
+            ],
+            "key": "field_9x323cd66967x",
+            "label": "Location",
+            "name": "conditional_location",
+            "aria-label": "",
+            "type": "open_street_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "leaflet_map": "{\"lat\":53.5507112,\"lng\":10.0006485,\"zoom\":12,\"layers\":[\"OpenRailwayMap.Signals\",\"CartoDB.VoyagerNoLabels\"],\"markers\":[]}"
+        },
+        {
+            "key": "field_9x4273825e7f1",
+            "label": "Less than 3 markers",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+			"conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": "<markers",
+                        "value": "3"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_9x427438ddb3f",
+            "label": "Exactly 3 markers",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": "=markers",
+                        "value": "3"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_9x4273935e7f2",
+            "label": "More than 3 markers",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": ">markers",
+						"value": "3"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_9x4273a45e7f3",
+            "label": "Has markers",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": "?markers"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_9x4273ac5e7f4",
+            "label": "No markers",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": "!markers"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_9x4273ac5e7f5",
+            "label": "Southeast",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": "map_hemisphere",
+						"value": "e"
+                    },
+					{
+                        "field": "field_9x323cd66967x",
+                        "operator": "map_hemisphere",
+						"value": "s"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "Hic sunt draconis",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_9x4273ac5e7f6",
+            "label": "North",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": "map_hemisphere",
+						"value": "n"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "too cold here",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_9x4273ac5e7f7",
+            "label": "West",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": "map_hemisphere",
+						"value": "w"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        },
+        {
+            "key": "field_9x4273ac5e7f8",
+            "label": "South",
+            "name": "",
+            "aria-label": "",
+            "type": "message",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_9x323cd66967x",
+                        "operator": "map_hemisphere",
+						"value": "s"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "new_lines": "wpautop",
+            "esc_html": 0
+        }
+	],
+    "location": [
+		[
+            {
+				"param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
+            }
+        ]
+    ],
+    "menu_order": -10,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "show_in_rest": 1,
+    "description": "",
+    "modified": 1565536105
+}
