@@ -1,0 +1,69 @@
+{
+    "key": "group_acf_openstreetmap_repeater_proximity",
+    "title": "ACF OSM – Proximity",
+    "fields": [
+		{
+			"center_lat": 53.55064,
+			"center_lng": 10.00065,
+			"zoom": 12,
+			"height": 400,
+			"return_format": "leaflet",
+			"allow_map_layers": 1,
+			"max_markers": "",
+			"layers": [
+				"OpenStreetMap"
+			],
+			"key": "field_75323cd66967e",
+			"label": "Location",
+			"name": "location",
+			"aria-label": "",
+			"type": "open_street_map",
+			"instructions": "",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "pp-draw-proximity",
+				"id": ""
+			}
+		},
+		{
+			"key": "field_75323d65fc320",
+			"label": "Name",
+			"name": "proximity",
+			"aria-label": "",
+			"type": "number",
+			"instructions": "",
+			"required": 0,
+			"conditional_logic": 0,
+			"wrapper": {
+				"width": "50",
+				"class": "",
+				"id": ""
+			},
+			"default_value": "5",
+			"placeholder": "",
+			"prepend": "",
+			"append": ""
+		}
+	],
+    "location": [
+        [
+            {
+				"param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "show_in_rest": 1,
+    "description": "",
+    "modified": 1565536105
+}
