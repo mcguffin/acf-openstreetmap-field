@@ -60,6 +60,7 @@ class PluginTest {
 		add_action( 'admin_print_scripts', function() {
 			wp_enqueue_script( 'acf-osm-test-repeater-sync', plugins_url( 'test/js/repeater-sync.js', dirname(__DIR__).'/index.php' ), [], true, '0.0.1' );
 			wp_enqueue_script( 'acf-osm-test-proximity', plugins_url( 'test/js/proximity.js', dirname(__DIR__).'/index.php' ), [], true, '0.0.1' );
+			wp_enqueue_script( 'acf-osm-test-address', plugins_url( 'test/js/address.js', dirname(__DIR__).'/index.php' ), [], true, '0.0.1' );
 		} );
 
 		add_action( 'acf/init', [ $this, 'register_options_page' ] );

@@ -1,0 +1,263 @@
+{
+    "key": "group_acf_openstreetmap_repeater_address",
+    "title": "ACF OSM – Address",
+    "fields": [
+        {
+            "key": "field_63f5ff2dd66f3",
+            "label": "Geolocation",
+            "name": "geolocation",
+            "aria-label": "",
+            "type": "group",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "seamless no-label",
+                "id": ""
+            },
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "center_lat": 53.5507112,
+                    "center_lng": 10.0006485,
+                    "zoom": 13,
+                    "height": 400,
+                    "return_format": "raw",
+                    "allow_map_layers": 0,
+                    "max_markers": 0,
+                    "layers": [
+                        "OpenStreetMap.HOT"
+                    ],
+                    "key": "field_63ef8d8728511",
+                    "label": "Location",
+                    "name": "location",
+                    "aria-label": "",
+                    "type": "open_street_map",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "pp-draw-center",
+                        "id": ""
+                    }
+                },
+                {
+                    "key": "field_63ff389350d47",
+                    "label": "Actions",
+                    "name": "actions",
+                    "aria-label": "",
+                    "type": "group",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "no-label",
+                        "id": ""
+                    },
+                    "layout": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_63ff37652b98f",
+                            "label": "Geocode",
+                            "name": "",
+                            "aria-label": "",
+                            "type": "message",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "50",
+                                "class": "no-label seamless",
+                                "id": ""
+                            },
+                            "message": "<button data-action=\"reverse\" class=\"button button-small\" type=\"button\"><span class=\"dashicons dashicons-arrow-down-alt\"><\/span>Geocode<\/button>",
+                            "new_lines": "wpautop",
+                            "esc_html": 0
+                        },
+                        {
+                            "key": "field_63ff36e32b98e",
+                            "label": "Search",
+                            "name": "",
+                            "aria-label": "",
+                            "type": "message",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": [
+                                [
+                                    {
+                                        "field": "field_63ef8dbc28512",
+                                        "operator": "!=empty"
+                                    },
+                                    {
+                                        "field": "field_63ef8dde28515",
+                                        "operator": "!=empty"
+                                    }
+                                ],
+                                [
+                                    {
+                                        "field": "field_63ef8dbc28512",
+                                        "operator": "!=empty"
+                                    },
+                                    {
+                                        "field": "field_63ef8dd528514",
+                                        "operator": "!=empty"
+                                    }
+                                ]
+                            ],
+                            "wrapper": {
+                                "width": "50",
+                                "class": "no-label seamless",
+                                "id": ""
+                            },
+                            "message": "<button data-action=\"geocode\" class=\"button button-small\" type=\"button\"><span class=\"dashicons dashicons-arrow-up-alt\"><\/span>Goto Location<\/button>",
+                            "new_lines": "wpautop",
+                            "esc_html": 0
+                        }
+                    ]
+                },
+                {
+                    "key": "field_63ef8dbc28512",
+                    "label": "Address Line 1",
+                    "name": "address_line_1",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "wp_object": "",
+                    "is_id": 0,
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_63ef8dcc28513",
+                    "label": "Address Line 2",
+                    "name": "address_line_2",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "wp_object": "",
+                    "is_id": 0,
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_63ef8dde28515",
+                    "label": "Postcode",
+                    "name": "postcode",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "wp_object": "",
+                    "is_id": 0,
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "key": "field_63ef8dd528514",
+                    "label": "City",
+                    "name": "city",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "wp_object": "",
+                    "is_id": 0,
+                    "maxlength": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                },
+                {
+                    "repeater_choices": 0,
+                    "repeater_field": "",
+                    "repeater_label_field": "",
+                    "repeater_value_field": "",
+                    "repeater_post_id": 0,
+                    "repeater_display_value": 0,
+                    "repeater_choice_template": "",
+                    "key": "field_63ff4454e7830",
+                    "label": "Country Code",
+                    "name": "country_code",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "acf-hidden",
+                        "id": ""
+                    },
+                    "choices": {
+                        "DE": "Germany"
+                    },
+                    "default_value": "DE",
+                    "return_format": "value",
+                    "multiple": 0,
+                    "allow_null": 0,
+                    "ui": 0,
+                    "ajax": 0,
+                    "placeholder": ""
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+				"param": "options_page",
+                "operator": "==",
+                "value": "acf-options-acf-osm-test"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "show_in_rest": 1,
+    "description": "",
+    "modified": 1565536105
+}
