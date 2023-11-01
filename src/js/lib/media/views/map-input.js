@@ -753,6 +753,7 @@ document.addEventListener( 'acf-osm-map-init', e => {
 	// setup map input element
 	if ( e.target.matches('[data-editor-config]') ) {
 		const { map } = e.detail;
+		console.log(map)
 		new MapInput( { el: e.target, map: map } );
 	}
 } )

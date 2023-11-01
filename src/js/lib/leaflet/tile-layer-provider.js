@@ -1,5 +1,5 @@
 import L from 'leaflet/no-conflict';
-console.log(L)
+
 // Stolen from https://github.com/leaflet-extras/leaflet-providers/blob/master/leaflet-providers.js
 const Provider = L.TileLayer.extend({
 	initialize: function (arg, options) {
@@ -14,8 +14,10 @@ const Provider = L.TileLayer.extend({
 
 		const provider = {
 			url: providers[providerName].url,
-			options: providers[providerName].options
+			options: providers[providerName].options,
 		};
+		this.providerKey = arg
+		this.overlay     = providers[providerName].isOverlay??false
 
 		// overwrite values in provider from variant.
 		if ( variantName && 'variants' in providers[providerName] ) {
@@ -31,6 +33,7 @@ const Provider = L.TileLayer.extend({
 			}
 			provider.url     = variant.url || provider.url
 			provider.options = Object.assign({}, provider.options, variantOptions)
+			this.overlay = variant.isOverlay ?? this.overlay
 		}
 
 		// replace attribution placeholders with their values from toplevel provider attribution,
