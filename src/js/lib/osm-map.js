@@ -30,6 +30,7 @@ import 'leaflet/tile-layer-provider';
 		})
 		return data;
 	}
+
 	/**
 	 *	@param HTMLElement el Map Div
 	 *	@return boolean
@@ -270,6 +271,7 @@ import 'leaflet/tile-layer-provider';
 
 
 		// layers ...
+
 		data.mapLayers.forEach( (provider_key, i) => {
 
 			if ( 'string' !== typeof provider_key ) {

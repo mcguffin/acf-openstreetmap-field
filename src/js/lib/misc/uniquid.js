@@ -1,5 +1,7 @@
 let uniqidSeed = '';
 
+// stolen from acf.uniqid
+// @see https://github.com/AdvancedCustomFields/acf/blob/545645dc2b4ecda530b55d2c849ac1618c6d67b4/assets/build/js/acf.js#L1969-L2026
 const uniqid = ( prefix, moreEntropy = false ) => {
 	//  discuss at: http://locutus.io/php/uniqid/
 	// original by: Kevin van Zonneveld (http://kvz.io)
