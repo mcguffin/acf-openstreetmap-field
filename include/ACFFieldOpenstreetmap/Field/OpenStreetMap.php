@@ -216,7 +216,7 @@ class OpenStreetMap extends \acf_field {
 			'name'			=> 'center_lat',
 			'prepend'		=> __('lat','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['lat'],
-			'step'			=> 0.1,
+			// 'step'			=> 0.1,
 		]);
 
 		// lng
@@ -228,9 +228,8 @@ class OpenStreetMap extends \acf_field {
 			'prepend'		=> __('lng','acf-openstreetmap-field'),
 			'placeholder'	=> $this->default_values['lng'],
 			'_append' 		=> 'center_lat',
-			'step'			=> 0.1,
+			// 'step'			=> 0.1,
 		]);
-
 
 		// zoom
 		acf_render_field_setting( $field, [
