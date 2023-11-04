@@ -1,9 +1,9 @@
 {
   "id": "https://github.com/mcguffin/acf-openstreetmap-field/raw/master/.wp-release-info.json",
   "slug": "acf-openstreetmap-field",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "url": "https://wordpress.org/plugins/acf-openstreetmap-field",
-  "package": "https://github.com/mcguffin/acf-openstreetmap-field/releases/download/1.5.0/acf-openstreetmap-field.zip",
+  "package": "https://github.com/mcguffin/acf-openstreetmap-field/releases/download/1.5.1/acf-openstreetmap-field.zip",
   "tested": "6.3",
   "requires_php": "5.6"
 }
