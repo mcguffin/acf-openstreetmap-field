@@ -121,8 +121,8 @@ The global Leaflet object is no longer available.
  - Fix: Marker instructions display
  - Providers: [Migrate Stamen to Stadia Maps](https://maps.stamen.com/stadia-partnership/)
  - Providers: Update Esri Ocean base map, OpenAIP, Opensnowmap, OpenWeathermap, OpenFireMap, NLS, OpenRailwayMap, Jawg, MapTiler, MtbMap, nlmaps
- - Providers: Remove HERE (Legacy), Hydda
- - JS: Refactored ACF integration
+ - Providers: Remove HERE (Legacy), Hydda (service down)
+ - JS: Rewritten ACF integration
 
 = 1.5.0 =
  - Use Leaflet noConflict
