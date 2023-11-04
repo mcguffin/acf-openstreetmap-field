@@ -56,8 +56,7 @@ acf.registerFieldType( acf.Field.extend({
 		})
 
 		this.bindListeners()
-		this.setMapLayers()
-		console.log(this)
+		this.setMapLayers(true)
 	},
 	setMapLnglat: function(e) {
 		this.editor.map.panTo(
@@ -72,23 +71,26 @@ acf.registerFieldType( acf.Field.extend({
 		this.editor.map.setZoom( parseInt( this.$zoom().val() ) )
 	},
 	setMapLayers: function() {
-		// this.editor.map
+		const isDirty = acf.unload.changed
 		const layers = this.editor.model.get('layers')
 		this.editor.config.restrict_providers = 'osm' === this.$returnFormat().filter(':checked').val()
 			? Object.values(acf_osm_admin.options.osm_layers)
 			: false
 
 		this.editor.resetLayers()
-		this.editor.model.set('layers',layers)
+		this.editor.model.set( 'layers', layers )
 		this.editor.initLayers()
-		console.log(layers)
 
+		// dont let layer change affect confirm dialog
+		if ( ! isDirty ) {
+			acf.unload.stopListening()
+		}
 	},
 	bindListeners: function() {
 		// set input from map
 		this.editor.model
-			.on( 'change:lat',  () => this.$lat().val( this.editor.model.get('lat')  ).trigger('change') )
-			.on( 'change:lng',  () => this.$lng().val( this.editor.model.get('lng')  ).trigger('change') )
+			.on( 'change:lat',  () => this.$lat().val( this.editor.model.get('lat') ).trigger('change') )
+			.on( 'change:lng',  () => this.$lng().val( this.editor.model.get('lng') ).trigger('change') )
 			.on( 'change:zoom', () => this.$zoom().val( this.editor.model.get('zoom') ).trigger('change') )
 			.on( 'change:layers', () => this.$layers().val( this.editor.model.get('layers') ).trigger('change') )
 

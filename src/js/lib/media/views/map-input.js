@@ -77,8 +77,8 @@ class MapInput extends Backbone.View {
 	}
 
 	initialize(conf) {
-		super.initialize(conf)
 
+		super.initialize(conf)
 
 		this.config      = this.$el.data().editorConfig;
 		this.map         = conf.map;
@@ -140,7 +140,6 @@ class MapInput extends Backbone.View {
 		this.map.keyboard.disable();
 
 		this.el.dispatchEvent( new CustomEvent( 'osm-editor/initialized', { detail: {  view: this } } ), { bubbles: true } )
-
 
 		return this;
 	}

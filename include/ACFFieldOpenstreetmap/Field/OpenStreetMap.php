@@ -261,30 +261,10 @@ class OpenStreetMap extends \acf_field {
 			'type'			=> 'select',
 			'multiple'		=> 1,
 			'choices'		=> $leafletProviders->get_layers(),
-			// 'conditions' => [
-			// 	'field'    => 'return_format',
-			// 	'operator' => '!=',
-			// 	'value'    => 'osm',
-			// ],
+			'wrapper'		=> [
+				'class'	=> 'acf-hidden',
+			],
 		]);
-		//
-		// // OSM layer
-		// acf_render_field_setting( $field, [
-		// 	'label'			=> __( 'OSM Layers', 'acf-openstreetmap-field' ),
-		// 	'instructions'	=> '',
-		// 	'name'			=> 'layers',
-		// 	'type'			=> 'select',
-		// 	'multiple'		=> 0,
-		// 	'choices'		=> array_combine(
-		// 		array_values( $osmProviders->get_layers() ),
-		// 		array_values( $osmProviders->get_layers() )
-		// 	),
-		// 	'conditions' => [
-		// 		'field'    => 'return_format',
-		// 		'operator' => '==',
-		// 		'value'    => 'osm',
-		// 	],
-		// ]);
 
 		// map height
 		acf_render_field_setting( $field, [
