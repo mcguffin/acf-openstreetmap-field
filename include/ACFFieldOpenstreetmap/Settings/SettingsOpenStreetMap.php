@@ -340,7 +340,7 @@ class SettingsOpenStreetMap extends Settings {
 						foreach ( $provider_data['variants'] as $variant_key => $variant ) {
 
 							$is_disabled = isset( $provider_option[ $provider_key ]['variants'][ $variant_key ] )
-											&& $provider_option[$provider_key]['variants'][$variant_key] === false;
+											&& in_array( $provider_option[$provider_key]['variants'][$variant_key], [ '0', false ], true );
 
 							?>
 							<div class="acf-osm-setting layer-variant <?php echo $is_disabled ? 'disabled' : ''; ?>">

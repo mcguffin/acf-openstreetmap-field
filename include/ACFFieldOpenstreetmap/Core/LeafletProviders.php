@@ -70,7 +70,7 @@ class LeafletProviders extends Singleton {
 					if ( isset( $provider['variants'] ) ) {
 						// remove disabled variants
 						$provider['variants'] = array_filter( $provider['variants'], function( $el ) {
-							return $el !== '0';
+							return ! in_array( $el, [ '0', false ], true );
 						} );
 						// remove empty variants
 						if ( ! count( $provider['variants'] ) ) {
