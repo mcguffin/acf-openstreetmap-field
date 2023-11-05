@@ -12,6 +12,10 @@ const Provider = L.TileLayer.extend({
 			throw 'No such provider (' + providerName + ')';
 		}
 
+		if ( acf_osm.providers[providerName].constructor !== {}.constructor ) {
+			throw 'Invalid provider (' + providerName + ')';
+		}
+
 		const provider = {
 			url: providers[providerName].url,
 			options: providers[providerName].options,
