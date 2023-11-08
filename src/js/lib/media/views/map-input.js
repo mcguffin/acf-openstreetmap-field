@@ -501,7 +501,7 @@ class MapInput extends Backbone.View {
 				} else if ( this.maxMarkers === 1 ) {
 					// one marker only
 					model = this.markers.at(0)
-					previousGeocode = marker.get('geocode')
+					previousGeocode = model.get('geocode')
 					model.set( marker_data );
 				}
 
