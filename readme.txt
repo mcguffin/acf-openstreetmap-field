@@ -5,7 +5,7 @@ Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -113,6 +113,9 @@ The global Leaflet object is no longer available.
 
 
 == Changelog ==
+
+= 1.5.4 =
+ - Fix: JS ReferenceError on move marker with max markers = 1
 
 = 1.5.3 =
  - Fix: Disable provider settings not displaying

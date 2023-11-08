@@ -27,6 +27,31 @@
                 "class": "",
                 "id": ""
             }
+        },{
+            "center_lat": 2.7455307,
+            "center_lng": 10.9094238,
+            "zoom": 7,
+            "height": 400,
+            "return_format": "leaflet",
+            "allow_map_layers": 1,
+            "max_markers": 1,
+            "layers": [
+                "OpenStreetMap.Mapnik",
+                "Stamen.TonerLines"
+            ],
+            "key": "field_9d4c2962d696y",
+            "label": "Leaflet Map",
+            "name": "leaflet_map",
+            "aria-label": "",
+            "type": "open_street_map",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            }
         }
     ],
     "location": [
