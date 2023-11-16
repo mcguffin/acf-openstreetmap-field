@@ -114,6 +114,9 @@ The global Leaflet object is no longer available.
 
 == Changelog ==
 
+= 1.5.5 =
+ - Fix: ACF field not inited in Flexible Content and repeaters
+
 = 1.5.4 =
  - Fix: JS ReferenceError on move marker with max markers = 1
 
