@@ -599,7 +599,7 @@ class OpenStreetMap extends \acf_field {
 		//
 		// Layers
 		//
-		if ( ! is_array( $value['layers'] ) || ! count( $value['layers'] ) || ! $field['allow_map_layers'] ) {
+		if ( ! isset( $value['layers'] ) || ! is_array( $value['layers'] ) || ! count( $value['layers'] ) || ! $field['allow_map_layers'] ) {
 			$value['layers'] = $field['layers'];
 		} else {
 			// normalize layers
