@@ -92,10 +92,8 @@ import 'leaflet/tile-layer-provider';
 
 		createMarkers.apply( el, [ data, map ] );
 
-		// reload hidden maps when they become visible
-		if ( ! isVisible(el) ) {
-			visibilityObserver.observe(el);
-		}
+		// reload maps when they become visible
+		visibilityObserver.observe(el);
 
 		el.addEventListener( 'acf-osm-show', e => {
 			map.invalidateSize();
@@ -113,6 +111,7 @@ import 'leaflet/tile-layer-provider';
 	}
 
 	const maybeAcfLeaflet = el => {
+
 		if ( ! acfLeaflet( el ) ) {
 			el.dispatchEvent( new CustomEvent( 'acf-osm-show', {
 				detail: { L: L }
@@ -120,28 +119,28 @@ import 'leaflet/tile-layer-provider';
 		}
 	}
 
-	const visibilityObserver = new ResizeObserver( function(entries,observer) {
+	const visibilityObserver = new IntersectionObserver( function(entries,observer) {
 		entries.forEach(function(entry){
-			// @ see https://github.com/jquery/jquery/blob/a503c691dc06c59acdafef6e54eca2613c6e4032/test/data/jquery-1.9.1.js#L7469-L7481
-			if ( isVisible(entry.target) ) {
+			if ( entry.isIntersecting ) {
+				console.log(entry)
 				entry.target.dispatchEvent( new CustomEvent( 'acf-osm-show', {
 					detail: { L: L }
 				} ) );
-				observer.unobserve(entry.target);
 			}
 		})
-	});
+	}, { root: document.body } )
 
-
-	// observe if new maps are being loaded into the dom
+	// observe if new maps are added to the dom
 	if ( !! MutationObserver ) {
 		const domObserver = new MutationObserver( function(entries,observer) {
 			entries.forEach( entry => {
 				let mapElement
 				if ( mapElement = entry.target.querySelector(leafletMapSelector) ) {
 					maybeAcfLeaflet( mapElement )
-				} else{
-					entry.target.querySelectorAll( leafletMapSelector ).forEach( maybeAcfLeaflet )
+					// console.log('mutate',mapElement)
+				} else {
+					// console.log('mutate',entry.target.querySelectorAll( leafletMapSelector ))
+					entry.target.querySelectorAll( leafletMapSelector ).forEach( el => maybeAcfLeaflet(el) )
 				}
 			})
 		});
@@ -149,7 +148,6 @@ import 'leaflet/tile-layer-provider';
 			domObserver.observe(document.body, { subtree: true, childList: true } );
 		})
 	}
-
 
 	// #64
 	const bulletproofParseFloat = value => {
