@@ -217,7 +217,7 @@ class PluginTest {
 			},
 			'category'			=> 'embed',
 			'icon'				=> 'location-alt',
-			'mode'				=> 'preview', // auto|preview|edit
+			'mode'				=> 'auto', // auto|preview|edit
 			'align'				=> 'full',
 			'keywords'			=> array( 'map' ),
 		));
@@ -281,8 +281,6 @@ class PluginTest {
 			'align'				=> 'full',
 			'keywords'			=> array( 'acf' ),
 		));
-
-
 	}
 
 	/**

@@ -115,7 +115,13 @@ The global Leaflet object is no longer available.
 == Changelog ==
 
 = 1.5.5 =
+ - JS: use IntersectionObserver to detect whether a map has become visible
  - Fix: ACF field not inited in Flexible Content and repeaters
+ - Fix: JS recursion
+ - Fix: fit bounds not working
+ - Fix: marker drag not triggered
+ - Fix: marker unique-IDs not always created
+ - Fix: Block editor issues
 
 = 1.5.4 =
  - Fix: JS ReferenceError on move marker with max markers = 1
