@@ -244,6 +244,10 @@ class MapInput extends Backbone.View {
 			})
 			.bindTooltip( model.get('label') );
 
+		if ( ! model.get('uuid') ) {
+			model.set( 'uuid', uniqid('marker_') )
+		}
+
 		/** @var Backbone.View */
 		const entry = new MarkerEntry({
 			controller: this,
@@ -394,7 +398,6 @@ class MapInput extends Backbone.View {
 			lat: latlng.lat,
 			lng: latlng.lng,
 			geocode: [],
-			uuid: uniqid('marker_'),
 		});
 
 		this.plingMarker = true;
@@ -497,8 +500,7 @@ class MapInput extends Backbone.View {
 				}
 
 
-				if ( this.canAddmarker ) {
-					marker_data.uuid = uniqid('marker_')
+				if ( this.canAddMarker ) {
 					// infinite markers or markers still in range
 					model = this.markers.add( marker_data );
 					this.el.dispatchEvent( new CustomEvent( 'osm-editor/create-marker', { detail: {  model } } ), { bubbles: true } )
