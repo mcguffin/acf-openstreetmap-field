@@ -81,9 +81,9 @@ class PluginTest {
 			return $content;
 		});
 
-		add_filter('acf_osm_marker_html', function( $html ){
-		    return '<div class="my-marker"></div>';
-		});
+		// add_filter('acf_osm_marker_html', function( $html ){
+		//     return '<div class="my-marker"></div>';
+		// });
 		add_action('wp_head',function(){
 			?>
 			<style type="text/css">
@@ -192,14 +192,26 @@ class PluginTest {
 		}
 
 		// register a map block
-		acf_register_block(array(
+		acf_register_block_type(array(
 			'name'				=> 'leaflet-map',
 			'title'				=> __('Leaflet Map Test'),
 			'description'		=> __('A Leaflet Map'),
 			'render_callback'	=> function ( $block, $content, $is_preview, $post_id ) {
 				printf('<div class="align%s">',$block['align']);
-				//echo '<input type="checkbox" />';
+				// var_dump($is_preview);
+				// vaR_dump($post_id );
+				// ?><hr><?php
+				// var_dump( $block['data']);
+				// ?><hr><?php
+				// var_dump(get_field( 'leaflet_map', $post_id, false ));
+				// ?><hr><?php
+
+				echo '<input type="checkbox" />';
 				the_field( 'leaflet_map' );
+				?><hr><?php
+				echo '<input type="checkbox" />';
+				the_field( 'leaflet_map2' );
+
 				echo '</div>';
 				?><hr /><?php
 			},
@@ -211,7 +223,7 @@ class PluginTest {
 		));
 
 		// register a map block
-		acf_register_block(array(
+		acf_register_block_type(array(
 			'name'				=> 'osm-map',
 			'title'				=> __('OpenStreetMap Test (iFrame)'),
 			'description'		=> __('Am Open Street Map'),
@@ -230,7 +242,7 @@ class PluginTest {
 		));
 
 		// register a map block
-		acf_register_block(array(
+		acf_register_block_type(array(
 			'name'				=> 'raw-map',
 			'title'				=> __('OpenStreetMap Test (Raw Data)'),
 			'description'		=> __('Am Open Street Map'),
@@ -251,7 +263,7 @@ class PluginTest {
 
 
 		// register a map block
-		acf_register_block(array(
+		acf_register_block_type(array(
 			'name'				=> 'other-block',
 			'title'				=> __('SOME ACF BLOCK'),
 			'description'		=> __('Testing block with some conditional logic'),

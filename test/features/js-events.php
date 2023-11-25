@@ -1,6 +1,7 @@
 <?php
 
 add_action('wp_footer', function(){
+	return;
 	?>
 	<script>
 
