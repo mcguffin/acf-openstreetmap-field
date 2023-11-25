@@ -109,7 +109,7 @@ class MapInput extends Backbone.View {
 		this.initMarkers();
 
 		this.listenTo( this.model, 'change', this.updateValue );
-		this.listenTo( this.markers, 'add', this.addMarker );
+		this.listenTo( this.markers, 'add', this.initMarker );
 		this.listenTo( this.markers, 'add', this.updateValue );
 		this.listenTo( this.markers, 'remove', this.updateValue );
 		this.listenTo( this.markers, 'change', this.updateValue );
@@ -228,11 +228,15 @@ class MapInput extends Backbone.View {
 	}
 
 	/**
-	 *	Markers
+	 *	Init marker from Model
+	 *
+	 *	@param Backbone.Model model
+	 *	@param Backbone.Collection collection
 	 */
-	addMarker( model, collection ) {
+	initMarker( model ) {
 
 		// add marker to map
+		/** @var leaflet marker */
 		const marker = L.marker( { lat: model.get('lat'), lng: model.get('lng') }, {
 				title: model.get('label'),
 				icon: this.icon,
@@ -240,7 +244,7 @@ class MapInput extends Backbone.View {
 			})
 			.bindTooltip( model.get('label') );
 
-		//
+		/** @var Backbone.View */
 		const entry = new MarkerEntry({
 			controller: this,
 			marker: marker,
@@ -248,13 +252,13 @@ class MapInput extends Backbone.View {
 		});
 
 		this.map.once('layeradd',e => {
-
+			// changes on model affect map
 			marker
 				.on('click', e => {
 					model.destroy();
 				})
 				.on('dragend', e => {
-					// update model lnglat
+					// update model lnglat on drag
 					const latlng = marker.getLatLng();
 					model.set( 'lat', latlng.lat );
 					model.set( 'lng', latlng.lng );
@@ -269,6 +273,12 @@ class MapInput extends Backbone.View {
 			this.el.dispatchEvent( new CustomEvent( 'osm-editor/destroy-marker', { detail: {  model } } ), { bubbles: true } )
 			marker.remove();
 		});
+
+		const changedlatLng = e => {
+			this.el.dispatchEvent( new CustomEvent( 'osm-editor/update-marker-latlng', { detail: { model } } ), { bubbles: true } )
+		}
+		this.listenTo( model, 'change:lat', changedlatLng );
+		this.listenTo( model, 'change:lng', changedlatLng );
 
 		marker.addTo( this.map );
 
@@ -292,7 +302,7 @@ class MapInput extends Backbone.View {
 		});
 
 		this.markers.forEach( model => {
-			this.addMarker( model );
+			this.initMarker( model );
 		} );
 
 		// dbltap is not firing on mobile
@@ -386,17 +396,12 @@ class MapInput extends Backbone.View {
 			geocode: [],
 			uuid: uniqid('marker_'),
 		});
-		const changedlatLng = e => {
-			this.el.dispatchEvent( new CustomEvent( 'osm-editor/update-marker-latlng', { detail: {  model } } ), { bubbles: true } )
-		}
-		this.listenTo( model, 'change:lat', changedlatLng );
-		this.listenTo( model, 'change:lng', changedlatLng );
 
 		this.plingMarker = true;
-		this.markers.add( model );
+		this.markers.add( model ); // will call initMarker > will add marker to map
 		this.reverseGeocode( model );
 
-		this.el.dispatchEvent( new CustomEvent( 'osm-editor/create-marker', { detail: {  model } } ), { bubbles: true } )
+		this.el.dispatchEvent( new CustomEvent( 'osm-editor/create-marker', { detail: { model } } ), { bubbles: true } )
 	}
 
 	/**
