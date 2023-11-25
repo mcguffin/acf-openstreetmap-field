@@ -33,8 +33,6 @@ acf.registerFieldType( acf.Field.extend({
 			newMapDiv.setAttribute('class','leaflet-map')
 			mapDiv.parentNode.replaceChild(newMapDiv, mapDiv);
 			newMapDiv.dispatchEvent( new CustomEvent('acf-osm-map-added', { bubbles: true } ))
-		} else { // init map
-			mapDiv.dispatchEvent( new CustomEvent('acf-osm-map-added', { bubbles: true } ))
 		}
 		acf.Field.prototype.setup.apply( this, [ $field ] )
 		this.$map().get(0).addEventListener('osm-editor/initialized', e => {
