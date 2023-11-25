@@ -73,7 +73,7 @@
     "build": {
       "versionedFiles": null,
       "prebuild": [
-        "php -d memory_limit=1G /usr/local/bin/wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp --exclude=vendor --exclude=test"
+        "php -d memory_limit=1G $(which wp) i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp --exclude=vendor --exclude=test"
       ],
       "build": [
         "gulp build",
