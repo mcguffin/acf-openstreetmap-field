@@ -575,8 +575,8 @@ class MapInput extends Backbone.View {
 			}
 			return map[zoom] ?? zoom
 		}
-		var latlng = { lat: model.get('lat'), lng: model.get('lng') },
-			zoom = mapZoomLevel( this.map.getZoom() );
+		const latlng = { lat: model.get('lat'), lng: model.get('lng') },
+			zoom = 18; //mapZoomLevel( this.map.getZoom() );
 
 		this.geocoder.options.geocoder.reverse(
 			latlng,
