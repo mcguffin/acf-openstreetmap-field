@@ -8,11 +8,10 @@
             "zoom": 7,
             "height": 400,
             "return_format": "leaflet",
-            "allow_map_layers": 1,
+            "allow_map_layers": 0,
             "max_markers": "",
             "layers": [
-                "OpenStreetMap.Mapnik",
-                "Stamen.TonerLines"
+                "OpenStreetMap"
             ],
             "key": "field_5d4c2962d6960",
             "label": "Leaflet Map",
@@ -36,7 +35,7 @@
             "allow_map_layers": 1,
             "max_markers": 1,
             "layers": [
-                "OpenStreetMap.Mapnik",
+                "OpenStreetMap",
                 "Stamen.TonerLines"
             ],
             "key": "field_9d4c2962d696y",
