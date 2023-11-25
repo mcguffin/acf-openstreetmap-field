@@ -154,7 +154,7 @@ class MapInput extends Backbone.View {
 			this.markers.forEach( marker => {
 				llb.extend(L.latLng(marker.get('lat'),marker.get('lng')))
 			});
-			this.map.fitdblcBounds(llb);
+			this.map.fitBounds(llb);
 		}
 		this.fitBoundsControl = new FitBounds({
 			position: 'bottomright',
