@@ -5,7 +5,7 @@ import AddLocationMarker from 'leaflet/control-add-location-marker';
 import FitBounds from 'leaflet/control-fit-bounds';
 import Provider from 'leaflet/tile-layer-provider';
 
-import 'leaflet/corners';
+import { addCorners } from 'leaflet/corners';
 
 import { MarkerData, MapData } from 'media/models';
 import MarkerEntry from 'media/views/marker-entry';
@@ -80,6 +80,7 @@ class MapInput extends Backbone.View {
 
 		super.initialize(conf)
 
+		addCorners(conf.map)
 		this.config      = this.$el.data().editorConfig;
 		this.map         = conf.map;
 		// this.field       = conf.field;
