@@ -4,6 +4,8 @@
 
 @import 'mixins/mixins';
 
+@import 'lib/leaflet/index';
+
 @import 'leaflet.locatecontrol/src/L.Control.Locate';
 @import 'leaflet-control-geocoder/dist/Control.Geocoder';
 
