@@ -17,6 +17,15 @@ acf.registerFieldType( acf.Field.extend({
 		}
 		return JSON.parse( this.$input().val() )
 	},
+	// getValue: function() {
+	// 	return this.getMapValue();
+	// },
+	// setValue: function (val) {
+	// 	if ( String !== val.constructor ) {
+	// 		val = JSON.stringify(val);
+	// 	}
+	// 	return acf.val(this.$input(), val);
+	// },
 	countMarkers: function() {
 		return this.getMapValue().markers?.length||0
 	},

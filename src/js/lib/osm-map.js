@@ -36,6 +36,7 @@ import 'leaflet/tile-layer-provider';
 	 *	@return boolean
 	 */
 	const acfLeaflet = el => {
+
 		if ( !! el.acfOsmMap ) {
 			return false
 		}
@@ -110,6 +111,9 @@ import 'leaflet/tile-layer-provider';
 		 return true
 	}
 
+	const leafletAll = el => {
+		el.querySelectorAll( leafletMapSelector ).forEach( el => maybeAcfLeaflet(el) )
+	}
 	const maybeAcfLeaflet = el => {
 
 		if ( ! acfLeaflet( el ) ) {
@@ -133,15 +137,11 @@ import 'leaflet/tile-layer-provider';
 	if ( !! MutationObserver ) {
 		const domObserver = new MutationObserver( function(entries,observer) {
 			entries.forEach( entry => {
-				let mapElement
-				if ( mapElement = entry.target.querySelector(leafletMapSelector) ) {
-					maybeAcfLeaflet( mapElement )
-				} else {
-					entry.target.querySelectorAll( leafletMapSelector ).forEach( el => maybeAcfLeaflet(el) )
-				}
+				leafletAll(entry.target)
 			})
 		});
 		window.addEventListener('DOMContentLoaded', e => {
+			leafletAll(document.body)
 			domObserver.observe(document.body, { subtree: true, childList: true } );
 		})
 	}
@@ -289,13 +289,15 @@ import 'leaflet/tile-layer-provider';
 
 	window.addEventListener('DOMContentLoaded', e => {
 		document.querySelectorAll( leafletMapSelector ).forEach( acfLeaflet )
+
 		// domObserver.observe( document.body, { subtree: true, childList: true } );
 	})
 	document.addEventListener('acf-osm-map-added', e => {
+console.log(e)
 		if ( e.target.matches( leafletMapSelector ) ) {
 			acfLeaflet( e.target )
 		} else {
-			document.querySelectorAll( leafletMapSelector, acfLeaflet )
+			document.querySelectorAll( leafletMapSelector ).forEach( acfLeaflet )
 		}
 	})
 
