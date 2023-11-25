@@ -56,7 +56,7 @@ document.addEventListener('acf-osm-map-created', e => {
 	const { L, map } = e.detail;
 	const fieldEl = e.target.closest('.acf-field[data-type="open_street_map"]')
 
-	if ( fieldEl.matches( '.pp-draw-center' ) ) {
+	if ( !! fieldEl && fieldEl.matches( '.pp-draw-center' ) ) {
 		mapDrawCenter( acf.getField( fieldEl.getAttribute('data-key') ), L )
 	}
 })
