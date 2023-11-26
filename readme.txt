@@ -5,7 +5,7 @@ Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -113,6 +113,9 @@ The global Leaflet object is no longer available.
 
 
 == Changelog ==
+
+= 1.5.6. =
+Fix: PHP notice version_compare
 
 = 1.5.5 =
  - JS: use IntersectionObserver to detect whether a map has become visible
