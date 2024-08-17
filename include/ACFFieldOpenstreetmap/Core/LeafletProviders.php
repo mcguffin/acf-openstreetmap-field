@@ -63,7 +63,7 @@ class LeafletProviders extends Singleton {
 				$providers = array_replace_recursive( $providers, $disabled_providers );
 
 				$providers = array_filter( $providers, function( $el ) {
-					return $el !== '0';
+					return is_array( $el );
 				} );
 
 				foreach ( $providers as &$provider ) {
@@ -131,7 +131,6 @@ class LeafletProviders extends Singleton {
 
 		foreach ( $this->get_providers([ 'credentials', 'enabled' ]) as $provider_key => $provider_data ) {
 			//
-
 			if ( isset( $provider_data[ 'variants' ] ) ) {
 				foreach ( $provider_data[ 'variants' ] as $variant => $variant_data ) {
 					// bounded variants disabled through settings!
