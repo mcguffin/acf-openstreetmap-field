@@ -123,6 +123,21 @@ class PluginTest {
 			<?php
 		});
 
+		// custom mapbox
+		add_filter( 'acf_osm_leaflet_providers', function( $providers ) {
+
+			$providers['MyMapbox'] = [
+				'url' => 'https://api.mapbox.com/styles/v1/podpirate/ckk2mhvc43l6l17pcbki09ah1/tiles/{z}/{x}/{y}?access_token={accessToken}', // The result from step 5
+				'options' => [
+					'attribution' => '&copy; <a href="https://www.mapbox.com/about/maps/" target="_blank">Mapbox</a> {attribution.OpenStreetMap} <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>',
+					'tileSize' => 512,
+					'maxZoom' => 18,
+					'zoomOffset' => -1,
+					'accessToken' => $providers['MapBox']['options']['accessToken'],
+				],
+			];
+			return $providers;
+		} );
 	}
 
 
