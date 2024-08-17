@@ -9,6 +9,13 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+[*.md]
+trim_trailing_whitespace = false
+
+[*.json]
+indent_style = tab
+indent_size = 4
+
 [readme.txt]
 indent_style = space
 indent_size = 2
@@ -22,12 +29,5 @@ indent_style = space
 indent_size = 2
 
 [composer.json, eslintrc.json]
-indent_style = tab
-indent_size = 4
-
-[*.md]
-trim_trailing_whitespace = false
-
-[*.json]
 indent_style = tab
 indent_size = 4
