@@ -486,7 +486,7 @@ class MapInput extends Backbone.View {
 						default_label: label,
 						lat: latlng.lat,
 						lng: latlng.lng,
-						geocode: [],
+						geocode: [ e.geocode ],
 					}
 
 				// getting rid of the modal – #35
