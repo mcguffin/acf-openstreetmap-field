@@ -21,6 +21,7 @@ class SettingsOpenStreetMap extends Settings {
 
 		add_option( 'acf_osm_provider_tokens', [], '', false );
 		add_option( 'acf_osm_providers', $this->get_default_option_providers(), '', false );
+		add_option( 'acf_osm_proxy', [], '', false );
 
 		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
 		add_action( "load-settings_page_acf_osm", [ $this, 'enqueue_assets' ] );
@@ -157,6 +158,7 @@ class SettingsOpenStreetMap extends Settings {
 
 		register_setting( $this->optionset, 'acf_osm_provider_tokens', [ $this , 'sanitize_provider_tokens' ] );
 		register_setting( $this->optionset, 'acf_osm_providers', [ $this , 'sanitize_providers' ] );
+		register_setting( $this->optionset, 'acf_osm_proxy', [ $this , 'sanitize_proxy' ] );
 	}
 
 	/**
@@ -289,11 +291,12 @@ class SettingsOpenStreetMap extends Settings {
 	public function print_provider_setting( $provider_key, $provider_data ) {
 
 //		@list( $provider_key, $provider_data ) = array_values( $args );
-		$provider_option = get_option( 'acf_osm_providers' );
+		$provider_option    = get_option( 'acf_osm_providers' );
+		$proxy_option       = get_option( 'acf_osm_proxy' );
 
-		$needs_access_key = false;
+		$needs_access_key   = false;
 		$is_parent_disabled = isset( $provider_option[$provider_key] ) && $provider_option[$provider_key] === false;
-		$needs_access_key = $this->needs_access_token( $provider_key, $provider_data );
+		$needs_access_key   = $this->needs_access_token( $provider_key, $provider_data );
 		?>
 		<div class="acf-osm-setting acf-osm-setting-provider <?php echo $is_parent_disabled ? 'disabled' : ''; ?>">
 
@@ -324,6 +327,20 @@ class SettingsOpenStreetMap extends Settings {
 					);
 					/* translators: %s map tile provider name */
 					esc_html_e( sprintf( __('Disable %s', 'acf-openstreeetmap-field' ), $provider_key ) );
+					?>
+					</label>
+
+					<label class="osm-proxy-option">
+					<?php
+
+					printf('<input class="osm-proxy" type="checkbox" name="%s" value="1" %s />',
+						sprintf('acf_osm_proxy[%s]',
+							esc_attr( $provider_key )
+						),
+						checked( isset( $proxy_option[$provider_key] ) && $proxy_option[$provider_key], true, false )
+					);
+					/* translators: %s map tile provider name */
+					esc_html_e( sprintf( __('Enable Proxy for %s (beta)', 'acf-openstreeetmap-field' ), $provider_key ) );
 					?>
 					</label>
 				</div>
@@ -534,6 +551,19 @@ class SettingsOpenStreetMap extends Settings {
 	public function sanitize_providers( $values ) {
 		try {
 			$values = array_map( [ $this, 'boolval_recursive' ], (array) $values );
+		} catch ( \Exception $err ) {
+			$values = [];
+		}
+		return $values;
+	}
+
+	/**
+	 *
+	 */
+	public function sanitize_proxy( $values ) {
+		try {
+			$values = array_filter( (array) $values );
+			$values = array_map( 'boolval', $values );
 		} catch ( \Exception $err ) {
 			$values = [];
 		}

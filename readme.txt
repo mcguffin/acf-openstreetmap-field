@@ -4,7 +4,7 @@ Donate link: https://donate.openstreetmap.org/
 Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
-Tested up to: 6.4
+Tested up to: 6.6
 Stable tag: 1.5.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -42,6 +42,11 @@ You can choose from a long list of map styles and it supports multiple markers.
  - *0:* No markers
  - *Any other value:* Maximum number of markers. If the return format is *iFrame* there can ony be one marker.
 
+## Map Proxy
+The plugin comes with a proxy mechanism for map tiles. If enabled the Browser will load the tiles from your server rather than directly from the tile provider.
+
+Use the proxy to hide sensitive credentials from the users out there or if you have to comply with local privacy regulations. the European GDPR.
+
 ## Development
 
 Please head over to the source code [on Github](https://github.com/mcguffin/acf-openstreetmap-field).
@@ -54,6 +59,7 @@ Please head over to the source code [on Github](https://github.com/mcguffin/acf-
 - The [very same](https://github.com/perliedman/leaflet-control-geocoder/graphs/contributors) for [Leaflet Control Geocode](https://github.com/perliedman/leaflet-control-geocoder)
 - [Dominik Moritz](https://www.domoritz.de/) who delighted us with [Leaflet locate control](https://github.com/domoritz/leaflet-locatecontrol)
 - Numerous individuals and organizations who provide wonderful Map related services free of charge. (You are credited in the map, I hope)
+- The proxy feature was inspired by an article by Klaus Meffert, Dr. DSGVO Blog, [Link (German)](https://dr-dsgvo.de/datenschutzfreundliches-karten-plugin-fur-webseiten-statt-google-maps-neue-moglichkeiten)
 
 == Installation ==
 
@@ -113,6 +119,13 @@ The global Leaflet object is no longer available.
 
 
 == Changelog ==
+
+= 1.6.0 =
+ - Introduce Map Proxy
+
+= 1.5.7. =
+ - Fix: Backend Map broken
+ - Fix: Geocoded result not stored in raw data
 
 = 1.5.6. =
 Fix: PHP notice version_compare

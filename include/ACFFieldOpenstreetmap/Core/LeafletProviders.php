@@ -20,12 +20,13 @@ class LeafletProviders extends Singleton {
 
 	/**
 	 *	Returns raw leaflet providers
-	 *	@param array $filters credentials|enabled
+	 *	@param array $filters credentials|proxied|enabled
+	 *	@param boolean $unfiltered Whether to apply filters
 	 *	@return array
 	 */
-	public function get_providers( $filters = [] ) {
-		$core = Core::instance();
-
+	public function get_providers( $filters = [], $unfiltered = false ) {
+		$core      = Core::instance();
+		$proxies   = MapProxy::instance()->get_proxies();
 
 		if ( is_null( $this->leaflet_providers ) ) {
 			$this->leaflet_providers = json_decode( $core->read_file( 'etc/leaflet-providers.json' ), true );
@@ -52,7 +53,17 @@ class LeafletProviders extends Singleton {
 				// remove providers with empty tokens
 				$providers = array_filter( $providers );
 
-				$providers = apply_filters( 'acf_osm_leaflet_providers_'.$filter, $providers );
+				if ( ! $unfiltered ) {
+					$providers = apply_filters( 'acf_osm_leaflet_providers_'.$filter, $providers );
+				}
+			}
+
+			if ( 'proxied' === $filter ) {
+
+				$providers = array_filter( $providers, function( $el, $provider_key ) use ( $proxies ) {
+					return in_array( $provider_key, $proxies );
+				},  ARRAY_FILTER_USE_BOTH );
+
 			}
 
 			if ( 'enabled' === $filter ) {
@@ -83,12 +94,13 @@ class LeafletProviders extends Singleton {
 
 		}
 
-		$providers = apply_filters( 'acf_osm_leaflet_providers', $providers );
+		if ( ! $unfiltered ) {
+			$providers = apply_filters( 'acf_osm_leaflet_providers', $providers );
+		}
 
 		return $providers;
 
 	}
-
 
 	/**
 	 *	Get token configuration options
@@ -113,8 +125,6 @@ class LeafletProviders extends Singleton {
 
 		return $token_options;
 	}
-
-
 
 	/**
 	 *	Get a flat leaflet provider list
@@ -161,6 +171,29 @@ class LeafletProviders extends Singleton {
 	public function get_layer_config() {
 		return $this->filter_recursive( get_option( 'acf_osm_provider_tokens', [] ) );
 	}
+
+	/**
+	 *	Convert string variant definitions to object
+	 */
+	public function unify_provider_variants( $provider ) {
+		if ( isset( $provider['variants'] ) ) {
+			$provider['variants'] = array_map( function( $variant ) {
+				if ( is_string( $variant ) ) {
+					$variant = [
+						'options' => [
+							'variant' => $variant,
+						]
+					];
+				}
+				if ( ! isset( $variant['options'] ) ) {
+					$variant['options'] = [];
+				}
+				return $variant;
+			}, $provider['variants'] );
+		}
+		return $provider;
+	}
+
 
 	/**
 	 *	@param array $arr

@@ -5,7 +5,8 @@ import ResetLayers from 'leaflet/control-reset-layers';
 let currentLayer = false,
 	currentOverlay = false;
 
-const { options, providers } = acf_osm;
+const { options } = acf_osm_settings;
+const { providers } = acf_osm;
 
 
 $(document).on('acf-osm-map-init',function(e){

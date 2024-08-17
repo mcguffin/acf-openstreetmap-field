@@ -54,7 +54,7 @@ class Core extends Plugin {
 		 *
 		 *	@param $marker_icon_html string Additional Icon HTML.
 		 */
-		$marker_html = apply_filters('acf_osm_marker_html', false );
+		$marker_html = apply_filters( 'acf_osm_marker_html', false );
 
 		if ( $marker_html !== false ) {
 			$marker_html = wp_kses_post( $marker_html );
@@ -62,7 +62,6 @@ class Core extends Plugin {
 
 		$osm_l10n = [
 			'options'	=> [
-				'layer_config'	=> $leaflet_providers->get_layer_config(),
 				'marker'		=> [
 
 					'html'		=> $marker_html,
@@ -98,6 +97,11 @@ class Core extends Plugin {
 
 			],
 			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
+		];
+		$osm_settings = [
+			'options' => [
+				'layer_config'	=> $leaflet_providers->get_layer_config(), // settings only
+			],
 		];
 		$osm_admin = [
 			'options'	=> [
@@ -197,6 +201,7 @@ class Core extends Plugin {
 		// settings js
 		wp_register_script( 'acf-osm-settings', $this->get_asset_url( 'assets/js/acf-osm-settings.js' ), [], $this->get_version() );
 		wp_localize_script( 'acf-osm-settings', 'acf_osm', $osm_l10n );
+		wp_localize_script( 'acf-osm-settings', 'acf_osm_settings', $osm_settings );
 
 		// settings css
 		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), ['leaflet'], $this->get_version() );
