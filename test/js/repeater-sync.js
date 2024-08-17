@@ -2,6 +2,10 @@
 
 (function($){
 
+	if ( typeof acf === 'undefined' ) {
+		return;
+	}
+
 	const classPrefix = 'osm-sync-'
 
 	const osmRepeaters = {}
