@@ -15,6 +15,7 @@
 }
 
 .leaflet-map {
+	user-select: none;
 	.block-editor__container & {
 		width:100%;
 		.leaflet-top,
