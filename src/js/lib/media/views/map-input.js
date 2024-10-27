@@ -351,7 +351,7 @@ class MapInput extends Backbone.View {
 		var _hold_timeout = 750,
 			_hold_wait_to = {};
 		const container     = this.map.getContainer()
-		//*
+		/*
 		container.addEventListener( 'pointerdown',e => {
 
 			console.log(e.bubbles)
