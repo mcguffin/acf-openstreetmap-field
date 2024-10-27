@@ -311,7 +311,7 @@ class MapInput extends Backbone.View {
 			this.initMarker( model );
 		} );
 
-		// dbltap is not firing on mobile
+		// adding marker pointer action
 		if ( L.Browser.touch && L.Browser.mobile ) {
 			this._add_marker_on_hold();
 		} else {
@@ -337,20 +337,11 @@ class MapInput extends Backbone.View {
 
 	_add_marker_on_hold() {
 
-		if ( L.Browser.pointer ) {
-			// use pointer events
-			this._add_marker_on_hold_pointer();
-		} else {
-			// use touch events
-			this._add_marker_on_hold_touch();
-		}
-		this.$el.addClass('add-marker-on-taphold')
-	}
+		const _hold_timeout = 750
+		const _hold_wait_to = {}
+		const container     = this.map.getContainer()
 
-	_add_marker_on_hold_pointer() {
-		var _hold_timeout = 750,
-			_hold_wait_to = {};
-		const container   = this.map.getContainer()
+		// TODO use https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture
 
 		// stop waiting for tap-hold
 		const pointerend  = e => {
@@ -364,21 +355,18 @@ class MapInput extends Backbone.View {
 			}
 
 			clearTimeout( _hold_wait_to[ 'p'+e.pointerId ].to )
-			container.removeEventListener('pointerup',pointerend)
-			container.removeEventListener('pointermove',pointerend)
+			container.removeEventListener( 'pointerup', pointerend )
+			container.removeEventListener( 'pointermove', pointerend )
 			delete _hold_wait_to[ 'p'+e.pointerId ]
 		}
-		//*
 		container.addEventListener( 'pointerdown',e => {
 
-			console.log(e.bubbles)
-			console.log('down',e)
 			// wait for tap-hold
 			_hold_wait_to[ 'p'+e.pointerId ] = {
 				to: setTimeout(() => {
 					var cp = this.map.mouseEventToContainerPoint(e);
 					var lp = this.map.containerPointToLayerPoint(cp)
-					console.log(cp,lp)
+
 					this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
 
 					_hold_wait_to[ 'p'+e.pointerId ] = false;
@@ -393,84 +381,8 @@ class MapInput extends Backbone.View {
 			container.addEventListener('pointermove', pointerend, { once: false, passive: false } )
 
 		}, { capture: true, passive: false } )
-		/*/
-		L.DomEvent
-			.on(this.map.getContainer(),'pointerdown', e => {
-				console.log('pointerdown',e)
-				_hold_wait_to[ 'p'+e.pointerId ] = setTimeout(() => {
-					var cp = this.map.mouseEventToContainerPoint(e);
-					var lp = this.map.containerPointToLayerPoint(cp)
-					console.log(cp,lp)
-					this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
 
-					_hold_wait_to[ 'p'+e.pointerId ] = false;
-				}, _hold_timeout );
-			})
-			.on(this.map.getContainer(), 'pointerup pointermove', e => {
-				console.log(e)
-				console.log(_hold_wait_to[ 'p'+e.pointerId ])
-				if ( !! _hold_wait_to[ 'p'+e.pointerId ] ) {
-					clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] );
-					delete _hold_wait_to[ 'p'+e.pointerId ]
-				}
-			});
-		//*/
-	}
-
-	_add_marker_on_hold_touch() {
-		const _hold_timeout = 750
-		let _hold_wait_to   = {}
-		/*
-		const container     = this.map.getContainer()
-		container.addEventLstener( 'touchstart', e => {
-			if ( e.touches.length !== 1 ) {
-				return;
-			}
-			console.log(e)
-			e.preventDefault()
-			e.stopImmediatePropagation()
-			_hold_wait_to[ 'p'+e.pointerId ] = setTimeout( () => {
-
-				var cp = this.map.mouseEventToContainerPoint(e.touches[0]);
-				var lp = this.map.containerPointToLayerPoint(cp)
-
-				this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
-
-				_hold_wait_to = false;
-			}, _hold_timeout );
-
-			container.addEventLstener('touchend', e => {
-				if ( ! _hold_wait_to[ 'p'+e.pointerId ] ) {
-					return
-				}
-				e.preventDefault()
-				e.stopImmediatePropagation()
-				clearTimeout(_hold_wait_to[ 'p'+e.pointerId ])
-				delete _hold_wait_to[ 'p'+e.pointerId ]
-			}, { once: true } )
-		})
-		/*/
-		L.DomEvent
-			.on( this.map.getContainer(), 'touchstart',e => {
-				console.log(e.touches.length)
-				if ( e.touches.length !== 1 ) {
-					return;
-				}
-				e.preventDefault()
-				_hold_wait_to = setTimeout( () => {
-
-					var cp = this.map.mouseEventToContainerPoint(e.touches[0]);
-					var lp = this.map.containerPointToLayerPoint(cp)
-
-					this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
-
-					_hold_wait_to[ 'p'+e.pointerId ] = false;
-				}, _hold_timeout );
-			})
-			.on( this.map.getContainer(), 'touchend touchmove', function(e){
-				!! _hold_wait_to[ 'p'+e.pointerId ] && (clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] ) || e.preventDefault());
-			});
-		//*/
+		this.$el.addClass('add-marker-on-taphold')
 	}
 
 	addMarkerByLatLng(latlng) {
