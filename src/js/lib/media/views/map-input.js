@@ -350,8 +350,15 @@ class MapInput extends Backbone.View {
 	_add_marker_on_hold_pointer() {
 		var _hold_timeout = 750,
 			_hold_wait_to = {};
-		const container     = this.map.getContainer()
-		/*
+		const container   = this.map.getContainer()
+		const pointerend  = e => {
+			if ( ! _hold_wait_to[ 'p'+e.pointerId ] ) {
+				return
+			}
+			console.log('up',e.type,e)
+			clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] )
+		}
+		//*
 		container.addEventListener( 'pointerdown',e => {
 
 			console.log(e.bubbles)
@@ -366,13 +373,8 @@ class MapInput extends Backbone.View {
 				_hold_wait_to[ 'p'+e.pointerId ] = false;
 			}, _hold_timeout );
 
-			container.addEventListener('pointerup', e => {
-				if ( ! _hold_wait_to[ 'p'+e.pointerId ] ) {
-					return
-				}
-				console.log('up',e)
-				clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] )
-			}, { once: true, passive: false } )
+			container.addEventListener('pointerup', pointerend, { once: true, passive: false } )
+			// container.addEventListener('pointermove', pointerend, { once: true, passive: false } )
 
 		}, { capture: true, passive: false } )
 		/*/
