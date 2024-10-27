@@ -57,6 +57,7 @@ class MapInput extends Backbone.View {
 	}
 
 	get canAddMarker() {
+		console.log('cnAddMarker',this.countMarkers , this.maxMarkers)
 		return this.countMarkers < this.maxMarkers
 	}
 
@@ -303,7 +304,7 @@ class MapInput extends Backbone.View {
 
 		this.icon = new L.DivIcon({
 			html: '',
-			className:'osm-marker-icon'
+			className: 'osm-marker-icon'
 		});
 
 		this.markers.forEach( model => {
@@ -335,6 +336,7 @@ class MapInput extends Backbone.View {
 	}
 
 	_add_marker_on_hold() {
+
 		if ( L.Browser.pointer ) {
 			// use pointer events
 			this._add_marker_on_hold_pointer();
@@ -348,6 +350,32 @@ class MapInput extends Backbone.View {
 	_add_marker_on_hold_pointer() {
 		var _hold_timeout = 750,
 			_hold_wait_to = {};
+		const container     = this.map.getContainer()
+		//*
+		container.addEventListener( 'pointerdown',e => {
+
+			console.log(e.bubbles)
+			console.log('down',e)
+
+			_hold_wait_to[ 'p'+e.pointerId ] = setTimeout(() => {
+				var cp = this.map.mouseEventToContainerPoint(e);
+				var lp = this.map.containerPointToLayerPoint(cp)
+				console.log(cp,lp)
+				this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
+
+				_hold_wait_to[ 'p'+e.pointerId ] = false;
+			}, _hold_timeout );
+
+			container.addEventListener('pointerup', e => {
+				if ( ! _hold_wait_to[ 'p'+e.pointerId ] ) {
+					return
+				}
+				console.log('up',e)
+				clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] )
+			}, { once: true, passive: false } )
+
+		}, { capture: true, passive: false } )
+		/*/
 		L.DomEvent
 			.on(this.map.getContainer(),'pointerdown', e => {
 				_hold_wait_to[ 'p'+e.pointerId ] = setTimeout(() => {
@@ -362,17 +390,48 @@ class MapInput extends Backbone.View {
 			.on(this.map.getContainer(), 'pointerup pointermove', e => {
 				!! _hold_wait_to[ 'p'+e.pointerId ] && clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] );
 			});
+		//*/
 	}
 
 	_add_marker_on_hold_touch() {
 		const _hold_timeout = 750
-		let _hold_wait_to = false
+		let _hold_wait_to   = {}
+		/*
+		const container     = this.map.getContainer()
+		container.addEventLstener( 'touchstart', e => {
+			if ( e.touches.length !== 1 ) {
+				return;
+			}
+			console.log(e)
+			e.preventDefault()
+			e.stopImmediatePropagation()
+			_hold_wait_to[ 'p'+e.pointerId ] = setTimeout( () => {
 
+				var cp = this.map.mouseEventToContainerPoint(e.touches[0]);
+				var lp = this.map.containerPointToLayerPoint(cp)
+
+				this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
+
+				_hold_wait_to = false;
+			}, _hold_timeout );
+
+			container.addEventLstener('touchend', e => {
+				if ( ! _hold_wait_to[ 'p'+e.pointerId ] ) {
+					return
+				}
+				e.preventDefault()
+				e.stopImmediatePropagation()
+				clearTimeout(_hold_wait_to[ 'p'+e.pointerId ])
+				delete _hold_wait_to[ 'p'+e.pointerId ]
+			}, { once: true } )
+		})
+		/*/
 		L.DomEvent
 			.on( this.map.getContainer(), 'touchstart',e => {
 				if ( e.touches.length !== 1 ) {
 					return;
 				}
+				e.preventDefault()
 				_hold_wait_to = setTimeout( () => {
 
 					var cp = this.map.mouseEventToContainerPoint(e.touches[0]);
@@ -380,16 +439,18 @@ class MapInput extends Backbone.View {
 
 					this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
 
-					_hold_wait_to = false;
+					_hold_wait_to[ 'p'+e.pointerId ] = false;
 				}, _hold_timeout );
 			})
-			.on(this.map.getContainer(), 'touchend touchmove', function(e){
-				!! _hold_wait_to && clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] );
+			.on( this.map.getContainer(), 'touchend touchmove', function(e){
+				!! _hold_wait_to[ 'p'+e.pointerId ] && (clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] ) || e.preventDefault());
 			});
+		//*/
 	}
 
 	addMarkerByLatLng(latlng) {
 		// no more markers
+		console.log('can',this.canAddMarker)
 		if ( ! this.canAddMarker ) {
 			return;
 		}
@@ -402,7 +463,7 @@ class MapInput extends Backbone.View {
 		});
 
 		this.plingMarker = true;
-		this.markers.add( model ); // will call initMarker > will add marker to map
+		const marker = this.markers.add( model ); // will call initMarker > will add marker to map
 		this.reverseGeocode( model );
 
 		this.el.dispatchEvent( new CustomEvent( 'osm-editor/create-marker', { detail: { model } } ), { bubbles: true } )
