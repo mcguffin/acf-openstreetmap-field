@@ -355,8 +355,10 @@ class MapInput extends Backbone.View {
 			if ( ! _hold_wait_to[ 'p'+e.pointerId ] ) {
 				return
 			}
-			console.log('up',e.type,e)
-			clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] )
+			const { x, y } = _hold_wait_to[ 'p'+e.pointerId ].coord
+			const delta    = Math.sqrt( Math.pow( e.clientX - x, 2 ) + Math.pow( e.clientY - y, 2 ) )
+			console.log('up',e.type,e,delta)
+			clearTimeout( _hold_wait_to[ 'p'+e.pointerId ].to )
 		}
 		//*
 		container.addEventListener( 'pointerdown',e => {
@@ -364,14 +366,22 @@ class MapInput extends Backbone.View {
 			console.log(e.bubbles)
 			console.log('down',e)
 
-			_hold_wait_to[ 'p'+e.pointerId ] = setTimeout(() => {
-				var cp = this.map.mouseEventToContainerPoint(e);
-				var lp = this.map.containerPointToLayerPoint(cp)
-				console.log(cp,lp)
-				this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
+			_hold_wait_to[ 'p'+e.pointerId ] = {
+				to: setTimeout(() => {
+					var cp = this.map.mouseEventToContainerPoint(e);
+					var lp = this.map.containerPointToLayerPoint(cp)
+					console.log(cp,lp)
+					this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
 
-				_hold_wait_to[ 'p'+e.pointerId ] = false;
-			}, _hold_timeout );
+					_hold_wait_to[ 'p'+e.pointerId ] = false;
+				}, _hold_timeout ),
+				coord: {
+					x: e.clientX,
+					y: e.clientY,
+				},
+			}
+
+			;
 
 			container.addEventListener('pointerup', pointerend, { once: true, passive: false } )
 			// container.addEventListener('pointermove', pointerend, { once: true, passive: false } )
