@@ -94,8 +94,6 @@ import 'leaflet/tile-layer-provider';
 		createMarkers.apply( el, [ data, map ] );
 
 		// reload maps when they become visible
-		visibilityObserver.observe(el);
-
 		el.addEventListener( 'acf-osm-show', e => {
 			map.invalidateSize();
 		} )
@@ -123,19 +121,24 @@ import 'leaflet/tile-layer-provider';
 		}
 	}
 
-	const visibilityObserver = new IntersectionObserver( function(entries,observer) {
-		entries.forEach(function(entry){
-			console.log('intersecting',entry.isIntersecting,entry)
-			if ( entry.isIntersecting ) {
-				entry.target.dispatchEvent( new CustomEvent( 'acf-osm-show', {
-					detail: { L: L }
-				} ) );
-			}
-		})
-	}, { root: document.body } )
-
 	// observe if new maps are added to the dom
 	if ( !! MutationObserver ) {
+		//
+		const visibilityObserver = new MutationObserver( function(entries,observer) {
+			entries
+				.filter( entry => !! entry.target.querySelector(leafletMapSelector) )
+				.forEach( entry => {
+					entry.target.querySelectorAll( leafletMapSelector ).forEach( el => {
+						if ( el.getBoundingClientRect().width > 0 ) {
+							el.dispatchEvent( new CustomEvent( 'acf-osm-show', {
+								detail: { L: L }
+							} ) );
+						}
+					} )
+				})
+		})
+
+		// observe added maps
 		const domObserver = new MutationObserver( function(entries,observer) {
 			entries.forEach( entry => {
 				leafletAll(entry.target)
@@ -143,7 +146,8 @@ import 'leaflet/tile-layer-provider';
 		});
 		window.addEventListener('DOMContentLoaded', e => {
 			leafletAll(document.body)
-			domObserver.observe(document.body, { subtree: true, childList: true } );
+			domObserver.observe( document.body, { subtree: true, childList: true } );
+			visibilityObserver.observe( document.body, { subtree: true, attributes: true } );
 		})
 	}
 
