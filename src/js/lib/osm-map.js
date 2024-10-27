@@ -125,6 +125,7 @@ import 'leaflet/tile-layer-provider';
 
 	const visibilityObserver = new IntersectionObserver( function(entries,observer) {
 		entries.forEach(function(entry){
+			console.log('intersecting',entry.isIntersecting,entry)
 			if ( entry.isIntersecting ) {
 				entry.target.dispatchEvent( new CustomEvent( 'acf-osm-show', {
 					detail: { L: L }
@@ -293,7 +294,6 @@ import 'leaflet/tile-layer-provider';
 		// domObserver.observe( document.body, { subtree: true, childList: true } );
 	})
 	document.addEventListener('acf-osm-map-added', e => {
-console.log(e)
 		if ( e.target.matches( leafletMapSelector ) ) {
 			acfLeaflet( e.target )
 		} else {
