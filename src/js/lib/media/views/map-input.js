@@ -351,22 +351,29 @@ class MapInput extends Backbone.View {
 		var _hold_timeout = 750,
 			_hold_wait_to = {};
 		const container   = this.map.getContainer()
+
+		// stop waiting for tap-hold
 		const pointerend  = e => {
 			if ( ! _hold_wait_to[ 'p'+e.pointerId ] ) {
 				return
 			}
 			const { x, y } = _hold_wait_to[ 'p'+e.pointerId ].coord
 			const delta    = Math.sqrt( Math.pow( e.clientX - x, 2 ) + Math.pow( e.clientY - y, 2 ) )
-			console.log(e.type,e)
-			console.log('delta',delta)
+			if ( delta < 1 ) {
+				return
+			}
+
 			clearTimeout( _hold_wait_to[ 'p'+e.pointerId ].to )
+			container.removeEventListener('pointerup',pointerend)
+			container.removeEventListener('pointermove',pointerend)
+			delete _hold_wait_to[ 'p'+e.pointerId ]
 		}
 		//*
 		container.addEventListener( 'pointerdown',e => {
 
 			console.log(e.bubbles)
 			console.log('down',e)
-
+			// wait for tap-hold
 			_hold_wait_to[ 'p'+e.pointerId ] = {
 				to: setTimeout(() => {
 					var cp = this.map.mouseEventToContainerPoint(e);
@@ -381,8 +388,6 @@ class MapInput extends Backbone.View {
 					y: e.clientY,
 				},
 			}
-
-			;
 
 			container.addEventListener('pointerup', pointerend, { once: false, passive: false } )
 			container.addEventListener('pointermove', pointerend, { once: false, passive: false } )
