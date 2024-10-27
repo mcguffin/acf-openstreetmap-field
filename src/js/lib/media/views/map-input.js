@@ -378,16 +378,18 @@ class MapInput extends Backbone.View {
 		/*/
 		L.DomEvent
 			.on(this.map.getContainer(),'pointerdown', e => {
+				console.log('pointerdown',e)
 				_hold_wait_to[ 'p'+e.pointerId ] = setTimeout(() => {
 					var cp = this.map.mouseEventToContainerPoint(e);
 					var lp = this.map.containerPointToLayerPoint(cp)
-
+					console.log(cp,lp)
 					this.addMarkerByLatLng( this.map.layerPointToLatLng(lp) )
 
 					_hold_wait_to[ 'p'+e.pointerId ] = false;
 				}, _hold_timeout );
 			})
 			.on(this.map.getContainer(), 'pointerup pointermove', e => {
+				console.log(e)
 				!! _hold_wait_to[ 'p'+e.pointerId ] && clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] );
 			});
 		//*/
@@ -428,6 +430,7 @@ class MapInput extends Backbone.View {
 		/*/
 		L.DomEvent
 			.on( this.map.getContainer(), 'touchstart',e => {
+				console.log(e.touches.length)
 				if ( e.touches.length !== 1 ) {
 					return;
 				}
