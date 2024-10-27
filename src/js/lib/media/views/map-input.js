@@ -390,7 +390,11 @@ class MapInput extends Backbone.View {
 			})
 			.on(this.map.getContainer(), 'pointerup pointermove', e => {
 				console.log(e)
-				!! _hold_wait_to[ 'p'+e.pointerId ] && clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] );
+				console.log(_hold_wait_to[ 'p'+e.pointerId ])
+				if ( !! _hold_wait_to[ 'p'+e.pointerId ] ) {
+					clearTimeout( _hold_wait_to[ 'p'+e.pointerId ] );
+					delete _hold_wait_to[ 'p'+e.pointerId ]
+				}
 			});
 		//*/
 	}
