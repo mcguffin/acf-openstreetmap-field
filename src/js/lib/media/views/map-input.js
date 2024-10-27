@@ -357,7 +357,8 @@ class MapInput extends Backbone.View {
 			}
 			const { x, y } = _hold_wait_to[ 'p'+e.pointerId ].coord
 			const delta    = Math.sqrt( Math.pow( e.clientX - x, 2 ) + Math.pow( e.clientY - y, 2 ) )
-			console.log('up',e.type,e,delta)
+			console.log(e.type,e)
+			console.log('delta',delta)
 			clearTimeout( _hold_wait_to[ 'p'+e.pointerId ].to )
 		}
 		//*
@@ -383,8 +384,8 @@ class MapInput extends Backbone.View {
 
 			;
 
-			container.addEventListener('pointerup', pointerend, { once: true, passive: false } )
-			// container.addEventListener('pointermove', pointerend, { once: true, passive: false } )
+			container.addEventListener('pointerup', pointerend, { once: false, passive: false } )
+			container.addEventListener('pointermove', pointerend, { once: false, passive: false } )
 
 		}, { capture: true, passive: false } )
 		/*/
