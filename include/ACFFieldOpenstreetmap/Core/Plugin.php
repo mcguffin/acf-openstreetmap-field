@@ -10,7 +10,7 @@ if ( ! defined('ABSPATH') ) {
 use ACFFieldOpenstreetmap\PostType;
 use ACFFieldOpenstreetmap\Compat;
 
-class Plugin extends PluginComponent {
+class Plugin extends Singleton {
 
 	/** @var string plugin main file */
 	private $plugin_file;
@@ -21,19 +21,12 @@ class Plugin extends PluginComponent {
 	/** @var string version */
 	private $_version = null;
 
-	/** @var string plugin components which might need upgrade */
-	private static $components = [];
-
 	/**
 	 *	@inheritdoc
 	 */
 	protected function __construct( $file ) {
 
 		$this->plugin_file = $file;
-
-		register_activation_hook( $this->get_plugin_file(), [ $this , 'activate' ] );
-		register_deactivation_hook( $this->get_plugin_file(), [ $this , 'deactivate' ] );
-		register_uninstall_hook( $this->get_plugin_file(), [ __CLASS__, 'uninstall' ] );
 
 		add_action( 'admin_init', [ $this, 'maybe_upgrade' ] );
 		add_filter( 'extra_plugin_headers', [ $this, 'add_plugin_header' ] );
@@ -150,65 +143,4 @@ class Plugin extends PluginComponent {
 		$path = pathinfo( $this->get_wp_plugin(), PATHINFO_DIRNAME );
 		load_plugin_textdomain( 'acf-openstreetmap-field', false, $path . '/languages' );
 	}
-
-	/**
-	 *	Fired on plugin activation
-	 */
-	public function activate() {
-
-		$this->maybe_upgrade();
-
-		foreach ( self::$components as $component ) {
-			$comp = $component::instance();
-			$comp->activate();
-		}
-	}
-
-	/**
-	 *	Fired on plugin updgrade
-	 *
-	 *	@param string $nev_version
-	 *	@param string $old_version
-	 *	@return array(
-	 *		'success' => bool,
-	 *		'messages' => array,
-	 * )
-	 */
-	public function upgrade( $new_version, $old_version ) {
-
-		$result = [
-			'success'	=> true,
-			'messages'	=> [],
-		];
-
-		foreach ( self::$components as $component ) {
-			$comp = $component::instance();
-			$upgrade_result = $comp->upgrade( $new_version, $old_version );
-			$result['success'] 		&= $upgrade_result['success'];
-			$result['messages'][]	=  $upgrade_result['message'];
-		}
-
-		return $result;
-	}
-
-	/**
-	 *	Fired on plugin deactivation
-	 */
-	public function deactivate() {
-		foreach ( self::$components as $component ) {
-			$comp = $component::instance();
-			$comp->deactivate();
-		}
-	}
-
-	/**
-	 *	Fired on plugin deinstallation
-	 */
-	public static function uninstall() {
-		foreach ( self::$components as $component ) {
-			$comp = $component::instance();
-			$comp->uninstall();
-		}
-	}
-
 }

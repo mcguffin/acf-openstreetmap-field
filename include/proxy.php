@@ -3,7 +3,9 @@
 if ( ! isset( $proxy_config ) ) {
 	die('No proxy config');
 }
+// match pattern /<provider>/<z>/<x>/<y><r>
 if ( ! preg_match( '/\/([a-z0-9\.]+)\/(\d+)\/(\d+)\/(\d+)(@2x)?$/i', $_SERVER['REQUEST_URI'], $matches ) ) {
+	http_response_code( 400 );
 	return;
 }
 
@@ -59,7 +61,7 @@ foreach ( [
 }
 
 /** @var int $http_status assume success */
-$http_status    = 200; // assume success
+$http_status    = 200;
 
 /** @var int $request_status 1: host resolved, 2: remote connected, 3: got filesize, 4: got mime type */
 $request_status = 0;
@@ -70,18 +72,19 @@ $ctx = stream_context_create(['http' => [
 	]],
 	[
 	'notification'  => function( $notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max ) use ( &$http_status, &$request_status ) {
-		$notification_codes = [
-			STREAM_NOTIFY_RESOLVE       => 'STREAM_NOTIFY_RESOLVE',
-			STREAM_NOTIFY_CONNECT       => 'STREAM_NOTIFY_CONNECT',
-			STREAM_NOTIFY_AUTH_REQUIRED => 'STREAM_NOTIFY_AUTH_REQUIRED',
-			STREAM_NOTIFY_MIME_TYPE_IS  => 'STREAM_NOTIFY_MIME_TYPE_IS',
-			STREAM_NOTIFY_FILE_SIZE_IS  => 'STREAM_NOTIFY_FILE_SIZE_IS',
-			STREAM_NOTIFY_REDIRECTED    => 'STREAM_NOTIFY_REDIRECTED',
-			STREAM_NOTIFY_PROGRESS      => 'STREAM_NOTIFY_PROGRESS',
-			STREAM_NOTIFY_COMPLETED     => 'STREAM_NOTIFY_COMPLETED',
-			STREAM_NOTIFY_FAILURE       => 'STREAM_NOTIFY_FAILURE',
-			STREAM_NOTIFY_FAILURE       => 'STREAM_NOTIFY_FAILURE',
-		];
+		// debugging
+		// $notification_codes = [
+		// 	STREAM_NOTIFY_RESOLVE       => 'STREAM_NOTIFY_RESOLVE',
+		// 	STREAM_NOTIFY_CONNECT       => 'STREAM_NOTIFY_CONNECT',
+		// 	STREAM_NOTIFY_AUTH_REQUIRED => 'STREAM_NOTIFY_AUTH_REQUIRED',
+		// 	STREAM_NOTIFY_MIME_TYPE_IS  => 'STREAM_NOTIFY_MIME_TYPE_IS',
+		// 	STREAM_NOTIFY_FILE_SIZE_IS  => 'STREAM_NOTIFY_FILE_SIZE_IS',
+		// 	STREAM_NOTIFY_REDIRECTED    => 'STREAM_NOTIFY_REDIRECTED',
+		// 	STREAM_NOTIFY_PROGRESS      => 'STREAM_NOTIFY_PROGRESS',
+		// 	STREAM_NOTIFY_COMPLETED     => 'STREAM_NOTIFY_COMPLETED',
+		// 	STREAM_NOTIFY_FAILURE       => 'STREAM_NOTIFY_FAILURE',
+		// 	STREAM_NOTIFY_FAILURE       => 'STREAM_NOTIFY_FAILURE',
+		// ];
 
 		switch ( $notification_code ) {
 			case STREAM_NOTIFY_RESOLVE:
@@ -90,24 +93,18 @@ $ctx = stream_context_create(['http' => [
 			case STREAM_NOTIFY_CONNECT:
 				$request_status = 2;
 				break;
-			// case STREAM_NOTIFY_AUTH_REQUIRED:
-			// 	break;
 			case STREAM_NOTIFY_FILE_SIZE_IS:
 				$request_status = 3;
 				break;
 			case STREAM_NOTIFY_MIME_TYPE_IS:
 				$request_status = 4;
 				break;
-			// case STREAM_NOTIFY_REDIRECTED:
-			// 	break;
 			case STREAM_NOTIFY_PROGRESS:
 				$request_status = 5;
 				break;
 			case STREAM_NOTIFY_FAILURE: // 404
 				$http_status = $message_code;
 				break;
-			// case STREAM_NOTIFY_AUTH_RESULT:
-			// 	break;
 		}
 	},
 ]);
