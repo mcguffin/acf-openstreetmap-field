@@ -96,6 +96,22 @@ $(document).on('acf-osm-map-init',function(e){
 			e.preventDefault();
 			addLayer( $(this).data('layer') );
 		})
+		.on('click','.acf-osm-settings [data-action="change-token"]',function(e){
+			e.preventDefault();
+			const btn = e.target
+			const div = document.createElement('div')
+			div.innerHTML = e.target.nextElementSibling.innerHTML
+			Array.from(div.childNodes).map( el => {
+				btn.closest('label').append(el)
+			})
+		})
+		.on('click','.acf-osm-settings [data-action="cancel-token"]',function(e){
+			const btn = e.target
+			const label = btn.closest('label')
+			while ( ! label.querySelector('template:last-child') && label.childNodes.length ) {
+				label.removeChild(label.lastChild)
+			}
+		})
 		.on('change','.osm-disable[type="checkbox"]',function(e){
 			$(this).closest('.acf-osm-setting').toggleClass('disabled',$(this).prop('checked'))
 		})

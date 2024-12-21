@@ -2,9 +2,7 @@
 
 namespace ACFFieldOpenstreetmap\Core;
 
-if ( ! defined('ABSPATH') ) {
-	die('FU!');
-}
+use ACFFieldOpenstreetmap\Helper;
 
 class LeafletProviders extends Singleton {
 
@@ -40,18 +38,14 @@ class LeafletProviders extends Singleton {
 				// get configured token
 				$tokens = get_option( 'acf_osm_provider_tokens', [] );
 
-				foreach ( $tokens as &$token ) {
-					$token = $this->filter_recursive( $token );
-					if ( empty( $token ) ) {
-						$token = false;
-					}
-				}
-
 				// merge tokens
 				$providers = array_replace_recursive( $providers, $tokens );
 
-				// remove providers with empty tokens
-				$providers = array_filter( $providers );
+				// remove providers without access tokens
+				$providers = array_filter( $providers, function( $provider, $provider_key ) {
+					return ! $this->needs_access_token( $provider_key, $provider )
+						|| $this->has_access_token( $provider_key, $provider );
+				}, ARRAY_FILTER_USE_BOTH );
 
 				if ( ! $unfiltered ) {
 					$providers = apply_filters( 'acf_osm_leaflet_providers_'.$filter, $providers );
@@ -89,9 +83,7 @@ class LeafletProviders extends Singleton {
 						}
 					}
 				}
-
 			}
-
 		}
 
 		if ( ! $unfiltered ) {
@@ -99,7 +91,6 @@ class LeafletProviders extends Singleton {
 		}
 
 		return $providers;
-
 	}
 
 	/**
@@ -209,5 +200,39 @@ class LeafletProviders extends Singleton {
 		return $arr;
 	}
 
+
+	/**
+	 *	Whether an access key needs to be entered to make this provider work.
+	 *
+	 *	@param string $provider_key
+	 *	@param Array $provider_data
+	 *	@return boolean Whether this map provider requires an access key and the access key is not configured yet
+	 */
+	public function needs_access_token( $provider_key, $provider_data ) {
+		foreach ( $provider_data['options'] as $option => $value ) {
+			if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value ) ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 *	Whether an access key needs to be entered to make this provider work.
+	 *
+	 *	@param string $provider_key
+	 *	@param Array $provider_data
+	 *	@return boolean Whether this map provider requires an access key and the access key is not configured yet
+	 */
+	public function has_access_token( $provider_key, $provider_data ) {
+		$token_option = get_option( 'acf_osm_provider_tokens' );
+		foreach ( $provider_data['options'] as $option => $value ) {
+			if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value ) ) ) {
+				return isset( $token_option[ $provider_key ][ 'options' ][ $option ] )
+					&& ! empty( $token_option[ $provider_key ][ 'options' ][ $option ] );
+			}
+		}
+		return false;
+	}
 
 }

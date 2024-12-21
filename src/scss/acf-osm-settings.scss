@@ -6,7 +6,7 @@
 
 .leaflet-bar-part {
 	.dashicons {
-		margin-top:4px;
+		margin-top: 4px;
 	}
 }
 
@@ -17,24 +17,24 @@
 		flex-wrap: wrap;
 		align-items: flex-start;
 		.layer-variant {
-			flex:0 1 250px;
-			padding:0.5em 0.5em 0.5em 0;
+			flex: 0 1 250px;
+			padding: 0.5em 0.5em 0.5em 0;
 			//display: flex;
 		}
 		.action-test {
-			margin-left:auto;
+			margin-left: auto;
 			font-weight: normal;
 		}
 	}
 	.acf-osm-tag {
 		display: inline-block;
-		padding:0.25em 0.5em;
-		font-size:0.8em;
-		color:#fff;
-		border-radius:1em;
-		line-height:1em;
-		margin-left:1em;
-		font-weight:normal;
+		padding: 0.25em 0.5em;
+		font-size: 0.8em;
+		color: #fff;
+		border-radius: 1em;
+		line-height: 1em;
+		margin-left: 1em;
+		font-weight: normal;
 		white-space: nowrap;
 		background-color: $wp-gray-darker;
 		&.warn {
@@ -45,22 +45,22 @@
 		position: relative;
 		margin-left:5px;
 		background-color: #fff;
-		max-width:300px; 
+		max-width:300px;
 		min-width:300px;
 	}
 	.acf-osm-test-map {
-		background:$wp-blue;
+		background: $wp-blue;
 		position: sticky;
-		top:32px;
+		top: 32px;
 	}
 	.leaflet-container {
-		min-height:400px;
-		height:calc( 100vh - 32px )
+		min-height: 400px;
+		height: calc( 100vh - 32px )
 	}
 }
 
 .acf-osm-setting {
-	transition:filter 0.3s;
+	transition: filter 0.3s;
 	&.disabled {
 		filter: grayscale(1) contrast(0.5) brightness(1.75);
 		.disabled {
@@ -70,10 +70,23 @@
 }
 
 .acf-osm-setting-provider {
-	background:#fff;
-	padding:10px 20px;
-	margin-bottom:5px;
+	background: #fff;
+	padding: 10px 20px;
+	margin-bottom: 5px;
 	h4 {
-		margin-bottom:0.33em;
+		margin-bottom: 0.33em;
+	}
+}
+.acf-osm-setting-access-key {
+	label {
+		[data-action="change-token"] {
+			margin-left: 0.5em;
+		}
+		&:has([data-action="cancel-token"]) {
+			:first-child,
+			[data-action="change-token"] {
+				display: none;
+			}
+		}
 	}
 }

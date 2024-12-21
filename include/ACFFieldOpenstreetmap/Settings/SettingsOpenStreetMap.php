@@ -7,6 +7,7 @@ if ( ! defined('ABSPATH') ) {
 }
 
 use ACFFieldOpenstreetmap\Core;
+use ACFFieldOpenstreetmap\Helper;
 
 class SettingsOpenStreetMap extends Settings {
 
@@ -90,7 +91,7 @@ class SettingsOpenStreetMap extends Settings {
 					<div class="acf-osm-provider-settings">
 					<?php
 
-					$provider_settings = $providers->get_providers();
+					$provider_settings = $providers->get_providers( [], true );
 
 					foreach ( $provider_settings as $provider_key => $provider_data ) {
 
@@ -129,13 +130,10 @@ class SettingsOpenStreetMap extends Settings {
 	public function enqueue_assets() {
 		$core = Core\Core::instance();
 		$core->register_assets();
-		/*
-		wp_enqueue_style( 'acf-osm-settings', $core->get_asset_url( 'assets/css/acf-osm-settings.css' ), array(), $core->get_version() );
-		/*/
+
 		// registering in Core\Core does not work ... why?
 		wp_enqueue_script( 'acf-osm-settings' );
 		wp_enqueue_style( 'acf-osm-settings' );
-		//*/
 	}
 
 	/**
@@ -290,20 +288,23 @@ class SettingsOpenStreetMap extends Settings {
 	 */
 	public function print_provider_setting( $provider_key, $provider_data ) {
 
+		$providers = Core\LeafletProviders::instance();
+
 //		@list( $provider_key, $provider_data ) = array_values( $args );
 		$provider_option    = get_option( 'acf_osm_providers' );
 		$proxy_option       = get_option( 'acf_osm_proxy' );
 
-		$needs_access_key   = false;
 		$is_parent_disabled = isset( $provider_option[$provider_key] ) && $provider_option[$provider_key] === false;
-		$needs_access_key   = $this->needs_access_token( $provider_key, $provider_data );
+		$needs_access_key   = $providers->needs_access_token( $provider_key, $provider_data );
+		$has_access_key     = $providers->has_access_token( $provider_key, $provider_data );
+
 		?>
 		<div class="acf-osm-setting acf-osm-setting-provider <?php echo $is_parent_disabled ? 'disabled' : ''; ?>">
 
 			<h3><?php
 
 				esc_html_e( $provider_key );
-				if ( ! $needs_access_key ) {
+				if ( ! $needs_access_key || $has_access_key ) {
 
 					$this->print_tags( $provider_data );
 					$this->print_test_link( $provider_key );
@@ -312,7 +313,7 @@ class SettingsOpenStreetMap extends Settings {
 			?></h3>
 			<?php
 
-			if ( ! $needs_access_key ) {
+			if ( ! $needs_access_key || $has_access_key ) {
 
 				?>
 				<div class="acf-osm-setting-base">
@@ -403,30 +404,6 @@ class SettingsOpenStreetMap extends Settings {
 	}
 
 	/**
-	 *	Whether an access key needs to be entered to make this provider work.
-	 *
-	 *	@param string $provider_key
-	 *	@param Array $provider_data
-	 *	@return boolean Whether this map provider requires an access key and the access key is not configured yet
-	 */
-	private function needs_access_token( $provider_key, $provider_data ) {
-		$token_option = get_option( 'acf_osm_provider_tokens' );
-		foreach ( $provider_data['options'] as $option => $value ) {
-			if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) ) {
-				if (
-					! isset( $token_option[ $provider_key ][ 'options' ][ $option ] )
-					|| empty( $token_option[ $provider_key ][ 'options' ][ $option ] )
-				) {
-					return true;
-				}
-
-			}
-		}
-		return false;
-
-	}
-
-	/**
 	 *	Print access token input fields
 	 *
 	 *	@param string $provider_key
@@ -441,25 +418,32 @@ class SettingsOpenStreetMap extends Settings {
 
 			if ( is_string($value) && ( 1 === preg_match( '/^<([^>]*)>$/imsU', $value, $matches ) ) ) {
 				$current_value = '';
-				if ( isset( $token_option[ $provider_key ][ 'options' ][ $option ] ) ) {
-					$current_value = $token_option[ $provider_key ][ 'options' ][ $option ];
-					$current_value = str_repeat( '*', strlen( $current_value ) );
-				}
+				$has_value = isset( $token_option[ $provider_key ][ 'options' ][ $option ]) && ! empty( $token_option[ $provider_key ][ 'options' ][ $option ] );
 				?>
+				<hr />
 				<div class="acf-osm-setting acf-osm-setting-access-key">
 					<h4><?php printf( '%s %s', esc_html( $provider_key ), esc_html( $option ) ); ?></h4>
 					<label>
 						<?php
+						if ( $has_value ) {
+							printf( '<em>%s %s</em>', esc_html( $option ), __( 'configured.', 'acf-openstreetmap-field' ) );
+							printf( '<button class="button-link" type="button" data-action="change-token">%s</button>', __('Reset','acf-openstreetmap-field') );
+							echo '<template>';
+						}
 
-					printf('<input type="text" name="%s" value="%s" class="large-text code" placeholder="%s" />',
-						//empty($current_value) ? 'text' : 'password',
-						sprintf('acf_osm_provider_tokens[%s][options][%s]',
-							$this->sanitize_key_case($provider_key), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-							$this->sanitize_key_case($option) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						),
-						esc_attr($current_value),
-						esc_attr($value)
-					);
+						printf('<input type="text" name="%s" value="%s" class="large-text code" placeholder="%s" />',
+							//empty($current_value) ? 'text' : 'password',
+							sprintf('acf_osm_provider_tokens[%s][options][%s]',
+								$this->sanitize_key_case($provider_key), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								$this->sanitize_key_case($option) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							),
+							esc_attr($current_value),
+							esc_attr($value)
+						);
+						if ( $has_value ) {
+							printf( '<button class="button-link" type="button" data-action="cancel-token">%s</button>', __('Cancel','acf-openstreetmap-field') );
+							echo '</template>';
+						}
 					?></label>
 				</div>
 				<?php
@@ -500,39 +484,10 @@ class SettingsOpenStreetMap extends Settings {
 
 		$prev_values = get_option('acf_osm_provider_tokens');
 
-		$values = [];
-
-		foreach ( $token_options as $provider => $provider_data ) {
-
-			$values[$provider] = [];
-			foreach ( $provider_data as $section => $config ) {
-				$values[$provider][$section] = [];
-				foreach( $config as $key => $value ) {
-					$prev_token = '';
-					if ( isset( $prev_values[$provider][$section][$key] ) ) {
-						$prev_token = $prev_values[$provider][$section][$key];
-					}
-
-					//
-					if ( isset( $new_values[$provider][$section][$key] ) ) {
-						// '' or '*****' or 'a-z0-9.-_+...'
-						$access_token = trim( $new_values[$provider][$section][$key] );
-						if ( preg_match( '/^([\*]+)$/', $access_token ) !== 0 ) {
-							// use old token
-							$values[$provider][$section][$key] = $prev_token;
-						} else { //
-							// new token OR token was deleted
-							$values[$provider][$section][$key] = $access_token;
-						}
-
-					} else {
-						// no token entered
-						$values[$provider][$section][$key] = $prev_token;
-
-					}
-				}
-			}
-		}
+		// merge new values
+		$values = array_replace_recursive( $prev_values, $new_values );
+		// remove empty values
+		$values = Helper\ArrayHelper::filter_recursive( $values );
 
 		return $values;
 	}
