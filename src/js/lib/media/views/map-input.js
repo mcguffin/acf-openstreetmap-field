@@ -511,9 +511,9 @@ class MapInput extends Backbone.View {
 					model.set( marker_data );
 				}
 
-				this.el.dispatchEvent( new CustomEvent( 'osm-editor/marker-geocode-result', { detail: {  model, geocode: e.geocode, previousGeocode } } ), { bubbles: true } )
-
 				this.map.setView( latlng, this.map.getZoom() ); // keep zoom, might be confusing else
+
+				this.el.dispatchEvent( new CustomEvent( 'osm-editor/marker-geocode-result', { detail: {  model, geocode: e.geocode, previousGeocode } } ), { bubbles: true } )
 
 			})
 			.addTo( this.map );
@@ -584,10 +584,12 @@ class MapInput extends Backbone.View {
 			 *	@param array results
 			 */
 			geocode => {
-				this.el.dispatchEvent( new CustomEvent( 'osm-editor/marker-geocode-result', { detail: {  model, geocode, previousGeocode: model.get('geocode' ) }} ), { bubbles: true } )
+				const previousGeocode = model.get('geocode' )
 
 				model.set('geocode', geocode );
 				model.set('default_label', this.parseGeocodeResult( geocode, latlng ) );
+
+				this.el.dispatchEvent( new CustomEvent( 'osm-editor/marker-geocode-result', { detail: {  model, geocode, previousGeocode }} ), { bubbles: true } )
 			}
 		);
 	}
