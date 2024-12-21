@@ -1,6 +1,6 @@
 {
 	"OpenStreetMap": {
-		"url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+		"url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
 		"options": {
 			"maxZoom": 19,
 			"attribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"
@@ -8,7 +8,7 @@
 		"variants": {
 			"Mapnik": {},
 			"DE": {
-				"url": "https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
+				"url": "https://tile.openstreetmap.de/{z}/{x}/{y}.png",
 				"options": {
 					"maxZoom": 18
 				}
@@ -57,6 +57,39 @@
 						]
 					]
 				}
+			},
+			"CAT": {
+				"url": "https://tile.openstreetmap.bzh/ca/{z}/{x}/{y}.png",
+				"options": {
+					"attribution": "{attribution.OpenStreetMap}, Tiles courtesy of <a href=\"https://www.openstreetmap.cat\" target=\"_blank\">Breton OpenStreetMap Team</a>"
+				}
+			}
+		}
+	},
+	"MapTilesAPI": {
+		"url": "https://maptiles.p.rapidapi.com/{variant}/{z}/{x}/{y}.png?rapidapi-key={apikey}",
+		"options": {
+			"attribution": "&copy; <a href=\"http://www.maptilesapi.com/\">MapTiles API</a>, {attribution.OpenStreetMap}",
+			"variant": "en/map/v1",
+			"apikey": "<insert your api key here>",
+			"maxZoom": 19,
+			"variant": "en/map/v1"
+		},
+		"variants": {
+			"OSMEnglish": {
+				"options": {
+					"variant": "en/map/v1"
+				}
+			},
+			"OSMFrancais": {
+				"options": {
+					"variant": "fr/map/v1"
+				}
+			},
+			"OSMEspagnol": {
+				"options": {
+					"variant": "es/map/v1"
+				}
 			}
 		}
 	},
@@ -83,6 +116,7 @@
 	},
 	"OpenRailwayMap": {
 		"url": "https://{s}.tiles.openrailwaymap.org/{variant}/{z}/{x}/{y}.png",
+		"url": "https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png",
 		"options": {
 			"maxZoom": 19,
 			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"https://www.OpenRailwayMap.org\">OpenRailwayMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)",
@@ -100,6 +134,7 @@
 	"OpenFireMap": {
 		"url": "https://openfiremap.de/hytiles/{z}/{x}/{y}.png",
 		"options": {
+			"minZoom": 11,
 			"maxZoom": 18,
 			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"http://www.openfiremap.org\">OpenFireMap</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)"
 		},
@@ -114,23 +149,101 @@
 		"isOverlay": true
 	},
 	"Stadia": {
-		"url": "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png",
+		"url": "https://tiles.stadiamaps.com/tiles/{variant}/{z}/{x}/{y}{r}.{ext}",
 		"options": {
+			"minZoom": 0,
 			"maxZoom": 20,
-			"attribution": "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors"
+			"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+			"variant": "alidade_smooth",
+			"ext": "png"
 		},
 		"variants": {
-			"AlidadeSmooth": {
-				"url": "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
+			"AlidadeSmooth": "alidade_smooth",
+			"AlidadeSmoothDark": "alidade_smooth_dark",
+			"AlidadeSatellite": {
+				"options": {
+					"attribution": "&copy; CNES, Distribution Airbus DS, © Airbus DS, © PlanetObserver (Contains Copernicus Data) | &copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "alidade_satellite",
+					"ext": "jpg"
+				}
 			},
-			"AlidadeSmoothDark": {
-				"url": "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
+			"OSMBright": "osm_bright",
+			"Outdoors": "outdoors",
+			"StamenToner": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_toner"
+				}
 			},
-			"OSMBright": {
-				"url": "https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png"
+			"StamenTonerBackground": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_toner_background"
+				}
 			},
-			"Outdoors": {
-				"url": "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png"
+			"StamenTonerLines": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_toner_lines"
+				},
+				"isOverlay": true
+			},
+			"StamenTonerLabels": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_toner_labels"
+				},
+				"isOverlay": true
+			},
+			"StamenTonerLite": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_toner_lite"
+				}
+			},
+			"StamenWatercolor": {
+				"url": "https://tiles.stadiamaps.com/tiles/{variant}/{z}/{x}/{y}.{ext}",
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_watercolor",
+					"ext": "jpg",
+					"minZoom": 1,
+					"maxZoom": 16
+				}
+			},
+			"StamenTerrain": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_terrain",
+					"minZoom": 0,
+					"maxZoom": 18
+				}
+			},
+			"StamenTerrainBackground": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_terrain_background",
+					"minZoom": 0,
+					"maxZoom": 18
+				}
+			},
+			"StamenTerrainLabels": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_terrain_labels",
+					"minZoom": 0,
+					"maxZoom": 18
+				},
+				"isOverlay": true
+			},
+			"StamenTerrainLines": {
+				"options": {
+					"attribution": "&copy; <a href=\"https://www.stadiamaps.com/\" target=\"_blank\">Stadia Maps</a> &copy; <a href=\"https://www.stamen.com/\" target=\"_blank\">Stamen Design</a> &copy; <a href=\"https://openmaptiles.org/\" target=\"_blank\">OpenMapTiles</a> {attribution.OpenStreetMap}",
+					"variant": "stamen_terrain_lines",
+					"minZoom": 0,
+					"maxZoom": 18
+				},
+				"isOverlay": true
 			}
 		}
 	},
@@ -143,11 +256,7 @@
 			"maxZoom": 22
 		},
 		"variants": {
-			"OpenCycleMap": {
-				"options": {
-					"variant": "cycle"
-				}
-			},
+			"OpenCycleMap": "cycle",
 			"Transport": {
 				"options": {
 					"variant": "transport"
@@ -163,31 +272,22 @@
 					"variant": "spinal-map"
 				}
 			},
-			"Landscape": {
-				"options": {
-					"variant": "landscape"
-				}
-			},
-			"Outdoors": {
-				"options": {
-					"variant": "outdoors"
-				}
-			},
-			"Pioneer": {
-				"options": {
-					"variant": "pioneer"
-				}
-			},
-			"MobileAtlas": {
-				"options": {
-					"variant": "mobile-atlas"
-				}
-			},
-			"Neighbourhood": {
-				"options": {
-					"variant": "neighbourhood"
-				}
-			}
+			"Landscape": "landscape",
+			"Outdoors": "outdoors",
+			"Pioneer": "pioneer",
+			"MobileAtlas": "mobile-atlas",
+			"Neighbourhood": "neighbourhood"
+		}
+	},
+	"BaseMapDE": {
+		"url": "https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/{variant}/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png",
+		"options": {
+			"attribution": "Map data: &copy; <a href=\"http://www.govdata.de/dl-de/by-2-0\">dl-de/by-2-0</a>",
+			"variant": "de_basemapde_web_raster_farbe"
+		},
+		"variants": {
+			"Color": "de_basemapde_web_raster_farbe",
+			"Grey": "de_basemapde_web_raster_grau"
 		}
 	},
 	"CyclOSM": {
@@ -240,133 +340,23 @@
 			"maxZoom": 21
 		},
 		"variants": {
-			"Streets": {
-				"options": {
-					"variant": "streets"
-				}
-			},
-			"Basic": {
-				"options": {
-					"variant": "basic"
-				}
-			},
-			"Bright": {
-				"options": {
-					"variant": "bright"
-				}
-			},
-			"Pastel": {
-				"options": {
-					"variant": "pastel"
-				}
-			},
-			"Positron": {
-				"options": {
-					"variant": "positron"
-				}
-			},
+			"Streets": "streets",
+			"Basic": "basic",
+			"Bright": "bright",
+			"Pastel": "pastel",
+			"Positron": "positron",
 			"Hybrid": {
 				"options": {
 					"variant": "hybrid",
 					"ext": "jpg"
 				}
 			},
-			"Toner": {
-				"options": {
-					"variant": "toner"
-				}
-			},
-			"Topo": {
-				"options": {
-					"variant": "topo"
-				}
-			},
-			"Voyager": {
-				"options": {
-					"variant": "voyager"
-				}
-			},
+			"Toner": "toner",
+			"Topo": "topo",
+			"Voyager": "voyager",
 			"Ocean": "ocean",
 			"Backdrop": "backdrop",
 			"Dataviz": "dataviz"
-		}
-	},
-	"Stamen": {
-		"url": "https://tiles.stadiamaps.com/tiles/{variant}/{z}/{x}/{y}{r}.{ext}",
-		"options": {
-			"attribution": "&copy; <a href=\"https://stadiamaps.com/\">Stadia Maps</a>, &copy; <a href=\"https://openmaptiles.org/\">OpenMapTiles</a> &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
-			"minZoom": 0,
-			"maxZoom": 20,
-			"variant": "stamen_toner",
-			"ext": "png"
-		},
-		"variants": {
-			"Toner": {
-				"options": {
-					"variant": "stamen_toner"
-				}
-			},
-			"TonerBackground": {
-				"options": {
-					"variant": "stamen_toner_background"
-				}
-			},
-			"TonerLines": {
-				"options": {
-					"variant": "stamen_toner_lines"
-				},
-				"isOverlay": true
-			},
-			"TonerLabels": {
-				"options": {
-					"variant": "stamen_toner_labels"
-				},
-				"isOverlay": true
-			},
-			"TonerLite": {
-				"options": {
-					"variant": "stamen_toner_lite"
-				}
-			},
-			"Watercolor": {
-				"url": "https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.{ext}",
-				"options": {
-					"ext": "jpg",
-					"minZoom": 1,
-					"maxZoom": 16
-				}
-			},
-			"Terrain": {
-				"options": {
-					"variant": "stamen_terrain",
-					"minZoom": 0,
-					"maxZoom": 18
-				}
-			},
-			"TerrainBackground": {
-				"options": {
-					"variant": "stamen_terrain_background",
-					"minZoom": 0,
-					"maxZoom": 18
-				}
-			},
-			"TerrainLines": {
-				"url": "https://tiles.stadiamaps.com/tiles/stamen_terrain_lines/{z}/{x}/{y}{r}.png",
-				"options": {
-					"variant": "terrain-lines",
-					"minZoom": 0,
-					"maxZoom": 18
-				}
-			},
-			"TerrainLabels": {
-				"url": "https://tiles.stadiamaps.com/tiles/stamen_terrain_labels/{z}/{x}/{y}{r}.png",
-				"options": {
-					"variant": "terrain-labels",
-					"minZoom": 0,
-					"maxZoom": 18
-				},
-				"isOverlay": true
-			}
 		}
 	},
 	"TomTom": {
@@ -374,7 +364,7 @@
 		"options": {
 			"variant": "basic",
 			"maxZoom": 22,
-			"attribution": "<a href=\"https://tomtom.com\" target=\"_blank\">&copy;  1992 - 2022 TomTom.</a> ",
+			"attribution": "<a href=\"https://tomtom.com\" target=\"_blank\">&copy;  1992 - 2024 TomTom.</a> ",
 			"subdomains": "abcd",
 			"style": "main",
 			"ext": "png",
@@ -412,14 +402,6 @@
 					"attribution": "{attribution.Esri} &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012"
 				}
 			},
-			"DeLorme": {
-				"options": {
-					"variant": "Specialty/DeLorme_World_Base_Map",
-					"minZoom": 1,
-					"maxZoom": 11,
-					"attribution": "{attribution.Esri} &mdash; Copyright: &copy;2012 DeLorme"
-				}
-			},
 			"WorldTopoMap": {
 				"options": {
 					"variant": "World_Topo_Map",
@@ -454,9 +436,8 @@
 				}
 			},
 			"OceanBasemap": {
-				"url": "https://services.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
 				"options": {
-					"variant": "Ocean_Basemap",
+					"variant": "Ocean/World_Ocean_Base",
 					"maxZoom": 13,
 					"attribution": "{attribution.Esri} &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri"
 				}
@@ -496,7 +477,7 @@
 	"HEREv3": {
 		"url": "https://{s}.{base}.maps.ls.hereapi.com/maptile/2.1/{type}/{mapID}/{variant}/{z}/{x}/{y}/{size}/{format}?apiKey={apiKey}&lg={language}",
 		"options": {
-			"attribution": "Map &copy; 1987-2022 <a href=\"http://developer.here.com\">HERE</a>",
+			"attribution": "Map &copy; 1987-2024 <a href=\"http://developer.here.com\">HERE</a>",
 			"subdomains": "1234",
 			"mapID": "newest",
 			"apiKey": "<insert your apiKey here>",
@@ -678,7 +659,7 @@
 					22.576904
 				]
 			],
-			"attribution": "{attribution.OpenStreetMap}, vizualization CC-By-SA 2.0 <a href=\"http://freemap.sk\">Freemap.sk</a>"
+			"attribution": "{attribution.OpenStreetMap}, visualization CC-By-SA 2.0 <a href=\"http://freemap.sk\">Freemap.sk</a>"
 		}
 	},
 	"MtbMap": {
@@ -832,7 +813,7 @@
 				]
 			],
 			"attribution": "Kaartgegevens &copy; <a href=\"https://www.kadaster.nl\">Kadaster</a>",
-			"variant": "brtachtergrondkaart"
+			"variant": "standaard"
 		},
 		"variants": {
 			"standaard": "standaard",
@@ -908,7 +889,7 @@
 			},
 			"ModisTerraChlorophyll": {
 				"options": {
-					"variant": "MODIS_Terra_Chlorophyll_A",
+					"variant": "MODIS_Terra_L2_Chlorophyll_A",
 					"format": "png",
 					"maxZoom": 7,
 					"opacity": 0.75
@@ -917,10 +898,10 @@
 		}
 	},
 	"NLS": {
-		"url": "https://api.maptiler.com/tiles/{variant}/{z}/{x}/{y}.jpg?key={key}",
+		"url": "https://api.maptiler.com/tiles/{variant}/{z}/{x}/{y}{dotext}?key={key}",
 		"options": {
-			"attribution": "<a href=\"https://maps.nls.uk/projects/subscription-api\">National Library of Scotland Historic Maps</a>",
 			"key": "<insert your MapTiler Cloud API key here>",
+			"attribution": "<a href=\"http://maps.nls.uk/projects/subscription-api\">National Library of Scotland Historic Maps</a>",
 			"bounds": [
 				[
 					49.6,
@@ -932,24 +913,53 @@
 				]
 			],
 			"minZoom": 1,
-			"maxZoom": 18,
-			"variant": "uk-osgb63k1885"
+			"maxZoom": 22,
+			"variant": "uk-osgb63k1885",
+			"dotext":".jpg"
 		},
 		"variants": {
-			"osgb63k1885": "uk-osgb63k1885",
-			"osgb1888": "uk-osgb1888",
+			"osgb63k1885": {
+				"options": {
+					"variant": "uk-osgb63k1885",
+					"dotext": ".png"
+				}
+			},
+			"osgb1888": {
+				"options": {
+					"variant": "uk-osgb1888",
+					"dotext": ""
+				}
+			},
 			"osgb10k1888": "uk-osgb10k1888",
 			"osgb1919": "uk-osgb1919",
 			"osgb25k1937": "uk-osgb25k1937",
 			"osgb63k1955": "uk-osgb63k1955",
-			"oslondon1k1893": "uk-oslondon1k1893"
-		}
+			"oslondon1k1893": {
+				"options": {
+					"minZoom": 9,
+					"maxZoom": 22,
+					"variant": "uk-oslondon1k1893",
+					"bounds": [
+						[
+							51.65,
+							-0.2
+						],
+						[
+							51.2,
+							0.3
+						]
+					]
+				}
+			}
+		},
+		"isOverlay": true
 	},
 	"JusticeMap": {
-		"url": "https://www.justicemap.org/tile/{size}/{variant}/{z}/{x}/{y}.png",
+		"url": "https://maptile3.org/{year}/county/{variant}/{z}/{x}/{y}.png",
 		"options": {
 			"attribution": "<a href=\"http://www.justicemap.org/terms.php\">Justice Map</a>",
 			"size": "county",
+			"year": "2020",
 			"bounds": [
 				[
 					14,
@@ -976,7 +986,7 @@
 		"isOverlay": true
 	},
 	"GeoportailFrance": {
-		"url": "https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER={variant}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+		"url": "https://data.geopf.fr/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER={variant}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
 		"options": {
 			"attribution": "<a target=\"_blank\" href=\"https://www.geoportail.gouv.fr/\">Geoportail France</a>",
 			"bounds": [
@@ -991,7 +1001,6 @@
 			],
 			"minZoom": 2,
 			"maxZoom": 18,
-			"apikey": "choisirgeoportail",
 			"format": "image/png",
 			"style": "normal",
 			"variant": "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2"
@@ -1018,38 +1027,28 @@
 			}
 		}
 	},
-	"OneMapSG": {
-		"url": "https://maps-{s}.onemap.sg/v3/{variant}/{z}/{x}/{y}.png",
+	"USGS": {
+		"url": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",
 		"options": {
-			"variant": "Default",
-			"minZoom": 11,
-			"maxZoom": 18,
-			"bounds": [
-				[
-					1.56073,
-					104.11475
-				],
-				[
-					1.16,
-					103.502
-				]
-			],
-			"attribution": "<img src=\"https://docs.onemap.sg/maps/images/oneMap64-01.png\" style=\"height:20px;width:20px;\"/> New OneMap | Map data &copy; contributors, <a href=\"http://SLA.gov.sg\">Singapore Land Authority</a>"
+			"maxZoom": 20,
+			"attribution": "Tiles courtesy of the <a href=\"https://usgs.gov/\">U.S. Geological Survey</a>"
 		},
 		"variants": {
-			"Default":  "Default",
-			"Night": "Night",
-			"Original": "Original",
-			"Grey": "Grey",
-			"LandLot": "LandLot"
+			"USTopo": {},
+			"USImagery": {
+				"url": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"
+			},
+			"USImageryTopo": {
+				"url": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}"
+			}
 		}
 	},
 	"WaymarkedTrails": {
 		"url": "https://tile.waymarkedtrails.org/{variant}/{z}/{x}/{y}.png",
 		"options": {
 			"maxZoom": 18,
-			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"https://waymarkedtrails.org\">waymarkedtrails.org</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)",
-			"variant": "hiking"
+			"variant": "hiking",
+			"attribution": "Map data: {attribution.OpenStreetMap} | Map style: &copy; <a href=\"https://waymarkedtrails.org\">waymarkedtrails.org</a> (<a href=\"https://creativecommons.org/licenses/by-sa/3.0/\">CC-BY-SA</a>)"
 		},
 		"variants": {
 			"hiking": "hiking",
@@ -1083,8 +1082,8 @@
 		"options": {
 			"minZoom": 9,
 			"maxZoom": 18,
-			"attribution": "Map data: {attribution.OpenStreetMap} & ODbL, &copy; <a href=\"https://www.opensnowmap.org/iframes/data.html\">www.opensnowmap.org</a> <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>",
-			"variant": "pistes"
+			"variant": "pistes",
+			"attribution": "Map data: {attribution.OpenStreetMap} & ODbL, &copy; <a href=\"https://www.opensnowmap.org/iframes/data.html\">www.opensnowmap.org</a> <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>"
 		},
 		"variants": {
 			"pistes": "pistes"
@@ -1094,7 +1093,7 @@
 	"AzureMaps": {
 		"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&language={language}&subscription-key={subscriptionKey}",
 		"options": {
-			"attribution": "See https://docs.microsoft.com/en-US/rest/api/maps/renderv2/getmaptilepreview for details.",
+			"attribution": "See https://docs.microsoft.com/en-us/rest/api/maps/render-v2/get-map-tile for details.",
 			"apiVersion": "2.0",
 			"variant": "microsoft.imagery",
 			"subscriptionKey": "<insert your subscription key here>",
@@ -1132,7 +1131,7 @@
 				"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&timeStamp={timeStamp}&language={language}&subscription-key={subscriptionKey}",
 				"options": {
 					"timeStamp": "2021-05-08T09:03:00Z",
-					"attribution": "See https://docs.microsoft.com/en-US/rest/api/maps/renderv2/getmaptilepreview#uri-parameters for details.",
+					"attribution": "See https://docs.microsoft.com/en-us/rest/api/maps/render-v2/get-map-tile#uri-parameters for details.",
 					"variant": "microsoft.weather.infrared.main"
 				},
 				"isOverlay": true
@@ -1141,11 +1140,52 @@
 				"url": "https://atlas.microsoft.com/map/tile?api-version={apiVersion}&tilesetId={variant}&x={x}&y={y}&zoom={z}&timeStamp={timeStamp}&language={language}&subscription-key={subscriptionKey}",
 				"options": {
 					"timeStamp": "2021-05-08T09:03:00Z",
-					"attribution": "See https://docs.microsoft.com/en-US/rest/api/maps/renderv2/getmaptilepreview#uri-parameters for details.",
+					"attribution": "See https://docs.microsoft.com/en-us/rest/api/maps/render-v2/get-map-tile#uri-parameters for details.",
 					"variant": "microsoft.weather.radar.main"
 				},
 				"isOverlay": true
 			}
+		}
+	},
+	"SwissFederalGeoportal": {
+		"url": "https://wmts.geo.admin.ch/1.0.0/{variant}/default/current/3857/{z}/{x}/{y}.jpeg",
+		"options": {
+			"attribution": "&copy; <a href=\"https://www.swisstopo.admin.ch/\">swisstopo</a>",
+			"minZoom": 2,
+			"maxZoom": 18,
+			"variant": "ch.swisstopo.pixelkarte-farbe",
+			"bounds": [
+				[
+					45.398181,
+					5.140242
+				],
+				[
+					48.230651,
+					11.47757
+				]
+			]
+		},
+		"variants": {
+			"NationalMapColor": "ch.swisstopo.pixelkarte-farbe",
+			"NationalMapGrey": "ch.swisstopo.pixelkarte-grau",
+			"SWISSIMAGE": {
+				"options": {
+					"variant": "ch.swisstopo.swissimage",
+					"maxZoom": 19
+				}
+			}
+		}
+	},
+	"TopPlusOpen": {
+		"url": "http://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/{variant}/default/WEBMERCATOR/{z}/{y}/{x}.png",
+		"options": {
+			"maxZoom": 18,
+			"attribution": "Map data: &copy; <a href=\"http://www.govdata.de/dl-de/by-2-0\">dl-de/by-2-0</a>",
+			"variant": "web"
+		},
+		"variants": {
+			"Color": "web",
+			"Grey": "web_grau"
 		}
 	}
 }
