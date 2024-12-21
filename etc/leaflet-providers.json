@@ -459,12 +459,13 @@
 		}
 	},
 	"OpenWeatherMap": {
-		"url": "https://{s}.tile.openweathermap.org/map/{variant}/{z}/{x}/{y}.png?appid={apiKey}",
+		"url": "https://tile.openweathermap.org/map/{variant}/{z}/{x}/{y}.png?appid={apiKey}",
 		"options": {
 			"maxZoom": 19,
 			"attribution": "Map data &copy; <a href=\"http://openweathermap.org\">OpenWeatherMap</a>",
 			"apiKey": "<insert your api key here>",
-			"opacity": 1
+			"opacity": 1,
+			"variant": "clouds_new"
 		},
 		"variants": {
 			"Clouds": "clouds_new",
