@@ -17,13 +17,7 @@ class ACF extends Core\Singleton {
 	 *	@inheritdoc
 	 */
 	protected function __construct() {
-		// include field
-		if ( 'acf/include_field_types' === current_action() ) {
-			$this->include_field_types();
-		} else {
-			add_action('acf/include_field_types', [ $this, 'include_field_types' ] ); // v5
-		}
-		// add_action( 'acf/render_field/type=leaflet_map', [ $this, 'render_map_input' ] );
+		add_action('acf/include_field_types', [ $this, 'include_field_types' ] ); // v5
 
 		// Compat with https://github.com/mcguffin/polylang-sync
 		add_filter( 'polylang_acf_sync_supported_fields', [ $this, 'add_pll_sync_field_type'] );
@@ -83,7 +77,7 @@ class ACF extends Core\Singleton {
 	public function include_field_types( $version = false ) {
 
 		if ( version_compare( acf_get_setting('version'), '5.7', '>=' ) ) {
-			acf_register_field_type( Field\OpenStreetMap::get_instance() );
+			acf_register_field_type( new Field\OpenStreetMap() );
 		}
 	}
 }

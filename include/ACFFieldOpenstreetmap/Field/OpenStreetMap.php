@@ -5,25 +5,7 @@ namespace ACFFieldOpenstreetmap\Field;
 use ACFFieldOpenstreetmap\Core;
 use ACFFieldOpenstreetmap\Helper;
 
-// exit if accessed directly
-if( ! defined( 'ABSPATH' ) ) exit;
-
-
 class OpenStreetMap extends \acf_field {
-
-	private static $_instance = null;
-
-	public $show_in_rest = true;
-
-	/**
-	 *	@return ACFFieldOpenstreetmap\Field\OpenStreetMap
-	 */
-	public static function get_instance() {
-		if ( is_null( self::$_instance ) ) {
-			new self();
-		}
-		return self::$_instance;
-	}
 
 	/**
 	 *  __construct
@@ -37,21 +19,15 @@ class OpenStreetMap extends \acf_field {
 	 *  @param	n/a
 	 *  @return	n/a
 	 */
-	function __construct() {
-		if ( ! is_null( self::$_instance ) ) {
-			throw new Exception('Not more than one Field\OpenStreetMap!');
-		}
+	function initialize() {
 
-		self::$_instance = $this;
-
-		$core = Core\Core::instance();
 		/*
-		*  name (string) Single word, no spaces. Underscores allowed
-		*/
+		 *  name (string) Single word, no spaces. Underscores allowed
+		 */
 		$this->name = 'open_street_map';
 		/*
-		*  label (string) Multiple words, can include spaces, visible when selecting a field type
-		*/
+		 *  label (string) Multiple words, can include spaces, visible when selecting a field type
+		 */
 		$this->label = __("OpenStreetMap",'acf-openstreetmap-field');
 
 
@@ -94,8 +70,6 @@ class OpenStreetMap extends \acf_field {
 		$this->l10n = [];
 
 		add_action( 'print_media_templates', [ $this, 'print_media_templates' ] );
-
-		parent::__construct();
 	}
 
 	/*
@@ -113,7 +87,6 @@ class OpenStreetMap extends \acf_field {
 
 	function render_field_settings( $field ) {
 
-		$core = Core\Core::instance();
 		$templates = Core\Templates::instance();
 
 		$field = $this->sanitize_field( $field );
