@@ -4,7 +4,7 @@ Donate link: https://donate.openstreetmap.org/
 Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
 Requires PHP: 5.6
-Tested up to: 6.6
+Tested up to: 6.7
 Stable tag: 1.5.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -122,6 +122,11 @@ The global Leaflet object is no longer available.
 
 = 1.6.0 =
  - Introduce Map Proxy
+ - Slightly improve settings page
+ - Update map providers
+ - Fix: _load_textdomain_just_in_time notice
+ - Fix: Add marker pointer events
+ - Fix: Maps in WP Admin not inited
 
 = 1.5.7. =
  - Fix: Backend Map broken

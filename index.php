@@ -46,10 +46,8 @@ require_once dirname( __FILE__ ) . '/include/api.php';
 
 Core\Core::instance( __FILE__ );
 
-
 if ( is_admin() || defined( 'DOING_AJAX' ) ) {
 
 	Settings\SettingsOpenStreetMap::instance();
 
 }
-
