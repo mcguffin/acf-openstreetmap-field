@@ -119,30 +119,20 @@ class MapProxy extends Singleton {
 
 		$this->setup_proxy_dir();
 
-		$proxied_providers = LeafletProviders::instance()->get_providers( [ 'credentials' ], true );
+		$proxied_providers = LeafletProviders::instance()->get_providers( ['credentials'], true );
 		$proxy_config = [];
 		foreach ( $proxied_providers as $provider_key => $provider ) {
 
 			$provider = LeafletProviders::instance()->unify_provider_variants( $provider );
 
-			$provider_url = $provider['url'];
-
-			foreach ( $provider['options'] as $option => $value ) {
-				if ( 'variant' === $option ) {
-					continue;
-				}
-				if ( is_scalar( $value ) ) {
-					$provider_url = str_replace( "{{$option}}", $value, $provider_url );
-				}
-			}
-			if ( isset( $provider['subdomains'] ) ) {
-				$subdomains = $provider['subdomains'];
+			if ( isset( $provider['options']['subdomains'] ) ) {
+				$subdomains = $provider['options']['subdomains'];
 			} else {
 				$subdomains = 'abc';
 			}
 
 			$proxy_config[$provider_key] = [
-				'base_url'   => $provider_url,
+				'base_url'   => $this->generate_url( $provider['url'], $provider['options'] ),
 				'subdomains' => $subdomains,
 			];
 
@@ -151,17 +141,21 @@ class MapProxy extends Singleton {
 					if ( isset( $variant['url'] ) ) {
 						$variant_url = $variant['url'];
 					} else {
-						$variant_url = $provider_url;
+						$variant_url = $provider['url'];
 					}
 
-					foreach ( $variant['options'] as $option => $value ) {
-						if ( is_scalar( $value ) ) {
-							$variant_url = str_replace( "{{$option}}", $value, $variant_url );
-						}
+					$variant_url = $this->generate_url( $variant_url, $variant['options'] );
+					$variant_url = $this->generate_url( $variant_url, $provider['options'] );
+
+					if ( isset( $variant['options']['subdomains'] ) ) {
+						$variant_subdomains = $variant['options']['subdomains'];
+					} else {
+						$variant_subdomains = $subdomains;
 					}
+
 					$proxy_config["{$provider_key}.{$variant_key}"] = [
 						'base_url'   => $variant_url,
-						'subdomains' => $subdomains,
+						'subdomains' => $variant_subdomains,
 					];
 				}
 			}
@@ -181,6 +175,20 @@ class MapProxy extends Singleton {
 			$content
 		);
 
+	}
+
+	/**
+	 *	@param string $base_url
+	 *	@param array $options
+	 */
+	private function generate_url( $base_url, $options ) {
+		$url = $base_url;
+		foreach ( $options as $option => $value ) {
+			if ( is_scalar( $value ) ) {
+				$url = str_replace( "{{$option}}", str_replace(' ', '%20', $value), $url );
+			}
+		}
+		return $url;
 	}
 
 	/**

@@ -20,13 +20,14 @@ $subdomains = $proxy_config[ $provider ][ 'subdomains' ];
 
 $s = $subdomains[ rand( 0, strlen( $subdomains ) - 1 ) ];
 
+// fill vars
 $url = str_replace(
 	[ '{z}', '{x}', '{y}', '{s}', '{r}' ],
 	[ $z, $x, $y, $s, $r ],
 	$base_url
 );
 
-// response headers to forward
+// response headers being forwarded
 $send_response_headers = [
 	'Expires',
 	'Cache-Control',
@@ -57,20 +58,77 @@ foreach ( [
 	}
 }
 
-// var_dump($_SERVER);exit();
-$ctx = stream_context_create(['http' => [
-	'method'        => 'GET',
-	'header'        => implode("\r\n", $request_headers ),
-]]);
+/** @var int $http_status assume success */
+$http_status    = 200; // assume success
 
-$response_reg = '/(' . implode( '|', $send_response_headers ) . '):/';
+/** @var int $request_status 1: host resolved, 2: remote connected, 3: got filesize, 4: got mime type */
+$request_status = 0;
+
+$ctx = stream_context_create(['http' => [
+		'method'        => 'GET',
+		'header'        => implode("\r\n", $request_headers ),
+	]],
+	[
+	'notification'  => function( $notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max ) use ( &$http_status, &$request_status ) {
+		$notification_codes = [
+			STREAM_NOTIFY_RESOLVE       => 'STREAM_NOTIFY_RESOLVE',
+			STREAM_NOTIFY_CONNECT       => 'STREAM_NOTIFY_CONNECT',
+			STREAM_NOTIFY_AUTH_REQUIRED => 'STREAM_NOTIFY_AUTH_REQUIRED',
+			STREAM_NOTIFY_MIME_TYPE_IS  => 'STREAM_NOTIFY_MIME_TYPE_IS',
+			STREAM_NOTIFY_FILE_SIZE_IS  => 'STREAM_NOTIFY_FILE_SIZE_IS',
+			STREAM_NOTIFY_REDIRECTED    => 'STREAM_NOTIFY_REDIRECTED',
+			STREAM_NOTIFY_PROGRESS      => 'STREAM_NOTIFY_PROGRESS',
+			STREAM_NOTIFY_COMPLETED     => 'STREAM_NOTIFY_COMPLETED',
+			STREAM_NOTIFY_FAILURE       => 'STREAM_NOTIFY_FAILURE',
+			STREAM_NOTIFY_FAILURE       => 'STREAM_NOTIFY_FAILURE',
+		];
+
+		switch ( $notification_code ) {
+			case STREAM_NOTIFY_RESOLVE:
+				$request_status = 1;
+				break;
+			case STREAM_NOTIFY_CONNECT:
+				$request_status = 2;
+				break;
+			// case STREAM_NOTIFY_AUTH_REQUIRED:
+			// 	break;
+			case STREAM_NOTIFY_FILE_SIZE_IS:
+				$request_status = 3;
+				break;
+			case STREAM_NOTIFY_MIME_TYPE_IS:
+				$request_status = 4;
+				break;
+			// case STREAM_NOTIFY_REDIRECTED:
+			// 	break;
+			case STREAM_NOTIFY_PROGRESS:
+				$request_status = 5;
+				break;
+			case STREAM_NOTIFY_FAILURE: // 404
+				$http_status = $message_code;
+				break;
+			// case STREAM_NOTIFY_AUTH_RESULT:
+			// 	break;
+		}
+	},
+]);
+
+$response_reg = '/^(' . implode( '|', $send_response_headers ) . '):/';
 
 $contents = file_get_contents( $url, false, $ctx );
 
-foreach ( $http_response_header as $response_header ) {
-	// TODO: handling response errors
-	if ( preg_match( $response_reg, $response_header ) ) {
-		header( $response_header );
+if ( ! $request_status ) {
+	$http_status = 502;
+}
+
+http_response_code( $http_status );
+
+if ( isset( $http_response_header ) ) {
+	foreach ( $http_response_header as $response_header ) {
+		if ( preg_match( $response_reg, $response_header ) ) {
+			header( $response_header );
+		}
+	}
+	if ( 200 === $http_status ) {
+		echo $contents;
 	}
 }
-echo $contents;
