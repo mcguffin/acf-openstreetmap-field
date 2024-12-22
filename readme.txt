@@ -120,6 +120,9 @@ The global Leaflet object is no longer available.
 
 == Changelog ==
 
+= 1.6.1 =
+ - Fix PHP fatal during upgrade
+
 = 1.6.0 =
  - Introduce Map Proxy
  - Slightly improve settings page
