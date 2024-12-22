@@ -57,3 +57,4 @@ vendor/
 phpcs-report.txt
 
 TODO.md
+.wp-release-env.json
