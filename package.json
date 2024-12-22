@@ -66,9 +66,10 @@
   "wporg": {
     "steps": [
       "build",
+      "test",
       "git",
-      "wporg",
-      "github"
+      "github",
+      "wporg"
     ],
     "type": "plugin",
     "build": {
@@ -89,6 +90,10 @@
       "assets": ".wporg",
       "svn_user": "podpirate",
       "svn": "https://plugins.svn.wordpress.org/acf-openstreetmap-field/"
-    }
+    },
+    "test": [
+      "wp plugin deactivate acf-openstreetmap-field --context=admin",
+      "wp plugin activate acf-openstreetmap-field --context=admin"
+    ]
   }
 }
