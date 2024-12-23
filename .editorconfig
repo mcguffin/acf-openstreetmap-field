@@ -16,6 +16,10 @@ trim_trailing_whitespace = false
 indent_style = space
 indent_size = 2
 
+[etc/leaflet-providers.json]
+indent_style = tab
+indent_size = 4
+
 [readme.txt]
 indent_style = space
 indent_size = 2
