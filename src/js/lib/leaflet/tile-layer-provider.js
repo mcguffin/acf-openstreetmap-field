@@ -1,4 +1,4 @@
-import L from 'leaflet/no-conflict';
+import {L} from 'leaflet/no-conflict';
 
 // Stolen from https://github.com/leaflet-extras/leaflet-providers/blob/master/leaflet-providers.js
 const Provider = L.TileLayer.extend({
@@ -72,4 +72,4 @@ L.tileLayer.provider = function ( provider, options ) {
 	return new Provider(provider, options);
 };
 
-module.exports = Provider
+export { Provider }

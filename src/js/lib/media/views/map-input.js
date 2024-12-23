@@ -1,14 +1,14 @@
 import $ from 'jquery';
-import L from 'osm-map';
+import {L} from 'osm-map';
 
-import AddLocationMarker from 'leaflet/control-add-location-marker';
-import FitBounds from 'leaflet/control-fit-bounds';
-import Provider from 'leaflet/tile-layer-provider';
+import {AddLocationMarker} from 'leaflet/control-add-location-marker';
+import {FitBounds} from 'leaflet/control-fit-bounds';
+import {Provider} from 'leaflet/tile-layer-provider';
 
 import { addCorners } from 'leaflet/corners';
 
 import { MarkerData, MapData } from 'media/models';
-import MarkerEntry from 'media/views/marker-entry';
+import {MarkerEntry} from 'media/views/marker-entry';
 import { uniqid } from 'misc/uniquid';
 
 const { options, i18n } = acf_osm_admin
@@ -726,4 +726,4 @@ document.addEventListener( 'acf-osm-map-init', e => {
 	}
 } )
 
-module.exports = MapInput
+export {MapInput}

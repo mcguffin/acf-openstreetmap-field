@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import L from 'osm-map';
-import ResetLayers from 'leaflet/control-reset-layers';
+import {L} from 'osm-map';
+import {ResetLayers} from 'leaflet/control-reset-layers';
 
 let currentLayer = false,
 	currentOverlay = false;

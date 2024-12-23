@@ -4,7 +4,13 @@
   "description": "A configurable OpenStreetMap Field to ACF.",
   "private": true,
   "scripts": {
-    "dev": "gulp dev",
+    "dev": "npm-run-all --parallel dev:scss dev:js dev:jsonlint",
+    "dev:scss": "sass --watch ./src/scss/:./assets/css/ --load-path=node_modules/",
+    "dev:js": "webpack watch --output-path ./assets/js --config ./webpack.config.js --mode development",
+    "dev:jsonlint": "node --watch --watch-path=./etc ./src/run/jsonlint.js ./etc/**/*.json",
+    "build": "npm-run-all --parallel build:scss build:js",
+    "build:scss": "find ./assets/css -name *.css* -delete && sass ./src/scss/:./assets/css/ --load-path=node_modules/ --style=compressed",
+    "build:js": "rm -rf assets/js/ && webpack build --output-path ./assets/js --config ./webpack.config.js --mode production",
     "test": "node ./src/run/test.js",
     "dev-test": "./src/run/dev-test.sh",
     "dashicons": "node ./src/run/dashicons.js",
@@ -30,31 +36,13 @@
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
     "@babel/preset-env": "*",
-    "babelify": "*",
-    "browserify": "*",
-    "browserify-shim": "*",
-    "event-stream": "*",
-    "gulp": "*",
-    "gulp-autoprefixer": "*",
-    "gulp-concat": "*",
-    "gulp-rename": "*",
-    "gulp-sass": "*",
-    "gulp-sourcemaps": "*",
-    "gulp-uglify": "*",
-    "gulp-uglifycss": "*",
+    "jsonlint": "^1.6.3",
     "leaflet": "1.9.4",
     "leaflet-control-geocoder": "2.4",
-    "leaflet.locatecontrol": "^0.76.1",
+    "leaflet.locatecontrol": "^0.82.0",
+    "npm-run-all": "^4.1.5",
     "sass": "*",
-    "tinyify": "*",
-    "uglify-es": "*",
-    "vinyl-buffer": "*",
-    "vinyl-source-stream": "*"
-  },
-  "dependencies": {
-    "gulp-jsonlint": "^1.3.2",
-    "jquery": "^3.5.1",
-    "leaflet-providers": "1.13"
+    "webpack-cli": "^6.0.1"
   },
   "browserify-shim": {
     "jquery": "global:jQuery",
@@ -78,7 +66,7 @@
         "php -d memory_limit=1G $(which wp) i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp --exclude=vendor --exclude=test"
       ],
       "build": [
-        "gulp build",
+        "npm run build",
         "npm run ver"
       ]
     },

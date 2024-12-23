@@ -1,4 +1,4 @@
-import L from 'leaflet/no-conflict';
+import {L} from 'leaflet/no-conflict';
 
 const { _initControlPos, _clearControlPos } =  L.Map.prototype
 
@@ -13,4 +13,4 @@ const addCorners = map => {
 }
 
 
-module.exports = { addCorners }
+export { addCorners }

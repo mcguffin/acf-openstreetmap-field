@@ -1,4 +1,4 @@
-import L from 'leaflet/no-conflict';
+import {L} from 'leaflet/no-conflict';
 
 const ResetLayers = L.Control.extend({
 	onAdd:function() {
@@ -33,4 +33,4 @@ L.control.ResetLayers = function (options) {
 	return new L.Control.ResetLayers(options);
 };
 
-module.exports = ResetLayers
+export { ResetLayers }

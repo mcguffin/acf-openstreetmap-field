@@ -64,4 +64,4 @@ const GSModel = Backbone.Model.extend({
 
 });
 
-module.exports = { GSModel, intGetter, intSetter, fixedFloatGetter, fixedFloatSetter, accuracy }
+export { GSModel, intGetter, intSetter, fixedFloatGetter, fixedFloatSetter, accuracy }

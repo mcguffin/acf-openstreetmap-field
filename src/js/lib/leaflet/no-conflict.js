@@ -1,7 +1,8 @@
 import L from 'leaflet';
 import 'leaflet-control-geocoder';
-import 'leaflet.locatecontrol';
+import { locate } from 'leaflet.locatecontrol/src/L.Control.Locate.js';
+L.control.locate = locate
+
 L.noConflict()
 
-
-module.exports = L
+export { L }

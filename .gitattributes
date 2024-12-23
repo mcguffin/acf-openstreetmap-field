@@ -1,6 +1,11 @@
-# git
+# git + dev
 .gitignore export-ignore
 .gitattributes export-ignore
+.babelrc export-ignore
+.editorconfig export-ignore
+.eslintignore export-ignore
+.eslintrc export-ignore
+.sassrc export-ignore
 # gulp
 gulpfile.js export-ignore
 composer.json export-ignore
@@ -13,3 +18,4 @@ wp-plugin-boilerplate.json export-ignore
 test export-ignore
 phpcs*.xml export-ignore
 phpunit.* export-ignore
+webpack.config.js export-ignore
