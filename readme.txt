@@ -45,7 +45,9 @@ You can choose from a long list of map styles and it supports multiple markers.
 ## Map Proxy
 The plugin comes with a proxy mechanism for map tiles. If enabled the Browser will load the tiles from your server rather than directly from the tile provider.
 
-Use the proxy to hide sensitive credentials from the users out there or if you have to comply with local privacy regulations. the European GDPR.
+Use the proxy to hide sensitive credentials in the tile URL or for compliance with local privacy regulations like the European GDPR.
+
+Find more Details in the [GitHub wiki](https://github.com/mcguffin/acf-openstreetmap-field/wiki/The-Map-Proxy).
 
 ## Development
 
@@ -88,7 +90,7 @@ Please provide me some way for me to verify, that you are acting on behalf of th
 
 = Im getting these "Insecure Content" Warnings =
 
-Some providers – like OpenPtMap or MtbMap – do not support https. If these warning bother you, choose a different one.
+Some providers do not support https. If these warnings bother you, choose a different one or use the proxy feature.
 
 = Why isn't the map loading? =
 
@@ -99,7 +101,7 @@ There is very likely an issue with the map tiles provider you've choosen. Some o
 Check out the [GitHub wiki](https://github.com/mcguffin/acf-openstreetmap-field/wiki). Some of the js events might come in handy for you.
 For Documentation of the map object, please refer to [LeafletJS](https://leafletjs.com).
 
-= Will you anwser support requests via emails? =
+= Will you anwser support requests via email? =
 
 No.
 
@@ -119,6 +121,11 @@ The global Leaflet object is no longer available.
 
 
 == Changelog ==
+
+= 1.6.2 =
+ - Multisite Proxy support
+ - Introduce WP-CLI commands
+ - Fix: Content-Type HTTP-Header for some providers
 
 = 1.6.1 =
  - Fix PHP fatal during upgrade
