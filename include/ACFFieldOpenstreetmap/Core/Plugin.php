@@ -126,9 +126,10 @@ class Plugin extends Singleton {
 		$old_version = get_site_option( 'acf-openstreetmap-field_version' );
 
 		// call upgrade
-		if ( version_compare($new_version, $old_version, '>' ) ) {
+		if ( version_compare( $new_version, $old_version, '>' ) ) {
 
-			// $this->upgrade( $new_version, $old_version );
+			// Do update stuff here
+			MapProxy::instance()->setup_proxy_dir( true );
 
 			update_site_option( 'acf-openstreetmap-field_version', $new_version ); // TODO: store blog-wide
 		}
