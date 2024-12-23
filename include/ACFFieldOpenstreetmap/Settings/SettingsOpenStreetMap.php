@@ -330,20 +330,21 @@ class SettingsOpenStreetMap extends Settings {
 					esc_html_e( sprintf( __('Disable %s', 'acf-openstreeetmap-field' ), $provider_key ) );
 					?>
 					</label>
+					<?php if ( ! apply_filters( 'acf_osm_force_proxy', false ) ) { ?>
+						<label class="osm-proxy-option">
+						<?php
 
-					<label class="osm-proxy-option">
-					<?php
-
-					printf('<input class="osm-proxy" type="checkbox" name="%s" value="1" %s />',
-						sprintf('acf_osm_proxy[%s]',
-							esc_attr( $provider_key )
-						),
-						checked( isset( $proxy_option[$provider_key] ) && $proxy_option[$provider_key], true, false )
-					);
-					/* translators: %s map tile provider name */
-					esc_html_e( sprintf( __('Enable Proxy for %s (beta)', 'acf-openstreeetmap-field' ), $provider_key ) );
-					?>
-					</label>
+						printf('<input class="osm-proxy" type="checkbox" name="%s" value="1" %s />',
+							sprintf('acf_osm_proxy[%s]',
+								esc_attr( $provider_key )
+							),
+							checked( isset( $proxy_option[$provider_key] ) && $proxy_option[$provider_key], true, false )
+						);
+						/* translators: %s map tile provider name */
+						esc_html_e( sprintf( __('Enable Proxy for %s (beta)', 'acf-openstreeetmap-field' ), $provider_key ) );
+						?>
+						</label>
+					<?php } ?>
 				</div>
 				<?php
 

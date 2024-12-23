@@ -14,11 +14,7 @@ class MapProxy extends Singleton {
 	 */
 	protected function __construct() {
 
-		$this->proxies = array_keys( array_filter( (array) get_option( 'acf_osm_proxy' ) ) );
-
-		if ( count( $this->proxies ) ) {
-			add_filter('acf_osm_leaflet_providers', [ $this, 'proxify_providers' ], 50 );
-		}
+		add_filter( 'acf_osm_leaflet_providers', [ $this, 'proxify_providers' ], 50 );
 
 		add_action( 'update_option_acf_osm_provider_tokens', [ $this, 'setup_proxies' ] );
 		add_action( 'update_option_acf_osm_providers', [ $this, 'setup_proxies' ] );
@@ -29,6 +25,9 @@ class MapProxy extends Singleton {
 	 *	@return array holding keys of proxied providers
 	 */
 	public function get_proxies() {
+		if ( ! isset( $this->proxies ) ) {
+			$this->proxies = array_keys( array_filter( (array) get_option( 'acf_osm_proxy' ) ) );
+		}
 		return $this->proxies;
 	}
 
@@ -38,11 +37,13 @@ class MapProxy extends Singleton {
 	 */
 	public function proxify_providers( $providers ) {
 
+		$proxies = $this->get_proxies();
+		$force   = apply_filters( 'acf_osm_force_proxy', false );
+
 		foreach ( $providers as $provider_key => &$provider ) {
-			if ( ! in_array( $provider_key, $this->proxies ) ) {
-				continue;
+			if ( $force || in_array( $provider_key, $proxies ) ) {
+				$provider = $this->proxify_provider( $provider_key, $provider );
 			}
-			$provider = $this->proxify_provider( $provider_key, $provider );
 		}
 
 		return $providers;
