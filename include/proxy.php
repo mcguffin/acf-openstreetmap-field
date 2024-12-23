@@ -1,15 +1,44 @@
 <?php
 
-if ( ! isset( $proxy_config ) ) {
-	die('No proxy config');
-}
-// match pattern /<provider>/<z>/<x>/<y><r>
-if ( ! preg_match( '/\/([a-z0-9\.]+)\/(\d+)\/(\d+)\/(\d+)(@2x)?$/i', $_SERVER['REQUEST_URI'], $matches ) ) {
-	http_response_code( 400 );
-	return;
+ // check config
+if ( ! isset( $proxy_config ) || ! is_array( $proxy_config ) ) {
+	http_response_code( 500 );
+	exit();
 }
 
-@list($garbage, $provider, $z, $x, $y, $r ) = $matches;
+// match pattern /<provider>/<z>/<x>/<y><r>
+if ( ! preg_match( '/\/([a-z0-9\.]+)\/(\d+)\/(\d+)\/(\d+)(@2x)?$/i', $_SERVER['REQUEST_URI'], $map_matches ) ) {
+	http_response_code( 400 );
+	exit();
+}
+
+$proxy_dir = pathinfo( $_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME );
+// request didn't come from proxy dir.
+if ( ! preg_match( '/wp-content\/maps$/', $proxy_dir ) ) {
+	http_response_code( 400 );
+	exit();
+}
+
+// get local config in uploads dir
+$config_path = pathinfo( $proxy_dir, PATHINFO_DIRNAME ) . '/uploads';
+
+// multisite
+if ( preg_match( '/\/sites\/(\d+)\//i', $_SERVER['REQUEST_URI'], $matches ) ) {
+	@list( $garbage, $blog_id ) = $matches;
+	$config_path .= '/sites/' . $blog_id;
+}
+// $proxy_config is a global config. Merge with local config from up-content/maps/uploads/acf-osm-proxy-config.php
+if ( file_exists( $config_path . '/acf-osm-proxy-config.php' ) ) {
+	if ( $local_proxy_config = include( $config_path . '/acf-osm-proxy-config.php' ) ) {
+		if ( is_array( $local_proxy_config ) ) {
+			$proxy_config = array_replace( $proxy_config, $local_proxy_config );
+		}
+	}
+}
+
+@list( $garbage, $provider, $z, $x, $y, $r ) = $map_matches;
+
+
 
 if ( ! isset( $proxy_config[$provider] ) ) {
 	http_response_code(404);
@@ -109,7 +138,7 @@ $ctx = stream_context_create(['http' => [
 	},
 ]);
 
-$response_reg = '/^(' . implode( '|', $send_response_headers ) . '):/';
+$response_reg = '/^(' . implode( '|', $send_response_headers ) . '):/i';
 
 $contents = file_get_contents( $url, false, $ctx );
 
