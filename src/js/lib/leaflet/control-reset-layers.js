@@ -27,7 +27,7 @@ const ResetLayers = L.Control.extend({
 	_onClick: function() {
 		this._map.eachLayer(function(layer) { layer.remove() } );
 	}
-})
+});
 
 L.control.ResetLayers = function (options) {
 	return new L.Control.ResetLayers(options);

@@ -25,7 +25,7 @@ const AddLocationMarker = L.Control.extend({
 			.off(this._link, 'click', this.options.callback, this )
 			.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
 	},
-})
+});
 
 L.control.addLocationMarker = function (options) {
 	return new L.Control.AddLocationMarker(options);

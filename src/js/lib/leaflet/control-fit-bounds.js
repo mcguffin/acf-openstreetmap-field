@@ -24,7 +24,7 @@ const FitBounds = L.Control.extend({
 			.off(this._link, 'click', this.options.callback )
 			.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
 	},
-})
+});
 
 L.control.fitBounds = function (options) {
 	return new L.Control.FitBounds(options);

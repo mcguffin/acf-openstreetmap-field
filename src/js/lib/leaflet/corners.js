@@ -10,7 +10,7 @@ const addCorners = map => {
 	map._container.after( below )
 	map._controlCorners['above'] = above
 	map._controlCorners['below'] = below
-}
+};
 
 
 export { addCorners }
