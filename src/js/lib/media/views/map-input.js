@@ -11,6 +11,8 @@ import { MarkerData, MapData } from 'media/models';
 import {MarkerEntry} from 'media/views/marker-entry';
 import { uniqid } from 'misc/uniquid';
 
+import {Geocoder} from 'media/views/geocoder' ;
+
 const { options, i18n } = acf_osm_admin
 const instances = []
 
@@ -422,42 +424,12 @@ class MapInput extends Backbone.View {
 		// add an extra control panel region for out search
 		this.map._controlCorners['above'] = $above.get(0);
 
-		const nominatim_options = Object.assign( {
-				// geocodingQueryParams: {'accept-language':'it'},
-				// reverseQueryParams: {'accept-language':'it'},
-				htmlTemplate: result => {
-					var parts = [],
-						templateConfig = {
-							interpolate: /\{(.+?)\}/g
-						},
-						addr = _.defaults( result.address, {
-							building:'',
-							road:'',
-							house_number:'',
 
-							postcode:'',
-							city:'',
-							town:'',
-							village:'',
-							hamlet:'',
+		//const leafletGeocoder = Geocoder.resolveAndConfigure( 'nominatim', options );
+		const leafletGeocoder = Geocoder.resolveAndConfigure( 'photon', options );
+console.debug('leafletGeocoder', leafletGeocoder);
 
-							state:'',
-							country:'',
-						} );
-
-					parts.push( _.template( i18n.address_format.street, templateConfig )( addr ) );
-
-					parts.push( _.template( i18n.address_format.city, templateConfig )( addr ) );
-
-					parts.push( _.template( i18n.address_format.country, templateConfig )( addr ) );
-
-					return parts
-						.map( el =>  el.replace(/\s+/g,' ').trim() )
-						.filter( el => el !== '' )
-						.join(', ')
-				}
-			}, options.nominatim),
-			geocoder_options = Object.assign({
+			const geocoder_options = Object.assign({
 				collapsed: false,
 				position: 'above',
 				placeholder: i18n.search,
@@ -468,7 +440,8 @@ class MapInput extends Backbone.View {
 				queryMinLength:3,
 				defaultMarkGeocode:false,
 				// geocodingQueryParams: {'accept-language':'de_DE'},
-				geocoder: L.Control.Geocoder.nominatim( nominatim_options )
+				//geocoder: L.Control.Geocoder.nominatim( nominatim_options )
+				geocoder: leafletGeocoder
 			}, options.geocoder );
 
 		this.geocoder = L.Control.geocoder( geocoder_options )
