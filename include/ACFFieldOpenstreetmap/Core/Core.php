@@ -9,6 +9,11 @@ use ACFFieldOpenstreetmap\Compat;
 
 class Core extends Plugin {
 
+	const GEOCODER_OPENCAGE = 'opencage';
+	const GEOCODER_NOMINATIM = 'nominatim';
+	const GEOCODER_DEFAUlT = self::GEOCODER_NOMINATIM ;
+	const GEOCODERS = [self::GEOCODER_NOMINATIM, self::GEOCODER_OPENCAGE];
+
 	private $leaflet_providers = null;
 
 	/**
@@ -129,6 +134,7 @@ class Core extends Plugin {
 				 *	)
 				 */
 				'geocoder' 			=> apply_filters( 'acf_osm_geocoder_options', [] ),
+				'geocoder_name' => defined('ACF_OSM_GEOCODER_NAME') ? constant('ACF_OSM_GEOCODER_NAME') : self::GEOCODER_DEFAUlT,
 				/**
 				 *	Filter Nominatim geocoder options.
 				 *
@@ -145,6 +151,11 @@ class Core extends Plugin {
 					'geocoderQueryParams' => [ 'accept-language' => $language, ],
 					'reverseQueryParams' => [ 'accept-language' => $language, ],
 				]),
+				'opencage' => apply_filters( 'acf_osm_opencage_options', [
+					'apiKey' => null,
+					'geocodingQueryParams' => null,
+					'reverseQueryParams' => null,
+  				]),
 			],
 			'i18n'	=> [
 				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),

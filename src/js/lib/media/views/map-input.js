@@ -424,28 +424,27 @@ class MapInput extends Backbone.View {
 		// add an extra control panel region for out search
 		this.map._controlCorners['above'] = $above.get(0);
 
-
 		//const leafletGeocoder = Geocoder.resolveAndConfigure( 'nominatim', options );
-		const leafletGeocoder = Geocoder.resolveAndConfigure( 'photon', options );
-console.debug('leafletGeocoder', leafletGeocoder);
+		const leafletGeocoder = Geocoder.build( options.geocoder_name );
 
-			const geocoder_options = Object.assign({
-				collapsed: false,
-				position: 'above',
-				placeholder: i18n.search,
-				errorMessage: i18n.nothing_found,
-				showResultIcons:true,
-				suggestMinLength:3,
-				suggestTimeout:250,
-				queryMinLength:3,
-				defaultMarkGeocode:false,
-				// geocodingQueryParams: {'accept-language':'de_DE'},
-				//geocoder: L.Control.Geocoder.nominatim( nominatim_options )
-				geocoder: leafletGeocoder
-			}, options.geocoder );
+		const geocoder_options = Object.assign({
+			collapsed: false,
+			position: 'above',
+			placeholder: i18n.search,
+			errorMessage: i18n.nothing_found,
+			showResultIcons:true,
+			suggestMinLength:3,
+			suggestTimeout:250,
+			queryMinLength:3,
+			defaultMarkGeocode:false,
+			// geocodingQueryParams: {'accept-language':'de_DE'},
+			//geocoder: L.Control.Geocoder.nominatim( nominatim_options )
+			geocoder: leafletGeocoder
+		}, options.geocoder );
 
 		this.geocoder = L.Control.geocoder( geocoder_options )
 			.on( 'markgeocode', e => {
+
 				// search result click
 				let model,
 					previousGeocode = false;
@@ -470,7 +469,6 @@ console.debug('leafletGeocoder', leafletGeocoder);
 					return this.map.fitBounds( e.geocode.bbox );
 
 				}
-
 
 				if ( this.canAddMarker ) {
 					// infinite markers or markers still in range
@@ -568,13 +566,21 @@ console.debug('leafletGeocoder', leafletGeocoder);
 	}
 
 	parseGeocodeResult( results, latlng ) {
+
+console.debug('parseGeocodeResult', results);
+
 		var label = false;
 
 		if ( ! results.length ) {
 			label = latlng.lat + ', ' + latlng.lng;
 		} else {
 			$.each( results, ( i, result ) => {
-				label = result.html;
+				if( result.html )
+					label = result.html ;
+				else if( result.name )
+					label = result.name ;
+				else
+					label = 'Failed to decode geocoder result 😕';
 			});
 		}
 		// trim
