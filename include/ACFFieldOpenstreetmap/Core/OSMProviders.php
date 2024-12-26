@@ -2,10 +2,6 @@
 
 namespace ACFFieldOpenstreetmap\Core;
 
-if ( ! defined('ABSPATH') ) {
-	die('FU!');
-}
-
 use ACFFieldOpenstreetmap\Helper;
 
 class OSMProviders extends Singleton {

@@ -2,10 +2,6 @@
 
 namespace ACFFieldOpenstreetmap\Settings;
 
-if ( ! defined('ABSPATH') ) {
-	die('FU!');
-}
-
 use ACFFieldOpenstreetmap\Core;
 use ACFFieldOpenstreetmap\Helper;
 

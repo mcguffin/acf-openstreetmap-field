@@ -5,7 +5,6 @@ namespace ACFFieldOpenstreetmap\Compat;
 use ACFFieldOpenstreetmap\Core;
 use ACFFieldOpenstreetmap\Field;
 
-
 class ACF extends Core\Singleton {
 
 	/**

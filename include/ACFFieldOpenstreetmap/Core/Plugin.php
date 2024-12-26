@@ -2,11 +2,6 @@
 
 namespace ACFFieldOpenstreetmap\Core;
 
-if ( ! defined('ABSPATH') ) {
-	die('FU!');
-}
-
-
 use ACFFieldOpenstreetmap\PostType;
 use ACFFieldOpenstreetmap\Compat;
 
