@@ -4,13 +4,13 @@
 
 exitfn () {
     trap SIGINT
-    npm run test stop
+    npm run uitest stop
     exit
 }
 
 trap "exitfn" INT            # Set up SIGINT trap to call function.
 
-npm run test start
+npm run uitest start
 npm run dev
 
 trap SIGINT                  # Restore signal handling to previous before exit.

@@ -7,19 +7,19 @@
     "ACF Field",
     "Map",
     "OpenStreetMap",
-	"Lealet"
+    "Lealet"
   ],
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field",
   "type": "wordpress-plugin",
   "require": {
     "composer/installers": "~1.2",
-    "php": ">=5.6.0"
+    "php": ">=7.2.24|^8"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "*",
-    "wp-coding-standards/wpcs": "*",
-    "phpcompatibility/php-compatibility": "*",
-	"pheromone/phpcs-security-audit":"*"
+    "phpcompatibility/php-compatibility": "10.x-dev as 9.99.99",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpunit/phpunit": "^8.5|^9.6",
+    "wp-coding-standards/wpcs": "^3.1"
   },
   "scripts": {
     "post-install-cmd": [
@@ -29,9 +29,19 @@
       "[ -f vendor/bin/phpcs ] && \"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs,vendor/pheromone/phpcs-security-audit || true"
     ]
   },
+  "autoload": {
+    "classmap": [
+      "include/"
+    ]
+  },
   "config": {
+    "sort-packages": true,
+    "platform": {
+      "php": "7.2.24"
+    },
     "allow-plugins": {
-      "composer/installers": true
+      "composer/installers": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   }
 }

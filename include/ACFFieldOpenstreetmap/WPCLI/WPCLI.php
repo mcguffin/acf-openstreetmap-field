@@ -7,10 +7,6 @@
 
 namespace ACFFieldOpenstreetmap\WPCLI;
 
-if ( ! defined('ABSPATH') ) {
-	die('FU!');
-}
-
 use ACFFieldOpenstreetmap\Core;
 
 class WPCLI extends Core\Singleton {

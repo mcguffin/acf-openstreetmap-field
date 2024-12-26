@@ -55,6 +55,7 @@ vendor/
 
 # phpcs
 phpcs-report.txt
+tests/.phpunit.result.cache
 
 TODO.md
 .wp-release-env.json
