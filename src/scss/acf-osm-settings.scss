@@ -10,6 +10,33 @@
 	}
 }
 
+.acf-osm-settings-wrap {
+	.tab-content {
+		display: none;
+	}
+	[type="radio"]:checked {
+		&[id="acf-osm-tab-1"] ~ .acf-osm-tab-1,
+		&[id="acf-osm-tab-2"] ~ .acf-osm-tab-2,
+		&[id="acf-osm-tab-3"] ~ .acf-osm-tab-3 {
+			display: block;
+		}
+		&[id="acf-osm-tab-1"] ~ .nav-tab-wrapper [for="acf-osm-tab-1"],
+		&[id="acf-osm-tab-2"] ~ .nav-tab-wrapper [for="acf-osm-tab-2"],
+		&[id="acf-osm-tab-3"] ~ .nav-tab-wrapper [for="acf-osm-tab-3"] {
+			margin-bottom: -1px;
+			box-shadow: none;
+			&,
+			&:hover,
+			&:focus
+			&:focus:active {
+				border-bottom: 1px solid #f0f0f1;
+				background: #f0f0f1;
+				color: #000;
+			}
+		}
+	}
+}
+
 .acf-osm-settings {
 	display: flex;
 	.acf-osm-layer-variants {
