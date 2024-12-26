@@ -9,16 +9,21 @@ const { options, i18n } = acf_osm_admin
 class GeocoderFactory {
 
     static createGeocoder(options) {
-        console.debug('GeocoderFactory.createGeocoder()', 'options.geocoder_name', options.geocoder_name);
+
+        //console.debug('GeocoderFactory.createGeocoder()', 'options.geocoder_name', options.geocoder_name);
+
+        /**
+         * Do not forget to sync those values with \ACFFieldOpenstreetmap\Core\Core:GEOCODERS
+         */
         switch (options.geocoder_name) {
-            case 'nominatim':
+            case 'Nominatim':
                 return GeocoderFactory.useNominatim(options);
-            case 'photon':
+            case 'Photon':
                 return GeocoderFactory.usePhoton(options);
-            case 'opencage':
+            case 'OpenCage':
                 return GeocoderFactory.useOpenCage(options);
-            case 'openrouteservice':
-                return GeocoderFactory.useOpenrouteservice(options);
+            //case 'openrouteservice':
+            //    return GeocoderFactory.useOpenrouteservice(options);
         }
         return null;
     }
