@@ -10,14 +10,14 @@ const reset = filepath => {
 	return content;
 }
 
-if ( -1 !== process.argv.indexOf('start') ) {
+if ( process.argv.includes('start') ) {
 	// append line to plugin main file
 	content = reset( './index.php' );
 	content += line;
 	fs.writeFileSync( './index.php', content )
 //	let content =
 }
-if ( -1 !== process.argv.indexOf('stop') ) {
+if ( process.argv.includes('stop') ) {
 	// remove line from plugin main file
 	content = reset( './index.php' );
 	fs.writeFileSync( './index.php', content )

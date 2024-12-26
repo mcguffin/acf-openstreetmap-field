@@ -13,6 +13,7 @@
     "build:js": "rm -rf assets/js/ && webpack build --output-path ./assets/js --config ./webpack.config.js --mode production",
     "build:lint": "node ./src/run/lint.js",
     "test": "node ./src/run/test.js",
+    "uitest": "node ./src/run/test.js",
     "dev-test": "./src/run/dev-test.sh",
     "dashicons": "node ./src/run/dashicons.js",
     "i18n": "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp/*",
@@ -37,6 +38,7 @@
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
     "@babel/preset-env": "*",
+    "colors": "^1.4.0",
     "jsonlint": "^1.6.3",
     "leaflet": "1.9.4",
     "leaflet-control-geocoder": "2.4",
