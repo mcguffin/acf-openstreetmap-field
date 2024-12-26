@@ -12,8 +12,8 @@
     "build:scss": "find ./assets/css -name *.css* -delete && sass ./src/scss/:./assets/css/ --load-path=node_modules/ --style=compressed",
     "build:js": "rm -rf assets/js/ && webpack build --output-path ./assets/js --config ./webpack.config.js --mode production",
     "build:lint": "node ./src/run/lint.js",
-    "test": "node ./src/run/test.js",
     "uitest": "node ./src/run/test.js",
+    "test": "wp-env run tests-cli --env-cwd=wp-content/plugins/acf-openstreetmap-field vendor/bin/phpunit --",
     "dev-test": "./src/run/dev-test.sh",
     "dashicons": "node ./src/run/dashicons.js",
     "i18n": "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp/*",
@@ -38,6 +38,7 @@
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
     "@babel/preset-env": "*",
+    "@wordpress/env": "^10.14.0",
     "colors": "^1.4.0",
     "jsonlint": "^1.6.3",
     "leaflet": "1.9.4",
