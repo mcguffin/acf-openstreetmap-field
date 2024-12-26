@@ -172,23 +172,29 @@ class Core extends Plugin {
 				 *	@see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/nominatimoptions.html
 				 *
 				 *	@param $nominatim_options array(
-				 *		'apiKey'				=> boolean
+				 *		'apiKey'				=> string
 				 *		'geocodingQueryParams'	=> object @see https://nominatim.org/release-docs/develop/api/Search/
 				 *		'reverseQueryParams'	=> object @see https://nominatim.org/release-docs/develop/api/Reverse/
 				 *		'serviceUrl'			=> string
 				 *	)
 				 */
 				$osm_admin['options']['nominatim'] = apply_filters( 'acf_osm_nominatim_options', [
-					'geocoderQueryParams' => [ 'accept-language' => $language, ],
+					// https://github.com/perliedman/leaflet-control-geocoder/blob/master/src/geocoders/api.ts
+					'geocodingQueryParams' => [ 'accept-language' => $language, ],
 					'reverseQueryParams' => [ 'accept-language' => $language, ],
 				]);
 				break;
 
 			case self::GEOCODER_PHOTON:
+				/**
+				 * Photon options.
+				 * - leaflet-control-geocoder PhotonOptions @see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocoders.PhotonOptions.html
+				 * - Search API @see https://github.com/komoot/photon?tab=readme-ov-file#search-api
+				 */
 				$osm_admin['options']['photon'] = apply_filters( 'acf_osm_photon_options', [
 					'apiKey' => null,
-					'geocodingQueryParams' => null,
-					'reverseQueryParams' => null,
+					'geocodingQueryParams' => [ 'accept-language' => $language, ],
+					'reverseQueryParams' => [ 'accept-language' => $language, ],
 					]);
 				break;
 
