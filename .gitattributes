@@ -19,3 +19,4 @@ test export-ignore
 phpcs*.xml export-ignore
 phpunit.* export-ignore
 webpack.config.js export-ignore
+.wp-*.json export-ignore
