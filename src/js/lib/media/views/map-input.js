@@ -11,7 +11,7 @@ import { MarkerData, MapData } from 'media/models';
 import {MarkerEntry} from 'media/views/marker-entry';
 import { uniqid } from 'misc/uniquid';
 
-import {Geocoder} from 'media/views/geocoder' ;
+import {GeocoderFactory} from 'media/views/geocoderFactory' ;
 
 const { options, i18n } = acf_osm_admin
 const instances = []
@@ -424,8 +424,7 @@ class MapInput extends Backbone.View {
 		// add an extra control panel region for out search
 		this.map._controlCorners['above'] = $above.get(0);
 
-		//const leafletGeocoder = Geocoder.resolveAndConfigure( 'nominatim', options );
-		const leafletGeocoder = Geocoder.build( options.geocoder_name );
+		const geocoderEngine = GeocoderFactory.createGeocoder( options );
 
 		const geocoder_options = Object.assign({
 			collapsed: false,
@@ -439,7 +438,7 @@ class MapInput extends Backbone.View {
 			defaultMarkGeocode:false,
 			// geocodingQueryParams: {'accept-language':'de_DE'},
 			//geocoder: L.Control.Geocoder.nominatim( nominatim_options )
-			geocoder: leafletGeocoder
+			geocoder: geocoderEngine
 		}, options.geocoder );
 
 		this.geocoder = L.Control.geocoder( geocoder_options )
@@ -576,8 +575,10 @@ console.debug('parseGeocodeResult', results);
 		} else {
 			$.each( results, ( i, result ) => {
 				if( result.html )
+					// `htmlTemplate` method and `html` property are available.
 					label = result.html ;
 				else if( result.name )
+					// Default to `name` property
 					label = result.name ;
 				else
 					label = 'Failed to decode geocoder result 😕';

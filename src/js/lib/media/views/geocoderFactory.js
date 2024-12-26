@@ -6,19 +6,19 @@ import { L } from 'osm-map';
 
 const { options, i18n } = acf_osm_admin
 
-class Geocoder {
+class GeocoderFactory {
 
-    static build(which) {
-        console.debug('Geocoder.resolveAndConfigure()', 'which', which);
-        switch (which) {
+    static createGeocoder(options) {
+        console.debug('GeocoderFactory.createGeocoder()', 'options.geocoder_name', options.geocoder_name);
+        switch (options.geocoder_name) {
             case 'nominatim':
-                return Geocoder.useNominatim(options);
+                return GeocoderFactory.useNominatim(options);
             case 'photon':
-                return Geocoder.usePhoton(options);
-            case 'openrouteservice':
-                return Geocoder.useOpenrouteservice(options);
+                return GeocoderFactory.usePhoton(options);
             case 'opencage':
-                return Geocoder.useOpenCage(options);
+                return GeocoderFactory.useOpenCage(options);
+            case 'openrouteservice':
+                return GeocoderFactory.useOpenrouteservice(options);
         }
         return null;
     }
@@ -71,10 +71,15 @@ class Geocoder {
         return gc;
     }
 
+    /**
+     * https://www.liedman.net/leaflet-control-geocoder/docs/classes/geocoders.OpenCage.html#options
+     * @param {*} options 
+     * @returns 
+     */
     static useOpenCage(options) {
         const oc_options = Object.assign({
         }, options.opencage);
-        const gc = new L.Control.Geocoder.OpenCage(oc_options);
+        const gc = L.Control.Geocoder.opencage(oc_options);
         return gc;
     }
 
@@ -118,4 +123,4 @@ class Geocoder {
 
 }
 
-export { Geocoder }
+export { GeocoderFactory }
