@@ -3,7 +3,7 @@ Contributors: podpirate
 Donate link: https://donate.openstreetmap.org/
 Tags: map acf openstreetmap leaflet
 Requires at least: 4.8
-Requires PHP: 5.6
+Requires PHP: 7.4
 Tested up to: 6.7
 Stable tag: 1.6.1
 License: GPLv3 or later
