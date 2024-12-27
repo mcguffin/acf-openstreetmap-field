@@ -10,12 +10,6 @@ use WP_Error;
 
 class Core extends Plugin {
 
-	const GEOCODER_NOMINATIM = 'Nominatim';
-	const GEOCODER_PHOTON = 'Photon';
-	const GEOCODER_OPENCAGE = 'OpenCage';
-	const GEOCODER_DEFAUlT = self::GEOCODER_NOMINATIM ;
-	const GEOCODERS = [self::GEOCODER_NOMINATIM, self::GEOCODER_PHOTON, self::GEOCODER_OPENCAGE];
-
 	private $leaflet_providers = null;
 
 	/**
@@ -47,6 +41,8 @@ class Core extends Plugin {
 
 		$leaflet_providers = LeafletProviders::instance();
 		$osm_providers = OSMProviders::instance();
+		/** @var LeafletGeocoders $leaflet_geocoders */
+		$leaflet_geocoders = LeafletGeocoders::instance();
 
 		$provider_filters = ['credentials'];
 
@@ -104,7 +100,7 @@ class Core extends Plugin {
 				],
 
 			],
-			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
+			'providers' => $leaflet_providers->get_providers( $provider_filters ),
 		];
 		$osm_settings = [
 			'options' => [
@@ -143,8 +139,8 @@ class Core extends Plugin {
 				 *		'suggestTimeout'		=> number
 				 *	)
 				 */
-				'geocoder' => apply_filters( 'acf_osm_geocoder_options', [] ),
 				'geocoder_name' => $geocoder_name,
+				'geocoder_options' => apply_filters( 'acf_osm_geocoder_options',  $leaflet_geocoders->get_options($geocoder_name) ),
 			],
 			'i18n'	=> [
 				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),
@@ -164,57 +160,6 @@ class Core extends Plugin {
 				]
 			],
 		];
-
-		switch( $geocoder_name )
-		{
-			case self::GEOCODER_NOMINATIM:
-				/**
-				 *	Filter Nominatim geocoder options.
-				 *
-				 *	@see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/nominatimoptions.html
-				 *	@see https://github.com/perliedman/leaflet-control-geocoder/blob/master/src/geocoders/api.ts
-				 *
-				 *	@param $nominatim_options array(
-				 *		'apiKey'				=> string
-				 *		'geocodingQueryParams'	=> object @see https://nominatim.org/release-docs/develop/api/Search/
-				 *		'reverseQueryParams'	=> object @see https://nominatim.org/release-docs/develop/api/Reverse/
-				 *		'serviceUrl'			=> string
-				 *	)
-				 */
-				$osm_admin['options']['nominatim'] = apply_filters( 'acf_osm_nominatim_options', [
-					'geocodingQueryParams' => [ 'accept-language' => $language, ],
-					'reverseQueryParams' => [ 'accept-language' => $language, ],
-				]);
-				break;
-
-			case self::GEOCODER_PHOTON:
-				/**
-				 * Photon options.
-				 * - leaflet-control-geocoder PhotonOptions @see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocoders.PhotonOptions.html
-				 * - Search API @see https://github.com/komoot/photon?tab=readme-ov-file#search-api
-				 * Allowed parameters are: [q, location_bias_scale, debug, bbox, limit, osm_tag, lon, zoom, lang, lat, layer]"
-				 */
-				$osm_admin['options']['photon'] = apply_filters( 'acf_osm_photon_options', [
-					'geocodingQueryParams' => [ 'lang' => $language, ],
-					'reverseQueryParams' => [ 'lang' => $language, ],
-					]);
-				break;
-
-			case self::GEOCODER_OPENCAGE:
-				/**
-				 * OpenCage options.
-				 * - leaflet-control-geocoder OpenCageOptions https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocoders.OpenCageOptions.html
-				 * - OpenCage API @see https://opencagedata.com/api
-				 */
-				$osm_admin['options']['opencage'] = apply_filters( 'acf_osm_opencage_options', [
-					'geocodingQueryParams' => null,
-					'reverseQueryParams' => null,
-  				]);
-				break;
-
-			default:
-				//throw new \InvalidArgumentException('ACF OSM Unknow geocoder "'.$geocoder_name.'"');
-		}
 
 		/* frontend */
 		wp_register_script( 'acf-osm-frontend', $this->get_asset_url( 'assets/js/acf-osm-frontend.js' ), [ ], $this->get_version(), [
