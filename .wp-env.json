@@ -1,6 +1,6 @@
 {
   "phpVersion": "8.2",
-  "plugins": [ "." ],
+  "plugins": [ "secure-custom-fields" ],
   "env": {
     "tests": {
       "config": {
