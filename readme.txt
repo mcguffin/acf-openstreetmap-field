@@ -123,8 +123,8 @@ The global Leaflet object is no longer available.
 == Changelog ==
 
 = 1.6.2 =
- - Multisite Proxy support
- - Introduce WP-CLI commands
+ - Support proxy on multisite
+ - Introduce proxy WP-CLI commands
  - Fix: Content-Type HTTP-Header for some providers
 
 = 1.6.1 =
