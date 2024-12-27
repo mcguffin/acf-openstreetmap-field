@@ -2,14 +2,14 @@
 
 namespace ACFFieldOpenstreetmap\Settings\Traits;
 
-use ACFFieldOpenstreetmap\Core;
+use ACFFieldOpenstreetmap\Core\Core;
 use ACFFieldOpenstreetmap\Helper;
 
 trait GeocoderSettings {
 
 	private $geocoder_defaults = [
 		// scale parameter for geocoder - detail
-		'engine'   => 'nominatim', // Core\Core::GEOCODER_NOMINATIM,
+		'engine'   => Core::GEOCODER_DEFAUlT,
 		'opencage' => [
 			'apikey' => null,
 		],
@@ -36,12 +36,12 @@ trait GeocoderSettings {
 			"{$settings_section}-engine",
 			__('Geocoder','acf-openstreetmap-field'),
 			function() use ( $geocoder_option ) {
-				echo $this->select_ui( [
-					// TODO use constants from Core\Core
-					'nominatim' => __( 'Nominatim', 'acf-openstreetmap-field' ),
-					'photon'    => __( 'Photon', 'acf-openstreetmap-field' ),
-					'opencage'  => __( 'OpenCage', 'acf-openstreetmap-field' ),
-				], $geocoder_option['engine'], 'acf_osm_geocoder[engine]' );
+				$engines = [];
+				foreach( Core::GEOCODERS as $engineName )
+				{
+					$engines[ $engineName ] = __($engineName, 'acf-openstreetmap-field' );
+				}
+				echo $this->select_ui( $engines, $geocoder_option['engine'], 'acf_osm_geocoder[engine]' );
 			},
 			$this->optionset,
 			'geocoder'
