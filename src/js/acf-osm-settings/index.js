@@ -138,14 +138,10 @@ const initMap = {
 
 			currentGeocoder.options.geocoder.reverse(
 				e.latlng,
-				map.options.crs.scale( zoom ),
-				/**
-				 *	@param array results
-				 */
-				geocode => {
-					output.innerHTML = JSON.stringify(geocode, null, 2)
-				}
-			);
+				map.options.crs.scale( zoom )
+			).then(geocode => {
+				output.innerHTML = JSON.stringify(geocode, null, 2)
+			});
 
 		})
 
@@ -153,7 +149,7 @@ const initMap = {
 
 			output.innerHTML = ''
 
-			!! currentGeocoder && currentGeocoder.remove()
+			currentGeocoder?.remove()
 
 			const { acf_osm_geocoder } = formToObject(document.querySelector('form'))
 			const { engine } = acf_osm_geocoder
