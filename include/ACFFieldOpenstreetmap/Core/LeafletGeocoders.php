@@ -119,7 +119,7 @@ class LeafletGeocoders extends Singleton {
 		$options = array_map( function( $option_value ) {
 			// Parse credentials placeholder
 			// TODO: use centralized function like in LeafletProviders DRY
-			if ( preg_match( '/^<([^>]*)>$/imsU', $option_value ) ) {
+			if ( is_string($option_value) && preg_match( '/^<([^>]*)>$/imsU', $option_value ) ) {
 				return '';
 			}
 			return $option_value;
