@@ -116,6 +116,15 @@ class LeafletGeocoders extends Singleton {
 			$options = wp_parse_args( $geocoder_settings[$geocoder_name], $options );
 		}
 
+		$options = array_map( function( $option_value ) {
+			// Parse credentials placeholder
+			// TODO: use centralized function like in LeafletProviders DRY
+			if ( preg_match( '/^<([^>]*)>$/imsU', $option_value ) ) {
+				return '';
+			}
+			return $option_value;
+		}, $options );
+
 		return apply_filters( "acf_osm_{$geocoder_name}_options", $options);
 	}
 
