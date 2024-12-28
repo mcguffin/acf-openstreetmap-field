@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 import { L } from 'osm-map';
@@ -16,11 +16,11 @@ class GeocoderFactory {
          * Do not forget to sync those values with \ACFFieldOpenstreetmap\Core\Core:GEOCODERS
          */
         switch (options.geocoder_name) {
-            case 'Nominatim':
+            case 'nominatim':
                 return GeocoderFactory.useNominatim(options.geocoder_options);
-            case 'Photon':
+            case 'photon':
                 return GeocoderFactory.usePhoton(options.geocoder_options);
-            case 'OpenCage':
+            case 'opencage':
                 return GeocoderFactory.useOpenCage(options.geocoder_options);
             //case 'openrouteservice':
             //    return GeocoderFactory.useOpenrouteservice(options);
@@ -70,8 +70,8 @@ class GeocoderFactory {
 
     /**
      * https://www.liedman.net/leaflet-control-geocoder/docs/classes/geocoders.OpenCage.html#options
-     * @param {*} options 
-     * @returns 
+     * @param {*} options
+     * @returns
      */
     static useOpenCage(options) {
         const oc_options = Object.assign({

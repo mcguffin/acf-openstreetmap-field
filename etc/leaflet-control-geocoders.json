@@ -1,10 +1,12 @@
 {
-    "Nominatim": {
+    "nominatim": {
+        "label": "Nominatim",
         "options": {
             "serviceUrl": "https://nominatim.openstreetmap.org/"
         }
     },
-    "Photon": {
+    "photon": {
+        "label": "Photon",
         "options": {
             "serviceUrl": "https://photon.komoot.io/api/",
             "reverseUrl": "https://photon.komoot.io/reverse/",
@@ -12,7 +14,8 @@
             "apiKey": null
         }
     },
-    "OpenCage": {
+    "opencage": {
+        "label": "OpenCage",
         "options": {
             "serviceUrl": "https://api.opencagedata.com/geocode/v1/json",
             "apiKeyMandatory": true,

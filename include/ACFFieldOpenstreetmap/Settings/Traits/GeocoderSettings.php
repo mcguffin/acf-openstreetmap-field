@@ -36,13 +36,10 @@ trait GeocoderSettings {
 		add_settings_field(
 			"{$settings_section}-engine",
 			__('Geocoder','acf-openstreetmap-field'),
-			function() use ( $geocoder_option ) {
-				$engines = [];
-				foreach( LeafletGeocoders::GEOCODERS as $engineName )
-				{
-					$engines[ $engineName ] = __($engineName, 'acf-openstreetmap-field' );
-				}
-				echo $this->select_ui( $engines, $geocoder_option['engine'], 'acf_osm_geocoder[engine]' );
+			function() use ( $geocoder_option, $geocoders ) {
+				echo $this->select_ui( array_map( function($geocoder) {
+					return $geocoder['label'];
+				}, $geocoders->get_geocoders() ), $geocoder_option['engine'], 'acf_osm_geocoder[engine]' );
 			},
 			$this->optionset,
 			'geocoder'
