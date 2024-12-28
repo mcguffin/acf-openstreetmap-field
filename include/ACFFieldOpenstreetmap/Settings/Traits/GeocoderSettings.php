@@ -11,8 +11,8 @@ trait GeocoderSettings {
 	private $geocoder_defaults = [
 		// scale parameter for geocoder - detail
 		'engine'   => LeafletGeocoders::GEOCODER_DEFAUlT,
-		'opencage' => [
-			'apikey' => null,
+		'OpenCage' => [
+			'apiKey' => null,
 		],
 		'scale'    => '18', // (int) 0-18 | 'auto'
 	];
@@ -53,8 +53,8 @@ trait GeocoderSettings {
 			function() use ( $geocoder_option ) {
 				printf(
 					'<input class="regular-text code" type="text" name="%1$s" value="%2$s" />',
-					'acf_osm_geocoder[opencage][apikey]',
-					$geocoder_option['opencage']['apikey']
+					'acf_osm_geocoder[OpenCage][apiKey]',
+					$geocoder_option['OpenCage']['apiKey']
 				);
 			},
 			$this->optionset,
@@ -129,7 +129,7 @@ trait GeocoderSettings {
 		// TODO:
 		// Check $values['engine'] against Core\Core::GEOCODERS
 		// Check $values['scale'] against 0-18 | auto
-		$values['opencage']['apikey'] = sanitize_text_field( $values['opencage']['apikey'] );
+		$values['OpenCage']['apiKey'] = sanitize_text_field( $values['OpenCage']['apiKey'] );
 // var_dump($values);exit();
 		return $values;
 

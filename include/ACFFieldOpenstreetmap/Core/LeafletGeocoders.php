@@ -21,15 +21,15 @@ class LeafletGeocoders extends Singleton
             return $this->geocoders;
 
         $core = Core::instance();
-        $this->geocoders = json_decode($core->read_file('etc/leaflet-control-geocoders.json'), true);        
+        $this->geocoders = json_decode($core->read_file('etc/leaflet-control-geocoders.json'), true);
 
         return $this->geocoders;
     }
 
     /**
      * Is an API key mandatory ?
-     * @param string $geocoder_name 
-     * @return bool 
+     * @param string $geocoder_name
+     * @return bool
      */
     public function is_apikey_mandatory($geocoder_name)
     {
@@ -53,7 +53,7 @@ class LeafletGeocoders extends Singleton
             case self::GEOCODER_NOMINATIM:
                 /**
                  *  Nominatim options.
-                 * 
+                 *
                  * - Address search @see https://nominatim.org/release-docs/develop/api/Search/
                  * - Reverse geocoding @see https://nominatim.org/release-docs/develop/api/Reverse/
                  * - Leaflet control @see https://github.com/perliedman/leaflet-control-geocoder/blob/master/src/geocoders/nominatim.ts
@@ -88,7 +88,7 @@ class LeafletGeocoders extends Singleton
             case self::GEOCODER_OPENCAGE:
                 /**
                  *  OpenCage options.
-                 * 
+                 *
                  * - OpenCage API @see https://opencagedata.com/api
                  * - leaflet-control-geocoder OpenCageOptions https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocoders.OpenCageOptions.html
                  */
@@ -98,6 +98,13 @@ class LeafletGeocoders extends Singleton
                 $options = apply_filters('acf_osm_opencage_options', $options);
                 break;
         }
+
+		// merge with settings
+		$geocoder_settings = (array) get_option('acf_osm_geocoder');
+
+		if ( isset( $geocoder_settings[$geocoder_name] ) && is_array( $geocoder_settings[$geocoder_name] ) ) {
+			$options = wp_parse_args( $geocoder_settings[$geocoder_name], $options );
+		}
 
         return $options;
     }
