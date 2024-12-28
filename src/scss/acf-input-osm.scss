@@ -276,6 +276,7 @@ $leaflet-panes: (
 
 // block editor fixes
 .leaflet-pane {
+	.acf-osm-settings-wrap &,
 	.postbox &,
 	.components-panel &, // block editor
 	.wp-block & {

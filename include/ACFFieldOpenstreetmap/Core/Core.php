@@ -102,10 +102,20 @@ class Core extends Plugin {
 			],
 			'providers' => $leaflet_providers->get_providers( $provider_filters ),
 		];
+		$geocoders = $leaflet_geocoders->get_geocoders();
 		$osm_settings = [
 			'options' => [
 				'layer_config'	=> $leaflet_providers->get_layer_config(), // settings only
 			],
+			'geocoders' => array_combine(
+				array_keys( $geocoders ),
+				array_map(
+					function( $geocoder ) use ( $leaflet_geocoders ) {
+						return $leaflet_geocoders->get_options( $geocoder );
+					},
+					array_keys( $geocoders )
+				),
+			),
 		];
 
 		/**
@@ -196,12 +206,13 @@ class Core extends Plugin {
 
 
 		// settings js
-		wp_register_script( 'acf-osm-settings', $this->get_asset_url( 'assets/js/acf-osm-settings.js' ), [], $this->get_version() );
+		wp_register_script( 'acf-osm-settings', $this->get_asset_url( 'assets/js/acf-osm-settings.js' ), ['wp-backbone'], $this->get_version() );
 		wp_localize_script( 'acf-osm-settings', 'acf_osm', $osm_l10n );
 		wp_localize_script( 'acf-osm-settings', 'acf_osm_settings', $osm_settings );
+		wp_localize_script( 'acf-osm-settings', 'acf_osm_admin', $osm_admin );
 
 		// settings css
-		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), ['leaflet'], $this->get_version() );
+		wp_register_style( 'acf-osm-settings', $this->get_asset_url( 'assets/css/acf-osm-settings.css' ), ['leaflet', 'acf-input-osm'], $this->get_version() );
 	}
 
 	/**

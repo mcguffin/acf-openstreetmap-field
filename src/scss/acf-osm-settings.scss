@@ -1,8 +1,10 @@
 @use "sass:math";
 
 @import 'variables/variables';
-
 @import 'mixins/mixins';
+
+// @import 'lib/leaflet/index';
+// @import 'leaflet-control-geocoder/dist/Control.Geocoder';
 
 .leaflet-bar-part {
 	.dashicons {
@@ -104,6 +106,31 @@
 		margin-bottom: 0.33em;
 	}
 }
+.acf-osm-geocoder-settings {
+	display: grid;
+	// grid-auto-flow: column;
+	grid-template-columns: 2fr 1fr;
+	overflow: hidden;
+	align-items: start;
+	gap: 2em;
+	.leaflet-container {
+		aspect-ratio: 3 / 2;
+	}
+	.acf-osm-test-map-container {
+		overflow: hidden;
+	}
+	.acf-osm-geocode-response {
+		overflow: auto;
+		max-width: 100%;
+		&:empty {
+			display: none;
+		}
+	}
+	h3:has( + .acf-osm-geocode-response:empty ) {
+		display: none;
+	}
+}
+
 .acf-osm-setting-access-key {
 	label {
 		[data-action="change-token"] {

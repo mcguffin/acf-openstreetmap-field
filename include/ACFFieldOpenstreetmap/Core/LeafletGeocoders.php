@@ -111,7 +111,7 @@ class LeafletGeocoders extends Singleton {
 
 		// merge with settings
 		$geocoder_settings = (array) get_option('acf_osm_geocoder');
-
+		$options['scale']  = $geocoder_settings['scale'];
 		if ( isset( $geocoder_settings[$geocoder_name] ) && is_array( $geocoder_settings[$geocoder_name] ) ) {
 			$options = wp_parse_args( $geocoder_settings[$geocoder_name], $options );
 		}
