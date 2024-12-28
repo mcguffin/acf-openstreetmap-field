@@ -44,6 +44,11 @@ class LeafletGeocoders extends Singleton
     public function get_options($geocoder_name)
     {
         $geocoders = $this->get_geocoders();
+
+        if ( ! isset( $geocoders[$geocoder_name] ) ) {
+            $geocoder_name = self::GEOCODER_DEFAULT;
+        }
+
         // Retrive default options
         $options = $geocoders[$geocoder_name]['options'];
 
@@ -63,7 +68,6 @@ class LeafletGeocoders extends Singleton
                 $this->addGeocodingQueryParams($options, 'accept-language', $language);
                 $this->addReverseQueryParams($options, 'accept-language', $language);
 
-                $options = apply_filters('acf_osm_nominatim_options', $options);
                 break;
 
             case self::GEOCODER_PHOTON:
@@ -81,8 +85,6 @@ class LeafletGeocoders extends Singleton
                 $this->addGeocodingQueryParams($options, 'lang', $language);
                 $this->addReverseQueryParams($options, 'lang', $language);
                 */
-
-                $options = apply_filters('acf_osm_photon_options', $options);
                 break;
 
             case self::GEOCODER_OPENCAGE:
@@ -95,18 +97,18 @@ class LeafletGeocoders extends Singleton
                 $language = get_locale();
                 $this->addGeocodingQueryParams($options, 'language', $language);
                 $this->addReverseQueryParams($options, 'language', $language);
-                $options = apply_filters('acf_osm_opencage_options', $options);
                 break;
         }
 
-		// merge with settings
-		$geocoder_settings = (array) get_option('acf_osm_geocoder');
+        // merge with settings
+        $geocoder_settings = (array) get_option('acf_osm_geocoder');
 
-		if ( isset( $geocoder_settings[$geocoder_name] ) && is_array( $geocoder_settings[$geocoder_name] ) ) {
-			$options = wp_parse_args( $geocoder_settings[$geocoder_name], $options );
-		}
+        if ( isset( $geocoder_settings[$geocoder_name] ) && is_array( $geocoder_settings[$geocoder_name] ) ) {
+            $options = wp_parse_args( $geocoder_settings[$geocoder_name], $options );
+        }
 
-        return $options;
+        return apply_filters( "acf_osm_{$geocoder_name}_options", $options);
+
     }
 
     /**
