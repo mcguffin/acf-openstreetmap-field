@@ -59,3 +59,6 @@ tests/.phpunit.result.cache
 
 TODO.md
 .wp-release-env.json
+
+# ignore dev personnal folder
+/_work/

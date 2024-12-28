@@ -11,6 +11,8 @@ import { MarkerData, MapData } from 'media/models';
 import {MarkerEntry} from 'media/views/marker-entry';
 import { uniqid } from 'misc/uniquid';
 
+import {GeocoderFactory} from 'media/views/geocoderFactory' ;
+
 const { options, i18n } = acf_osm_admin
 const instances = []
 
@@ -422,57 +424,26 @@ class MapInput extends Backbone.View {
 		// add an extra control panel region for out search
 		this.map._controlCorners['above'] = $above.get(0);
 
-		const nominatim_options = Object.assign( {
-				// geocodingQueryParams: {'accept-language':'it'},
-				// reverseQueryParams: {'accept-language':'it'},
-				htmlTemplate: result => {
-					var parts = [],
-						templateConfig = {
-							interpolate: /\{(.+?)\}/g
-						},
-						addr = _.defaults( result.address, {
-							building:'',
-							road:'',
-							house_number:'',
+		const geocoderEngine = GeocoderFactory.createGeocoder( options );
 
-							postcode:'',
-							city:'',
-							town:'',
-							village:'',
-							hamlet:'',
-
-							state:'',
-							country:'',
-						} );
-
-					parts.push( _.template( i18n.address_format.street, templateConfig )( addr ) );
-
-					parts.push( _.template( i18n.address_format.city, templateConfig )( addr ) );
-
-					parts.push( _.template( i18n.address_format.country, templateConfig )( addr ) );
-
-					return parts
-						.map( el =>  el.replace(/\s+/g,' ').trim() )
-						.filter( el => el !== '' )
-						.join(', ')
-				}
-			}, options.nominatim),
-			geocoder_options = Object.assign({
-				collapsed: false,
-				position: 'above',
-				placeholder: i18n.search,
-				errorMessage: i18n.nothing_found,
-				showResultIcons:true,
-				suggestMinLength:3,
-				suggestTimeout:250,
-				queryMinLength:3,
-				defaultMarkGeocode:false,
-				// geocodingQueryParams: {'accept-language':'de_DE'},
-				geocoder: L.Control.Geocoder.nominatim( nominatim_options )
-			}, options.geocoder );
+		const geocoder_options = Object.assign({
+			collapsed: false,
+			position: 'above',
+			placeholder: i18n.search,
+			errorMessage: i18n.nothing_found,
+			showResultIcons:true,
+			suggestMinLength:3,
+			suggestTimeout:250,
+			queryMinLength:3,
+			defaultMarkGeocode:false,
+			// geocodingQueryParams: {'accept-language':'de_DE'},
+			//geocoder: L.Control.Geocoder.nominatim( nominatim_options )
+			geocoder: geocoderEngine
+		}, options.geocoder );
 
 		this.geocoder = L.Control.geocoder( geocoder_options )
 			.on( 'markgeocode', e => {
+
 				// search result click
 				let model,
 					previousGeocode = false;
@@ -497,7 +468,6 @@ class MapInput extends Backbone.View {
 					return this.map.fitBounds( e.geocode.bbox );
 
 				}
-
 
 				if ( this.canAddMarker ) {
 					// infinite markers or markers still in range
@@ -595,13 +565,23 @@ class MapInput extends Backbone.View {
 	}
 
 	parseGeocodeResult( results, latlng ) {
+
+console.debug('parseGeocodeResult', results);
+
 		var label = false;
 
 		if ( ! results.length ) {
 			label = latlng.lat + ', ' + latlng.lng;
 		} else {
 			$.each( results, ( i, result ) => {
-				label = result.html;
+				if( result.html )
+					// `htmlTemplate` method and `html` property are available.
+					label = result.html ;
+				else if( result.name )
+					// Default to `name` property
+					label = result.name ;
+				else
+					label = 'Failed to decode geocoder result 😕';
 			});
 		}
 		// trim

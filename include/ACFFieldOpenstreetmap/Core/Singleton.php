@@ -30,14 +30,14 @@ abstract class Singleton {
 	 *	Prevent Instantinating
 	 */
 	final public function __clone() {
-		throw new Exception('Unable to clone Singleton');
+		throw new \Exception('Unable to clone Singleton');
 	}
 
 	/**
 	 *	Prevent Instantinating
 	 */
 	final public function __wakeup() {
-		throw new Exception('Unable to clone Singleton');
+		throw new \Exception('Unable to clone Singleton');
 	}
 
 	/**

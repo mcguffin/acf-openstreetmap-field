@@ -6,6 +6,7 @@ if ( ! defined('ABSPATH') ) {
 	die('FU!');
 }
 use ACFFieldOpenstreetmap\Compat;
+use WP_Error;
 
 class Core extends Plugin {
 
@@ -40,6 +41,8 @@ class Core extends Plugin {
 
 		$leaflet_providers = LeafletProviders::instance();
 		$osm_providers = OSMProviders::instance();
+		/** @var LeafletGeocoders $leaflet_geocoders */
+		$leaflet_geocoders = LeafletGeocoders::instance();
 
 		$provider_filters = ['credentials'];
 
@@ -97,13 +100,21 @@ class Core extends Plugin {
 				],
 
 			],
-			'providers'		=> $leaflet_providers->get_providers( $provider_filters ),
+			'providers' => $leaflet_providers->get_providers( $provider_filters ),
 		];
 		$osm_settings = [
 			'options' => [
 				'layer_config'	=> $leaflet_providers->get_layer_config(), // settings only
 			],
 		];
+
+		/**
+		 * Get Geocoder options from the Admin UI.
+		 */
+		$geocoder_settings = get_option('acf_osm_geocoder');
+
+		$geocoder_name = $geocoder_settings['engine'];
+
 
 		$address_format = apply_filters('acf_osm_address_format', [
 			/*
@@ -129,7 +140,7 @@ class Core extends Plugin {
 			'options'	=> [
 				'osm_layers'		=> $osm_providers->get_layers(), // flat list
 				'leaflet_layers'	=> $leaflet_providers->get_layers(),  // flat list
-				'accuracy'			=> 7,
+				'accuracy'			=> 7, // used to round lat and lng float number @see models/gs-model/fixedFloatSetter()
 				/**
 				 *	Filter Leaflet control geocoder options.
 				 *
@@ -149,23 +160,8 @@ class Core extends Plugin {
 				 *		'suggestTimeout'		=> number
 				 *	)
 				 */
-				'geocoder' 			=> apply_filters( 'acf_osm_geocoder_options', [] ),
-				/**
-				 *	Filter Nominatim geocoder options.
-				 *
-				 *	@see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/nominatimoptions.html
-				 *
-				 *	@param $nominatim_options array(
-				 *		'apiKey'				=> boolean
-				 *		'geocodingQueryParams'	=> object @see https://nominatim.org/release-docs/develop/api/Search/
-				 *		'reverseQueryParams'	=> object @see https://nominatim.org/release-docs/develop/api/Reverse/
-				 *		'serviceUrl'			=> string
-				 *	)
-				 */
-				'nominatim'			=> apply_filters( 'acf_osm_nominatim_options', [
-					'geocoderQueryParams' => [ 'accept-language' => $language, ],
-					'reverseQueryParams' => [ 'accept-language' => $language, ],
-				]),
+				'geocoder_name' => $geocoder_name,
+				'geocoder_options' => apply_filters( 'acf_osm_geocoder_options',  $leaflet_geocoders->get_options($geocoder_name) ),
 			],
 			'i18n'	=> [
 				'search'		=> __( 'Search...', 'acf-openstreetmap-field' ),
