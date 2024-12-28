@@ -515,12 +515,7 @@ class MapInput extends Backbone.View {
 				? mapZoomLevel( this.map.getZoom() )
 				: parseInt( this.geocoder.options.scale );
 
-		this.geocoder.options.geocoder.reverse(
-			latlng,
-			this.map.options.crs.scale( zoom ),
-			/**
-			 *	@param array results
-			 */
+		this.geocoder.options.geocoder.reverse( latlng, this.map.options.crs.scale( zoom ) ).then(
 			geocode => {
 				const previousGeocode = model.get('geocode' )
 
