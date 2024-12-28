@@ -4,12 +4,13 @@ namespace ACFFieldOpenstreetmap\Settings\Traits;
 
 use ACFFieldOpenstreetmap\Core\Core;
 use ACFFieldOpenstreetmap\Helper;
+use ACFFieldOpenstreetmap\Core\LeafletGeocoders;
 
 trait GeocoderSettings {
 
 	private $geocoder_defaults = [
 		// scale parameter for geocoder - detail
-		'engine'   => Core::GEOCODER_DEFAUlT,
+		'engine'   => LeafletGeocoders::GEOCODER_DEFAUlT,
 		'opencage' => [
 			'apikey' => null,
 		],
@@ -37,7 +38,7 @@ trait GeocoderSettings {
 			__('Geocoder','acf-openstreetmap-field'),
 			function() use ( $geocoder_option ) {
 				$engines = [];
-				foreach( Core::GEOCODERS as $engineName )
+				foreach( LeafletGeocoders::GEOCODERS as $engineName )
 				{
 					$engines[ $engineName ] = __($engineName, 'acf-openstreetmap-field' );
 				}

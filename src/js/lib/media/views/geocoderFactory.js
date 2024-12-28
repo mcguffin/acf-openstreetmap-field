@@ -10,18 +10,18 @@ class GeocoderFactory {
 
     static createGeocoder(options) {
 
-        //console.debug('GeocoderFactory.createGeocoder()', 'options.geocoder_name', options.geocoder_name);
+        console.debug('GeocoderFactory.createGeocoder()', options.geocoder_name, options.geocoder_options);
 
         /**
          * Do not forget to sync those values with \ACFFieldOpenstreetmap\Core\Core:GEOCODERS
          */
         switch (options.geocoder_name) {
             case 'Nominatim':
-                return GeocoderFactory.useNominatim(options);
+                return GeocoderFactory.useNominatim(options.geocoder_options);
             case 'Photon':
-                return GeocoderFactory.usePhoton(options);
+                return GeocoderFactory.usePhoton(options.geocoder_options);
             case 'OpenCage':
-                return GeocoderFactory.useOpenCage(options);
+                return GeocoderFactory.useOpenCage(options.geocoder_options);
             //case 'openrouteservice':
             //    return GeocoderFactory.useOpenrouteservice(options);
         }
@@ -61,19 +61,11 @@ class GeocoderFactory {
                     .filter(el => el !== '')
                     .join(', ')
             }
-        }, options.nominatim);
+        }, options);
 
         const gc = L.Control.Geocoder.nominatim(nominatim_options)
         return gc;
 
-    }
-
-    static useOpenrouteservice(options) {
-        const ors_options = Object.assign({
-
-        }, options.openrouteservice);
-        const gc = L.Control.Geocoder.openrouteservice(ors_options)
-        return gc;
     }
 
     /**
@@ -83,7 +75,7 @@ class GeocoderFactory {
      */
     static useOpenCage(options) {
         const oc_options = Object.assign({
-        }, options.opencage);
+        }, options);
         const gc = L.Control.Geocoder.opencage(oc_options);
         return gc;
     }
@@ -120,7 +112,7 @@ class GeocoderFactory {
                     .join(', ')
             }
 
-        }, options.photon);
+        }, options);
 
         const gc = L.Control.Geocoder.photon(photon_options)
         return gc;
