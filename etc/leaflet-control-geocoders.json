@@ -11,7 +11,7 @@
             "serviceUrl": "https://photon.komoot.io/api/",
             "reverseUrl": "https://photon.komoot.io/reverse/",
             "apiKeyMandatory": false,
-            "apiKey": null
+            "apiKey": "<Photon API Key>"
         }
     },
     "opencage": {
@@ -19,7 +19,7 @@
         "options": {
             "serviceUrl": "https://api.opencagedata.com/geocode/v1/json",
             "apiKeyMandatory": true,
-            "apiKey": null
+            "apiKey": "<OpenCage API Key>"
         }
     }
 }
