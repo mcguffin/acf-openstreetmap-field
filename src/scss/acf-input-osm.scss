@@ -237,16 +237,20 @@
 		& > .leaflet-control-geocoder-alternatives {
 			margin: 0;
 			position: absolute;
-			left: 1em;
-			top: 100%;
+			left: 0.5em;
+			top: calc(100% + 0.5em);
 			background: #fff;
+			max-height: calc( var(--map-height,400) * 1px - 1em );
+			overflow: auto;
 		}
 		& > .leaflet-control-geocoder-error {
 			padding: 0.5em 1em;
 		}
 		& > .leaflet-control-geocoder-alternatives {
-			margin-top: 1em;
 		}
+	}
+	&:has(.leaflet-control-geocoder-alternatives) {
+
 	}
 }
 

@@ -1,9 +1,0 @@
-.leaflet-above,
-.leaflet-below {
-	// can't believe I need a clearfix...
-	&::after {
-		content: "";
-		display: block;
-		clear: both;
-	}
-}
