@@ -2,8 +2,7 @@
 
 namespace ACFFieldOpenstreetmap\Settings\Traits;
 
-use ACFFieldOpenstreetmap\Core\Core;
-use ACFFieldOpenstreetmap\Core\LeafletGeocoders;
+use ACFFieldOpenstreetmap\Core;
 use ACFFieldOpenstreetmap\Helper;
 
 trait GeocoderSettings {
@@ -11,7 +10,7 @@ trait GeocoderSettings {
 	/** @var array */
 	private $geocoder_defaults = [
 		// scale parameter for geocoder - detail
-		'engine'   => LeafletGeocoders::GEOCODER_DEFAULT,
+		'engine'   => Core\LeafletGeocoders::GEOCODER_DEFAULT,
 		'scale'    => '18', // (int) 0-18 | 'auto'
 		'opencage' => [
 			'apiKey' => null,
@@ -27,7 +26,7 @@ trait GeocoderSettings {
 	private function register_settings_geocoder() {
 		$settings_section = 'acf_osm_geocoder';
 		$geocoder_option  = get_option( 'acf_osm_geocoder' );
-		$geocoders        = LeafletGeocoders::instance();
+		$geocoders        = Core\LeafletGeocoders::instance();
 
 		register_setting( $this->optionset, 'acf_osm_geocoder', [ $this , 'sanitize_geocoder' ] );
 
@@ -141,9 +140,9 @@ trait GeocoderSettings {
 		// make sure defaults are present
 		$values  = array_replace_recursive( $this->geocoder_defaults, $new_values );
 
-		// check if geocoder exists
-		if ( ! in_array( $new_values['engine'], LeafletGeocoders::GEOCODERS ) ) {
-			$values['engine'] = LeafletGeocoders::GEOCODER_DEFAULT;
+		// make sure geocoder exists
+		if ( ! in_array( $new_values['engine'], Core\LeafletGeocoders::GEOCODERS ) ) {
+			$values['engine'] = Core\LeafletGeocoders::GEOCODER_DEFAULT;
 		}
 
 		if ( ! array_key_exists( $values['scale'], $this->get_scale_options() )  ) {
