@@ -18,7 +18,6 @@ Features
  - Custom map markers [through WordPress filters](../../wiki/HTML-Marker-Icon) and JS Events.
  - Map Proxy to comply with privacy regulations and to hide API Credentials
 
-
 Installation
 ------------
 
@@ -70,9 +69,8 @@ npm run dev-test
 ```
 
 ### Unit Tests
-Unit tests are run in [wordpress/env](https://www.npmjs.com/package/@wordpress/env/v/2.0.0), which is basically a docker container. [Docker Desktop](https://docs.docker.com/desktop/) is required. Run `wp-env start` first to start the container.
+Unit tests are run in [wordpress/env](https://www.npmjs.com/package/@wordpress/env/v/2.0.0), which is basically a docker container. [Docker Desktop](https://docs.docker.com/desktop/) is required.
 ```shell
-wp-env start
 npm run test
 ```
 
