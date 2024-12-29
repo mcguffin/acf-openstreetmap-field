@@ -4,45 +4,53 @@
 	<!-- Set a description for this ruleset. -->
 	<description>A WordPress Ruleset to check application safety.</description>
 
+	<config name="installed_paths" value="vendor/wp-coding-standards/wpcs" />
+	<config name="testVersion" value="7.4-"/>
+
 	<exclude-pattern>assets/*</exclude-pattern>
 	<exclude-pattern>node_modules/*</exclude-pattern>
 	<exclude-pattern>test/*</exclude-pattern>
 	<exclude-pattern>vendor/*</exclude-pattern>
-	<exclude-pattern>*.min.js</exclude-pattern>
-	<exclude-pattern>js/*.js</exclude-pattern>
-	<exclude-pattern>css/*.css</exclude-pattern>
-	<exclude-pattern>src/*</exclude-pattern>
+	<exclude-pattern>*.js</exclude-pattern>
+	<exclude-pattern>*.css</exclude-pattern>
+	<exclude-pattern>assets/*</exclude-pattern>
+	<exclude-pattern>~*</exclude-pattern>
 
 	<rule ref="Generic.PHP.Syntax"/>
-	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
 
 	<!-- Include the WordPress ruleset, with exclusions. -->
 	<rule ref="WordPress.CodeAnalysis">
 	</rule>
 	<rule ref="WordPress.DB">
 	</rule>
-	<rule ref="WordPress.NamingConventions.PrefixAllGlobals"/>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound"/>
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound"/>
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="ACFFieldOpenstreet"/>
+				<element value="acf_osm"/>
+			</property>
+		</properties>
+	</rule>
 	<rule ref="WordPress.PHP">
 		<!-- omit non security sniffs -->
-		<exclude name="WordPress.PHP.DisallowShortTernary"/>
 		<exclude name="WordPress.PHP.DontExtract"/>
 		<exclude name="WordPress.PHP.YodaConditions"/>
 	</rule>
 	<rule ref="WordPress.Security">
 	</rule>
+	<rule ref="WordPress.Security.EscapeOutput">
+		<properties>
+			<property name="customEscapingFunctions" type="array">
+				<!-- acf escaping functions -->
+				<element value="acf_esc_attr"/>
+				<element value="get_the_*"/>
+			</property>
+		</properties>
+    </rule>
 	<rule ref="WordPress.Utils">
 	</rule>
 	<rule ref="WordPress.WP">
-		<exclude name="WordPress.WP.TimezoneChange"/>
-		<exclude name="WordPress.WP.I18n.MixedOrderedPlaceholders"/>
-		<exclude name="WordPress.WP.I18n.UnorderedPlaceholders"/>
-		<exclude name="WordPress.WP.I18n.NonSingularStringLiteralText"/>
-	</rule>
-	<rule ref="WordPress-Docs">
-		<exclude name="Generic.Commenting.DocComment.MissingShort"/>
-		<exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
-		<exclude name="Squiz.Commenting.InlineComment.TabBefore"/>
-		<exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
-		<exclude name="Squiz.Commenting.BlockComment.NoNewLine"/>
 	</rule>
 </ruleset>
