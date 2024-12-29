@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class MapProxy extends WP_UnitTestCase {
+class MapProxyTest extends WP_UnitTestCase {
 	/**
 	 * Install Proxy dir
 	 * @covers ACFFieldOpenstreetmap\WPCLI\Commands\MapProxy::install
