@@ -12,7 +12,7 @@
     "build:scss": "find ./assets/css -name *.css* -delete && sass ./src/scss/:./assets/css/ --load-path=node_modules/ --style=compressed",
     "build:js": "rm -rf assets/js/ && webpack build --output-path ./assets/js --config ./webpack.config.js --mode production",
     "build:lint": "node ./src/run/lint.js",
-    "uitest": "node ./src/run/test.js",
+    "uitest": "echo \"Running UI Tests. Press ^C to stop\" && node --watch ./src/run/test.js start && node ./src/run/test.js stop",
     "test": "wp-env run tests-cli --env-cwd=wp-content/plugins/acf-openstreetmap-field vendor/bin/phpunit --",
     "dev-test": "./src/run/dev-test.sh",
     "dashicons": "node ./src/run/dashicons.js",
