@@ -65,48 +65,48 @@ class LeafletGeocoders extends Singleton {
 		switch ($geocoder_name) {
 
 			case self::GEOCODER_NOMINATIM:
-			/**
-			 *  Nominatim options.
-			 *
-			 * - Address search @see https://nominatim.org/release-docs/develop/api/Search/
-			 * - Reverse geocoding @see https://nominatim.org/release-docs/develop/api/Reverse/
-			 * - Leaflet control @see https://github.com/perliedman/leaflet-control-geocoder/blob/master/src/geocoders/nominatim.ts
-			 */
+				/**
+				 *  Nominatim options.
+				 *
+				 * - Address search @see https://nominatim.org/release-docs/develop/api/Search/
+				 * - Reverse geocoding @see https://nominatim.org/release-docs/develop/api/Reverse/
+				 * - Leaflet control @see https://github.com/perliedman/leaflet-control-geocoder/blob/master/src/geocoders/nominatim.ts
+				 */
 
-			$language = substr(get_locale(), 0, 2);
-			$this->addGeocodingQueryParams($options, 'accept-language', $language);
-			$this->addReverseQueryParams($options, 'accept-language', $language);
+				$language = substr(get_locale(), 0, 2);
+				$this->addGeocodingQueryParams($options, 'accept-language', $language);
+				$this->addReverseQueryParams($options, 'accept-language', $language);
 
-			break;
+				break;
 
 			case self::GEOCODER_PHOTON:
-			/**
-			 *    Photon options.
-			 *
-			 * Allowed parameters are: [q, location_bias_scale, debug, bbox, limit, osm_tag, lon, zoom, lang, lat, layer]"
-			 * - Search API @see https://photon.komoot.io @see https://github.com/komoot/photon?tab=readme-ov-file#search-api
-			 * - leaflet-control-geocoder PhotonOptions @see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocoders.PhotonOptions.html
-			 */
+				/**
+				 *    Photon options.
+				 *
+				 * Allowed parameters are: [q, location_bias_scale, debug, bbox, limit, osm_tag, lon, zoom, lang, lat, layer]"
+				 * - Search API @see https://photon.komoot.io @see https://github.com/komoot/photon?tab=readme-ov-file#search-api
+				 * - leaflet-control-geocoder PhotonOptions @see https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocoders.PhotonOptions.html
+				 */
 
-			/*
-			Photon will use 'accept-language' HTTP header which browsers set by default.
-			$language = substr(get_locale(), 0, 2);
-			$this->addGeocodingQueryParams($options, 'lang', $language);
-			$this->addReverseQueryParams($options, 'lang', $language);
-			*/
-			break;
+				/*
+				Photon will use 'accept-language' HTTP header which browsers set by default.
+				$language = substr(get_locale(), 0, 2);
+				$this->addGeocodingQueryParams($options, 'lang', $language);
+				$this->addReverseQueryParams($options, 'lang', $language);
+				*/
+				break;
 
 			case self::GEOCODER_OPENCAGE:
-			/**
-			 *  OpenCage options.
-			 *
-			 * - OpenCage API @see https://opencagedata.com/api
-			 * - leaflet-control-geocoder OpenCageOptions https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocoders.OpenCageOptions.html
-			 */
-			$language = get_locale();
-			$this->addGeocodingQueryParams($options, 'language', $language);
-			$this->addReverseQueryParams($options, 'language', $language);
-			break;
+				/**
+				 *  OpenCage options.
+				 *
+				 * - OpenCage API @see https://opencagedata.com/api
+				 * - leaflet-control-geocoder OpenCageOptions https://www.liedman.net/leaflet-control-geocoder/docs/interfaces/geocoders.OpenCageOptions.html
+				 */
+				$language = get_locale();
+				$this->addGeocodingQueryParams($options, 'language', $language);
+				$this->addReverseQueryParams($options, 'language', $language);
+				break;
 		}
 
 		// merge with settings
@@ -116,9 +116,9 @@ class LeafletGeocoders extends Singleton {
 			$options = wp_parse_args( $geocoder_settings[$geocoder_name], $options );
 		}
 
+		// Parse credentials placeholder
 		$options = array_map( function( $option_value ) {
-			// Parse credentials placeholder
-			// TODO: use centralized function like in LeafletProviders DRY
+			// TODO: use centralized function like in LeafletProviders
 			if ( is_string($option_value) && preg_match( '/^<([^>]*)>$/imsU', $option_value ) ) {
 				return '';
 			}
