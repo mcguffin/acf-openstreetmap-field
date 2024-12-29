@@ -1,6 +1,6 @@
 {
   "phpVersion": "7.4",
-  "plugins": [ "secure-custom-fields/secure-custom-fields.php" ],
+  "plugins": [ ".","WordPress/secure-custom-fields" ],
   "env": {
     "tests": {
       "config": {
