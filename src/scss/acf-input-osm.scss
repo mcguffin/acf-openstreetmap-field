@@ -200,6 +200,7 @@
 		box-shadow: none;
 		padding: 5px 0;
 		box-sizing: border-box;
+		background-color: transparent;
 		& > .leaflet-control-geocoder-icon,
 		& > .leaflet-control-geocoder-form {
 			border-radius: none;
@@ -231,6 +232,7 @@
 				border: 1px solid #8c8f94;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
+				width: 100%;
 			}
 		}
 		& > .leaflet-control-geocoder-error,

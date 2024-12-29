@@ -158,34 +158,7 @@ class SettingsOpenStreetMap extends Settings {
 
 				</div>
 				<div class="tab-content acf-osm-tab-3">
-					<h3><?php esc_html_e('Geocoder Options', 'acf-openstreetmap-field') ?></h3>
-					<div class="acf-osm-geocoder-settings">
-
-						<table class="form-table" role="presentation"><?php
-						do_settings_fields( $this->optionset, 'geocoder' )
-						?></table>
-
-						<div class="acf-osm-test-map-container">
-							<div class="acf-osm-test-map">
-								<div
-									class="leaflet-map"
-									data-test="geocoders"
-									data-map="leaflet"
-									data-map-lat="53.55064"
-									data-map-lng="10.00065"
-									data-map-zoom="9"
-									data-map-layers="<?php echo esc_attr( json_encode(['OpenStreetMap.Mapnik']) ); ?>"
-									>
-								</div>
-							</div>
-							<p class="description">
-								<?php esc_html_e('Use search to geocode.','acf-openstreetmap-field'); ?><br />
-								<?php esc_html_e('Click on the map for reverse geocode.','acf-openstreetmap-field'); ?>
-							</p>
-							<h3><?php esc_html_e('Geocoder response', 'acf-openstreetmap-field'); ?></h3>
-							<pre class="acf-osm-geocode-response code card"></pre>
-						</div>
-					</div>
+					<?php $this->print_geocoder_settings(); ?>
 				</div>
 
 				<?php
@@ -210,8 +183,6 @@ class SettingsOpenStreetMap extends Settings {
 		wp_enqueue_style( 'acf-osm-settings' );
 	}
 
-
-
 	/**
 	 *	Setup options.
 	 *
@@ -223,10 +194,6 @@ class SettingsOpenStreetMap extends Settings {
 		$this->register_settings_geocoder();
 
 	}
-
-
-
-
 
 	/**
 	 *	@return array Disable tile providers with bounds

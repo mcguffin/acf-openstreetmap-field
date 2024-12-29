@@ -21,6 +21,66 @@ trait GeocoderSettings {
 	private $geocoder_scale_options;
 
 	/**
+	 *	Output geocoder settings
+	 */
+	private function print_geocoder_settings() {
+		$geocoders = Core\LeafletGeocoders::instance();
+		?>
+		<h3><?php esc_html_e('Geocoder Options', 'acf-openstreetmap-field') ?></h3>
+		<div class="acf-osm-geocoder-settings">
+			<div>
+				<table class="form-table" role="presentation">
+					<?php
+					do_settings_fields( $this->optionset, 'geocoder' );
+					?>
+				</table>
+				<?php
+
+				foreach ( $geocoders->get_geocoders() as $slug => $geocoder ) {
+					if ( ! isset( $geocoder['settings'] ) ) {
+						continue;
+					}
+					?>
+					<div class="card">
+						<h3>
+							<?php esc_html_e( $geocoder['label'], 'geocoder', 'acf-openstreetmap-field' ); ?>
+						</h3>
+						<table class="form-table" role="presentation">
+							<?php
+							do_settings_fields( $this->optionset, "geocoder-{$slug}" );
+							?>
+						</table>
+					</div>
+					<?php
+				}
+
+				?>
+			</div>
+			<div class="acf-osm-test-map-container">
+				<div class="acf-osm-test-map">
+					<div
+						class="leaflet-map"
+						data-test="geocoders"
+						data-map="leaflet"
+						data-map-lat="53.55064"
+						data-map-lng="10.00065"
+						data-map-zoom="9"
+						data-map-layers="<?php echo esc_attr( json_encode(['OpenStreetMap.Mapnik']) ); ?>"
+						>
+					</div>
+				</div>
+				<p class="description">
+					<?php esc_html_e('Use search to geocode.','acf-openstreetmap-field'); ?><br />
+					<?php esc_html_e('Click on the map for reverse geocode.','acf-openstreetmap-field'); ?>
+				</p>
+				<h3><?php esc_html_e('Geocoder response', 'acf-openstreetmap-field'); ?></h3>
+				<pre class="acf-osm-geocode-response code card"></pre>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
 	 *	Setup Geocoder options
 	 */
 	private function register_settings_geocoder() {
@@ -59,20 +119,36 @@ trait GeocoderSettings {
 			'geocoder'
 		);
 
-		// TODO: generate service settings from $geocoders->get_geocoders()
-		add_settings_field(
-			"{$settings_section}-opencage-apikey",
-			__('OpenCage API Key','acf-openstreetmap-field'),
-			function() use ( $geocoder_option ) {
-				printf(
-					'<input class="regular-text code" type="text" name="%1$s" value="%2$s" />',
-					'acf_osm_geocoder[opencage][apiKey]',
-					esc_attr( $geocoder_option['opencage']['apiKey'] )
-				);
-			},
-			$this->optionset,
-			'geocoder'
-		);
+		foreach ( $geocoders->get_geocoders() as $slug => $geocoder ) {
+			if ( isset( $geocoder['settings'] ) ) {
+				foreach ( $geocoder['settings'] as $prop => $setting ) {
+					// TODO: generate service settings from $geocoders->get_geocoders()
+					$label = __( $setting['label'], 'geocoder', 'acf-openstreetmap-field');
+					if ( $setting['required'] ) {
+						$label .= ' ' . __('(Required)', 'acf-openstreetmap-field');
+					}
+					add_settings_field(
+						"{$settings_section}-{$slug}-{$prop}",
+						$label,
+						function() use ( $setting, $geocoder_option, $slug, $prop ) {
+							$value = isset( $geocoder_option[$slug][$prop] )
+								? $geocoder_option[$slug][$prop]
+								: '';
+							// TODO: choose UI by $setting['type']
+							printf(
+								'<input class="regular-text code" type="text" name="%1$s" value="%2$s" %3$s />',
+								'acf_osm_geocoder[opencage][apiKey]',
+								esc_attr( $value ),
+								$setting['required'] ? 'required' : ''
+							);
+						},
+						$this->optionset,
+						"geocoder-{$slug}"
+					);
+
+				}
+			}
+		}
 	}
 
 	/**

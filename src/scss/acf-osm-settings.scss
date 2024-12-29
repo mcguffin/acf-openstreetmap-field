@@ -129,8 +129,11 @@
 	h3:has( + .acf-osm-geocode-response:empty ) {
 		display: none;
 	}
+	.card {
+		max-width: none;
+	}
 }
-
+// providers
 .acf-osm-setting-access-key {
 	label {
 		[data-action="change-token"] {
