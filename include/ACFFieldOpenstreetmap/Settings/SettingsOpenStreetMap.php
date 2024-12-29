@@ -149,7 +149,7 @@ class SettingsOpenStreetMap extends Settings {
 									data-map-lat="53.55064"
 									data-map-lng="10.00065"
 									data-map-zoom="12"
-									data-map-layers="<?php esc_attr_e( json_encode(['OpenStreetMap.Mapnik']) ); ?>"
+									data-map-layers="<?php echo esc_attr( json_encode(['OpenStreetMap.Mapnik']) ); ?>"
 									>
 								</div>
 							</div>
@@ -174,7 +174,7 @@ class SettingsOpenStreetMap extends Settings {
 									data-map-lat="53.55064"
 									data-map-lng="10.00065"
 									data-map-zoom="9"
-									data-map-layers="<?php esc_attr_e( json_encode(['OpenStreetMap.Mapnik']) ); ?>"
+									data-map-layers="<?php echo esc_attr( json_encode(['OpenStreetMap.Mapnik']) ); ?>"
 									>
 								</div>
 							</div>

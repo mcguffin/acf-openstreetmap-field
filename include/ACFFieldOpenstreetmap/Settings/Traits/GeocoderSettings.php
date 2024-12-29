@@ -42,7 +42,7 @@ trait GeocoderSettings {
 			"{$settings_section}-engine",
 			__('Geocoder','acf-openstreetmap-field'),
 			function() use ( $geocoder_option, $geocoders ) {
-				echo $this->select_ui( array_map( function($geocoder) {
+				echo $this->select_ui( array_map( function($geocoder) { // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					return $geocoder['label'];
 				}, $geocoders->get_geocoders() ), $geocoder_option['engine'], 'acf_osm_geocoder[engine]' );
 			},
@@ -54,7 +54,7 @@ trait GeocoderSettings {
 			"{$settings_section}-scale",
 			__( 'Reverse Geocoder Detail Level', 'acf-openstreetmap-field' ),
 			function() use ( $geocoder_option ) {
-				echo $this->select_ui( $this->get_scale_options(), $geocoder_option['scale'], 'acf_osm_geocoder[scale]' );
+				echo $this->select_ui( $this->get_scale_options(), $geocoder_option['scale'], 'acf_osm_geocoder[scale]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			},
 			$this->optionset,
 			'geocoder'
@@ -68,7 +68,7 @@ trait GeocoderSettings {
 				printf(
 					'<input class="regular-text code" type="text" name="%1$s" value="%2$s" />',
 					'acf_osm_geocoder[opencage][apiKey]',
-					$geocoder_option['opencage']['apiKey']
+					esc_attr( $geocoder_option['opencage']['apiKey'] )
 				);
 			},
 			$this->optionset,

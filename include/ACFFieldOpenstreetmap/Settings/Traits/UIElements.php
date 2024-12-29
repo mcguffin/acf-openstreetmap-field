@@ -6,7 +6,7 @@ trait UIElements {
 
 	final public function select_ui( $options, $current, $name ) {
 		return sprintf( '<select name="%1$s">%2$s</select>',
-			$name,
+			esc_attr( $name ),
 			implode(
 				"\n",
 				array_map(

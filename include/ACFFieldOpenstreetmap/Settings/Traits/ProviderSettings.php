@@ -50,7 +50,7 @@ trait ProviderSettings {
 
 			<h3><?php
 
-				esc_html_e( $provider_key );
+				echo esc_html( $provider_key );
 				if ( ! $needs_access_key || $has_access_key ) {
 
 					$this->print_tags( $provider_data );
@@ -74,7 +74,7 @@ trait ProviderSettings {
 						checked( $is_parent_disabled, true, false )
 					);
 					/* translators: %s map tile provider name */
-					esc_html_e( sprintf( __('Disable %s', 'acf-openstreeetmap-field' ), $provider_key ) );
+					echo esc_html( sprintf( __('Disable %s', 'acf-openstreeetmap-field' ), $provider_key ) );
 					?>
 					</label>
 					<?php if ( ! apply_filters( 'acf_osm_force_proxy', false ) ) { ?>
@@ -88,7 +88,7 @@ trait ProviderSettings {
 							checked( isset( $proxy_option[$provider_key] ) && $proxy_option[$provider_key], true, false )
 						);
 						/* translators: %s map tile provider name */
-						esc_html_e( sprintf( __('Enable Proxy for %s (beta)', 'acf-openstreeetmap-field' ), $provider_key ) );
+						echo esc_html( sprintf( __('Enable Proxy for %s (beta)', 'acf-openstreeetmap-field' ), $provider_key ) );
 						?>
 						</label>
 					<?php } ?>
@@ -121,7 +121,7 @@ trait ProviderSettings {
 										checked( $is_disabled, true, false)
 									);
 
-									esc_html_e( $variant_key );
+									echo esc_html( $variant_key );
 									$this->print_test_link( "{$provider_key}.{$variant_key}" );
 
 									?>
@@ -172,8 +172,8 @@ trait ProviderSettings {
 					<label>
 						<?php
 						if ( $has_value ) {
-							printf( '<em>%s %s</em>', esc_html( $option ), __( 'configured.', 'acf-openstreetmap-field' ) );
-							printf( '<button class="button-link" type="button" data-action="change-token">%s</button>', __('Reset','acf-openstreetmap-field') );
+							printf( '<em>%s %s</em>', esc_html( $option ), esc_html__( 'configured.', 'acf-openstreetmap-field' ) );
+							printf( '<button class="button-link" type="button" data-action="change-token">%s</button>', esc_html__('Reset','acf-openstreetmap-field') );
 							echo '<template>';
 						}
 
@@ -187,7 +187,7 @@ trait ProviderSettings {
 							esc_attr($value)
 						);
 						if ( $has_value ) {
-							printf( '<button class="button-link" type="button" data-action="cancel-token">%s</button>', __('Cancel','acf-openstreetmap-field') );
+							printf( '<button class="button-link" type="button" data-action="cancel-token">%s</button>', esc_html__('Cancel','acf-openstreetmap-field') );
 							echo '</template>';
 						}
 					?></label>
@@ -346,7 +346,7 @@ trait ProviderSettings {
 		} else if ( is_array( $val ) ) {
 			return array_map( [ $this, 'boolval_recursive' ], $val );
 		}
-		throw( new \Exception('invalid value') );
+		throw new \Exception('invalid value');
 	}
 
 	/**
@@ -384,7 +384,7 @@ trait ProviderSettings {
 	 */
 	private function print_test_link( $key ) {
 		?>
-		<a href="#" data-layer="<?php esc_attr_e( $key ) ?>" class="action-test">
+		<a href="#" data-layer="<?php echo esc_attr( $key ) ?>" class="action-test">
 			<?php esc_html_e('Test', 'acf-openstreetmap-field' ); ?>
 		</a>
 		<?php
