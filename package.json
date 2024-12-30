@@ -8,12 +8,15 @@
     "dev:scss": "sass --watch ./src/scss/:./assets/css/ --load-path=node_modules/",
     "dev:js": "webpack watch --output-path ./assets/js --config ./webpack.config.js --mode development",
     "dev:lint": "node ./src/run/lint.js --watch",
-    "build": "npm run build:lint && npm-run-all --parallel build:scss build:js",
+    "build": "npm run build:lint && npm-run-all --parallel build:scss build:js build:i18n",
     "build:scss": "find ./assets/css -name *.css* -delete && sass ./src/scss/:./assets/css/ --load-path=node_modules/ --style=compressed",
     "build:js": "rm -rf assets/js/ && webpack build --output-path ./assets/js --config ./webpack.config.js --mode production",
     "build:lint": "node ./src/run/lint.js",
+    "build:i18n": "npm-run-all --serial build:i18n:json build:i18n:pot",
+    "build:i18n:pot": "php -d memory_limit=1G $(which wp) i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp --exclude=vendor --exclude=test --exclude=tests",
+    "build:i18n:json": "node ./src/run/i18n-json-strings.js",
     "uitest": "echo \"Running UI Tests. Press ^C to stop\" && node --watch ./src/run/test.js start && node ./src/run/test.js stop",
-    "test": "wp-env start && wp-env run tests-cli --env-cwd=wp-content/plugins/acf-openstreetmap-field vendor/bin/phpunit -- && wp-env stop",
+    "test": "wp-env start --update && wp-env run tests-cli --env-cwd=wp-content/plugins/acf-openstreetmap-field vendor/bin/phpunit -- && wp-env stop",
     "dev-test": "./src/run/dev-test.sh",
     "dashicons": "node ./src/run/dashicons.js",
     "i18n": "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp/*",
@@ -66,9 +69,7 @@
     "type": "plugin",
     "build": {
       "versionedFiles": null,
-      "prebuild": [
-        "php -d memory_limit=1G $(which wp) i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp --exclude=vendor --exclude=test"
-      ],
+      "prebuild": [],
       "build": [
         "npm run build",
         "npm run ver"
