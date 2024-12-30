@@ -43,7 +43,7 @@ trait GeocoderSettings {
 					?>
 					<div class="card">
 						<h3>
-							<?php esc_html_ex( $geocoder['label'], 'geocoder', 'acf-openstreetmap-field' ); ?>
+							<?php esc_html_ex( $geocoder['label'], 'geocoder', 'acf-openstreetmap-field' ); // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText ?>
 						</h3>
 						<table class="form-table" role="presentation">
 							<?php
@@ -123,7 +123,7 @@ trait GeocoderSettings {
 			if ( isset( $geocoder['settings'] ) ) {
 				foreach ( $geocoder['settings'] as $prop => $setting ) {
 					// TODO: generate service settings from $geocoders->get_geocoders()
-					$label = _x( $setting['label'], 'geocoder', 'acf-openstreetmap-field');
+					$label = _x( $setting['label'], 'geocoder', 'acf-openstreetmap-field'); // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
 					if ( $setting['required'] ) {
 						$label .= ' ' . __('(Required)', 'acf-openstreetmap-field');
 					}
