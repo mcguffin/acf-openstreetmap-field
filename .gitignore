@@ -52,6 +52,7 @@ node_modules
 # Composer
 vendor/
 !/include/vendor/
+composer.lock
 
 # phpcs
 phpcs-report.txt
