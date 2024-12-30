@@ -16,7 +16,10 @@
     "build:i18n:pot": "php -d memory_limit=1G $(which wp) i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp --exclude=vendor --exclude=test --exclude=tests",
     "build:i18n:json": "node ./src/run/i18n-json-strings.js",
     "uitest": "echo \"Running UI Tests. Press ^C to stop\" && node --watch ./src/run/test.js start && node ./src/run/test.js stop",
-    "test": "wp-env start --update && wp-env run tests-cli --env-cwd=wp-content/plugins/acf-openstreetmap-field vendor/bin/phpunit -- && wp-env stop",
+    "test": "npm-run-all --serial test:legacy test:edge",
+    "test:edge": "WP_ENV_PHP_VERSION=8.3 wp-env start && wp-env run cli php -v && npm run test:phpunit",
+    "test:legacy": "WP_ENV_PHP_VERSION=7.4 wp-env start && wp-env run cli php -v && npm run test:phpunit",
+    "test:phpunit": "wp-env run tests-cli --env-cwd=wp-content/plugins/acf-openstreetmap-field vendor/bin/phpunit --",
     "dev-test": "./src/run/dev-test.sh",
     "dashicons": "node ./src/run/dashicons.js",
     "i18n": "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp/*",
@@ -69,7 +72,8 @@
     "type": "plugin",
     "build": {
       "versionedFiles": null,
-      "prebuild": [],
+      "prebuild": [
+      ],
       "build": [
         "npm run build",
         "npm run ver"
@@ -85,8 +89,7 @@
       "svn": "https://plugins.svn.wordpress.org/acf-openstreetmap-field/"
     },
     "test": [
-      "wp plugin deactivate acf-openstreetmap-field --context=admin",
-      "wp plugin activate acf-openstreetmap-field --context=admin"
+      "npm run test"
     ]
   }
 }
