@@ -12,8 +12,8 @@
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field",
   "type": "wordpress-plugin",
   "require": {
-    "composer/installers": "~1.2",
-    "php": ">=7.2.24|^8"
+    "composer/installers": "~1.2|^2",
+    "php": ">=7.4.33|^8"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.5|^9.6",
