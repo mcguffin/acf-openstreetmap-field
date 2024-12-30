@@ -136,10 +136,9 @@ trait GeocoderSettings {
 								: '';
 							// TODO: choose UI by $setting['type']
 							printf(
-								'<input class="regular-text code" type="text" name="%1$s" value="%2$s" %3$s />',
+								'<input class="regular-text code" type="text" name="%1$s" value="%2$s" />',
 								'acf_osm_geocoder[opencage][apiKey]',
-								esc_attr( $value ),
-								$setting['required'] ? 'required' : ''
+								esc_attr( $value )
 							);
 						},
 						$this->optionset,
