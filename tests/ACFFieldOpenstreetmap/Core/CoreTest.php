@@ -6,13 +6,11 @@ use ACFFieldOpenstreetmap\Settings;
 
 class CoreTest extends SingletonTestCase {
 
-	protected  function wpSetUpBeforeClass() {
-		// global $wpdb;
+	protected static function wpSetUpBeforeClass() {
+		// make sure options are available
 		Settings\SettingsOpenStreetMap::instance();
-
-		// var_dump(get_option('acf_osm_geocoder'),DB_NAME);
-		// var_dump($wpdb->get_results("SELECT * FROM {$wpdb->options} WHERE option_name = 'acf_osm_geocoder';"));
 	}
+
 	protected static function wpTearDownAfterClass() {
 	}
 
