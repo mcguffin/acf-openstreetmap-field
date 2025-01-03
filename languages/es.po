@@ -1,0 +1,272 @@
+# Copyright (C) 2023 Jörn Lund
+# This file is distributed under the GPL3.
+msgid ""
+msgstr ""
+"Project-Id-Version: ACF OpenStreetMap Field 1.5.6\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/acf-openstreetmap-"
+"field\n"
+"POT-Creation-Date: 2023-11-26T10:38:54+00:00\n"
+"PO-Revision-Date: 2024-02-24 09:45+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Domain: acf-openstreetmap-field\n"
+
+#. Plugin Name of the plugin
+msgid "ACF OpenStreetMap Field"
+msgstr "ACF OpenStreetMap Field"
+
+#. Plugin URI of the plugin
+msgid "https://wordpress.org/plugins/acf-openstreetmap-field"
+msgstr "https://wordpress.org/plugins/acf-openstreetmap-field"
+
+#. Description of the plugin
+msgid "A configurable OpenStreetMap Field for ACF."
+msgstr "Un campo configurable de OpenStreetMap para ACF."
+
+#. Author of the plugin
+msgid "Jörn Lund"
+msgstr "Jörn Lund"
+
+#. Author URI of the plugin
+msgid "https://github.com/mcguffin"
+msgstr "https://github.com/mcguffin"
+
+#: include/ACFFieldOpenstreetmap/Blocks~/Leaflet.php:48
+msgid "A Leaflet map"
+msgstr "Un mapa Leaflet"
+
+#: include/ACFFieldOpenstreetmap/Core/Core.php:145
+msgid "Search..."
+msgstr "Buscar..."
+
+#: include/ACFFieldOpenstreetmap/Core/Core.php:146
+msgid "Nothing found..."
+msgstr "No encontramos nada..."
+
+#: include/ACFFieldOpenstreetmap/Core/Core.php:147
+msgid "My location"
+msgstr "Mi posición"
+
+#: include/ACFFieldOpenstreetmap/Core/Core.php:149
+msgid "Add Marker at location"
+msgstr "Añadir un marcador en el lugar"
+
+#: include/ACFFieldOpenstreetmap/Core/Core.php:151
+msgid "Fit markers into view"
+msgstr "Ajustar la vista a los marcadores"
+
+#. translators: address format for marker labels (street level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
+#: include/ACFFieldOpenstreetmap/Core/Core.php:154
+msgid "{building} {road} {house_number}"
+msgstr "{building} {road} {house_number}"
+
+#. translators: address format for marker labels (city level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
+#: include/ACFFieldOpenstreetmap/Core/Core.php:156
+msgid "{postcode} {city} {town} {village} {hamlet}"
+msgstr "{postcode} {city} {town} {village} {hamlet}"
+
+#. translators: address format for marker labels (country level). Available placeholders {building} {road} {house_number} {postcode} {city} {town} {village} {hamlet} {state} {country}
+#: include/ACFFieldOpenstreetmap/Core/Core.php:158
+msgid "{state} {country}"
+msgstr "{state} {country}"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:55
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:61
+msgid "OpenStreetMap"
+msgstr "OpenStreetMap"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:136
+msgid "Raw Data"
+msgstr "Datos en crudo (RAW)"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:159
+msgid "Max. number of Markers"
+msgstr "Número máximo de marcadores."
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:160
+msgid "Leave empty for infinite markers"
+msgstr "Dejarlo vacío para un número infinito"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:183
+msgid "Map Appearance"
+msgstr "Aspecto del mapa"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:184
+msgid "Set zoom, center and select layers being displayed."
+msgstr "Selecciona el zoom, centro y las capas que se mostrarán"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:213
+msgid "Map Position"
+msgstr "Posición del mapa"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:214
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:225
+msgid "Center the initial map"
+msgstr "Centra el mapa inicial"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:217
+msgid "lat"
+msgstr "lat"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:224
+msgid "Center"
+msgstr "Centro"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:228
+msgid "lng"
+msgstr "lng"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:236
+msgid "Zoom"
+msgstr "Zoom"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:237
+msgid "Set the initial zoom level"
+msgstr "Introduce el zoom inicial"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:242
+msgid "zoom"
+msgstr "zoom"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:249
+msgid "Allow layer selection"
+msgstr "Permite la selección de capas"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:258
+msgid "Leaflet Layers"
+msgstr "Capas de Leaflet"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:272
+msgid "Customize the map height"
+msgstr "Escoge la altura del mapa"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:374
+msgid "Double click to add Marker."
+msgstr "Doble click para añadir un marcador."
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:377
+msgid "Tap and hold to add Marker."
+msgstr "Presiona y mantén para añadir un marcador."
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:380
+msgid "Drag Marker to move."
+msgstr "Arrastra el marcador para moverlo."
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:758
+#: templates/osm.php:25
+msgid "View Larger Map"
+msgstr "Amplia el mapa"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:842
+msgid "Please set a marker on the map."
+msgstr "Por favor pon un marcador en el mapa."
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:925
+msgid "Locate Marker"
+msgstr "Localiza el marcador"
+
+#: include/ACFFieldOpenstreetmap/Field/OpenStreetMap.php:933
+msgid "Remove Marker"
+msgstr "Retira el marcador"
+
+#. translators: %s: Plugin name.
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:48
+msgctxt "plugin"
+msgid "%s Settings"
+msgstr "Ajustes %s"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:49
+msgid "Settings"
+msgstr "Ajustes"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:61
+msgid "OpenStreetMap Settings"
+msgstr "Ajustes OpenStreetMap"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:80
+msgid "ACF OpenStreetMap"
+msgstr ""
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:81
+msgid "Map Tile Provider Settings"
+msgstr "Ajustes del proveedor de mapas"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:116
+msgid "Save Settings"
+msgstr "Guardar Ajustes"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:153
+msgid "Map Layer Settings"
+msgstr "Ajustes de las capas del mapa"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:173
+msgid "The map tiles are loaded through an insecure http connection."
+msgstr "Las capas del mapa se cargan mediante una conexión http insegura"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:175
+msgid "Insecure"
+msgstr "Insegura"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:181
+msgid "This is an overlay to be displayed over a base map."
+msgstr "Esta es una capa que se superpone al mapa base."
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:183
+msgid "Overlay"
+msgstr "Capa"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:189
+msgid "Only available for a specific region."
+msgstr "Únicamente disponible para áreas específicas."
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:191
+msgid "Bounds"
+msgstr "Límites"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:197
+msgid "Zoom is restricted."
+msgstr "El zoom está restringido."
+
+#. translators: 1: min zoom value, 2: max zoom value
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:201
+msgid "Zoom: %1$d–%2$d"
+msgstr "Zoom: %1$d–%2$d"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:208
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:220
+msgid "Zoom levels are restricted."
+msgstr "Los niveles de zoom están restringidos."
+
+#. translators: min zoom value
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:212
+msgid "Min Zoom: %d"
+msgstr "Zoom Min: %d"
+
+#. translators: max zoom value
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:224
+msgid "Max Zoom: %d"
+msgstr "Zoom Max: %d"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:267
+msgid "Test"
+msgstr "Test"
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:279
+msgid "Select which map tile providers should be selectable in the ACF Field."
+msgstr ""
+"Selecciona que proveedores de capas de mapas pueden ser elegidos en el campo "
+"ACF."
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:280
+msgid "Configure Access Tokens for various Map Tile providers."
+msgstr ""
+"Configura los Token de acceso de diversos proveedores de capas de Mapa."
+
+#: include/ACFFieldOpenstreetmap/Settings/SettingsOpenStreetMap.php:337
+msgid "Disable Layer variants"
+msgstr "Inhabilita variantes de capa"
