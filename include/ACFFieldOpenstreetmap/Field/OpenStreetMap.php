@@ -60,6 +60,8 @@ class OpenStreetMap extends \acf_field {
 			'return_format'		=> 'leaflet',
 			'allow_map_layers'	=> 1,
 			'max_markers'		=> '',
+			'marker_icon'		=> '',
+			'fit_markers'		=> 0,
 			'layers'			=> $this->default_values['layers'],
 		];
 
@@ -239,6 +241,22 @@ class OpenStreetMap extends \acf_field {
 			],
 		]);
 
+		acf_render_field_setting( $field, [
+			'label'			=> __( 'Marker Icon URL', 'acf-openstreetmap-field' ),
+			'instructions'	=> __( 'Optional image URL for Leaflet markers on this field.', 'acf-openstreetmap-field' ),
+			'type'			=> 'url',
+			'name'			=> 'marker_icon',
+			'placeholder'	=> 'https://example.com/marker.png',
+		]);
+
+		acf_render_field_setting( $field, [
+			'label'			=> __( 'Fit map to markers', 'acf-openstreetmap-field' ),
+			'instructions'	=> __( 'Automatically fit the frontend map bounds when multiple markers are shown.', 'acf-openstreetmap-field' ),
+			'name'			=> 'fit_markers',
+			'type'			=> 'true_false',
+			'ui'			=> 1,
+		]);
+
 		// map height
 		acf_render_field_setting( $field, [
 			'label'			=> __('Height','acf'),
@@ -326,6 +344,12 @@ class OpenStreetMap extends \acf_field {
 				'data-map-layers'	=> $field['value']['layers'],
 				'data-map-markers'	=> $field['value']['markers'],
 			];
+			if ( ! empty( $field['marker_icon'] ) ) {
+				$attr['data-map-marker-icon'] = $field['marker_icon'];
+			}
+			if ( ! empty( $field['fit_markers'] ) ) {
+				$attr['data-map-fit-markers'] = 1;
+			}
 
 			?>
 			<div <?php echo acf_esc_attr( $attr ) ?>></div>
@@ -744,6 +768,12 @@ class OpenStreetMap extends \acf_field {
 				'data-map-layers'	=> $value['layers'],
 				'data-map-markers'	=> $value['markers'],
 			];
+			if ( ! empty( $field['marker_icon'] ) ) {
+				$map_attr['data-map-marker-icon'] = $field['marker_icon'];
+			}
+			if ( ! empty( $field['fit_markers'] ) ) {
+				$map_attr['data-map-fit-markers'] = 1;
+			}
 
 			if ( isset( $field['attr'] ) ) {
 				$map_attr = $field['attr'] + $map_attr;
@@ -870,6 +900,8 @@ class OpenStreetMap extends \acf_field {
 		$field['center_lat'] = floatval( $field['center_lat'] );
 		$field['center_lng'] = floatval( $field['center_lng'] );
 		$field['zoom']       = min( 22, max( 1, intval( $field['zoom'] ) ) );
+		$field['marker_icon'] = esc_url_raw( $field['marker_icon'] ?? '' );
+		$field['fit_markers'] = ! empty( $field['fit_markers'] ?? 0 ) ? 1 : 0;
 
 		// layers
 		$field['layers']     = $this->sanitize_layers( $field['layers'] );

@@ -16,6 +16,12 @@ $attr = (array) $args['field']['attr'] + [
 	'data-map-layers'	=> $osm_map['layers'],
 	'data-map-markers'	=> $osm_map['markers'],
 ];
+if ( ! empty( $field['marker_icon'] ) ) {
+	$attr['data-map-marker-icon'] = $field['marker_icon'];
+}
+if ( ! empty( $field['fit_markers'] ) ) {
+	$attr['data-map-fit-markers'] = 1;
+}
 
 ?>
 <div <?php echo acf_esc_attr( $attr ) ?>></div>
