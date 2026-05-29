@@ -198,7 +198,14 @@ import 'leaflet/tile-layer-provider';
 		}
 
 		// markers ...
-		if ( arg.options.marker.html !== false ) {
+		if ( data.mapMarkerIcon ) {
+			default_marker_config.icon = L.icon({
+				iconUrl: data.mapMarkerIcon,
+				iconSize: [25, 41],
+				iconAnchor: [12, 41],
+				popupAnchor: [1, -34]
+			});
+		} else if ( arg.options.marker.html !== false ) {
 			default_marker_config.icon = L.divIcon({
 				html: arg.options.marker.html,
 				className: arg.options.marker.className
@@ -207,6 +214,8 @@ import 'leaflet/tile-layer-provider';
 			default_marker_config.icon = new L.icon( arg.options.marker.icon );
 		}
 
+
+		const markers = [];
 
 		data.mapMarkers?.forEach( (markerData, i ) => {
 			// add markers
@@ -218,7 +227,7 @@ import 'leaflet/tile-layer-provider';
 				detail: {
 					map: map,
 					markerData: markerData,
-					markerOptions: Object.assign( default_marker_config, {
+					markerOptions: Object.assign( {}, default_marker_config, {
 						label: markerData.label // <= TODO: deprecate this!
 					} ),
 					L: L
@@ -237,11 +246,23 @@ import 'leaflet/tile-layer-provider';
 				.bindPopup( createEvt.detail.markerOptions.label )
 				.addTo( map );
 
+			markers.push( marker );
+
 			this.dispatchEvent(new CustomEvent('acf-osm-map-marker-created',{
 				bubbles: true,
 				detail: { map, marker, L }
 			}))
 		} )
+
+		if ( data.mapFitMarkers && markers.length > 1 ) {
+			const bounds = L.featureGroup( markers ).getBounds();
+			if ( bounds.isValid() ) {
+				map.fitBounds( bounds, {
+					padding: [20, 20],
+					maxZoom: data.mapZoom
+				} );
+			}
+		}
 		// markers again
 
 
