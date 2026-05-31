@@ -60,6 +60,7 @@ class OpenStreetMap extends \acf_field {
 			'return_format'		=> 'leaflet',
 			'allow_map_layers'	=> 1,
 			'max_markers'		=> '',
+			'fit_bounds'		=> 0,
 			'layers'			=> $this->default_values['layers'],
 		];
 
@@ -222,6 +223,14 @@ class OpenStreetMap extends \acf_field {
 			'label'			=> __( 'Allow layer selection', 'acf-openstreetmap-field' ),
 			'instructions'	=> '',
 			'name'			=> 'allow_map_layers',
+			'type'			=> 'true_false',
+			'ui'			=> 1,
+		]);
+
+		acf_render_field_setting( $field, [
+			'label'			=> __( 'Fit markers into view', 'acf-openstreetmap-field' ),
+			'instructions'	=> __( 'Automatically fit the frontend Leaflet map to its markers.', 'acf-openstreetmap-field' ),
+			'name'			=> 'fit_bounds',
 			'type'			=> 'true_false',
 			'ui'			=> 1,
 		]);
@@ -662,6 +671,10 @@ class OpenStreetMap extends \acf_field {
 
 		$value = $this->sanitize_value( $value, $field, 'display' );
 
+		if ( 'leaflet' === $field['return_format'] ) {
+			$value['markers'] = $this->prepare_frontend_markers( $value['markers'], $value, $field, $post_id );
+		}
+
 		if ( 'raw' === $field['return_format'] ) {
 
 			// ensure backwards compatibility <= 1.0.1
@@ -694,6 +707,7 @@ class OpenStreetMap extends \acf_field {
 				'data-map-zoom'		=> $value['zoom'],
 				'data-map-layers'	=> $value['layers'],
 				'data-map-markers'	=> $value['markers'],
+				'data-map-fit-bounds'	=> $field['fit_bounds'] ? 1 : 0,
 			];
 			$value = sprintf(
 				'<div %s></div>',
@@ -743,6 +757,7 @@ class OpenStreetMap extends \acf_field {
 				'data-map-zoom'		=> $value['zoom'],
 				'data-map-layers'	=> $value['layers'],
 				'data-map-markers'	=> $value['markers'],
+				'data-map-fit-bounds'	=> $field['fit_bounds'] ? 1 : 0,
 			];
 
 			if ( isset( $field['attr'] ) ) {
@@ -875,6 +890,43 @@ class OpenStreetMap extends \acf_field {
 		$field['layers']     = $this->sanitize_layers( $field['layers'] );
 
 		return $field;
+	}
+
+	/**
+	 * Prepares frontend marker data before it is serialized to the map element.
+	 *
+	 * @param array $markers Map markers.
+	 * @param array $value   Sanitized map value.
+	 * @param array $field   Sanitized field settings.
+	 * @param mixed $post_id Current post ID.
+	 * @return array
+	 */
+	private function prepare_frontend_markers( $markers, $value, $field, $post_id ) {
+
+		foreach ( $markers as $index => &$marker ) {
+
+			/**
+			 * Filter Leaflet marker options for an individual frontend marker.
+			 *
+			 * To use a custom marker image, return an array with an `icon` key containing
+			 * Leaflet icon options. To use a DivIcon, return an `icon` array containing
+			 * `html` and an optional `className`.
+			 *
+			 * @param array $marker_options Leaflet marker options.
+			 * @param array $marker         Current marker data.
+			 * @param array $field          Field settings.
+			 * @param array $value          Map value.
+			 * @param mixed $post_id        Current post ID.
+			 * @param int   $index          Marker index.
+			 */
+			$marker_options = apply_filters( 'acf_osm_marker_options', [], $marker, $field, $value, $post_id, $index );
+
+			if ( is_array( $marker_options ) && count( $marker_options ) ) {
+				$marker['markerOptions'] = $marker_options;
+			}
+		}
+
+		return $markers;
 	}
 
 	/**

@@ -46,6 +46,25 @@ Usage
 -----
 There is some developer centric documentation in the [wiki](../../wiki).
 
+### Frontend marker icons
+
+Use `acf_osm_marker_options` to customize individual frontend Leaflet markers:
+
+```php
+add_filter( 'acf_osm_marker_options', function( $options, $marker ) {
+	if ( $marker['label'] === 'Office' ) {
+		$options['icon'] = [
+			'iconUrl'    => get_stylesheet_directory_uri() . '/assets/office-marker.png',
+			'iconSize'   => [ 32, 32 ],
+			'iconAnchor' => [ 16, 32 ],
+		];
+	}
+	return $options;
+}, 10, 2 );
+```
+
+Enable the field's **Fit markers into view** setting to fit the frontend Leaflet map to its markers on load.
+
 Development
 -----------
 npm scripts:

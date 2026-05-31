@@ -16,6 +16,7 @@ $attr = [
 	'data-map-zoom'		=> $osm_map['zoom'],
 	'data-map-layers'	=> $osm_map['layers'],
 	'data-map-markers'	=> $osm_map['markers'],
+	'data-map-fit-bounds'	=> $field['fit_bounds'] ? 1 : 0,
 ];
 
 

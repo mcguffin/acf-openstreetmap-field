@@ -91,7 +91,9 @@ import 'leaflet/tile-layer-provider';
 
 		createLayers.apply( el, [ data, map ] );
 
-		createMarkers.apply( el, [ data, map ] );
+		const markers = createMarkers.apply( el, [ data, map ] );
+
+		fitMapToMarkers.apply( el, [ data, map, markers ] );
 
 		// reload maps when they become visible
 		el.addEventListener( 'acf-osm-show', e => {
@@ -188,13 +190,14 @@ import 'leaflet/tile-layer-provider';
 				}
 			} ),
 			//*/
-			default_marker_config = {};
+			default_marker_config = {},
+			markers = [];
 
 		this.dispatchEvent( createEvt )
 
 		// allow to skip map creation
 		if ( createEvt.defaultPrevented ) {
-			return;
+			return markers;
 		}
 
 		// markers ...
@@ -212,15 +215,22 @@ import 'leaflet/tile-layer-provider';
 			// add markers
 			let marker;
 
+			const markerOptions = Object.assign(
+				{},
+				default_marker_config,
+				normalizeMarkerOptions( markerData.markerOptions ),
+				{
+					label: markerData.label // <= TODO: deprecate this!
+				}
+			);
+
 			const createEvt = new CustomEvent( 'acf-osm-map-marker-create', {
 				bubbles: true,
 				cancelable: true,
 				detail: {
 					map: map,
 					markerData: markerData,
-					markerOptions: Object.assign( default_marker_config, {
-						label: markerData.label // <= TODO: deprecate this!
-					} ),
+					markerOptions: markerOptions,
 					L: L
 				}
 			} );
@@ -237,6 +247,8 @@ import 'leaflet/tile-layer-provider';
 				.bindPopup( createEvt.detail.markerOptions.label )
 				.addTo( map );
 
+			markers.push( marker );
+
 			this.dispatchEvent(new CustomEvent('acf-osm-map-marker-created',{
 				bubbles: true,
 				detail: { map, marker, L }
@@ -244,7 +256,59 @@ import 'leaflet/tile-layer-provider';
 		} )
 		// markers again
 
+		return markers;
 
+	}
+
+	function normalizeMarkerOptions( markerOptions ) {
+		markerOptions = Object.assign( {}, markerOptions || {} );
+
+		if ( markerOptions.icon !== undefined ) {
+			const icon = createMarkerIcon( markerOptions.icon );
+
+			if ( icon ) {
+				markerOptions.icon = icon;
+			} else {
+				delete markerOptions.icon;
+			}
+		}
+
+		return markerOptions;
+	}
+
+	function createMarkerIcon( iconOptions ) {
+		if ( iconOptions === false || iconOptions === undefined || iconOptions === null ) {
+			return false;
+		}
+
+		if ( iconOptions.html !== undefined && iconOptions.html !== false ) {
+			return L.divIcon( iconOptions );
+		}
+
+		return new L.icon( iconOptions );
+	}
+
+	function fitMapToMarkers( data, map, markers ) {
+		if ( ! shouldFitBounds( data.mapFitBounds ) || ! markers?.length ) {
+			return;
+		}
+
+		const bounds = L.latLngBounds();
+		markers.forEach( marker => bounds.extend( marker.getLatLng() ) );
+
+		if ( ! bounds.isValid() ) {
+			return;
+		}
+
+		const fitOptions = Object.assign( {
+			maxZoom: map.getZoom(),
+		}, data.mapFitBoundsOptions || {} );
+
+		map.fitBounds( bounds, fitOptions );
+	}
+
+	function shouldFitBounds( value ) {
+		return value === true || value === 1 || value === '1' || value === 'true';
 	}
 
 	function createLayers( data, map ) {
