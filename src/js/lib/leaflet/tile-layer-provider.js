@@ -59,12 +59,27 @@ const Provider = L.TileLayer.extend({
 		L.TileLayer.prototype.initialize.call(
 			this,
 			provider.url,
-			Object.assign( {}, provider.options, options )
+			Object.assign( {}, Provider.defaultOptions, provider.options, options )
 		);
 	}
 });
 
 Provider.providers = acf_osm.providers; //console.log()
+
+/**
+ * Options applied to every provider unless the provider (or a variant, or the
+ * caller) overrides them.
+ *
+ * Tile servers such as tile.openstreetmap.org refuse requests that carry no
+ * Referer (see https://operations.osmfoundation.org/policies/tiles/) and serve
+ * an "Access blocked" placeholder tile instead. A site that sends a strict
+ * Referrer-Policy header (e.g. `same-origin` or `no-referrer`) therefore gets
+ * broken maps. Setting the referrer policy on the tile images themselves
+ * overrides the document policy for these requests only.
+ */
+Provider.defaultOptions = {
+	referrerPolicy: 'strict-origin-when-cross-origin',
+}
 
 L.TileLayer.Provider = Provider;
 
