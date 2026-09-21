@@ -137,4 +137,4 @@ class MarkerEntry extends wp.Backbone.View.extend({
 		$(this.marker._icon).html('').append('<span class="pling"></span>');
 	}
 }
-module.exports = MarkerEntry
+export { MarkerEntry }

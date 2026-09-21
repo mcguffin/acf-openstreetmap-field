@@ -1,15 +1,18 @@
 import $ from 'jquery';
-import L from 'osm-map';
+import {L} from 'osm-map';
 
-import AddLocationMarker from 'leaflet/control-add-location-marker';
-import FitBounds from 'leaflet/control-fit-bounds';
-import Provider from 'leaflet/tile-layer-provider';
+import {AddLocationMarker} from 'leaflet/control-add-location-marker';
+import {FitBounds} from 'leaflet/control-fit-bounds';
+import {Provider} from 'leaflet/tile-layer-provider';
 
 import { addCorners } from 'leaflet/corners';
 
 import { MarkerData, MapData } from 'media/models';
-import MarkerEntry from 'media/views/marker-entry';
+import { MarkerEntry } from 'media/views/marker-entry';
 import { uniqid } from 'misc/uniquid';
+import { mapZoomLevel } from 'misc/geocode';
+
+import {GeocoderFactory} from 'media/views/geocoderFactory' ;
 
 const { options, i18n } = acf_osm_admin
 const instances = []
@@ -422,57 +425,26 @@ class MapInput extends Backbone.View {
 		// add an extra control panel region for out search
 		this.map._controlCorners['above'] = $above.get(0);
 
-		const nominatim_options = Object.assign( {
-				// geocodingQueryParams: {'accept-language':'it'},
-				// reverseQueryParams: {'accept-language':'it'},
-				htmlTemplate: result => {
-					var parts = [],
-						templateConfig = {
-							interpolate: /\{(.+?)\}/g
-						},
-						addr = _.defaults( result.address, {
-							building:'',
-							road:'',
-							house_number:'',
+		const geocoderEngine = GeocoderFactory.createGeocoder( options );
 
-							postcode:'',
-							city:'',
-							town:'',
-							village:'',
-							hamlet:'',
-
-							state:'',
-							country:'',
-						} );
-
-					parts.push( _.template( i18n.address_format.street, templateConfig )( addr ) );
-
-					parts.push( _.template( i18n.address_format.city, templateConfig )( addr ) );
-
-					parts.push( _.template( i18n.address_format.country, templateConfig )( addr ) );
-
-					return parts
-						.map( el =>  el.replace(/\s+/g,' ').trim() )
-						.filter( el => el !== '' )
-						.join(', ')
-				}
-			}, options.nominatim),
-			geocoder_options = Object.assign({
-				collapsed: false,
-				position: 'above',
-				placeholder: i18n.search,
-				errorMessage: i18n.nothing_found,
-				showResultIcons:true,
-				suggestMinLength:3,
-				suggestTimeout:250,
-				queryMinLength:3,
-				defaultMarkGeocode:false,
-				// geocodingQueryParams: {'accept-language':'de_DE'},
-				geocoder: L.Control.Geocoder.nominatim( nominatim_options )
-			}, options.geocoder );
+		const geocoder_options = Object.assign({
+			collapsed: false,
+			position: 'above',
+			placeholder: i18n.search,
+			errorMessage: i18n.nothing_found,
+			showResultIcons:true,
+			suggestMinLength:3,
+			suggestTimeout:250,
+			queryMinLength:3,
+			defaultMarkGeocode:false,
+			// geocodingQueryParams: {'accept-language':'de_DE'},
+			//geocoder: L.Control.Geocoder.nominatim( nominatim_options )
+			geocoder: geocoderEngine
+		}, options.geocoder );
 
 		this.geocoder = L.Control.geocoder( geocoder_options )
 			.on( 'markgeocode', e => {
+
 				// search result click
 				let model,
 					previousGeocode = false;
@@ -497,7 +469,6 @@ class MapInput extends Backbone.View {
 					return this.map.fitBounds( e.geocode.bbox );
 
 				}
-
 
 				if ( this.canAddMarker ) {
 					// infinite markers or markers still in range
@@ -538,51 +509,13 @@ class MapInput extends Backbone.View {
 	}
 
 	reverseGeocode( model ) {
-		const mapZoomLevel = zoom => {
-			/*
-			Map Nominatim detail levels vs. Plugin Detail levels
-			|                 NOMINATIM                     |  ACF OpenStreetMap Field |
-			|-----------------------------------------------|--------------------------|
-			|  zoom | Detail level (DE) | Detail level (US) |    zoom | Detail level   |
-			|-------|-------------------|-------------------|---------|----------------|
-			|     0 | country           | country           |       0 | country        |
-			|     1 | country           | country           |       1 | country        |
-			|     2 | country           | country           |       2 | country        |
-			|     3 | country           | country           |       3 | country        |
-			|     4 | country           | country           |       4 | country        |
-			|     5 | state             | state             |       5 | state          |
-			|     6 | state             | state             |       6 | state          |
-			|     7 | state             | state             |       8 | county         |
-			|     8 | county            | city              |       8 | county         |
-			|     9 | county            | city              |       9 | county         |
-			|    10 | village           | city              |      10 | village/suburb |
-			|    11 | village           | city              |      11 | village/suburb |
-			|    12 | village           | city              |      12 | village/suburb |
-			|    13 | village           | suburb            |      13 | village/suburb |
-			|    14 | postcode          | neighbourhood     |      16 | village/suburb |
-			|    15 | postcode          | neighbourhood     |      16 | village/suburb |
-			|    16 | road (major)      | road (major)      |      18 | building       |
-			|    17 | road (+minor)     | road (+minor)     |      18 | building       |
-			|    18 | building          | building          |      18 | building       |
-			*/
-			const map = {
-				7:  8, // state => country
-				14: 16, // postcode/neighbourhood => major road
-				15: 16, // postcode/neighbourhood => major road
-				16: 18, // major road => building
-				17: 18, // minor road => building
-			}
-			return map[zoom] ?? zoom
-		}
-		const latlng = { lat: model.get('lat'), lng: model.get('lng') },
-			zoom = 18; //mapZoomLevel( this.map.getZoom() );
 
-		this.geocoder.options.geocoder.reverse(
-			latlng,
-			this.map.options.crs.scale( zoom ),
-			/**
-			 *	@param array results
-			 */
+		const latlng = { lat: model.get('lat'), lng: model.get('lng') },
+			zoom = 'auto' === this.geocoder.options.scale
+				? mapZoomLevel( this.map.getZoom() )
+				: parseInt( this.geocoder.options.scale );
+
+		this.geocoder.options.geocoder.reverse( latlng, this.map.options.crs.scale( zoom ) ).then(
 			geocode => {
 				const previousGeocode = model.get('geocode' )
 
@@ -595,13 +528,23 @@ class MapInput extends Backbone.View {
 	}
 
 	parseGeocodeResult( results, latlng ) {
+
+console.debug('parseGeocodeResult', results);
+
 		var label = false;
 
 		if ( ! results.length ) {
 			label = latlng.lat + ', ' + latlng.lng;
 		} else {
 			$.each( results, ( i, result ) => {
-				label = result.html;
+				if( result.html )
+					// `htmlTemplate` method and `html` property are available.
+					label = result.html ;
+				else if( result.name )
+					// Default to `name` property
+					label = result.name ;
+				else
+					label = 'Failed to decode geocoder result 😕';
 			});
 		}
 		// trim
@@ -726,4 +669,4 @@ document.addEventListener( 'acf-osm-map-init', e => {
 	}
 } )
 
-module.exports = MapInput
+export {MapInput}

@@ -1,8 +1,8 @@
-import L from 'leaflet/no-conflict';
+import {L} from 'leaflet/no-conflict';
 
 const AddLocationMarker = L.Control.extend({
 	linkTitle: 'Add Marker',
-	onAdd:function() {
+	onAdd: function() {
 
 		this._container = L.DomUtil.create('div',
 			'leaflet-control-add-location-marker leaflet-bar leaflet-control');
@@ -18,17 +18,17 @@ const AddLocationMarker = L.Control.extend({
 
 		return this._container;
 	},
-	onRemove:function() {
+	onRemove: function() {
 		L.DomEvent
 			.off(this._link, 'click', L.DomEvent.stopPropagation )
 			.off(this._link, 'click', L.DomEvent.preventDefault )
 			.off(this._link, 'click', this.options.callback, this )
 			.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
 	},
-})
+});
 
 L.control.addLocationMarker = function (options) {
 	return new L.Control.AddLocationMarker(options);
 };
 
-module.exports = AddLocationMarker
+export { AddLocationMarker }

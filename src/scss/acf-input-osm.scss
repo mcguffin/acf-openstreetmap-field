@@ -200,6 +200,7 @@
 		box-shadow: none;
 		padding: 5px 0;
 		box-sizing: border-box;
+		background-color: transparent;
 		& > .leaflet-control-geocoder-icon,
 		& > .leaflet-control-geocoder-form {
 			border-radius: none;
@@ -231,22 +232,27 @@
 				border: 1px solid #8c8f94;
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
+				width: 100%;
 			}
 		}
 		& > .leaflet-control-geocoder-error,
 		& > .leaflet-control-geocoder-alternatives {
 			margin: 0;
 			position: absolute;
-			left: 1em;
-			top: 100%;
+			left: 0.5em;
+			top: calc(100% + 0.5em);
 			background: #fff;
+			max-height: calc( var(--map-height,400) * 1px - 1em );
+			overflow: auto;
 		}
 		& > .leaflet-control-geocoder-error {
 			padding: 0.5em 1em;
 		}
 		& > .leaflet-control-geocoder-alternatives {
-			margin-top: 1em;
 		}
+	}
+	&:has(.leaflet-control-geocoder-alternatives) {
+
 	}
 }
 
@@ -272,6 +278,7 @@ $leaflet-panes: (
 
 // block editor fixes
 .leaflet-pane {
+	.acf-osm-settings-wrap &,
 	.postbox &,
 	.components-panel &, // block editor
 	.wp-block & {

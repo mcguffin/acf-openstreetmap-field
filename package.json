@@ -4,14 +4,28 @@
   "description": "A configurable OpenStreetMap Field to ACF.",
   "private": true,
   "scripts": {
-    "dev": "gulp dev",
-    "test": "node ./src/run/test.js",
+    "dev": "npm-run-all --parallel dev:scss dev:js dev:lint",
+    "dev:scss": "sass --watch ./src/scss/:./assets/css/ --load-path=node_modules/",
+    "dev:js": "webpack watch --output-path ./assets/js --config ./webpack.config.js --mode development",
+    "dev:lint": "node ./src/run/lint.js --watch",
+    "build": "npm run build:lint && npm-run-all --parallel build:scss build:js build:i18n",
+    "build:scss": "find ./assets/css -name *.css* -delete && sass ./src/scss/:./assets/css/ --load-path=node_modules/ --style=compressed",
+    "build:js": "rm -rf assets/js/ && webpack build --output-path ./assets/js --config ./webpack.config.js --mode production",
+    "build:lint": "node ./src/run/lint.js",
+    "build:i18n": "npm-run-all --serial build:i18n:json build:i18n:pot",
+    "build:i18n:pot": "php -d memory_limit=1G $(which wp) i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp --exclude=vendor --exclude=test --exclude=tests",
+    "build:i18n:json": "node ./src/run/i18n-json-strings.js",
+    "uitest": "echo \"Running UI Tests. Press ^C to stop\" && node --watch ./src/run/test.js start && node ./src/run/test.js stop",
+    "test": "npm-run-all --serial test:legacy test:edge",
+    "test:edge": "WP_ENV_PHP_VERSION=8.3 wp-env start && wp-env run cli php -v && npm run test:phpunit",
+    "test:legacy": "WP_ENV_PHP_VERSION=7.4 wp-env start && wp-env run cli php -v && npm run test:phpunit",
+    "test:phpunit": "wp-env run tests-cli --env-cwd=wp-content/plugins/acf-openstreetmap-field vendor/bin/phpunit --",
     "dev-test": "./src/run/dev-test.sh",
     "dashicons": "node ./src/run/dashicons.js",
     "i18n": "wp i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp/*",
     "rollback": "git reset --hard HEAD~ && git push origin +master",
     "postinstall": "composer install",
-    "audit": "./vendor/squizlabs/php_codesniffer/bin/phpcs . --report=code --standard=./phpcs-security.ruleset.xml -n -s > ./phpcs-report.txt || exit 0",
+    "audit": "./vendor/squizlabs/php_codesniffer/bin/phpcs . --report=code --standard=./phpcs.ruleset.xml -n -s > ./phpcs-report.txt || exit 0",
     "ver": "echo \"<?php return $(jq .version < ./package.json);\" > include/version.php"
   },
   "repository": {
@@ -30,31 +44,15 @@
   "homepage": "https://github.com/mcguffin/acf-openstreetmap-field#readme",
   "devDependencies": {
     "@babel/preset-env": "*",
-    "babelify": "*",
-    "browserify": "*",
-    "browserify-shim": "*",
-    "event-stream": "*",
-    "gulp": "*",
-    "gulp-autoprefixer": "*",
-    "gulp-concat": "*",
-    "gulp-rename": "*",
-    "gulp-sass": "*",
-    "gulp-sourcemaps": "*",
-    "gulp-uglify": "*",
-    "gulp-uglifycss": "*",
+    "@wordpress/env": "^10.14.0",
+    "colors": "^1.4.0",
+    "jsonlint": "^1.6.3",
     "leaflet": "1.9.4",
-    "leaflet-control-geocoder": "2.4",
-    "leaflet.locatecontrol": "^0.76.1",
+    "leaflet-control-geocoder": "^3.1.0",
+    "leaflet.locatecontrol": "^0.82.0",
+    "npm-run-all": "^4.1.5",
     "sass": "*",
-    "tinyify": "*",
-    "uglify-es": "*",
-    "vinyl-buffer": "*",
-    "vinyl-source-stream": "*"
-  },
-  "dependencies": {
-    "gulp-jsonlint": "^1.3.2",
-    "jquery": "^3.5.1",
-    "leaflet-providers": "1.13"
+    "webpack-cli": "^6.0.1"
   },
   "browserify-shim": {
     "jquery": "global:jQuery",
@@ -66,18 +64,18 @@
   "wporg": {
     "steps": [
       "build",
+      "test",
       "git",
-      "wporg",
-      "github"
+      "github",
+      "wporg"
     ],
     "type": "plugin",
     "build": {
       "versionedFiles": null,
       "prebuild": [
-        "php -d memory_limit=1G $(which wp) i18n make-pot . languages/acf-openstreetmap-field.pot --domain=acf-openstreetmap-field --exclude=tmp --exclude=vendor --exclude=test"
       ],
       "build": [
-        "gulp build",
+        "npm run build",
         "npm run ver"
       ]
     },
@@ -89,6 +87,9 @@
       "assets": ".wporg",
       "svn_user": "podpirate",
       "svn": "https://plugins.svn.wordpress.org/acf-openstreetmap-field/"
-    }
+    },
+    "test": [
+      "npm run test"
+    ]
   }
 }

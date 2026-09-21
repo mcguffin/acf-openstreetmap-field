@@ -16,7 +16,7 @@ Features
  - Multiple Markers
  - Ready-to-use HTML-Output
  - Custom map markers [through WordPress filters](../../wiki/HTML-Marker-Icon) and JS Events.
-
+ - Map Proxy to comply with privacy regulations and to hide API Credentials
 
 Installation
 ------------
@@ -49,12 +49,53 @@ There is some developer centric documentation in the [wiki](../../wiki).
 Development
 -----------
 npm scripts:
- - `npm run dev`: Watch css and js soure dirs
- - `npm run test`: load some test fields
- - `npm run dev-test`: load some test fields and watch css and js soure dirs
+
+ - `npm run audit`: Run phpcs audit
+ - `npm run build`: Build css and js from sources
+ - `npm run dev`: Watch css and js source dirs
+ - `npm run dev-test`: create test fields in wp-admin and watch css and js source dirs
  - `npm run dashicons`: Generate dashicons scss variables from source
  - `npm run i18n`: generate `.pot` file
  - `npm run rollback`: remove last commit (local and remote  – use with caution!)
+ - `npm run test`: run unit tests against PHP 7.4 and 8.3
+ - `npm run test:edge`: run unit tests against PHP 8.3 only
+ - `npm run test:legacy`: run unit tests against PHP 7.4 only
+ - `npm run uitest`: create test fields in wp-admin
+
+Testing
+-------
+### In WP-Admin
+Add some ACF Fields to several places for manual testing in wp-admin.
+```shell
+npm run dev-test
+```
+
+### Unit Tests
+Unit tests are run in [wordpress/env](https://www.npmjs.com/package/@wordpress/env/v/2.0.0), which is basically a docker container. [Docker Desktop](https://docs.docker.com/desktop/) is required.
+
+Unit tests are run against PHP 7.4 (legacy) and 8.3 (edge).  
+
+**Run them all:**
+```shell
+npm run test
+```
+
+**Run edge tests only:**
+```shell
+npm run test:edge
+```
+
+**Configure edge test and run something in wp-cli in the docker container:**
+```shell
+npm run test:set-edge
+npm run test:reset-env
+wp-env run cli wp core version
+> 6.7.1
+```
+
+**I could use a little help:**: 
+ - Unit tests covering all PHP code
+ - Unit-testing JS
 
 Thanks
 ------

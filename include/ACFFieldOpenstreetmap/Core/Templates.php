@@ -2,10 +2,6 @@
 
 namespace ACFFieldOpenstreetmap\Core;
 
-if ( ! defined('ABSPATH') ) {
-	die('FU!');
-}
-
 class Templates extends Singleton {
 
 	private $templates = null;

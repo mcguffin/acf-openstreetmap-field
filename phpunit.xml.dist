@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<phpunit
+	bootstrap="tests/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	cacheResultFile="./tests/.phpunit.result.cache"
+	>
+	<testsuites>
+		<testsuite name="All tests">
+			<directory suffix=".php">tests</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

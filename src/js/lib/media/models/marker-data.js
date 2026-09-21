@@ -14,4 +14,4 @@ const MarkerData = GSModel.extend({
 	}
 });
 
-module.exports = MarkerData
+export { MarkerData }

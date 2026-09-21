@@ -1,0 +1,33 @@
+{
+    "nominatim": {
+        "label": "Nominatim",
+        "options": {
+        }
+    },
+    "photon": {
+        "label": "Photon",
+        "options": {
+            "apiKey": null
+        },
+        "settings": {
+            "apiKey": {
+                "label": "Photon API Key",
+                "type": "text",
+                "required": false
+            }
+        }
+    },
+    "opencage": {
+        "label": "OpenCage",
+        "options": {
+            "apiKey": null
+        },
+        "settings": {
+            "apiKey": {
+                "label": "OpenCage API Key",
+                "type": "text",
+                "required": true
+            }
+        }
+    }
+}

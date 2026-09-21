@@ -1,12 +1,41 @@
 @use "sass:math";
 
 @import 'variables/variables';
-
 @import 'mixins/mixins';
+
+// @import 'lib/leaflet/index';
+// @import 'leaflet-control-geocoder/dist/Control.Geocoder';
 
 .leaflet-bar-part {
 	.dashicons {
 		margin-top: 4px;
+	}
+}
+
+.acf-osm-settings-wrap {
+	.tab-content {
+		display: none;
+	}
+	[type="radio"]:checked {
+		&[id="acf-osm-tab-1"] ~ .acf-osm-tab-1,
+		&[id="acf-osm-tab-2"] ~ .acf-osm-tab-2,
+		&[id="acf-osm-tab-3"] ~ .acf-osm-tab-3 {
+			display: block;
+		}
+		&[id="acf-osm-tab-1"] ~ .nav-tab-wrapper [for="acf-osm-tab-1"],
+		&[id="acf-osm-tab-2"] ~ .nav-tab-wrapper [for="acf-osm-tab-2"],
+		&[id="acf-osm-tab-3"] ~ .nav-tab-wrapper [for="acf-osm-tab-3"] {
+			margin-bottom: -1px;
+			box-shadow: none;
+			&,
+			&:hover,
+			&:focus
+			&:focus:active {
+				border-bottom: 1px solid #f0f0f1;
+				background: #f0f0f1;
+				color: #000;
+			}
+		}
 	}
 }
 
@@ -77,6 +106,34 @@
 		margin-bottom: 0.33em;
 	}
 }
+.acf-osm-geocoder-settings {
+	display: grid;
+	// grid-auto-flow: column;
+	grid-template-columns: 2fr 1fr;
+	overflow: hidden;
+	align-items: start;
+	gap: 2em;
+	.leaflet-container {
+		aspect-ratio: 3 / 2;
+	}
+	.acf-osm-test-map-container {
+		overflow: hidden;
+	}
+	.acf-osm-geocode-response {
+		overflow: auto;
+		max-width: 100%;
+		&:empty {
+			display: none;
+		}
+	}
+	h3:has( + .acf-osm-geocode-response:empty ) {
+		display: none;
+	}
+	.card {
+		max-width: none;
+	}
+}
+// providers
 .acf-osm-setting-access-key {
 	label {
 		[data-action="change-token"] {

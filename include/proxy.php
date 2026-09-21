@@ -1,15 +1,59 @@
 <?php
 
-if ( ! isset( $proxy_config ) ) {
-	die('No proxy config');
-}
-// match pattern /<provider>/<z>/<x>/<y><r>
-if ( ! preg_match( '/\/([a-z0-9\.]+)\/(\d+)\/(\d+)\/(\d+)(@2x)?$/i', $_SERVER['REQUEST_URI'], $matches ) ) {
-	http_response_code( 400 );
-	return;
+ // check config
+if ( ! isset( $proxy_config ) || ! is_array( $proxy_config ) ) {
+	http_response_code( 500 );
+	exit();
 }
 
-@list($garbage, $provider, $z, $x, $y, $r ) = $matches;
+
+if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+	$request_uri     = stripslashes( $_SERVER['REQUEST_URI'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+} else {
+	http_response_code( 400 );
+	exit();
+}
+
+if ( isset( $_SERVER['SCRIPT_FILENAME'] ) ) {
+	$script_filename = stripslashes( $_SERVER['SCRIPT_FILENAME'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+} else {
+	http_response_code( 400 );
+	exit();
+}
+
+// match pattern /<provider>/<z>/<x>/<y><r>
+if ( ! preg_match( '/\/([a-z0-9\.]+)\/(\d+)\/(\d+)\/(\d+)(@2x)?$/i', $request_uri, $map_matches ) ) {
+	http_response_code( 400 );
+	exit();
+}
+
+$proxy_dir = pathinfo( $script_filename, PATHINFO_DIRNAME );
+// request didn't come from proxy dir.
+if ( ! preg_match( '/wp-content\/maps$/', $proxy_dir ) ) {
+	http_response_code( 400 );
+	exit();
+}
+
+// get local config in uploads dir
+$config_path = pathinfo( $proxy_dir, PATHINFO_DIRNAME ) . '/uploads';
+
+// multisite
+if ( preg_match( '/\/sites\/(\d+)\//i', $request_uri, $matches ) ) {
+	@list( $garbage, $blog_id ) = $matches; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+	$config_path .= '/sites/' . $blog_id;
+}
+// $proxy_config is a global config. Merge with local config from up-content/maps/uploads/acf-osm-proxy-config.php
+if ( file_exists( $config_path . '/acf-osm-proxy-config.php' ) ) {
+	if ( $local_proxy_config = include( $config_path . '/acf-osm-proxy-config.php' ) ) {
+		if ( is_array( $local_proxy_config ) ) {
+			$proxy_config = array_replace( $proxy_config, $local_proxy_config );
+		}
+	}
+}
+
+@list( $garbage, $provider, $z, $x, $y, $r ) = $map_matches;
+
+
 
 if ( ! isset( $proxy_config[$provider] ) ) {
 	http_response_code(404);
@@ -20,7 +64,7 @@ if ( ! isset( $proxy_config[$provider] ) ) {
 $base_url   = $proxy_config[ $provider ][ 'base_url' ];
 $subdomains = $proxy_config[ $provider ][ 'subdomains' ];
 
-$s = $subdomains[ rand( 0, strlen( $subdomains ) - 1 ) ];
+$s = $subdomains[ rand( 0, strlen( $subdomains ) - 1 ) ]; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 // fill vars
 $url = str_replace(
@@ -56,7 +100,7 @@ foreach ( [
 ] as $header ) {
 	$hdr = 'HTTP_'.str_replace( '-', '_', strtoupper( $header ) );
 	if ( isset( $_SERVER[ $hdr ] ) ) {
-		$request_headers[] = "{$header}: ".$_SERVER[ $hdr ];
+		$request_headers[] = "{$header}: ".stripslashes($_SERVER[ $hdr ]); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 	}
 }
 
@@ -109,7 +153,7 @@ $ctx = stream_context_create(['http' => [
 	},
 ]);
 
-$response_reg = '/^(' . implode( '|', $send_response_headers ) . '):/';
+$response_reg = '/^(' . implode( '|', $send_response_headers ) . '):/i';
 
 $contents = file_get_contents( $url, false, $ctx );
 
@@ -126,6 +170,6 @@ if ( isset( $http_response_header ) ) {
 		}
 	}
 	if ( 200 === $http_status ) {
-		echo $contents;
+		echo $contents; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

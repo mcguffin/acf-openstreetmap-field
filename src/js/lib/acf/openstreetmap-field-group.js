@@ -1,4 +1,4 @@
-import L from 'leaflet/no-conflict';
+import {L} from 'leaflet/no-conflict';
 import { MapInput } from 'media/views';
 
 //  prevent map initialization in clone fields

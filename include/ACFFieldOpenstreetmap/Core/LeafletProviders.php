@@ -23,10 +23,10 @@ class LeafletProviders extends Singleton {
 	 *	@return array
 	 */
 	public function get_providers( $filters = [], $unfiltered = false ) {
-		$core      = Core::instance();
 		$proxies   = MapProxy::instance()->get_proxies();
 
 		if ( is_null( $this->leaflet_providers ) ) {
+			$core = Core::instance();
 			$this->leaflet_providers = json_decode( $core->read_file( 'etc/leaflet-providers.json' ), true );
 		}
 
@@ -50,14 +50,6 @@ class LeafletProviders extends Singleton {
 				if ( ! $unfiltered ) {
 					$providers = apply_filters( 'acf_osm_leaflet_providers_'.$filter, $providers );
 				}
-			}
-
-			if ( 'proxied' === $filter ) {
-
-				$providers = array_filter( $providers, function( $el, $provider_key ) use ( $proxies ) {
-					return in_array( $provider_key, $proxies );
-				},  ARRAY_FILTER_USE_BOTH );
-
 			}
 
 			if ( 'enabled' === $filter ) {

@@ -13,6 +13,14 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 
 [*.json]
+indent_style = space
+indent_size = 2
+
+[*.sh]
+indent_style = space
+indent_size = 4
+
+[etc/leaflet-providers.json]
 indent_style = tab
 indent_size = 4
 
@@ -24,7 +32,7 @@ charset = utf-8
 trim_trailing_whitespace = false
 insert_final_newline = true
 
-[{package.json, .eslintrc, *.yml}]
+[{package.json, .eslintrc, *.yml, webpack.config.js}]
 indent_style = space
 indent_size = 2
 

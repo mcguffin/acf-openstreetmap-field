@@ -1,5 +1,5 @@
 import { GSModel, intGetter, intSetter, fixedFloatGetter, fixedFloatSetter, accuracy } from 'media/models/gs-model'
-import MarkerCollection from 'media/models/marker-collection'
+import {MarkerCollection} from 'media/models/marker-collection'
 
 const MapData = GSModel.extend({
 	getters: {
@@ -18,4 +18,4 @@ const MapData = GSModel.extend({
 	}
 });
 
-module.exports = MapData
+export {MapData}

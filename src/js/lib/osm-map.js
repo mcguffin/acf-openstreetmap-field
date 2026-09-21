@@ -1,4 +1,4 @@
-import L from 'leaflet/no-conflict';
+import {L} from 'leaflet/no-conflict';
 import 'leaflet/tile-layer-provider';
 
 (function( arg ){
@@ -307,4 +307,4 @@ import 'leaflet/tile-layer-provider';
 
 })( acf_osm );
 
-module.exports = L
+export {L}

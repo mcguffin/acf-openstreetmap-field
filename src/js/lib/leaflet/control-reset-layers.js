@@ -1,4 +1,4 @@
-import L from 'leaflet/no-conflict';
+import {L} from 'leaflet/no-conflict';
 
 const ResetLayers = L.Control.extend({
 	onAdd:function() {
@@ -27,10 +27,10 @@ const ResetLayers = L.Control.extend({
 	_onClick: function() {
 		this._map.eachLayer(function(layer) { layer.remove() } );
 	}
-})
+});
 
 L.control.ResetLayers = function (options) {
 	return new L.Control.ResetLayers(options);
 };
 
-module.exports = ResetLayers
+export { ResetLayers }

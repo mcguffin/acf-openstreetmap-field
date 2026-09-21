@@ -1,4 +1,4 @@
-import L from 'leaflet/no-conflict';
+import {L} from 'leaflet/no-conflict';
 
 const FitBounds = L.Control.extend({
 	onAdd:function() {
@@ -24,10 +24,10 @@ const FitBounds = L.Control.extend({
 			.off(this._link, 'click', this.options.callback )
 			.off(this._link, 'dblclick', L.DomEvent.stopPropagation );
 	},
-})
+});
 
 L.control.fitBounds = function (options) {
 	return new L.Control.FitBounds(options);
 };
 
-module.exports = FitBounds
+export { FitBounds }
